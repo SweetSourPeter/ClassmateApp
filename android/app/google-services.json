@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "168394012379",
+    "firebase_url": "https://nacc-app.firebaseio.com",
+    "project_id": "nacc-app",
+    "storage_bucket": "nacc-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168394012379:android:e9488f7ae9a7078c637efe",
+        "android_client_info": {
+          "package_name": "com.example.app_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168394012379-q78gced2v9npj7m3bgrg4n5fg465275h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCraotNMdwB3CjAsgT2AHb6dkCmcb3JkSw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168394012379-q78gced2v9npj7m3bgrg4n5fg465275h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
