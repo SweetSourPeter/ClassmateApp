@@ -117,9 +117,14 @@ _getBackBtn() {
   return Positioned(
     top: 35,
     left: 25,
-    child: Icon(
-      Icons.arrow_back_ios,
-      color: Colors.white,
+    child: GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+          child: Icon(
+        Icons.arrow_back_ios,
+        color: Colors.white,
+      ),
     ),
   );
 }

@@ -1,6 +1,6 @@
 # app_test
 
-A new Flutter project.
+A new Flutter project.找课友app
 
 ## Getting Started
 
