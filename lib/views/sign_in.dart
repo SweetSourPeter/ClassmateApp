@@ -126,11 +126,16 @@ _getSignIn() {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        CircleAvatar(
-          backgroundColor: Colors.grey.shade800,
-          radius: 40,
-          child: Text("G", 
-                style: TextStyle(color: Colors.white, fontSize: 30))
+        GestureDetector(
+          onTap: () {
+            authMethods.signInWithGoogle(context);
+          },
+                  child: CircleAvatar(
+            backgroundColor: Colors.grey.shade800,
+            radius: 40,
+            child: Text("G", 
+                  style: TextStyle(color: Colors.white, fontSize: 30))
+          ),
         ),
         // Text(
         //   'Sign in',
