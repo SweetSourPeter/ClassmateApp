@@ -28,6 +28,7 @@ signMeIn() {
       setState(() {
         isLoading = true;
         authMethods.signInWithEmailAndPassword(emailTextEditingController.text, passwordTextEditingController.text).then((val){
+          isLoading = false;
           // print("${val.uid}");
           Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => MainMenu()

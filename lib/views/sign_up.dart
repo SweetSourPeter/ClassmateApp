@@ -28,6 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() {
         isLoading = true;
         authMethods.signUpWithEmailAndPassword(emailTextEditingController.text, passwordTextEditingController.text).then((val){
+          isLoading = false;
           // print("${val.uid}");
           Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => MainMenu()
