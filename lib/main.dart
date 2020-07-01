@@ -1,4 +1,5 @@
 import 'package:app_test/views/MainMenu.dart';
+import 'package:app_test/views/sign_in.dart';
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainMenu(),
-      // SignIn(),
+      home:
+          // SignIn(),
+          MainMenu(),
     );
     // FutureBuilder<FirebaseUser>(
     //             future: FirebaseAuth.instance.currentUser(),

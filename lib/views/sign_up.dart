@@ -3,237 +3,245 @@ import 'package:app_test/views/MainMenu.dart';
 import 'package:app_test/views/sign_in.dart';
 import 'package:flutter/material.dart';
 
-
 class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
-
   AuthMethods authMethods = new AuthMethods();
 
-
-  TextEditingController usernameTextEditingController = new TextEditingController();
-  TextEditingController emailTextEditingController = new TextEditingController();
-  TextEditingController passwordTextEditingController = new TextEditingController();
+  TextEditingController usernameTextEditingController =
+      new TextEditingController();
+  TextEditingController emailTextEditingController =
+      new TextEditingController();
+  TextEditingController passwordTextEditingController =
+      new TextEditingController();
 
   signMeUp() {
-
-    if(formKey.currentState.validate()){
+    if (formKey.currentState.validate()) {
       setState(() {
         isLoading = true;
-        authMethods.signUpWithEmailAndPassword(emailTextEditingController.text, passwordTextEditingController.text).then((val){
+        authMethods
+            .signUpWithEmailAndPassword(emailTextEditingController.text,
+                passwordTextEditingController.text)
+            .then((val) {
           isLoading = false;
           // print("${val.uid}");
-          Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => MainMenu()
-
-          ));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => MainMenu()));
         });
       });
-
-      
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: isLoading ? Container(
-        child:  Center(child: CircularProgressIndicator())) :
-      
-      CustomPaint(
-        painter: BackgroundSignUp(),
-        child: Stack(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35),
-              // child: Container(
-                child: Column(
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        body: isLoading
+            ? Container(child: Center(child: CircularProgressIndicator()))
+            : CustomPaint(
+                painter: BackgroundSignUp(),
+                child: Stack(
                   children: <Widget>[
-                    _getHeader(),
-                    _getTextFields(),
-                    _getSignIn(),
-                    _getBottomRow(context),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                      // child: Container(
+                      child: Column(
+                        children: <Widget>[
+                          _getHeader(),
+                          _getTextFields(),
+                          _getSignIn(),
+                          _getBottomRow(context),
+                        ],
+                      ),
+                      // ),
+                    ),
+                    _getBackBtn()
                   ],
                 ),
-              // ),
-            ),
-            _getBackBtn()
-          ],
+              ),
+      ),
+    );
+  }
+
+  _getBackBtn() {
+    return Positioned(
+      top: 35,
+      left: 25,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
         ),
       ),
     );
   }
 
-  
-_getBackBtn() {
-  return Positioned(
-    top: 35,
-    left: 25,
-    child: GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-          child: Icon(
-        Icons.arrow_back_ios,
-        color: Colors.white,
-      ),
-    ),
-  );
-}
-
-_getBottomRow(context) {
-  return Expanded(
-    flex: 1,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        GestureDetector(
-          onTap: (){
-            Navigator.pop(context);
-          },
-                  child: Text(
-            'Have an account?',
+  _getBottomRow(context) {
+    return Expanded(
+      flex: 1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Have an account?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+          Text(
+            '',
             style: TextStyle(
-              color: Colors.white,
               fontSize: 15,
               fontWeight: FontWeight.w500,
               decoration: TextDecoration.underline,
             ),
           ),
-        ),
-        Text(
-          '',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-            decoration: TextDecoration.underline,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
-_getSignIn() {
-  return Expanded(
-    flex: 1,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          'Sign up',
-          style: TextStyle(color: Colors.white,fontSize: 25, fontWeight: FontWeight.w500),
-        ),
-        GestureDetector(
-            onTap: (){
+  _getSignIn() {
+    return Expanded(
+      flex: 1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            'Sign up',
+            style: TextStyle(
+                color: Colors.white, fontSize: 25, fontWeight: FontWeight.w500),
+          ),
+          GestureDetector(
+            onTap: () {
               //sign up revoked
               signMeUp();
             },
             child: CircleAvatar(
-            backgroundColor: Colors.grey.shade800,
-            radius: 40,
-            child: Icon(
-              Icons.arrow_forward,
-              color: Colors.white,
+              backgroundColor: Colors.grey.shade800,
+              radius: 40,
+              child: Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _getTextFields() {
+    return Expanded(
+      flex: 4,
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Form(
+          key: formKey,
+          child: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    validator: (val) {
+                      if (val.isEmpty) return "The name can't be empty";
+                      if (val.length < 4)
+                        return "The name length must be greater than 4";
+                    },
+                    controller: usernameTextEditingController,
+                    decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'UserName',
+                        labelStyle: TextStyle(color: Colors.white)),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    controller: emailTextEditingController,
+                    validator: (val) {
+                      return RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(val)
+                          ? null
+                          : "Please enter correct email";
+                    },
+                    decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: Colors.white)),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    controller: passwordTextEditingController,
+                    obscureText: true,
+                    validator: (val) {
+                      return val.length > 6
+                          ? null
+                          : "Please provoid password with at least 6 words";
+                    },
+                    decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.white)),
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                ],
+              ),
             ),
           ),
         )
-      ],
-    ),
-  );
-}
+      ]),
+    );
+  }
 
-_getTextFields() {
-  return Expanded(
-    flex: 4,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        
-        Form(
-          key: formKey,
+  _getHeader() {
+    return Expanded(
+      flex: 3,
       child: Container(
-              alignment: Alignment.center,
-              child: SingleChildScrollView(
-                child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 15,
-              ),
-              TextFormField(
-                validator: (val){
-                  if (val.isEmpty) return "The name can't be empty";
-                  if (val.length < 4) return "The name length must be greater than 4";
-                },
-                controller: usernameTextEditingController,
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                  labelText: 'UserName', labelStyle: TextStyle(color: Colors.white)),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              TextFormField(
-                controller: emailTextEditingController,
-                validator: (val){
-                          return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val) ?
-                              null : "Please enter correct email";
-                        },
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                  labelText: 'Email', labelStyle: TextStyle(color: Colors.white)),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              TextFormField(
-                controller: passwordTextEditingController,
-                obscureText: true,
-                validator: (val){
-                  return val.length > 6 ? null : "Please provoid password with at least 6 words";
-                },
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                  labelText: 'Password', labelStyle: TextStyle(color: Colors.white)),
-              ),
-              SizedBox(
-                height: 25,
-              ),
-          ],),
+        alignment: Alignment.bottomLeft,
+        child: Text(
+          'Create\nAccount',
+          style: TextStyle(color: Colors.white, fontSize: 40),
         ),
       ),
-        )] 
-        
-      
-    ),
-  );
-}
-
-_getHeader() {
-  return Expanded(
-    flex: 3,
-    child: Container(
-      alignment: Alignment.bottomLeft,
-      child: Text(
-        'Create\nAccount',
-        style: TextStyle(color: Colors.white, fontSize: 40),
-      ),
-    ),
-  );
-}
-
-
-
-
-
+    );
+  }
 }
 
 //used for both SignUp & ForgetPassword page

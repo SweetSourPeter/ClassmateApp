@@ -50,7 +50,7 @@ class _MainMenuState extends State<MainMenu> {
               fillColor: Colors.white,
               filled: true,
               prefixIcon: Icon(Icons.search, color: Colors.grey),
-              hintText: 'Search users ...',
+              hintText: 'Search User ...',
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none),
