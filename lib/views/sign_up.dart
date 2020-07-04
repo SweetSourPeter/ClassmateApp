@@ -1,4 +1,5 @@
 import 'package:app_test/services/auth.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/views/MainMenu.dart';
 import 'package:app_test/views/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,10 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool emailExist = false;
 
   AuthMethods authMethods = new AuthMethods();
+  DatabaseMehods databaseMehods = new DatabaseMehods();
 
   TextEditingController usernameTextEditingController =
       new TextEditingController();
@@ -25,15 +28,34 @@ class _SignUpPageState extends State<SignUpPage> {
     if (formKey.currentState.validate()) {
       setState(() {
         isLoading = true;
-        authMethods
-            .signUpWithEmailAndPassword(emailTextEditingController.text,
-                passwordTextEditingController.text)
-            .then((val) {
+      });
+
+      Map<String, String> userInfoMap = {
+        "name": usernameTextEditingController.text,
+        "email": emailTextEditingController.text,
+      };
+
+      authMethods
+          .signUpWithEmailAndPassword(emailTextEditingController.text,
+              passwordTextEditingController.text)
+          .then((val) {
+        // print("${val.userID}");
+        print("Hi");
+        if (val == null) {
           isLoading = false;
-          // print("${val.uid}");
+          //check if the email already exist
+          setState(() {
+            emailExist = true;
+          });
+        } else {
+          databaseMehods.uploadUserInfo(userInfoMap, val.userID);
+
+          isLoading = false;
+          print(isLoading);
+          print("val value is " + "${val.userID.toString()}");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => MainMenu()));
-        });
+        }
       });
     }
   }
@@ -140,6 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
           GestureDetector(
             onTap: () {
               //sign up revoked
+              emailExist = false;
               signMeUp();
             },
             child: CircleAvatar(
@@ -189,11 +212,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextFormField(
                     controller: emailTextEditingController,
                     validator: (val) {
-                      return RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(val)
-                          ? null
-                          : "Please enter correct email";
+                      if (emailExist) {
+                        return "Email already Exist";
+                      } else {
+                        return RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(val)
+                            ? null
+                            : "Please enter correct email";
+                      }
                     },
                     decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(

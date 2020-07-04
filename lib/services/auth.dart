@@ -4,39 +4,49 @@ import 'package:app_test/modals/user.dart';
 import 'package:app_test/views/MainMenu.dart';
 import 'package:app_test/views/sign_in.dart';
 import "package:firebase_auth/firebase_auth.dart";
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:flutter/material.dart';
 
-class AuthMethods{
-
+class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  User _userFromFirebaseUser(FirebaseUser user){
-    return user != null ? User(userID:  user.uid) : null;
+  User _userFromFirebaseUser(FirebaseUser user) {
+    return user != null ? User(userID: user.uid) : null;
   }
 
   Future signInWithEmailAndPassword(String email, String password) async {
-     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    try {
+      AuthResult result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser firebaseUser = result.user;
       return _userFromFirebaseUser(firebaseUser);
     } catch (e) {
+      // FirebaseA
       print(e.toString());
     }
   }
 
   Future signUpWithEmailAndPassword(String email, String password) async {
+    bool emailExist = false;
+    FirebaseUser firebaseUser;
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseUser firebaseUser = result.user;
-      return _userFromFirebaseUser(firebaseUser);
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      firebaseUser = result.user;
+      print(firebaseUser.email);
     } catch (e) {
-      print(e.toString());
+      if (e is PlatformException) {
+        if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+          emailExist = true;
+        }
+        emailExist = true;
+      }
+      print("error code is " + e.code.toString());
     }
-
+    return emailExist ? null : _userFromFirebaseUser(firebaseUser);
   }
-
 
   Future resetPassword(String email) async {
     try {
@@ -44,10 +54,9 @@ class AuthMethods{
     } catch (e) {
       print(e.toString());
     }
-
   }
 
-   Future<FirebaseUser> signInWithGoogle(BuildContext context) async {
+  Future<FirebaseUser> signInWithGoogle(BuildContext context) async {
     final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
     final GoogleSignInAccount googleSignInAccount =
@@ -64,20 +73,18 @@ class AuthMethods{
 
     if (result == null) {
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainMenu()));
     }
   }
 
-
-  Future signOut() async{
+  Future signOut() async {
     try {
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());
     }
-
   }
-
 }
 
 // // //check if the user has already login

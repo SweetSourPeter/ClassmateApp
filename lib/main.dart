@@ -19,9 +19,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home:
-          // SignIn(),
-          MainMenu(),
+      home: SignIn(),
+      // MainMenu(),
     );
     // FutureBuilder<FirebaseUser>(
     //             future: FirebaseAuth.instance.currentUser(),
