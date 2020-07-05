@@ -8,6 +8,8 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   bool _searchToggle = false;
+  TextEditingController searchUserByEmailTextEditingController =
+      new TextEditingController();
 
   void showToast() {
     setState(() {
@@ -42,20 +44,23 @@ class _MainMenuState extends State<MainMenu> {
       title: Visibility(
         // visible: searchToggle? true:false,
         visible: _searchToggle,
-        child: Container(
-          width: 200,
-          child: TextField(
-            autofocus: true,
-            decoration: InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              prefixIcon: Icon(Icons.search, color: Colors.grey),
-              hintText: 'Search User ...',
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none),
-              contentPadding: EdgeInsets.zero,
-              hintStyle: TextStyle(color: Colors.grey), // KEY PROP
+        child: Expanded(
+          child: Container(
+            // width: 200,
+            child: TextField(
+              controller: searchUserByEmailTextEditingController,
+              autofocus: true,
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+                // prefixIcon: Icon(Icons.search, color: Colors.grey),
+                hintText: 'Search User ...',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
+                contentPadding: EdgeInsets.zero,
+                hintStyle: TextStyle(color: Colors.grey), // KEY PROP
+              ),
             ),
           ),
         ),

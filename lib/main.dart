@@ -1,4 +1,5 @@
 import 'package:app_test/views/MainMenu.dart';
+import 'package:app_test/views/searchUser.dart';
 import 'package:app_test/views/sign_in.dart';
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
@@ -19,8 +20,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignIn(),
-      // MainMenu(),
+      home:
+          // SignIn(),
+          // MainMenu(),
+          SearchUsers(),
     );
     // FutureBuilder<FirebaseUser>(
     //             future: FirebaseAuth.instance.currentUser(),
