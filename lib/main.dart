@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home:
-          // SignIn(),
+          SignIn(),
           // MainMenu(),
-          SearchUsers(),
+//           SearchUsers(),
     );
     // FutureBuilder<FirebaseUser>(
     //             future: FirebaseAuth.instance.currentUser(),
