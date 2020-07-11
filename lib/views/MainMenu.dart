@@ -1,4 +1,4 @@
-import 'package:app_test/modals/constant.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:flutter/material.dart';
 
 class MainMenu extends StatefulWidget {

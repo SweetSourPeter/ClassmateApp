@@ -33,6 +33,7 @@ dependencies:
   google_sign_in: ^4.5.1
   flutter_svg: ^0.17.4 #Help us to use SVG in our app
   animations: ^1.1.0 #Help us to use animation easily also develop by flutter team
+  provider: ^4.3.1 #Help keeping user status
 
 
 dev_dependencies:

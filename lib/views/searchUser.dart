@@ -1,4 +1,4 @@
-import 'package:app_test/modals/constant.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

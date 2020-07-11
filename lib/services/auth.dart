@@ -1,12 +1,11 @@
 import 'package:app_test/main.dart';
-import 'package:app_test/modals/user.dart';
-import 'package:app_test/modals/user.dart';
+import 'package:app_test/models/user.dart';
 import 'package:app_test/views/MainMenu.dart';
 import 'package:app_test/views/sign_in.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:app_test/services/userDatabase.dart';
 import 'package:flutter/material.dart';
 
 class AuthMethods {
@@ -16,6 +15,14 @@ class AuthMethods {
     return user != null ? User(userID: user.uid) : null;
   }
 
+  // auth change user stream
+  Stream<User> get user {
+    return _auth.onAuthStateChanged
+      //.map((FirebaseUser user) => _userFromFirebaseUser(user));
+      .map(_userFromFirebaseUser);
+  }
+
+  // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
@@ -28,13 +35,15 @@ class AuthMethods {
     }
   }
 
+  // sign up with email and password
   Future signUpWithEmailAndPassword(String email, String password) async {
     bool emailExist = false;
     FirebaseUser firebaseUser;
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      firebaseUser = result.user;
+      FirebaseUser firebaseUser = result.user;
+      await UserDatabaseService(userID: firebaseUser.uid).updateUserData(email,email,'University');
       print(firebaseUser.email);
     } catch (e) {
       if (e is PlatformException) {
@@ -69,10 +78,12 @@ class AuthMethods {
         accessToken: googleSignInAuthentication.accessToken);
 
     AuthResult result = await _auth.signInWithCredential(credential);
-    FirebaseUser userDetails = result.user;
+    FirebaseUser googleUser = result.user;
 
-    if (result == null) {
+    if (googleUser == null) {
+
     } else {
+      await UserDatabaseService(userID: googleUser.uid).updateUserData(googleUser.email,googleUser.email,'University');
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainMenu()));
     }
