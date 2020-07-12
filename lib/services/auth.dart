@@ -1,7 +1,7 @@
 import 'package:app_test/main.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/views/MainMenu.dart';
-import 'package:app_test/views/sign_in.dart';
+import 'package:app_test/MainMenu.dart';
+import 'package:app_test/pages/my_pages/sign_in.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';

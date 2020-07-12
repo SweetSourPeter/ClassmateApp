@@ -1,12 +1,12 @@
-import 'package:app_test/views/MainMenu.dart';
-import 'package:app_test/views/searchUser.dart';
-import 'package:app_test/views/sign_in.dart';
+import 'package:app_test/MainMenu.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/userDatabase.dart';
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:app_test/views/wrapper.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
 
