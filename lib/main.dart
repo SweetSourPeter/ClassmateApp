@@ -1,8 +1,11 @@
+import 'package:app_test/views/CoursePage.dart';
 import 'package:app_test/views/MainMenu.dart';
+import 'package:app_test/views/chatScreen.dart';
 import 'package:app_test/views/searchUser.dart';
 import 'package:app_test/views/sign_in.dart';
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'views/chatScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,9 +24,10 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home:
-          SignIn(),
-          // MainMenu(),
-//           SearchUsers(),
+          // SignIn(),
+          MainMenu(),
+      // SearchUsers(),
+      // HomeScreen(),
     );
     // FutureBuilder<FirebaseUser>(
     //             future: FirebaseAuth.instance.currentUser(),

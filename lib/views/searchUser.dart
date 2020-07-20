@@ -59,7 +59,7 @@ class _SearchUsersState extends State<SearchUsers> {
               padding: EdgeInsets.only(left: kDefaultPadding),
               child: GestureDetector(
                 onTap: () {
-                  //tose
+                  Navigator.pop(context);
                 },
                 child: Icon(
                   Icons.arrow_back_ios,
