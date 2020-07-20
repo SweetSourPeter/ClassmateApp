@@ -1,6 +1,6 @@
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/views/MainMenu.dart';
+import 'package:app_test/views/MainScreen.dart';
 import 'package:app_test/views/sign_in.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
           print(isLoading);
           print("val value is " + "${val.userID.toString()}");
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainMenu()));
+              context, MaterialPageRoute(builder: (context) => MainScreen()));
         }
       });
     }

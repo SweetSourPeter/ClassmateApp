@@ -1,7 +1,7 @@
 import 'package:app_test/main.dart';
 import 'package:app_test/modals/user.dart';
 import 'package:app_test/modals/user.dart';
-import 'package:app_test/views/MainMenu.dart';
+import 'package:app_test/views/MainScreen.dart';
 import 'package:app_test/views/sign_in.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:flutter/services.dart';
@@ -74,7 +74,7 @@ class AuthMethods {
     if (result == null) {
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainMenu()));
+          context, MaterialPageRoute(builder: (context) => MainScreen()));
     }
   }
 

@@ -1,20 +1,17 @@
 import 'package:app_test/modals/constant.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_chat_ui/widgets/category_selector.dart';
-// import 'package:flutter_chat_ui/widgets/favorite_contacts.dart';
-// import 'package:flutter_chat_ui/widgets/recent_chats.dart';
 import 'package:app_test/widgets/category_selector.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/recent_chats.dart';
 import 'package:app_test/views/chatScreen.dart';
 import 'package:app_test/modals/message_model.dart';
 
-class HomeScreen extends StatefulWidget {
+class FriendsScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _FriendsScreenState createState() => _FriendsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _FriendsScreenState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

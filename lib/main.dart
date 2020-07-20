@@ -1,5 +1,5 @@
-import 'package:app_test/views/CoursePage.dart';
-import 'package:app_test/views/MainMenu.dart';
+import 'package:app_test/views/FriendsScreen.dart';
+import 'package:app_test/views/MainScreen.dart';
 import 'package:app_test/views/chatScreen.dart';
 import 'package:app_test/views/searchUser.dart';
 import 'package:app_test/views/sign_in.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       home:
           // SignIn(),
-          MainMenu(),
+          MainScreen(),
       // SearchUsers(),
       // HomeScreen(),
     );

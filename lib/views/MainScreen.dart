@@ -1,19 +1,18 @@
 import 'package:app_test/modals/constant.dart';
 import 'package:app_test/modals/courseInfo.dart';
 import 'package:app_test/modals/message_model.dart';
-import 'package:app_test/views/CoursePage.dart';
+import 'package:app_test/views/FriendsScreen.dart';
 import 'package:app_test/views/searchUser.dart';
-import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class MainMenu extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
-  _MainMenuState createState() => _MainMenuState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainMenuState extends State<MainMenu> {
+class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  final tabs = [CourseMainMenu(), HomeScreen()];
+  final tabs = [CourseMainMenu(), FriendsScreen()];
   final tabTitle = ['Course', 'Friends'];
   @override
   Widget build(BuildContext context) {
