@@ -1,4 +1,4 @@
-import 'package:app_test/modals/user.dart';
+import 'package:app_test/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseMehods {

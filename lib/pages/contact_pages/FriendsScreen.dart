@@ -1,10 +1,10 @@
-import 'package:app_test/modals/constant.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/widgets/category_selector.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/recent_chats.dart';
-import 'package:app_test/views/chatScreen.dart';
-import 'package:app_test/modals/message_model.dart';
+import 'package:app_test/pages/chat_pages/chatScreen.dart';
+import 'package:app_test/models/message_model.dart';
 
 class FriendsScreen extends StatefulWidget {
   @override

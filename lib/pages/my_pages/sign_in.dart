@@ -1,7 +1,7 @@
 import 'package:app_test/services/database.dart';
-import 'package:app_test/views/MainScreen.dart';
-import 'package:app_test/views/forgetpassword.dart';
-import 'package:app_test/views/sign_up.dart';
+import 'package:app_test/MainScreen.dart';
+import 'package:app_test/pages/my_pages/forgetpassword.dart';
+import 'package:app_test/pages/my_pages/sign_up.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 

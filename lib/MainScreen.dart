@@ -1,8 +1,8 @@
-import 'package:app_test/modals/constant.dart';
-import 'package:app_test/modals/courseInfo.dart';
-import 'package:app_test/modals/message_model.dart';
-import 'package:app_test/views/FriendsScreen.dart';
-import 'package:app_test/views/searchUser.dart';
+import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
+import 'package:app_test/models/message_model.dart';
+import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {

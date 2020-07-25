@@ -1,7 +1,6 @@
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/views/MainScreen.dart';
-import 'package:app_test/views/sign_in.dart';
+import 'package:app_test/MainScreen.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
