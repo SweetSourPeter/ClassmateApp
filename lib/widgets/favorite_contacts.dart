@@ -69,7 +69,32 @@ class FavoriteContacts extends StatelessWidget {
                     ],
                   )),
                 );
-              }),
+              }).followedBy([
+                GestureDetector(
+                  onTap: () {
+                    //TODO search for users
+                  },
+                  child: Container(
+                      child: Column(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 35.0,
+                        backgroundImage:
+                            AssetImage('assets/images/add_course.png'),
+                      ),
+                      SizedBox(height: 6.0),
+                      Text(
+                        'add friends',
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  )),
+                ),
+              ]).toList(),
             )
 
                 // ListView.builder(
@@ -112,6 +137,9 @@ class FavoriteContacts extends StatelessWidget {
                 // ),
                 ),
           ),
+          SizedBox(
+            height: 30,
+          )
         ],
       ),
     );

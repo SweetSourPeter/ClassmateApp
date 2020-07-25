@@ -43,7 +43,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         //   ],
         // ),
         body: Scaffold(
-          backgroundColor: lightBlueColor,
+          backgroundColor: builtyPinkColor,
           body: Stack(
             alignment: Alignment.center,
             children: <Widget>[
@@ -60,8 +60,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
               //   child: CategorySelector(),
               // ),
               DraggableScrollableSheet(
-                maxChildSize: 1,
-                minChildSize: 0.1,
+                initialChildSize: 0.9,
+                maxChildSize: 0.9,
+                minChildSize: 0.07,
                 builder:
                     (BuildContext context, ScrollController scrolController) {
                   return Container(

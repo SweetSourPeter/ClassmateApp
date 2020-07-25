@@ -1,14 +1,18 @@
+// import 'dart:html';
+
 class CourseInfo {
   String myCourseName;
   String courseID;
   int userNumbers;
   String courseCategory;
+  String imageUrl;
 
   CourseInfo(
       {this.myCourseName,
       this.courseID,
       this.courseCategory,
-      this.userNumbers});
+      this.userNumbers,
+      this.imageUrl});
 }
 
 //TEMP LIST FOR THE BUILDER
@@ -17,27 +21,32 @@ List<CourseInfo> course = [
       myCourseName: 'CS111A1',
       courseID: 'AFDBVP12sdfad3F2113',
       userNumbers: 26,
-      courseCategory: 'CS'),
-  CourseInfo(
-      myCourseName: 'MA125A3',
-      courseID: 'AFDBVP123Fdssd213',
-      userNumbers: 6,
-      courseCategory: 'MATH'),
+      courseCategory: 'CS',
+      imageUrl: 'assets/courseimage/cs_course_BG.jpg'),
+  // CourseInfo(
+  //     myCourseName: 'MA125A3',
+  //     courseID: 'AFDBVP123Fdssd213',
+  //     userNumbers: 6,
+  //     courseCategory: 'MATH',
+  //     imageUrl: 'assets/courseimage/ec_course_BG.jpg'),
   CourseInfo(
       myCourseName: 'WR111C1',
       courseID: 'asdsdfag32231',
       userNumbers: 16,
-      courseCategory: 'writing'),
+      courseCategory: 'WR',
+      imageUrl: 'assets/courseimage/wr_course_BG.jpg'),
   CourseInfo(
-      myCourseName: 'MA123A5',
+      myCourseName: 'PH123A5',
       courseID: 'AFDBVP123F2113',
       userNumbers: 26,
-      courseCategory: 'MATH'),
+      courseCategory: 'PH',
+      imageUrl: 'assets/courseimage/ph_course_BG.jpg'),
   CourseInfo(
       myCourseName: 'EC112A2',
       courseID: 'sadfsg2315ybi8u8h',
       userNumbers: 56,
-      courseCategory: 'ECON'),
+      courseCategory: 'ECON',
+      imageUrl: 'assets/courseimage/econ_course_BG.jpg'),
 ];
 
 // final CourseInfo ma123 = CourseInfo(

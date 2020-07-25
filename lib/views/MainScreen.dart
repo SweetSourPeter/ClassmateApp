@@ -29,7 +29,7 @@ class _MainScreenState extends State<MainScreen> {
             items: [
               BottomNavigationBarItem(
                   icon: Icon(Icons.class_),
-                  title: Text('course'),
+                  title: Text('courses'),
                   backgroundColor: orengeColor),
               BottomNavigationBarItem(
                   icon: Icon(Icons.contacts),
@@ -98,21 +98,41 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class CourseMainMenu extends StatelessWidget {
+class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({
     Key key,
   }) : super(key: key);
 
   @override
+  _CourseMainMenuState createState() => _CourseMainMenuState();
+}
+
+class _CourseMainMenuState extends State<CourseMainMenu> {
+  // @override
+  // void initState() {
+  //   // adjust the provider based on the image type
+  //   // for (int i = 0; i < 1; i++) {
+  //   precacheImage(AssetImage('assets/courseimage/econ_course_BG.jpg'), context);
+  //   // }
+  //   super.initState();
+  // }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: course.map((courses) {
+    return ReorderableListView(
+      scrollDirection: Axis.vertical,
+      children: course.map<Widget>((courses) {
         return Container(
+          key: ValueKey(courses.courseID),
           margin:
-              const EdgeInsets.only(bottom: 16, top: 16, left: 10, right: 10),
-          height: 140,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              const EdgeInsets.only(bottom: 16, top: 16, left: 25, right: 25),
+          height: 130,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
+              // image: DecorationImage(
+              //   image: courseImageAssets(courses.courseCategory),
+              //   fit: BoxFit.cover,
+              // ),
               gradient: LinearGradient(
                 colors: [Colors.purple, Colors.red],
                 begin: Alignment.centerLeft,
@@ -120,7 +140,7 @@ class CourseMainMenu extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.red.withOpacity(0.4),
+                    color: builtyPinkColor.withOpacity(1),
                     blurRadius: 8,
                     spreadRadius: 2,
                     offset: Offset(4, 4))
@@ -137,7 +157,7 @@ class CourseMainMenu extends StatelessWidget {
                     width: 9,
                   ),
                   Text(courses.myCourseName,
-                      style: TextStyle(color: Colors.white, fontSize: 26)),
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
                   SizedBox(
                     width: 9,
                   ),
@@ -151,10 +171,11 @@ class CourseMainMenu extends StatelessWidget {
       }).followedBy([
         Container(
           // color: Colors.red,
+          key: ValueKey('addCourse1111111'),
           margin:
-              const EdgeInsets.only(bottom: 16, top: 16, left: 10, right: 10),
-          height: 140,
-          // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              const EdgeInsets.only(bottom: 16, top: 16, left: 25, right: 25),
+          height: 130,
+          padding: const EdgeInsets.symmetric(horizontal: 118, vertical: 8),
           decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [darkBlueColor, lightBlueColor],
@@ -163,7 +184,7 @@ class CourseMainMenu extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.red.withOpacity(0.4),
+                    color: lightBlueColor.withOpacity(0.4),
                     blurRadius: 8,
                     spreadRadius: 2,
                     offset: Offset(4, 4))
@@ -171,20 +192,145 @@ class CourseMainMenu extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(24))),
           child: Column(
             children: <Widget>[
-              Padding(padding: const EdgeInsets.only(top: 10, bottom: 10)),
+              Padding(padding: const EdgeInsets.only(top: 5, bottom: 10)),
               Image.asset(
                 'assets/images/add_course.png',
-                scale: 1.1,
+                scale: 1.2,
               ),
               SizedBox(
                 height: 8,
               ),
               Text('Add Course',
-                  style: TextStyle(color: Colors.white, fontSize: 28))
+                  style: TextStyle(color: Colors.white, fontSize: 24))
             ],
           ),
         ),
       ]).toList(),
+      onReorder: _onReorder,
     );
+
+    //  ListView(
+    //   children: course.map((courses) {
+    //     return Container(
+    //       margin:
+    //           const EdgeInsets.only(bottom: 16, top: 16, left: 10, right: 10),
+    //       height: 140,
+    //       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    //       decoration: BoxDecoration(
+    //           gradient: LinearGradient(
+    //             colors: [Colors.purple, Colors.red],
+    //             begin: Alignment.centerLeft,
+    //             end: Alignment.centerRight,
+    //           ),
+    //           boxShadow: [
+    //             BoxShadow(
+    //                 color: Colors.red.withOpacity(0.4),
+    //                 blurRadius: 8,
+    //                 spreadRadius: 2,
+    //                 offset: Offset(4, 4))
+    //           ],
+    //           borderRadius: BorderRadius.all(Radius.circular(24))),
+    //       child: Column(
+    //         children: <Widget>[
+    //           SizedBox(
+    //             height: 4,
+    //           ),
+    //           Row(
+    //             children: <Widget>[
+    //               SizedBox(
+    //                 width: 9,
+    //               ),
+    //               Text(courses.myCourseName,
+    //                   style: TextStyle(color: Colors.white, fontSize: 26)),
+    //               SizedBox(
+    //                 width: 9,
+    //               ),
+    //               Text('+' + courses.userNumbers.toString() + ' classmates',
+    //                   style: TextStyle(color: orengeColor, fontSize: 18)),
+    //             ],
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   }).followedBy([
+    //     Container(
+    //       // color: Colors.red,
+    //       margin:
+    //           const EdgeInsets.only(bottom: 16, top: 16, left: 10, right: 10),
+    //       height: 140,
+    //       // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    //       decoration: BoxDecoration(
+    //           gradient: LinearGradient(
+    //             colors: [darkBlueColor, lightBlueColor],
+    //             begin: Alignment.centerLeft,
+    //             end: Alignment.centerRight,
+    //           ),
+    //           boxShadow: [
+    //             BoxShadow(
+    //                 color: Colors.red.withOpacity(0.4),
+    //                 blurRadius: 8,
+    //                 spreadRadius: 2,
+    //                 offset: Offset(4, 4))
+    //           ],
+    //           borderRadius: BorderRadius.all(Radius.circular(24))),
+    //       child: Column(
+    //         children: <Widget>[
+    //           Padding(padding: const EdgeInsets.only(top: 10, bottom: 10)),
+    //           Image.asset(
+    //             'assets/images/add_course.png',
+    //             scale: 1.1,
+    //           ),
+    //           SizedBox(
+    //             height: 8,
+    //           ),
+    //           Text('Add Course',
+    //               style: TextStyle(color: Colors.white, fontSize: 28))
+    //         ],
+    //       ),
+    //     ),
+    //   ]).toList(),
+    // );
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(
+      () {
+        if (newIndex > oldIndex) {
+          newIndex -= 1;
+        }
+        final CourseInfo item = course.removeAt(oldIndex);
+        course.insert(newIndex, item);
+      },
+    );
+  }
+
+  AssetImage courseImageAssets(String type) {
+    switch (type) {
+      case 'CS':
+        {
+          return AssetImage('assets/courseimage/cs_course_BG.jpg');
+        }
+        break;
+      case 'WR':
+        {
+          return AssetImage('assets/courseimage/wr_course_BG.jpg');
+        }
+        break;
+      case 'PH':
+        {
+          return AssetImage('assets/courseimage/ph_course_BG.jpg');
+        }
+        break;
+      case 'ECON':
+        {
+          return AssetImage('assets/courseimage/econ_course_BG.jpg');
+        }
+        break;
+      default:
+        {
+          return AssetImage('assets/courseimage/econ_course_BG.jpg');
+        }
+        break;
+    }
   }
 }
