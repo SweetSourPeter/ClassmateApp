@@ -1,7 +1,6 @@
 import 'package:app_test/main.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/MainMenu.dart';
-import 'package:app_test/pages/my_pages/sign_in.dart';
+import 'package:app_test/MainScreen.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,8 +17,8 @@ class AuthMethods {
   // auth change user stream
   Stream<User> get user {
     return _auth.onAuthStateChanged
-      //.map((FirebaseUser user) => _userFromFirebaseUser(user));
-      .map(_userFromFirebaseUser);
+        //.map((FirebaseUser user) => _userFromFirebaseUser(user));
+        .map(_userFromFirebaseUser);
   }
 
   // sign in with email and password
@@ -43,7 +42,8 @@ class AuthMethods {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser firebaseUser = result.user;
-      await UserDatabaseService(userID: firebaseUser.uid).updateUserData(email,email,'University');
+      await UserDatabaseService(userID: firebaseUser.uid)
+          .updateUserData(email, email, 'University');
       print(firebaseUser.email);
     } catch (e) {
       if (e is PlatformException) {
@@ -81,11 +81,11 @@ class AuthMethods {
     FirebaseUser googleUser = result.user;
 
     if (googleUser == null) {
-
     } else {
-      await UserDatabaseService(userID: googleUser.uid).updateUserData(googleUser.email,googleUser.email,'University');
+      await UserDatabaseService(userID: googleUser.uid)
+          .updateUserData(googleUser.email, googleUser.email, 'University');
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainMenu()));
+          context, MaterialPageRoute(builder: (context) => MainScreen()));
     }
   }
 

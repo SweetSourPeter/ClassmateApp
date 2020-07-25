@@ -1,5 +1,5 @@
 import 'package:app_test/services/database.dart';
-import 'package:app_test/MainMenu.dart';
+import 'package:app_test/MainScreen.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import "package:flutter/material.dart";
@@ -36,7 +36,7 @@ class _SignInState extends State<SignIn> {
         print(isLoading);
         print("val value is " + "${val.userID.toString()}");
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainMenu()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       });
     }
   }
