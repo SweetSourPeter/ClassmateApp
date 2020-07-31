@@ -1,7 +1,9 @@
 import 'package:app_test/MainScreen.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/widgets/course_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'models/constant.dart';
 
@@ -19,6 +21,9 @@ class _MainMenuState extends State<MainMenu> {
   List<double> limits = [];
 
   bool isMenuOpen = false;
+  double xOffset = 0;
+  double yOffset = 0;
+  double scaleFactor = 1;
 
   @override
   void initState() {
@@ -57,170 +62,197 @@ class _MainMenuState extends State<MainMenu> {
 
     return SafeArea(
         child: Scaffold(
-            body: Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-        Color.fromRGBO(255, 65, 108, 1.0),
-        Color.fromRGBO(255, 75, 73, 1.0)
-      ])),
-      width: mediaQuery.width,
-      child: Stack(
-        children: <Widget>[
-          Scaffold(
-            backgroundColor: Colors.white,
-            appBar: buildAppBar(),
-            body: tabs[_currentIndex],
-            bottomNavigationBar: buildBottomNavigationBar(),
-          ),
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 1500),
-            left: isMenuOpen ? 0 : -sidebarSize + 20,
-            top: 0,
-            curve: Curves.elasticOut,
-            child: SizedBox(
-              width: sidebarSize,
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  if (details.localPosition.dx <= sidebarSize) {
-                    setState(() {
-                      _offset = details.localPosition;
-                    });
-                  }
+            body: GestureDetector(
+      //if menu close and slide to right-> menu opens
+      onPanUpdate: (details) {
+        if (details.delta.dx > 4) {
+          setMenuOpenState(true);
+        }
+      },
+      //if the menu opens and tap on the side->close menu
+      onTapDown: (details) {
+        if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
+          setMenuOpenState(false);
+        }
+      },
+      child: Container(
+        color: darkBlueColor,
+        width: mediaQuery.width,
+        child: Stack(
+          children: <Widget>[
+            AnimatedContainer(
+              transform: Matrix4.translationValues(xOffset, yOffset, 20)
+                ..scale(scaleFactor),
+              duration: Duration(microseconds: 250),
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                // appBar: buildAppBar(),
+                body: tabs[_currentIndex],
+                bottomNavigationBar: buildBottomNavigationBar(),
+              ),
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 1500),
+              left: isMenuOpen ? 0 : -sidebarSize + 0,
+              top: 0,
+              curve: Curves.elasticOut,
+              child: SizedBox(
+                width: sidebarSize,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    if (details.localPosition.dx <= sidebarSize) {
+                      setState(() {
+                        _offset = details.localPosition;
+                      });
+                    }
 
-                  if (details.localPosition.dx > sidebarSize - 20 &&
-                      details.delta.distanceSquared > 2) {
+                    if (details.localPosition.dx > sidebarSize - 20 &&
+                        details.delta.distanceSquared > 2) {
+                      setMenuOpenState(true);
+                    }
+                  },
+                  onPanEnd: (details) {
                     setState(() {
-                      isMenuOpen = true;
+                      _offset = Offset(0, 0);
                     });
-                  }
-                },
-                onPanEnd: (details) {
-                  setState(() {
-                    _offset = Offset(0, 0);
-                  });
-                },
-                child: Stack(
-                  children: <Widget>[
-                    CustomPaint(
-                      size: Size(sidebarSize, mediaQuery.height),
-                      painter: DrawerPainter(offset: _offset),
-                    ),
-                    Container(
-                      height: mediaQuery.height,
-                      width: sidebarSize,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Container(
-                            height: mediaQuery.height * 0.25,
-                            child: Center(
+                  },
+                  child: Stack(
+                    children: <Widget>[
+                      CustomPaint(
+                        size: Size(sidebarSize, mediaQuery.height),
+                        painter: DrawerPainter(offset: _offset),
+                      ),
+                      Container(
+                        height: mediaQuery.height,
+                        width: sidebarSize,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Container(
+                              height: mediaQuery.height * 0.25,
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    CircleAvatar(
+                                      radius: sidebarSize / 4.5,
+                                      backgroundImage: AssetImage(
+                                          "assets/images/olivia.jpg"),
+                                    ),
+                                    // Image.asset(
+                                    //   "assets/images/olivia.jpg",
+                                    //   width: sidebarSize / 2,
+                                    // ),
+                                    Text(
+                                      "RetroPortal Studio",
+                                      style: TextStyle(color: Colors.black45),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              thickness: 1,
+                            ),
+                            Container(
+                              key: globalKey,
+                              width: double.infinity,
+                              height: menuContainerHeight,
                               child: Column(
                                 children: <Widget>[
-                                  CircleAvatar(
-                                    radius: sidebarSize / 4.5,
-                                    backgroundImage:
-                                        AssetImage("assets/images/olivia.jpg"),
+                                  MyButton(
+                                    text: "Profile",
+                                    iconData: Icons.person,
+                                    textSize: getSize(0),
+                                    height: (menuContainerHeight) / 5,
                                   ),
-                                  // Image.asset(
-                                  //   "assets/images/olivia.jpg",
-                                  //   width: sidebarSize / 2,
-                                  // ),
-                                  Text(
-                                    "RetroPortal Studio",
-                                    style: TextStyle(color: Colors.black45),
+                                  MyButton(
+                                    text: "Friends",
+                                    iconData: Icons.contacts,
+                                    textSize: getSize(1),
+                                    height: (menuContainerHeight) / 5,
+                                  ),
+                                  MyButton(
+                                    text: "Notifications",
+                                    iconData: Icons.notifications,
+                                    textSize: getSize(2),
+                                    height: (mediaQuery.height / 2) / 5,
+                                  ),
+                                  MyButton(
+                                    text: "Settings",
+                                    iconData: Icons.settings,
+                                    textSize: getSize(3),
+                                    height: (menuContainerHeight) / 5,
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          Divider(
-                            thickness: 1,
-                          ),
-                          Container(
-                            key: globalKey,
-                            width: double.infinity,
-                            height: menuContainerHeight,
-                            child: Column(
-                              children: <Widget>[
-                                MyButton(
-                                  text: "Profile",
-                                  iconData: Icons.person,
-                                  textSize: getSize(0),
-                                  height: (menuContainerHeight) / 5,
-                                ),
-                                MyButton(
-                                  text: "Payments",
-                                  iconData: Icons.payment,
-                                  textSize: getSize(1),
-                                  height: (menuContainerHeight) / 5,
-                                ),
-                                MyButton(
-                                  text: "Notifications",
-                                  iconData: Icons.notifications,
-                                  textSize: getSize(2),
-                                  height: (mediaQuery.height / 2) / 5,
-                                ),
-                                MyButton(
-                                  text: "Settings",
-                                  iconData: Icons.settings,
-                                  textSize: getSize(3),
-                                  height: (menuContainerHeight) / 5,
-                                ),
-                                MyButton(
-                                  text: "My Files",
-                                  iconData: Icons.attach_file,
-                                  textSize: getSize(4),
-                                  height: (menuContainerHeight) / 5,
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    AnimatedPositioned(
-                      duration: Duration(milliseconds: 400),
-                      right: (isMenuOpen) ? 10 : sidebarSize,
-                      bottom: 30,
-                      child: IconButton(
-                        enableFeedback: true,
-                        icon: Icon(
-                          Icons.keyboard_backspace,
-                          color: Colors.black45,
-                          size: 30,
+                            )
+                          ],
                         ),
-                        onPressed: () {
-                          this.setState(() {
-                            isMenuOpen = false;
-                          });
-                        },
                       ),
-                    )
-                  ],
+                      AnimatedPositioned(
+                        duration: Duration(milliseconds: 400),
+                        right: (isMenuOpen) ? 10 : sidebarSize,
+                        bottom: 30,
+                        child: IconButton(
+                          enableFeedback: true,
+                          icon: Icon(
+                            Icons.keyboard_backspace,
+                            color: Colors.black45,
+                            size: 30,
+                          ),
+                          onPressed: () {
+                            setMenuOpenState(false);
+                          },
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     )));
   }
 
-  BottomNavigationBar buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: _currentIndex,
-      // backgroundColor: orengeColor,
-      type: BottomNavigationBarType.shifting,
-      items: [
-        BottomNavigationBarItem(
-            icon: Icon(Icons.class_),
-            title: Text('courses'),
-            backgroundColor: darkBlueColor),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.contacts),
-            title: Text('friends'),
-            backgroundColor: orengeColor),
+  void setMenuOpenState(bool state) {
+    isMenuOpen = state;
+    //open
+    if (state) {
+      this.setState(() {
+        xOffset = 280;
+        yOffset = 150;
+        scaleFactor = 0.6;
+      });
+    } else {
+      //close
+      this.setState(() {
+        xOffset = 0;
+        yOffset = 0;
+        scaleFactor = 1;
+      });
+    }
+  }
+
+  CurvedNavigationBar buildBottomNavigationBar() {
+    return CurvedNavigationBar(
+      color: orengeColor,
+      backgroundColor: Colors.white,
+      buttonBackgroundColor: Colors.white,
+      height: 50,
+      items: <Widget>[
+        Icon(
+          Icons.class_,
+          size: 19,
+          color: Colors.black,
+        ),
+        Icon(
+          Icons.contacts,
+          size: 19,
+          color: Colors.black,
+        ),
       ],
       onTap: (index) {
         setState(() {
@@ -230,18 +262,41 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
+  // BottomNavigationBar buildBottomNavigationBar() {
+  //   return BottomNavigationBar(
+  //     currentIndex: _currentIndex,
+  //     // backgroundColor: orengeColor,
+  //     type: BottomNavigationBarType.shifting,
+  //     items: [
+  //       BottomNavigationBarItem(
+  //           icon: Icon(Icons.class_),
+  //           title: Text('courses'),
+  //           backgroundColor: orengeColor),
+  //       BottomNavigationBarItem(
+  //           icon: Icon(Icons.contacts),
+  //           title: Text('friends'),
+  //           backgroundColor: orengeColor),
+  //     ],
+  //     onTap: (index) {
+  //       setState(() {
+  //         _currentIndex = index;
+  //       });
+  //     },
+  //   );
+  // }
+
   AppBar buildAppBar() {
     return AppBar(
       centerTitle: true,
       backgroundColor: orengeColor,
-      elevation: 0,
+      elevation: 5,
       leading: IconButton(
         iconSize: 35,
         color: darkBlueColor,
         padding: EdgeInsets.only(left: kDefaultPadding),
         icon: Icon(Icons.menu),
         onPressed: () {
-          //TODO
+          setMenuOpenState(true);
         },
       ),
       title: Container(

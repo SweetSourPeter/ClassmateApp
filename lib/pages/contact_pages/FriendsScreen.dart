@@ -61,7 +61,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
               // ),
               DraggableScrollableSheet(
                 initialChildSize: 0.9,
-                maxChildSize: 0.9,
+                maxChildSize: 0.91,
                 minChildSize: 0.07,
                 builder:
                     (BuildContext context, ScrollController scrolController) {
