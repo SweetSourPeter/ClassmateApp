@@ -16,6 +16,7 @@ class DatabaseMehods {
         .getDocuments();
   }
 
+  //update user in database
   uploadUserInfo(userMap, String userId) {
     // Firestore.instance.collection("users").add(userMap);
     Firestore.instance
