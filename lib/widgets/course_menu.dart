@@ -131,6 +131,16 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
               // setMenuOpenState(true);
             },
           ),
+          actions: <Widget>[
+            IconButton(
+                iconSize: 38,
+                color: darkBlueColor,
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  //TODO
+                })
+          ],
         ),
         SliverList(
             delegate: SliverChildListDelegate(course.map<Widget>((courses) {
