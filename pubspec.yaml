@@ -34,6 +34,7 @@ dependencies:
   flutter_svg: ^0.17.4 #Help us to use SVG in our app
   animations: ^1.1.0 #Help us to use animation easily also develop by flutter team
   provider: ^4.3.1 #Help keeping user status
+  curved_navigation_bar: ^0.3.3 #navigation curved bottom bar
 
 
 dev_dependencies:
