@@ -33,8 +33,6 @@ class _SignInState extends State<SignIn> {
               passwordTextEditingController.text)
           .then((val) {
         isLoading = false;
-        print(isLoading);
-        print("val value is " + "${val.userID.toString()}");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainScreen()));
       });

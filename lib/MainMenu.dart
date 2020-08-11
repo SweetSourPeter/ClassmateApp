@@ -65,9 +65,22 @@ class _MainMenuState extends State<MainMenu> {
             body: GestureDetector(
       //if menu close and slide to right-> menu opens
       onPanUpdate: (details) {
-        if (details.delta.dx > 4) {
+        if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
+          print('a');
           setMenuOpenState(true);
         }
+        // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
+        //   print('b');
+        //   setState(() {
+        //     _currentIndex = 1;
+        //   });
+        // }
+        // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
+        //   print('c');
+        //   setState(() {
+        //     _currentIndex = 0;
+        //   });
+        // }
       },
       //if the menu opens and tap on the side->close menu
       onTapDown: (details) {
@@ -242,6 +255,7 @@ class _MainMenuState extends State<MainMenu> {
       backgroundColor: Colors.white,
       buttonBackgroundColor: Colors.white,
       height: 50,
+      index: _currentIndex,
       items: <Widget>[
         Icon(
           Icons.class_,

@@ -1,3 +1,4 @@
+import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/models/message_model.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
@@ -72,7 +73,9 @@ class FavoriteContacts extends StatelessWidget {
               }).followedBy([
                 GestureDetector(
                   onTap: () {
-                    //TODO search for users
+                    //search for users
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SearchUsers()));
                   },
                   child: Container(
                       child: Column(
