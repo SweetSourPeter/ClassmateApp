@@ -1,6 +1,8 @@
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
@@ -14,8 +16,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<User>.value(
-      value: AuthMethods().user,
+    return MultiProvider(
+      providers: [
+        StreamProvider(create: (context) => AuthMethods().user), //Login user
+        ChangeNotifierProvider(
+            create: (context) => CourseProvider()), //course Provider
+      ],
       child: MaterialApp(
         home: Wrapper(),
       ),

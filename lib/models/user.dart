@@ -1,9 +1,10 @@
 class User {
   final String userID;
-  // String userImageUrl;
+  String userImageUrl;
+  String school;
   bool admin;
 
-  User({this.userID});
+  User({this.userID, bool admin});
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
@@ -18,5 +19,11 @@ class UserData {
   final String school;
   final String friendList;
   final List<String> courseList;
-  UserData({this.userID, this.userName, this.email, this.school, this.friendList, this.courseList});
+  UserData(
+      {this.userID,
+      this.userName,
+      this.email,
+      this.school,
+      this.friendList,
+      this.courseList});
 }

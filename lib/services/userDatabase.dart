@@ -2,14 +2,15 @@ import 'package:app_test/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserDatabaseService {
-
   final String userID;
-  UserDatabaseService({ this.userID });
+  UserDatabaseService({this.userID});
 
   // collection reference
-  final CollectionReference userCollection = Firestore.instance.collection('users');
+  final CollectionReference userCollection =
+      Firestore.instance.collection('users');
 
-  Future<void> updateUserData(String userName, String email, String school) async {
+  Future<void> updateUserData(
+      String userName, String email, String school) async {
     return await userCollection.document(userID).setData({
       'userName': userName,
       'email': email,
@@ -32,11 +33,10 @@ class UserDatabaseService {
   // user data from snapshots
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
-      userID: userID,
-      userName: snapshot.data['userName'],
-      email: snapshot.data['email'],
-      school: snapshot.data['school']
-    );
+        userID: userID,
+        userName: snapshot.data['userName'],
+        email: snapshot.data['email'],
+        school: snapshot.data['school']);
   }
 
   // // get brews stream
@@ -47,8 +47,9 @@ class UserDatabaseService {
 
   // get user doc stream
   Stream<UserData> get userData {
-    return userCollection.document(userID).snapshots()
-      .map(_userDataFromSnapshot);
+    return userCollection
+        .document(userID)
+        .snapshots()
+        .map(_userDataFromSnapshot);
   }
-
 }

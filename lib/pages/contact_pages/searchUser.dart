@@ -14,7 +14,6 @@ class _SearchUsersState extends State<SearchUsers> {
   bool haveUserSearched = false;
   // FocusNode _focus = new FocusNode();
   QuerySnapshot searchSnapshot;
-
   DatabaseMehods databaseMehods = new DatabaseMehods();
   // @override
   // void initState() {
@@ -32,12 +31,6 @@ class _SearchUsersState extends State<SearchUsers> {
   clearSearchTextInput() {
     searchTextEditingController.clear();
   }
-  // void showCanclChange() {
-  //   setState(() {
-  //     showCancel = !showCancel;
-  //     print(showCancel);
-  //   });
-  // }
 
   TextEditingController searchTextEditingController =
       new TextEditingController();
@@ -51,6 +44,11 @@ class _SearchUsersState extends State<SearchUsers> {
         });
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
+        }
+      },
+      onPanUpdate: (details) {
+        if (details.delta.dx > 4) {
+          Navigator.pop(context);
         }
       },
       child: Scaffold(
@@ -137,12 +135,20 @@ class _SearchUsersState extends State<SearchUsers> {
     );
   }
 
+  bool searchBegain = false;
   initiateSearch() async {
     var temp =
         await databaseMehods.getUsersByEmail(searchTextEditingController.text);
+    // if (temp == null) return;
     setState(() {
+      if (searchSnapshot.documents != null) {
+        if ((searchSnapshot.documents.length >= 1) &&
+            (searchTextEditingController.text.isNotEmpty)) {
+          searchBegain = true;
+        }
+      }
+
       searchSnapshot = temp;
-      print("HI");
       print(searchSnapshot.toString());
       print(searchSnapshot.documents.length);
       // print(searchTextEditingController.text);
@@ -150,8 +156,7 @@ class _SearchUsersState extends State<SearchUsers> {
   }
 
   Widget searchList() {
-    return (searchSnapshot.documents.length >= 1) &&
-            (searchTextEditingController.text.isNotEmpty)
+    return searchBegain
         ? ListView.builder(
             itemCount: searchSnapshot.documents.length,
             shrinkWrap: true, //when you have listview in column

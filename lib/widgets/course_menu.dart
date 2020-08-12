@@ -1,6 +1,12 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
+import 'package:app_test/pages/contact_pages/addCourse.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/providers/courseProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
+import 'package:provider/provider.dart';
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({
@@ -12,17 +18,10 @@ class CourseMainMenu extends StatefulWidget {
 }
 
 class _CourseMainMenuState extends State<CourseMainMenu> {
-  // @override
-  // void initState() {
-  //   // adjust the provider based on the image type
-  //   // for (int i = 0; i < 1; i++) {
-  //   precacheImage(AssetImage('assets/courseimage/econ_course_BG.jpg'), context);
-  //   // }
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
+    final course = Provider.of<List<CourseInfo>>(context);
+    final courseProvider = Provider.of<CourseProvider>(context);
     return
         // ReorderableListView(
         //   scrollDirection: Axis.vertical,
@@ -113,123 +112,184 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
         //   ]).toList(),
         //   onReorder: _onReorder,
         // );
-        CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          centerTitle: true,
-          title: Text("Course"),
-          backgroundColor: orengeColor,
-          elevation: 5,
-          floating: true,
-          leading: IconButton(
-            iconSize: 35,
-            color: darkBlueColor,
-            padding: EdgeInsets.only(left: kDefaultPadding),
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              //todo
-              // setMenuOpenState(true);
-            },
-          ),
-          actions: <Widget>[
-            IconButton(
-                iconSize: 38,
-                color: darkBlueColor,
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  //TODO
-                })
-          ],
-        ),
-        SliverList(
-            delegate: SliverChildListDelegate(course.map<Widget>((courses) {
-          return Container(
-              margin: const EdgeInsets.only(
-                  bottom: 16, top: 16, left: 25, right: 25),
-              height: 130,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                  // image: DecorationImage(
-                  //   image: courseImageAssets(courses.courseCategory),
-                  //   fit: BoxFit.cover,
-                  // ),
-                  gradient: LinearGradient(
-                    colors: [Colors.white, builtyPinkColor],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                        offset: Offset(4, 4))
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(24))),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 9,
-                      ),
-                      Text(courses.myCourseName,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 26,
-                              fontWeight: FontWeight.w500)),
-                      SizedBox(
-                        width: 9,
-                      ),
-                      Text('+' + courses.userNumbers.toString() + ' classmates',
-                          style: TextStyle(color: orengeColor, fontSize: 18)),
+        (course == null)
+            ? CircularProgressIndicator()
+            : CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    // expandedHeight: 150,
+                    // flexibleSpace: FlexibleSpaceBar(),
+                    centerTitle: true,
+                    title: Text("Course"),
+                    backgroundColor: orengeColor,
+                    elevation: 5,
+                    floating: true,
+                    leading: IconButton(
+                      iconSize: 35,
+                      color: darkBlueColor,
+                      padding: EdgeInsets.only(left: kDefaultPadding),
+                      icon: Icon(Icons.menu),
+                      onPressed: () {
+                        //todo
+                        // setMenuOpenState(true);
+                      },
+                    ),
+                    actions: <Widget>[
+                      IconButton(
+                          iconSize: 38,
+                          color: darkBlueColor,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            //TODO add course
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => addCourse()));
+                          })
                     ],
                   ),
+                  SliverList(
+                      delegate:
+                          SliverChildListDelegate(course.map<Widget>((courses) {
+                    return FocusedMenuHolder(
+                      blurSize: 4,
+                      // blurBackgroundColor: Colors.white60,
+                      menuWidth: MediaQuery.of(context).size.width * 0.60,
+                      menuBoxDecoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                      onPressed: () {
+                        //press on the item
+                      },
+                      menuItems: <FocusedMenuItem>[
+                        FocusedMenuItem(
+                            title: Text('Open'),
+                            trailingIcon: Icon(Icons.open_in_new),
+                            onPressed: () {}),
+                        FocusedMenuItem(
+                            title: Text('Share'),
+                            trailingIcon: Icon(Icons.share),
+                            onPressed: () {}),
+                        FocusedMenuItem(
+                            title: Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            trailingIcon: Icon(Icons.delete),
+                            backgroundColor: Colors.redAccent,
+                            onPressed: () {
+                              var a = courses.courseID;
+                              print('$a');
+                              courseProvider.removeCourse(
+                                  context, courses.courseID);
+                            }),
+                      ],
+                      child: Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 16, top: 16, left: 25, right: 25),
+                          height: 130,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                              // image: DecorationImage(
+                              //   image: courseImageAssets(courses.courseCategory),
+                              //   fit: BoxFit.cover,
+                              // ),
+                              gradient: LinearGradient(
+                                colors: [Colors.white, builtyPinkColor],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 8,
+                                    spreadRadius: 2,
+                                    offset: Offset(4, 4))
+                              ],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(24))),
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 9,
+                                  ),
+                                  Text(courses.myCourseName ?? '',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.w500)),
+                                  SizedBox(
+                                    width: 9,
+                                  ),
+                                  // Text('+' + courses.userNumbers.toString() + '',
+                                  //     style: TextStyle(
+                                  //         color: orengeColor, fontSize: 18)),
+                                ],
+                              ),
+                            ],
+                          )),
+                    );
+                  }).followedBy([
+                    GestureDetector(
+                      onTap: () {
+                        //TODO add course
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => addCourse()));
+                      },
+                      child: Container(
+                        // color: Colors.red,
+                        margin: const EdgeInsets.only(
+                            bottom: 16, top: 16, left: 25, right: 25),
+                        height: 120,
+                        // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [lightYellowColor, builtyPinkColor],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  spreadRadius: 2,
+                                  offset: Offset(4, 4))
+                            ],
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(24))),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10)),
+                            Image.asset(
+                              'assets/images/add_course.png',
+                              scale: 1.1,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text('Add Course',
+                                style: TextStyle(
+                                    color: lightBlueColor, fontSize: 28))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]).toList()))
                 ],
-              ));
-        }).followedBy([
-          Container(
-            // color: Colors.red,
-            margin:
-                const EdgeInsets.only(bottom: 16, top: 16, left: 25, right: 25),
-            height: 120,
-            // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [lightYellowColor, builtyPinkColor],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                      offset: Offset(4, 4))
-                ],
-                borderRadius: BorderRadius.all(Radius.circular(24))),
-            child: Column(
-              children: <Widget>[
-                Padding(padding: const EdgeInsets.only(top: 10, bottom: 10)),
-                Image.asset(
-                  'assets/images/add_course.png',
-                  scale: 1.1,
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text('Add Course',
-                    style: TextStyle(color: lightBlueColor, fontSize: 28))
-              ],
-            ),
-          ),
-        ]).toList()))
-      ],
-    );
+              );
     //       ListView(
     //     children:
     // course.map((courses) {
