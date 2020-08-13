@@ -16,10 +16,14 @@ class DatabaseMehods {
   }
 
   getUsersByEmail(String email) async {
+    print('$email');
     return await Firestore.instance
         .collection("users")
         .where("email", isEqualTo: email)
-        .getDocuments();
+        .getDocuments()
+        .catchError((e) {
+      print(e.toString());
+    });
   }
 
   //give suggestions not used, this might increase the cost
@@ -47,22 +51,31 @@ class DatabaseMehods {
 
   //--------The Course Database Methods---------
   Future<void> saveCourseToUser(CourseInfo course, String userID) {
+    print('saveCourseToUser');
+    print('$userID');
     //First update in the user level
     return Firestore.instance
         .collection('users')
         .document(userID)
         .collection('courses')
         .document(course.courseID)
-        .setData(course.toMapIntoUsers());
+        .setData(course.toMapIntoUsers())
+        .catchError((e) {
+      print(e.toString());
+    });
     //also update in the course level
   }
 
   Future<void> saveCourseToCourse(CourseInfo course) {
+    print('saveCourseToCourse');
     //First update in the user level
     return Firestore.instance
         .collection('courses')
         .document(course.courseID)
-        .setData(course.toMapIntoCourses(), merge: true);
+        .setData(course.toMapIntoCourses(), merge: true)
+        .catchError((e) {
+      print(e.toString());
+    });
     //also update in the course level
   }
 
@@ -73,7 +86,10 @@ class DatabaseMehods {
         .document(courseID)
         .collection('users')
         .document(user.userID)
-        .setData(user.toJson(), merge: true);
+        .setData(user.toJson(), merge: true)
+        .catchError((e) {
+      print(e.toString());
+    });
     //also update in the course level
   }
 
@@ -97,7 +113,10 @@ class DatabaseMehods {
         .document(userID)
         .collection('courses')
         .document(courseID)
-        .delete();
+        .delete()
+        .catchError((e) {
+      print(e.toString());
+    });
   }
 
   //delete course in course
@@ -107,7 +126,10 @@ class DatabaseMehods {
         .document(courseID)
         .collection('users')
         .document(userID)
-        .delete();
+        .delete()
+        .catchError((e) {
+      print(e.toString());
+    });
   }
   //----------School database methods----------//
   //create a new school

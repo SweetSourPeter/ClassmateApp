@@ -59,7 +59,7 @@ class _addCourseState extends State<addCourse> {
               SizedBox(
                 height: 10,
               ),
-              DropdownButton<String>(
+              DropdownButtonFormField<String>(
                 hint: Text("Select Term"),
                 value: currentSelectedValue,
                 isDense: true,
@@ -69,6 +69,9 @@ class _addCourseState extends State<addCourse> {
                   });
                   print(currentSelectedValue);
                   courseProvider.changeTerm(currentSelectedValue);
+                },
+                validator: (String val) {
+                  return (val == null) ? "Please select the term" : null;
                 },
                 items: deviceTypes.map((String value) {
                   return DropdownMenuItem<String>(

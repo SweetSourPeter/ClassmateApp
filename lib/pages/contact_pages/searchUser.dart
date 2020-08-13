@@ -149,7 +149,8 @@ class _SearchUsersState extends State<SearchUsers> {
       }
 
       searchSnapshot = temp;
-      print(searchSnapshot.toString());
+      print('aaaa');
+      print(searchSnapshot.toString() + 'aaaaaaaaaaa');
       print(searchSnapshot.documents.length);
       // print(searchTextEditingController.text);
     });

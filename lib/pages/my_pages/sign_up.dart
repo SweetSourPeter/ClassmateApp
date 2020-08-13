@@ -1,6 +1,6 @@
+import 'package:app_test/MainMenu.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/MainScreen.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -53,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
           print(isLoading);
           print("val value is " + "${val.userID.toString()}");
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainScreen()));
+              context, MaterialPageRoute(builder: (context) => MainMenu()));
         }
       });
     }

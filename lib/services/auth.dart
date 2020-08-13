@@ -14,6 +14,20 @@ class AuthMethods {
     return user != null ? User(userID: user.uid) : null;
   }
 
+  Future<bool> isUserLogged() async {
+    FirebaseUser firebaseUser = await getLoggedFirebaseUser();
+    if (firebaseUser != null) {
+      IdTokenResult tokenResult = await firebaseUser.getIdToken(refresh: true);
+      return tokenResult.token != null;
+    } else {
+      return false;
+    }
+  }
+
+  Future<FirebaseUser> getLoggedFirebaseUser() {
+    return _auth.currentUser();
+  }
+
   // auth change user stream
   Stream<User> get user {
     return _auth.onAuthStateChanged
