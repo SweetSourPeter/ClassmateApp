@@ -53,8 +53,7 @@ class _addCourseState extends State<addCourse> {
           child: ListView(
             children: <Widget>[
               //Hint Text
-              Text(
-                  'Cant find your class? Create your class and invite your classmates.'),
+              Text('Create your class and invite your classmates.'),
               //College
               SizedBox(
                 height: 10,

@@ -29,23 +29,40 @@ class CourseInfo {
     return {
       'myCourseName': myCourseName,
       'courseID': courseID,
-      'userNumbers': userNumbers,
     };
   }
 
   Map<String, dynamic> toMapIntoCourses() {
+    print('to map intocourse called');
     return {
-      'myCourseName': myCourseName,
-      'courseID': courseID,
+      'school': school,
+      'term': term,
+      'college': myCourseCollge,
       'department': department,
+      'myCourseName': myCourseName,
+      'section': section,
+      'courseID': courseID,
+
       'userNumbers': userNumbers,
+      //       school: user.school,
+      // term: term,
+      // myCourseCollge: myCourseCollege,
+      // department: courseDepartment,
+      // myCourseName: myCourseName,
+      // section: courseSection,
+      // userNumbers: 1,
+      // courseID: courseId,
     };
   }
 
   CourseInfo.fromFirestore(Map<String, dynamic> firestore)
-      : myCourseName = firestore['myCourseName'],
-        courseID = firestore['courseID'],
+      : school = firestore['school'],
+        term = firestore['term'],
+        myCourseCollge = firestore['college'],
         department = firestore['department'],
+        myCourseName = firestore['myCourseName'],
+        section = firestore['section'],
+        courseID = firestore['courseID'],
         userNumbers = firestore['userNumbers'];
 }
 

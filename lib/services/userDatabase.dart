@@ -33,10 +33,11 @@ class UserDatabaseService {
   // user data from snapshots
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
-        userID: userID,
-        userName: snapshot.data['userName'],
-        email: snapshot.data['email'],
-        school: snapshot.data['school']);
+      userID: userID,
+      userName: snapshot.data['userName'],
+      email: snapshot.data['email'],
+      school: snapshot.data['school'],
+    );
   }
 
   // // get brews stream

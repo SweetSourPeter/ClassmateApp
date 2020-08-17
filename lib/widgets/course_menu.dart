@@ -1,6 +1,8 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
+import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/addCourse.dart';
+import 'package:app_test/pages/contact_pages/searchGroup.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class CourseMainMenu extends StatefulWidget {
 class _CourseMainMenuState extends State<CourseMainMenu> {
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
     return
@@ -140,13 +143,20 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           color: darkBlueColor,
                           padding:
                               EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                          icon: Icon(Icons.add),
+                          icon: Icon(Icons.search),
                           onPressed: () {
                             //TODO add course
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => addCourse()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return Provider<UserData>.value(
+                                    value: userdata,
+                                    child: SearchGroup(),
+                                  );
+                                },
+                              ),
+                            );
                           })
                     ],
                   ),
@@ -241,11 +251,22 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                   }).followedBy([
                     GestureDetector(
                       onTap: () {
+                        print(userdata.school);
                         //TODO add course
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => addCourse()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Provider<UserData>.value(
+                                value: userdata,
+                                child: SearchGroup(),
+                              );
+                            },
+                          ),
+                        );
+
+                        // MaterialPageRoute(
+                        //     builder: (context) => SearchGroup()));
                       },
                       child: Container(
                         // color: Colors.red,

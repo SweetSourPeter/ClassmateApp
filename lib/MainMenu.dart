@@ -1,6 +1,8 @@
 import 'package:app_test/MainScreen.dart';
+import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/course_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -13,6 +15,7 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+  AuthMethods authMethods = new AuthMethods();
   int _currentIndex = 0;
   final tabs = [CourseMainMenu(), FriendsScreen()];
   final tabTitle = ['Course', 'Friends'];
@@ -27,10 +30,10 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   void initState() {
+    super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
     WidgetsBinding.instance.addPostFrameCallback(getPosition);
-    super.initState();
   }
 
   getPosition(duration) {
@@ -66,7 +69,6 @@ class _MainMenuState extends State<MainMenu> {
       //if menu close and slide to right-> menu opens
       onPanUpdate: (details) {
         if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
-          print('a');
           setMenuOpenState(true);
         }
         // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
@@ -157,7 +159,7 @@ class _MainMenuState extends State<MainMenu> {
                                     //   width: sidebarSize / 2,
                                     // ),
                                     Text(
-                                      "RetroPortal Studio",
+                                      "Jane Studio",
                                       style: TextStyle(color: Colors.black45),
                                     ),
                                   ],
@@ -177,25 +179,39 @@ class _MainMenuState extends State<MainMenu> {
                                     text: "Profile",
                                     iconData: Icons.person,
                                     textSize: getSize(0),
-                                    height: (menuContainerHeight) / 5,
+                                    height: (menuContainerHeight) / 6,
                                   ),
                                   MyButton(
                                     text: "Friends",
                                     iconData: Icons.contacts,
                                     textSize: getSize(1),
-                                    height: (menuContainerHeight) / 5,
+                                    height: (menuContainerHeight) / 6,
                                   ),
                                   MyButton(
                                     text: "Notifications",
                                     iconData: Icons.notifications,
                                     textSize: getSize(2),
-                                    height: (mediaQuery.height / 2) / 5,
+                                    height: (mediaQuery.height / 2) / 6,
                                   ),
                                   MyButton(
                                     text: "Settings",
                                     iconData: Icons.settings,
                                     textSize: getSize(3),
-                                    height: (menuContainerHeight) / 5,
+                                    height: (menuContainerHeight) / 6,
+                                  ),
+                                  MyButton(
+                                    onTap: () {
+                                      authMethods.signOut();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Wrapper()),
+                                      );
+                                    },
+                                    text: "Log Out",
+                                    iconData: Icons.offline_bolt,
+                                    textSize: getSize(3),
+                                    height: (menuContainerHeight) / 6,
                                   ),
                                 ],
                               ),
@@ -357,8 +373,9 @@ class MyButton extends StatelessWidget {
   final IconData iconData;
   final double textSize;
   final double height;
+  final GestureTapCallback onTap;
 
-  MyButton({this.text, this.iconData, this.textSize, this.height});
+  MyButton({this.text, this.iconData, this.textSize, this.height, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -382,7 +399,9 @@ class MyButton extends StatelessWidget {
           ),
         ],
       ),
-      onPressed: () {},
+      onPressed: () {
+        onTap();
+      },
     );
   }
 }

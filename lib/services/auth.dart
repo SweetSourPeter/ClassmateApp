@@ -49,7 +49,8 @@ class AuthMethods {
   }
 
   // sign up with email and password
-  Future signUpWithEmailAndPassword(String email, String password) async {
+  Future signUpWithEmailAndPassword(
+      String email, String password, String university) async {
     bool emailExist = false;
     FirebaseUser firebaseUser;
     try {
@@ -57,7 +58,7 @@ class AuthMethods {
           email: email, password: password);
       FirebaseUser firebaseUser = result.user;
       await UserDatabaseService(userID: firebaseUser.uid)
-          .updateUserData(email, email, 'University');
+          .updateUserData(email, email, university);
       print(firebaseUser.email);
     } catch (e) {
       if (e is PlatformException) {

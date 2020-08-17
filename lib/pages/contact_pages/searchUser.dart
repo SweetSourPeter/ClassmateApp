@@ -76,61 +76,64 @@ class _SearchUsersState extends State<SearchUsers> {
   Container buildContainerBody() {
     return Container(
       color: builtyPinkColor,
-      child: Column(
-        children: <Widget>[
-          Container(
-            color: Color(0x54FFFFFF),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                    child: Focus(
-                  // onFocusChange: (focus) => showCanclChange(),
-                  child: TextField(
-                    textInputAction: TextInputAction.go,
-                    onSubmitted: (value) {
-                      initiateSearch();
-                    },
-                    // focusNode: _focus,
-                    controller: searchTextEditingController,
-                    textAlign: TextAlign.center,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      // prefixIcon: Icon(Icons.search, color: Colors.grey),
-                      hintText: 'Search User with email...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        // borderSide: BorderSide.none
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: <Widget>[
+            Container(
+              color: Color(0x54FFFFFF),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Focus(
+                    // onFocusChange: (focus) => showCanclChange(),
+                    child: TextField(
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: (value) {
+                        initiateSearch();
+                      },
+                      // focusNode: _focus,
+                      controller: searchTextEditingController,
+                      textAlign: TextAlign.center,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        // prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        hintText: 'Search User with email...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          // borderSide: BorderSide.none
+                        ),
+                        contentPadding: EdgeInsets.zero,
+                        hintStyle: TextStyle(color: Colors.grey), // KEY PROP
                       ),
-                      contentPadding: EdgeInsets.zero,
-                      hintStyle: TextStyle(color: Colors.grey), // KEY PROP
                     ),
-                  ),
-                )),
-                // showCancel
-                searchTextEditingController.text.isEmpty
-                    ? Container()
-                    :
-                    // Container(
-                    // height: 40,
-                    // width: 40,
-                    // padding: EdgeInsets.only(left: kDefaultPadding),
-                    // child:
-                    IconButton(
-                        icon: Icon(Icons.cancel),
-                        onPressed: () {
-                          // initiateSearch();
-                          clearSearchTextInput();
-                        })
-                // )
-                // : Container(),
-              ],
+                  )),
+                  // showCancel
+                  searchTextEditingController.text.isEmpty
+                      ? Container()
+                      :
+                      // Container(
+                      // height: 40,
+                      // width: 40,
+                      // padding: EdgeInsets.only(left: kDefaultPadding),
+                      // child:
+                      IconButton(
+                          icon: Icon(Icons.cancel),
+                          onPressed: () {
+                            // initiateSearch();
+                            clearSearchTextInput();
+                          })
+                  // )
+                  // : Container(),
+                ],
+              ),
             ),
-          ),
-          searchList(),
-        ],
+            searchList(),
+          ],
+        ),
       ),
     );
   }
@@ -141,6 +144,7 @@ class _SearchUsersState extends State<SearchUsers> {
         await databaseMehods.getUsersByEmail(searchTextEditingController.text);
     // if (temp == null) return;
     setState(() {
+      searchSnapshot = temp;
       if (searchSnapshot.documents != null) {
         if ((searchSnapshot.documents.length >= 1) &&
             (searchTextEditingController.text.isNotEmpty)) {
@@ -148,7 +152,6 @@ class _SearchUsersState extends State<SearchUsers> {
         }
       }
 
-      searchSnapshot = temp;
       print('aaaa');
       print(searchSnapshot.toString() + 'aaaaaaaaaaa');
       print(searchSnapshot.documents.length);
@@ -157,15 +160,16 @@ class _SearchUsersState extends State<SearchUsers> {
   }
 
   Widget searchList() {
-    return searchBegain
+    return searchBegain && searchTextEditingController.text.isNotEmpty
         ? ListView.builder(
+            scrollDirection: Axis.vertical,
             itemCount: searchSnapshot.documents.length,
             shrinkWrap: true, //when you have listview in column
             itemBuilder: (context, index) {
               return SearchTile(
                 userName:
                     // "peter",
-                    searchSnapshot.documents[index].data['name'],
+                    searchSnapshot.documents[index].data['userName'],
                 userEmail:
                     // "731957665@qq.com",
                     searchSnapshot.documents[index].data['email'],
@@ -208,11 +212,11 @@ class SearchTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                userName,
+                userName ?? '',
                 style: simpleTextStyle(),
               ),
               Text(
-                userEmail,
+                userEmail ?? '',
                 style: simpleTextStyle(),
               ),
             ],
