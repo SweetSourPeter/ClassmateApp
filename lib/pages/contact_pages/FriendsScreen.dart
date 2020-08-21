@@ -60,8 +60,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
               //   child: CategorySelector(),
               // ),
               DraggableScrollableSheet(
-                initialChildSize: 0.9,
-                maxChildSize: 0.91,
+                initialChildSize: 1,
+                maxChildSize: 1,
                 minChildSize: 0.07,
                 builder:
                     (BuildContext context, ScrollController scrolController) {
@@ -78,117 +78,151 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         topLeft: Radius.circular(30.0),
                         topRight: Radius.circular(30.0),
                       ),
-                      child: ListView.builder(
-                        controller: scrolController,
-                        itemCount: chats.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final Message chat = chats[index];
-                          return GestureDetector(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ChatScreen(
-                                  user: chat.sender,
-                                ),
-                              ),
-                            ),
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: 5.0, bottom: 5.0, right: 20.0),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 10.0),
-                              decoration: BoxDecoration(
-                                color: chat.unread
-                                    ? Color(0xFFFFEFEE)
-                                    : Colors.white,
+                      child: Column(
+                        children: <Widget>[
+                          //bar on the top
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(10, 10, 8, 5),
+                              child: ClipRRect(
                                 borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(20.0),
-                                  bottomRight: Radius.circular(20.0),
+                                  topLeft: Radius.circular(30.0),
+                                  topRight: Radius.circular(30.0),
+                                  bottomLeft: Radius.circular(30.0),
+                                  bottomRight: Radius.circular(30.0),
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      CircleAvatar(
-                                        radius: 35.0,
-                                        backgroundImage:
-                                            AssetImage(chat.sender.imageUrl),
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            chat.sender.name,
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 15.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.0),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.45,
-                                            child: Text(
-                                              chat.text,
-                                              style: TextStyle(
-                                                color: Colors.blueGrey,
-                                                fontSize: 15.0,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                child: SizedBox(
+                                  width: 55.0,
+                                  height: 5.0,
+                                  child: const DecoratedBox(
+                                    decoration: const BoxDecoration(
+                                        color: lightOrangeColor),
                                   ),
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        chat.time,
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                              )
+                              // child: Container(
+                              //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+                              //   color: Colors.black,
+                              // )
+                              ),
+                          Expanded(
+                            child: ListView.builder(
+                              controller: scrolController,
+                              itemCount: chats.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final Message chat = chats[index];
+                                return GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ChatScreen(
+                                        user: chat.sender,
                                       ),
-                                      SizedBox(height: 5.0),
-                                      chat.unread
-                                          ? Container(
-                                              width: 40.0,
-                                              height: 20.0,
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(30.0),
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                'NEW',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12.0,
-                                                  fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        top: 5.0, bottom: 5.0, right: 20.0),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20.0, vertical: 10.0),
+                                    decoration: BoxDecoration(
+                                      color: chat.unread
+                                          ? Color(0xFFFFEFEE)
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(20.0),
+                                        bottomRight: Radius.circular(20.0),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              radius: 35.0,
+                                              backgroundImage: AssetImage(
+                                                  chat.sender.imageUrl),
+                                            ),
+                                            SizedBox(width: 10.0),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  chat.sender.name,
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
+                                                SizedBox(height: 5.0),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.45,
+                                                  child: Text(
+                                                    chat.text,
+                                                    style: TextStyle(
+                                                      color: Colors.blueGrey,
+                                                      fontSize: 15.0,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: <Widget>[
+                                            Text(
+                                              chat.time,
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            )
-                                          : Text(''),
-                                    ],
+                                            ),
+                                            SizedBox(height: 5.0),
+                                            chat.unread
+                                                ? Container(
+                                                    width: 40.0,
+                                                    height: 20.0,
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30.0),
+                                                    ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      'NEW',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Text(''),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     ),
                   );

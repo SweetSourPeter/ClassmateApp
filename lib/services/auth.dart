@@ -14,6 +14,20 @@ class AuthMethods {
     return user != null ? User(userID: user.uid) : null;
   }
 
+  Future<bool> isUserLogged() async {
+    FirebaseUser firebaseUser = await getLoggedFirebaseUser();
+    if (firebaseUser != null) {
+      IdTokenResult tokenResult = await firebaseUser.getIdToken(refresh: true);
+      return tokenResult.token != null;
+    } else {
+      return false;
+    }
+  }
+
+  Future<FirebaseUser> getLoggedFirebaseUser() {
+    return _auth.currentUser();
+  }
+
   // auth change user stream
   Stream<User> get user {
     return _auth.onAuthStateChanged
@@ -35,7 +49,8 @@ class AuthMethods {
   }
 
   // sign up with email and password
-  Future signUpWithEmailAndPassword(String email, String password) async {
+  Future signUpWithEmailAndPassword(
+      String email, String password, String university) async {
     bool emailExist = false;
     FirebaseUser firebaseUser;
     try {
@@ -43,7 +58,7 @@ class AuthMethods {
           email: email, password: password);
       FirebaseUser firebaseUser = result.user;
       await UserDatabaseService(userID: firebaseUser.uid)
-          .updateUserData(email, email, 'University');
+          .updateUserData(email, email, university);
       print(firebaseUser.email);
     } catch (e) {
       if (e is PlatformException) {

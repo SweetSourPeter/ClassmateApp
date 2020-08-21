@@ -40,7 +40,7 @@ class FavoriteContacts extends StatelessWidget {
                 // height: 120.0,
                 child: GridView.count(
               scrollDirection: Axis.vertical,
-              crossAxisCount: 4,
+              crossAxisCount: 5,
               children: List.generate(favorites.length, (index) {
                 return GestureDetector(
                   onTap: () => Navigator.push(
@@ -55,7 +55,7 @@ class FavoriteContacts extends StatelessWidget {
                       child: Column(
                     children: <Widget>[
                       CircleAvatar(
-                        radius: 35.0,
+                        radius: 30.0,
                         backgroundImage: AssetImage(favorites[index].imageUrl),
                       ),
                       SizedBox(height: 6.0),
@@ -63,7 +63,7 @@ class FavoriteContacts extends StatelessWidget {
                         favorites[index].name,
                         style: TextStyle(
                           color: Colors.blueGrey,
-                          fontSize: 16.0,
+                          fontSize: 10.0,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -81,7 +81,7 @@ class FavoriteContacts extends StatelessWidget {
                       child: Column(
                     children: <Widget>[
                       CircleAvatar(
-                        radius: 35.0,
+                        radius: 30.0,
                         backgroundImage:
                             AssetImage('assets/images/add_course.png'),
                       ),
@@ -90,7 +90,7 @@ class FavoriteContacts extends StatelessWidget {
                         'add friends',
                         style: TextStyle(
                           color: Colors.blueGrey,
-                          fontSize: 16.0,
+                          fontSize: 10.0,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

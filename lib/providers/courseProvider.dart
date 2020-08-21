@@ -40,7 +40,7 @@ class CourseProvider with ChangeNotifier {
   }
 
   changeCourseCollege(String value) {
-    _myCourseSchool = value;
+    _myCourseCollege = value;
     notifyListeners();
   }
 
@@ -64,9 +64,10 @@ class CourseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //save this course into firestore
+  //save this course into firestore for both user and course collection
   saveCourse(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
+    final userdata = Provider.of<UserData>(context, listen: false);
     String userId = user.userID;
     // String courseId = user.school.toUpperCase() +
     //     '_' +
@@ -78,25 +79,29 @@ class CourseProvider with ChangeNotifier {
     //save to Users Document
     String courseId = uuid.v4();
     var newCourseToUser = CourseInfo(
-      myCourseName: myCourseName,
+      myCourseName: myCourseName.toUpperCase(),
       courseID: courseId,
     );
     databaseMehods.saveCourseToUser(newCourseToUser, userId);
     //save to Courses Document
     var newCourseToCourse = CourseInfo(
-      myCourseName: myCourseName,
-      courseID: courseId,
-      department: courseDepartment,
+      school: userdata.school.toUpperCase(),
+      term: term.toUpperCase(),
+      myCourseCollge: myCourseCollege.toUpperCase(),
+      department: courseDepartment.toUpperCase(),
+      myCourseName: myCourseName.toUpperCase(),
+      section: courseSection.toUpperCase(),
       userNumbers: 1,
+      courseID: courseId,
     );
     databaseMehods.saveCourseToCourse(newCourseToCourse);
-    var newUser = User(userID: userId, admin: true);
-    databaseMehods.addUserToCourse(courseId, newUser);
+    // var newUser = User(userID: userId, admin: true);
+    databaseMehods.addUserToCourse(courseId, user);
   }
 
   removeCourse(BuildContext context, String courseID) {
     final user = Provider.of<User>(context, listen: false);
     databaseMehods.removeCourseFromUser(courseID, user.userID);
-    databaseMehods.removeCourseFromCourse(courseID, user.userID);
+    databaseMehods.removeUserFromCourse(courseID, user.userID);
   }
 }

@@ -1,6 +1,6 @@
+import 'package:app_test/MainMenu.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/MainScreen.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -9,6 +9,11 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  var _selectedSchool;
+  List<String> _schools = [
+    "Boston University",
+    "pennsylvania state university",
+  ];
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool emailExist = false;
@@ -16,30 +21,28 @@ class _SignUpPageState extends State<SignUpPage> {
   AuthMethods authMethods = new AuthMethods();
   DatabaseMehods databaseMehods = new DatabaseMehods();
 
-  TextEditingController usernameTextEditingController =
-      new TextEditingController();
+  // TextEditingController usernameTextEditingController =
+  //     new TextEditingController();
   TextEditingController emailTextEditingController =
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
-
   signMeUp() {
     if (formKey.currentState.validate()) {
       setState(() {
         isLoading = true;
       });
 
-      Map<String, String> userInfoMap = {
-        "name": usernameTextEditingController.text,
-        "email": emailTextEditingController.text,
-      };
+      // Map<String, String> userInfoMap = {
+      //   "name": emailTextEditingController.text,
+      //   "email": emailTextEditingController.text,
+      //   "school": _selectedSchool,
+      // };
 
       authMethods
           .signUpWithEmailAndPassword(emailTextEditingController.text,
-              passwordTextEditingController.text)
+              passwordTextEditingController.text, _selectedSchool)
           .then((val) {
-        // print("${val.userID}");
-        print("Hi");
         if (val == null) {
           isLoading = false;
           //check if the email already exist
@@ -47,13 +50,12 @@ class _SignUpPageState extends State<SignUpPage> {
             emailExist = true;
           });
         } else {
-          databaseMehods.uploadUserInfo(userInfoMap, val.userID);
+          // databaseMehods.uploadUserInfo(userInfoMap, val.userID);
 
           isLoading = false;
-          print(isLoading);
-          print("val value is " + "${val.userID.toString()}");
+          print("User value is " + "${val.user.uid.toString()}");
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainScreen()));
+              context, MaterialPageRoute(builder: (context) => MainMenu()));
         }
       });
     }
@@ -192,19 +194,52 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(
                     height: 15,
                   ),
-                  TextFormField(
-                    validator: (val) {
-                      if (val.isEmpty) return "The name can't be empty";
-                      if (val.length < 4)
-                        return "The name length must be greater than 4";
+                  DropdownButtonFormField<String>(
+                    iconEnabledColor: Colors.white,
+                    value: _selectedSchool,
+                    items: _schools.map<DropdownMenuItem<String>>((value) {
+                      return DropdownMenuItem(
+                        child: Text(value),
+                        value: value,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSchool = value;
+                      });
                     },
-                    controller: usernameTextEditingController,
                     decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        labelText: 'UserName',
-                        labelStyle: TextStyle(color: Colors.white)),
+                      labelText: 'School',
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      labelStyle: TextStyle(color: Colors.white),
+                    ),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return "School is required";
+                      }
+                      return null;
+                    },
                   ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  // TextFormField(
+                  //   validator: (val) {
+                  //     if (val.isEmpty)
+                  //       return "The name can't be empty";
+                  //     else if (val.length < 4)
+                  //       return "The name length must be greater than 4";
+                  //     else
+                  //       return null;
+                  //   },
+                  //   controller: usernameTextEditingController,
+                  //   decoration: InputDecoration(
+                  //       enabledBorder: UnderlineInputBorder(
+                  //           borderSide: BorderSide(color: Colors.white)),
+                  //       labelText: 'UserName',
+                  //       labelStyle: TextStyle(color: Colors.white)),
+                  // ),
                   SizedBox(
                     height: 15,
                   ),
