@@ -26,7 +26,8 @@ class _SearchGroupState extends State<SearchGroup> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        backgroundColor: orengeColor,
+        elevation: 0.0,
+        backgroundColor: Colors.white,
         leading: Container(
           padding: EdgeInsets.only(left: kDefaultPadding),
           child: GestureDetector(
@@ -35,7 +36,7 @@ class _SearchGroupState extends State<SearchGroup> {
             },
             child: IconButton(
               icon: Icon(Icons.arrow_back_ios),
-              color: Colors.white,
+              color: Colors.black,
               onPressed: () {
                 //return to previous page;
 
@@ -44,8 +45,8 @@ class _SearchGroupState extends State<SearchGroup> {
             ),
           ),
         ),
-        title: Text('Search Course'),
-        centerTitle: true,
+        // title: Text('Search Course'),
+        // centerTitle: true,
       ),
       body: _stateBody(context, searchSnapshot),
     );
@@ -69,67 +70,53 @@ class _SearchGroupState extends State<SearchGroup> {
     ];
 
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 25, 20, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
       child: Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                // Flexible(
-                //   child: DropdownButtonFormField<String>(
-                //     value: _selectedYear,
-                //     items: _years.map<DropdownMenuItem<String>>((value) {
-                //       return DropdownMenuItem(
-                //         child: Text(value),
-                //         value: value,
-                //       );
-                //     }).toList(),
-                //     onChanged: (value) {
-                //       setState(() {
-                //         _selectedYear = value;
-                //       });
-                //     },
-                //     decoration: InputDecoration(
-                //       labelText: 'Year',
-                //     ),
-                //     validator: (String value) {
-                //       if (value == "") {
-                //         return "Year is required";
-                //       }
-                //       return null;
-                //     },
-                //   ),
-                // ),
-                // SizedBox(
-                //   width: 25,
-                // ),
-                Flexible(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedSemester,
-                    items: _semesters.map<DropdownMenuItem<String>>((value) {
-                      return DropdownMenuItem(
-                        child: Text(value),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSemester = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Semester',
-                    ),
-                    validator: (String value) {
-                      if (value == "") {
-                        return "Semester is required";
-                      }
-                      return null;
-                    },
+            //Title
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: 0, top: 0, bottom: 0),
+                child: Container(
+                  // color: orengeColor,
+                  child: Text(
+                    'Search Course',
+                    textAlign: TextAlign.left,
+                    style: largeTitleTextStyle(),
                   ),
                 ),
-              ],
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Flexible(
+              child: DropdownButtonFormField<String>(
+                value: _selectedSemester,
+                items: _semesters.map<DropdownMenuItem<String>>((value) {
+                  return DropdownMenuItem(
+                    child: Text(value),
+                    value: value,
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedSemester = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Semester',
+                ),
+                validator: (String value) {
+                  if (value == "") {
+                    return "Semester is required";
+                  }
+                  return null;
+                },
+              ),
             ),
             SizedBox(
               height: 10,
@@ -209,13 +196,16 @@ class _SearchGroupState extends State<SearchGroup> {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 30,
             ),
             SizedBox(
               width: double.infinity,
-              child: RaisedButton(
-                color: orengeColor,
-                child: Text("Search"),
+              child: RaisedGradientButton(
+                width: 100,
+                height: 40,
+                gradient: LinearGradient(
+                  colors: <Color>[Colors.red, orengeColor],
+                ),
                 onPressed: () {
                   if (!_formKey.currentState.validate()) {
                     return;
@@ -224,9 +214,30 @@ class _SearchGroupState extends State<SearchGroup> {
                   }
                   _formKey.currentState.save();
                 },
+                //TODO
+                child: Text(
+                  'Search',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
               ),
+
+              // RaisedButton(
+              //   color: orengeColor,
+              //   child: Text("Search"),
+              //   onPressed: () {
+              //     if (!_formKey.currentState.validate()) {
+              //       return;
+              //     } else {
+              //       initiateSearch(_selectedSemester);
+              //     }
+              //     _formKey.currentState.save();
+              //   },
+              // ),
             ),
-            searchList(),
+            searchList(context),
           ],
         ),
       ),
@@ -262,7 +273,7 @@ class _SearchGroupState extends State<SearchGroup> {
     });
   }
 
-  Widget searchList() {
+  Widget searchList(context) {
     // var count = searchSnapshot.documents.length;
     // print('index length is ' + '$count');
     return searchBegain
@@ -270,7 +281,7 @@ class _SearchGroupState extends State<SearchGroup> {
             itemCount: searchSnapshot.documents.length,
             shrinkWrap: true, //when you have listview in column
             itemBuilder: (context, index) {
-              return SearchTile(
+              return CourseSearchTile(
                 courseName:
                     // "peter",
                     searchSnapshot.documents[index].data['myCourseName'],
@@ -283,10 +294,10 @@ class _SearchGroupState extends State<SearchGroup> {
   }
 }
 
-class SearchTile extends StatelessWidget {
+class CourseSearchTile extends StatelessWidget {
   final String courseName;
   final String section;
-  SearchTile({this.courseName, this.section});
+  CourseSearchTile({this.courseName, this.section});
 
   @override
   Widget build(BuildContext context) {

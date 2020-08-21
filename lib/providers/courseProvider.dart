@@ -64,7 +64,7 @@ class CourseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //save this course into firestore
+  //save this course into firestore for both user and course collection
   saveCourse(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
     final userdata = Provider.of<UserData>(context, listen: false);

@@ -5,6 +5,7 @@ import 'package:app_test/pages/contact_pages/addCourse.dart';
 import 'package:app_test/pages/contact_pages/searchGroup.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -122,10 +123,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                   SliverAppBar(
                     // expandedHeight: 150,
                     // flexibleSpace: FlexibleSpaceBar(),
-                    centerTitle: true,
-                    title: Text("Course"),
-                    backgroundColor: orengeColor,
-                    elevation: 5,
+                    // centerTitle: true,
+                    // title: Text(
+                    //   "My Courses",
+                    //   style: largeTitleTextStyle(),
+                    // ),
+                    backgroundColor: Colors.white,
+                    elevation: 0.0,
                     floating: true,
                     leading: IconButton(
                       iconSize: 35,
@@ -159,6 +163,27 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                             );
                           })
                     ],
+                  ),
+                  SliverToBoxAdapter(
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 33, top: 5),
+                        child: Container(
+                          // color: orengeColor,
+                          child: Text(
+                            'My Courses',
+                            textAlign: TextAlign.left,
+                            style: largeTitleTextStyle(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 15,
+                    ),
                   ),
                   SliverList(
                       delegate:

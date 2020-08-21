@@ -1,6 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,29 +38,53 @@ class _addCourseState extends State<addCourse> {
               Navigator.pop(context);
             },
             child: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
+              Icons.close,
+              color: Colors.black,
             ),
           ),
         ),
-        centerTitle: true,
-        backgroundColor: orengeColor,
-        title: Text("Create Course"),
+        // centerTitle: true,
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        // title: Text("Create Course"),
       ),
       body: Form(
         key: formKey,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
           child: ListView(
             children: <Widget>[
               //Hint Text
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 0, top: 0, bottom: 0),
+                  child: Container(
+                    // color: orengeColor,
+                    child: Text(
+                      'Create Course',
+                      textAlign: TextAlign.left,
+                      style: largeTitleTextStyle(),
+                    ),
+                  ),
+                ),
+              ),
               Text('Create your class and invite your classmates.'),
               //College
               SizedBox(
-                height: 10,
+                height: 30,
               ),
               DropdownButtonFormField<String>(
-                hint: Text("Select Term"),
+                decoration: buildInputDecorationPinky(
+                  true,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
+                  ),
+                  'Select Term',
+                  20,
+                ),
+                // hint: Text("Select Term"),
                 value: currentSelectedValue,
                 isDense: true,
                 onChanged: (newValue) {
@@ -79,46 +104,94 @@ class _addCourseState extends State<addCourse> {
                   );
                 }).toList(),
               ),
+              SizedBox(
+                height: 15,
+              ),
               TextFormField(
                 onChanged: (value) => courseProvider.changeCourseCollege(value),
                 controller: collegeTextEditingController,
-                decoration: InputDecoration(hintText: 'College, ex:CAS'),
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
+                  ),
+                  'College, ex:CAS',
+                  20,
+                ),
+                // InputDecoration(hintText: 'College, ex:CAS'),
                 validator: (val) {
                   return val.length > 1
                       ? null
                       : "Please Enter a correct College";
                 },
               ),
+              SizedBox(
+                height: 15,
+              ),
               //Department
               TextFormField(
                 onChanged: (value) =>
                     courseProvider.changeCourseDepartment(value),
                 controller: departmentTextEditingController,
-                decoration: InputDecoration(
-                  hintText: 'Department, ex:CS',
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
+                  ),
+                  'Department, ex:CS',
+                  20,
                 ),
+                // InputDecoration(
+                //   hintText: 'Department, ex:CS',
+                // ),
                 validator: (val) {
                   return val.length > 1
                       ? null
                       : "Please Enter a correct Department";
                 },
               ),
+              SizedBox(
+                height: 15,
+              ),
               //Course Name
               TextFormField(
                 onChanged: (value) => courseProvider.changeCourseName(value),
                 controller: courseNameTextEditingController,
-                decoration: InputDecoration(hintText: 'CourseName, ex:CS111'),
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
+                  ),
+                  'CourseName, ex:CS111',
+                  20,
+                ),
+                // InputDecoration(hintText: 'CourseName, ex:CS111'),
                 validator: (val) {
                   return val.length > 3
                       ? null
                       : "Please Enter a correct Course Name";
                 },
               ),
+              SizedBox(
+                height: 15,
+              ),
               //Section
               TextFormField(
                 onChanged: (value) => courseProvider.changeCourseSection(value),
                 controller: sectionTextEditingController,
-                decoration: InputDecoration(hintText: 'Section, ex:A1'),
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
+                  ),
+                  'Section, ex:A1',
+                  20,
+                ),
+                // InputDecoration(hintText: 'Section, ex:A1'),
                 validator: (val) {
                   return val.length > 1
                       ? null
@@ -126,11 +199,14 @@ class _addCourseState extends State<addCourse> {
                 },
               ),
               SizedBox(
-                height: 20,
+                height: 40,
               ),
-              RaisedButton(
-                color: lightOrangeColor,
-                child: Text('Create'),
+              RaisedGradientButton(
+                width: 100,
+                height: 40,
+                gradient: LinearGradient(
+                  colors: <Color>[Colors.red, orengeColor],
+                ),
                 onPressed: () {
                   //TODO create class in database
                   if (formKey.currentState.validate()) {
@@ -138,7 +214,27 @@ class _addCourseState extends State<addCourse> {
                     Navigator.pop(context);
                   }
                 },
-              )
+                //之后需要根据friendsProvider改这部分display
+                //TODO
+                child: Text(
+                  'Create',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              // RaisedButton(
+              //   color: lightOrangeColor,
+              //   child: Text('Create'),
+              //   onPressed: () {
+              // //TODO create class in database
+              // if (formKey.currentState.validate()) {
+              //   courseProvider.saveCourse(context);
+              //   Navigator.pop(context);
+              //     }
+              //   },
+              // )
             ],
           ),
         ),

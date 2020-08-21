@@ -1,8 +1,10 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/message_model.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as dev;
 
 class SearchUsers extends StatefulWidget {
   @override
@@ -11,10 +13,12 @@ class SearchUsers extends StatefulWidget {
 
 class _SearchUsersState extends State<SearchUsers> {
   // bool showCancel = false;
+
   bool haveUserSearched = false;
   // FocusNode _focus = new FocusNode();
   QuerySnapshot searchSnapshot;
   DatabaseMehods databaseMehods = new DatabaseMehods();
+
   // @override
   // void initState() {
   //   super.initState();
@@ -28,17 +32,21 @@ class _SearchUsersState extends State<SearchUsers> {
     super.initState();
   }
 
-  clearSearchTextInput() {
+  clearSearchTextInput(FocusScopeNode currentFocus) {
     searchTextEditingController.clear();
+    searchBegain = false;
+    currentFocus.unfocus();
   }
 
   TextEditingController searchTextEditingController =
       new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    // dev.debugger();
+
+    FocusScopeNode currentFocus = FocusScope.of(context);
     return GestureDetector(
       onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
         setState(() {
           // showCancel = true;
         });
@@ -53,6 +61,7 @@ class _SearchUsersState extends State<SearchUsers> {
       },
       child: Scaffold(
           appBar: AppBar(
+            elevation: 0.0, // no shaddow
             leading: Container(
               padding: EdgeInsets.only(left: kDefaultPadding),
               child: GestureDetector(
@@ -61,28 +70,55 @@ class _SearchUsersState extends State<SearchUsers> {
                 },
                 child: Icon(
                   Icons.arrow_back_ios,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
             ),
             centerTitle: true,
-            backgroundColor: orengeColor,
-            title: Text("Find User"),
+            actions: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Invite',
+                  style: TextStyle(
+                    color: lightOrangeColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+            backgroundColor: Colors.white,
+            // title: Text("Find User"),
           ),
-          body: buildContainerBody()),
+          body: buildContainerBody(currentFocus)),
     );
   }
 
-  Container buildContainerBody() {
+  Container buildContainerBody(FocusScopeNode currentFocus) {
     return Container(
-      color: builtyPinkColor,
+      color: Colors.white,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: <Widget>[
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: 25, top: 5),
+                child: Container(
+                  // color: orengeColor,
+                  child: Text(
+                    'Search User',
+                    textAlign: TextAlign.left,
+                    style: largeTitleTextStyle(),
+                  ),
+                ),
+              ),
+            ),
             Container(
               color: Color(0x54FFFFFF),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -95,19 +131,16 @@ class _SearchUsersState extends State<SearchUsers> {
                       },
                       // focusNode: _focus,
                       controller: searchTextEditingController,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       autofocus: true,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        // prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        hintText: 'Search User with email...',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          // borderSide: BorderSide.none
+                      decoration: buildInputDecorationPinky(
+                        true,
+                        Icon(
+                          Icons.search,
+                          color: Colors.black,
                         ),
-                        contentPadding: EdgeInsets.zero,
-                        hintStyle: TextStyle(color: Colors.grey), // KEY PROP
+                        'Search email...',
+                        20,
                       ),
                     ),
                   )),
@@ -124,7 +157,7 @@ class _SearchUsersState extends State<SearchUsers> {
                           icon: Icon(Icons.cancel),
                           onPressed: () {
                             // initiateSearch();
-                            clearSearchTextInput();
+                            clearSearchTextInput(currentFocus);
                           })
                   // )
                   // : Container(),
@@ -173,6 +206,8 @@ class _SearchUsersState extends State<SearchUsers> {
                 userEmail:
                     // "731957665@qq.com",
                     searchSnapshot.documents[index].data['email'],
+                imageURL:
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
               );
             })
         : Container(
@@ -200,7 +235,8 @@ class _SearchUsersState extends State<SearchUsers> {
 class SearchTile extends StatelessWidget {
   final String userName;
   final String userEmail;
-  SearchTile({this.userName, this.userEmail});
+  final String imageURL;
+  SearchTile({this.userName, this.userEmail, this.imageURL});
 
   @override
   Widget build(BuildContext context) {
@@ -208,20 +244,62 @@ class SearchTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                userName ?? '',
-                style: simpleTextStyle(),
-              ),
-              Text(
-                userEmail ?? '',
-                style: simpleTextStyle(),
-              ),
-            ],
+          CircleAvatar(
+            radius: 30.0,
+            backgroundImage: NetworkImage("${imageURL}"),
+            backgroundColor: Colors.transparent,
           ),
-          Spacer(),
+          SizedBox(
+            width: 20,
+          ),
+          Container(
+            // color: Colors.black12,
+            width: 180,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  userName ?? '',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  userEmail ?? '',
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          // SizedBox(
+          //   width: 10,
+          // ),
+          Expanded(
+            child: RaisedGradientButton(
+              width: 100,
+              height: 40,
+              gradient: LinearGradient(
+                colors: <Color>[Colors.red, orengeColor],
+              ),
+              onPressed: () {
+                //TODO
+              },
+              //之后需要根据friendsProvider改这部分display
+              //TODO
+              child: Text(
+                'ADD',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          // Spacer(),
         ],
       ),
     );
