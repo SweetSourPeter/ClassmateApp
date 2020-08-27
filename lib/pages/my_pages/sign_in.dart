@@ -1,4 +1,5 @@
 import 'package:app_test/MainMenu.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
@@ -34,7 +35,7 @@ class _SignInState extends State<SignIn> {
           .then((val) {
         isLoading = false;
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainMenu()));
+            context, MaterialPageRoute(builder: (context) => SearchUsers()));
       });
     }
   }

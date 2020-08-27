@@ -1,10 +1,11 @@
 import 'package:app_test/models/constant.dart';
-import 'package:app_test/models/message_model.dart';
+import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as dev;
+import 'package:provider/provider.dart';
+import 'package:app_test/models/user.dart';
 
 class SearchUsers extends StatefulWidget {
   @override
@@ -17,7 +18,8 @@ class _SearchUsersState extends State<SearchUsers> {
   bool haveUserSearched = false;
   // FocusNode _focus = new FocusNode();
   QuerySnapshot searchSnapshot;
-  DatabaseMehods databaseMehods = new DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
+
 
   // @override
   // void initState() {
@@ -44,7 +46,10 @@ class _SearchUsersState extends State<SearchUsers> {
   Widget build(BuildContext context) {
     // dev.debugger();
 
+    final user = Provider.of<UserData>(context);
+    print(user.userName);
     FocusScopeNode currentFocus = FocusScope.of(context);
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -174,7 +179,7 @@ class _SearchUsersState extends State<SearchUsers> {
   bool searchBegain = false;
   initiateSearch() async {
     var temp =
-        await databaseMehods.getUsersByEmail(searchTextEditingController.text);
+        await databaseMethods.getUsersByEmail(searchTextEditingController.text);
     // if (temp == null) return;
     setState(() {
       searchSnapshot = temp;
@@ -192,54 +197,48 @@ class _SearchUsersState extends State<SearchUsers> {
     });
   }
 
-  Widget searchList() {
-    return searchBegain && searchTextEditingController.text.isNotEmpty
-        ? ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: searchSnapshot.documents.length,
-            shrinkWrap: true, //when you have listview in column
-            itemBuilder: (context, index) {
-              return SearchTile(
-                userName:
-                    // "peter",
-                    searchSnapshot.documents[index].data['userName'],
-                userEmail:
-                    // "731957665@qq.com",
-                    searchSnapshot.documents[index].data['email'],
-                imageURL:
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-              );
-            })
-        : Container(
-            // padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
-            // child: Row(
-            //   children: <Widget>[
-            //     Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: <Widget>[
-            //         Text(
-            //           "Please enter the correct Email",
-            //           style: simpleTextStyle(),
-            //         ),
-            //       ],
-            //     ),
-            //     Spacer(),
-            //   ],
-            // ),
+  // a function to create chat room
+  createChatRoomAndStartConversation(String userName){
+    final currentUser = Provider.of<UserData>(context, listen: false);
+    final myName = currentUser.userName;
+    if(userName != myName) {
+      String chatRoomId = getChatRoomId(userName, myName);
+
+      List<String> users = [userName, myName];
+      Map<String, dynamic> chatRoomMap = {
+        'users' : users,
+        'chatRoomId' : chatRoomId
+      };
+
+      databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context){
+            return MultiProvider(
+              providers: [
+                Provider<UserData>.value(
+                  value: currentUser,
+                )
+              ],
+              child: ChatScreen(chatRoomId: chatRoomId,),
             );
+          }
+      ));
+    } else {
+      print('This is your account!');
+    }
   }
-}
 
-//searchTile for searchList
+  // a helper function for createChatRoomAndStartConversation()
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
 
-class SearchTile extends StatelessWidget {
-  final String userName;
-  final String userEmail;
-  final String imageURL;
-  SearchTile({this.userName, this.userEmail, this.imageURL});
-
-  @override
-  Widget build(BuildContext context) {
+  // searchTile for searchList
+  Widget searchTile({String userName, String userEmail, String imageURL}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -287,11 +286,12 @@ class SearchTile extends StatelessWidget {
               ),
               onPressed: () {
                 //TODO
+                createChatRoomAndStartConversation(userName);
               },
               //之后需要根据friendsProvider改这部分display
               //TODO
               child: Text(
-                'ADD',
+                'Message',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.white,
@@ -303,5 +303,42 @@ class SearchTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget searchList() {
+    return searchBegain && searchTextEditingController.text.isNotEmpty
+        ? ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: searchSnapshot.documents.length,
+            shrinkWrap: true, //when you have listview in column
+            itemBuilder: (context, index) {
+              return searchTile(
+                userName:
+                    // "peter",
+                    searchSnapshot.documents[index].data['userName'],
+                userEmail:
+                    // "731957665@qq.com",
+                    searchSnapshot.documents[index].data['email'],
+                imageURL:
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+              );
+            })
+        : Container(
+            // padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
+            // child: Row(
+            //   children: <Widget>[
+            //     Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: <Widget>[
+            //         Text(
+            //           "Please enter the correct Email",
+            //           style: simpleTextStyle(),
+            //         ),
+            //       ],
+            //     ),
+            //     Spacer(),
+            //   ],
+            // ),
+            );
   }
 }

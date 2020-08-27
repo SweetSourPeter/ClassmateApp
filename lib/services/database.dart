@@ -5,7 +5,7 @@ import 'package:app_test/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
-class DatabaseMehods {
+class DatabaseMethods {
   Stream<UserData> userDetails(String userID) {
     print('called userdetails stream');
     return Firestore.instance
@@ -39,13 +39,13 @@ class DatabaseMehods {
     print('$email');
     return await Firestore.instance
         .collection("users")
-        // .where("email", isEqualTo: email)
+    // .where("email", isEqualTo: email)
         .where(
-          'email',
-          isGreaterThanOrEqualTo: email,
-          isLessThan: email.substring(0, email.length - 1) +
-              String.fromCharCode(email.codeUnitAt((email.length - 1)) + 1),
-        )
+      'email',
+      isGreaterThanOrEqualTo: email,
+      isLessThan: email.substring(0, email.length - 1) +
+          String.fromCharCode(email.codeUnitAt((email.length - 1)) + 1),
+    )
         .getDocuments()
         .catchError((e) {
       print(e.toString());
@@ -62,12 +62,12 @@ class DatabaseMehods {
         .where("section", isEqualTo: section.toUpperCase())
         .where("term", isEqualTo: term.toUpperCase())
         .where(
-          'myCourseName',
-          isGreaterThanOrEqualTo: courseName,
-          isLessThan: courseName.substring(0, courseName.length - 1) +
-              String.fromCharCode(
-                  courseName.codeUnitAt((courseName.length - 1)) + 1),
-        )
+      'myCourseName',
+      isGreaterThanOrEqualTo: courseName,
+      isLessThan: courseName.substring(0, courseName.length - 1) +
+          String.fromCharCode(
+              courseName.codeUnitAt((courseName.length - 1)) + 1),
+    )
         .getDocuments()
         .catchError((e) {
       print(e.toString());
@@ -150,7 +150,8 @@ class DatabaseMehods {
         .document(userID)
         .collection('courses')
         .snapshots()
-        .map((snapshot) => snapshot.documents
+        .map((snapshot) =>
+        snapshot.documents
             .map((document) => CourseInfo.fromFirestore(document.data))
             .toList());
   }
@@ -180,8 +181,48 @@ class DatabaseMehods {
       print(e.toString());
     });
   }
+
   //----------School database methods----------//
   //create a new school
 
   //
+
+  //--------The Chat Room Database Methods---------//
+  // create a new chat room
+  createChatRoom(String chatRoomId, chatRoomMap) {
+    Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .setData(chatRoomMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  addChatMessages(String chatRoomId, messageMap) {
+    Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .collection('chats')
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getChatMessages(String chatRoomId) async {
+    return await Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .collection('chats')
+        .orderBy('time', descending: false)
+        .snapshots();
+  }
+
+  getChatRooms(String userName) async {
+    return await Firestore.instance
+        .collection('chatroom')
+        .where('users', arrayContains: userName)
+        .snapshots();
+  }
 }

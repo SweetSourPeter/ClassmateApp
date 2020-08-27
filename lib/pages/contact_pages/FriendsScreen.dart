@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_test/widgets/category_selector.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/recent_chats.dart';
-import 'package:app_test/pages/chat_pages/chatScreen.dart';
+import 'package:app_test/pages/chat_pages/chatScreen_v1.dart';
 import 'package:app_test/models/message_model.dart';
 
 class FriendsScreen extends StatefulWidget {
@@ -16,32 +16,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        // appBar: AppBar(
-        //   leading: IconButton(
-        //     icon: Icon(Icons.arrow_back),
-        //     iconSize: 30.0,
-        //     color: Colors.white,
-        //     onPressed: () {},
-        //   ),
-        //   title: Text(
-        //     'Chats',
-        //     style: TextStyle(
-        //       fontSize: 28.0,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        //   elevation: 0.0,
-        //   actions: <Widget>[
-        //     IconButton(
-        //       icon: Icon(Icons.search),
-        //       iconSize: 30.0,
-        //       color: Colors.white,
-        //       onPressed: () {
-        //         //TO DO
-        //       },
-        //     ),
-        //   ],
-        // ),
         body: Scaffold(
           backgroundColor: builtyPinkColor,
           body: Stack(
@@ -49,16 +23,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
             children: <Widget>[
               // CategorySelector(),
               FavoriteContacts(),
-              // Container(
-              //   decoration: BoxDecoration(
-              //     color: Theme.of(context).accentColor,
-              //     borderRadius: BorderRadius.only(
-              //       topLeft: Radius.circular(30.0),
-              //       topRight: Radius.circular(30.0),
-              //     ),
-              //   ),
-              //   child: CategorySelector(),
-              // ),
               DraggableScrollableSheet(
                 initialChildSize: 1,
                 maxChildSize: 1,
@@ -231,37 +195,5 @@ class _FriendsScreenState extends State<FriendsScreen> {
             ],
           ),
         ));
-
-    // Column(
-    //   children: <Widget>[
-    //     // CategorySelector(),
-    //     Expanded(
-    //       child: Container(
-    //         decoration: BoxDecoration(
-    //           color: Theme.of(context).accentColor,
-    //           borderRadius: BorderRadius.only(
-    //             topLeft: Radius.circular(30.0),
-    //             topRight: Radius.circular(30.0),
-    //           ),
-    //         ),
-    //         child: Column(
-    //           children: <Widget>[
-    //             FavoriteContacts(),
-    //             // DraggableScrollableSheet(
-    //             //     maxChildSize: 0.65,
-    //             //     minChildSize: 0.2,
-    //             //     builder: (BuildContext context,
-    //             //         ScrollController scrolController) {
-    //             //       return SingleChildScrollView(
-    //             //           controller: scrolController, child: RecentChats());
-    //             //     })
-    //             RecentChats(),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ],
-    // ),
-    // );
   }
 }

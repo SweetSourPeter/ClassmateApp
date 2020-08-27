@@ -244,12 +244,12 @@ class _SearchGroupState extends State<SearchGroup> {
     );
   }
 
-  DatabaseMehods databaseMehods = new DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   bool searchBegain = false;
   initiateSearch(var _selectedSemester) async {
     var a = _selectedSemester;
     print('aaaa' + '$a');
-    var temp = await databaseMehods.getCourse(
+    var temp = await databaseMethods.getCourse(
       _selectedSemester.toUpperCase(),
       courseNameTextEditingController.text.toUpperCase(),
       sectionTextEditingController.text.toUpperCase(),

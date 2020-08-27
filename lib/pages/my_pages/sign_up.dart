@@ -19,7 +19,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool emailExist = false;
 
   AuthMethods authMethods = new AuthMethods();
-  DatabaseMehods databaseMehods = new DatabaseMehods();
+  DatabaseMethods databaseMehods = new DatabaseMethods();
 
   // TextEditingController usernameTextEditingController =
   //     new TextEditingController();
