@@ -33,9 +33,38 @@ class UserData {
         'userID': userID,
         'userName': userName,
       };
+
+  Map<String, dynamic> toMapIntoUsers() {
+    print('mapper called to map complete');
+    return {
+      'userID': userID,
+      'userName': userName,
+      'email': email,
+      'school': school,
+      'userImageUrl': userImageUrl,
+    };
+  }
+
+  //get the data for current user
   UserData.fromFirestore(Map<String, dynamic> firestore, this.userID)
       : userImageUrl = firestore['imgUrl'],
         school = firestore['school'],
         email = firestore['email'],
         userName = firestore['userName'];
+  //get data for contacts of current user
+  UserData.fromFirestoreContacts(Map<String, dynamic> firestore)
+      : userImageUrl = firestore['imgUrl'],
+        userID = firestore['userID'],
+        school = firestore['school'],
+        email = firestore['email'],
+        userName = firestore['userName'];
+  //     CourseInfo.fromFirestore(Map<String, dynamic> firestore)
+  // : school = firestore['school'],
+  //   term = firestore['term'],
+  //   myCourseCollge = firestore['college'],
+  //   department = firestore['department'],
+  //   myCourseName = firestore['myCourseName'],
+  //   section = firestore['section'],
+  //   courseID = firestore['courseID'],
+  //   userNumbers = firestore['userNumbers'];
 }

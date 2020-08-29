@@ -65,7 +65,7 @@ class CourseProvider with ChangeNotifier {
   }
 
   //save this course into firestore for both user and course collection
-  saveCourse(BuildContext context) {
+  saveNewCourse(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
     final userdata = Provider.of<UserData>(context, listen: false);
     String userId = user.userID;
@@ -101,7 +101,23 @@ class CourseProvider with ChangeNotifier {
 
   removeCourse(BuildContext context, String courseID) {
     final user = Provider.of<User>(context, listen: false);
+    print(user.userID);
+    print(courseID);
     databaseMehods.removeCourseFromUser(courseID, user.userID);
     databaseMehods.removeUserFromCourse(courseID, user.userID);
+  }
+
+  //add course to user
+  saveCourseToUser(BuildContext context, String courseId) {
+    final user = Provider.of<User>(context, listen: false);
+    String userId = user.userID;
+
+    var newCourseToUser = CourseInfo(
+      myCourseName: myCourseName.toUpperCase(),
+      courseID: courseId,
+    );
+    databaseMehods.saveCourseToUser(newCourseToUser, userId);
+    // var newUser = User(userID: userId, admin: true);
+    databaseMehods.addUserToCourse(courseId, user);
   }
 }

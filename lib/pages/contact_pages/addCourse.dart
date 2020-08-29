@@ -210,7 +210,7 @@ class _addCourseState extends State<addCourse> {
                 onPressed: () {
                   //TODO create class in database
                   if (formKey.currentState.validate()) {
-                    courseProvider.saveCourse(context);
+                    courseProvider.saveNewCourse(context);
                     Navigator.pop(context);
                   }
                 },

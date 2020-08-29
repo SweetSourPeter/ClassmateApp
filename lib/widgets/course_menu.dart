@@ -26,6 +26,11 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
+    // var a = course.where((element) =>
+    //     element.courseID == 'daae1bce-3124-4e60-b018-d6493b95e41c');
+    // print('aaaaaa');
+    // print(a.isNotEmpty);
+
     return
         // ReorderableListView(
         //   scrollDirection: Axis.vertical,
@@ -152,10 +157,25 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                             //TODO add course
                             Navigator.push(
                               context,
+                              // MaterialPageRoute(
+                              //   builder: (context) {
+                              //     return Provider<UserData>.value(
+                              //       value: userdata,
+                              //       child: SearchGroup(),
+                              //     );
+                              //   },
+                              // ),
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return Provider<UserData>.value(
-                                    value: userdata,
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: userdata,
+                                      ),
+                                      Provider<List<CourseInfo>>.value(
+                                        value: course,
+                                      ),
+                                    ],
                                     child: SearchGroup(),
                                   );
                                 },
@@ -222,56 +242,62 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   context, courses.courseID);
                             }),
                       ],
-                      child: Container(
-                          margin: const EdgeInsets.only(
-                              bottom: 16, top: 16, left: 25, right: 25),
-                          height: 130,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                              // image: DecorationImage(
-                              //   image: courseImageAssets(courses.courseCategory),
-                              //   fit: BoxFit.cover,
-                              // ),
-                              gradient: LinearGradient(
-                                colors: [Colors.white, builtyPinkColor],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    blurRadius: 8,
-                                    spreadRadius: 2,
-                                    offset: Offset(4, 4))
-                              ],
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(24))),
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: 9,
-                                  ),
-                                  Text(courses.myCourseName ?? '',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.w500)),
-                                  SizedBox(
-                                    width: 9,
-                                  ),
-                                  // Text('+' + courses.userNumbers.toString() + '',
-                                  //     style: TextStyle(
-                                  //         color: orengeColor, fontSize: 18)),
+                      child: GestureDetector(
+                        onTap: () {
+                          //TODO navigate into course fourm
+                          print(courses.courseID);
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.only(
+                                bottom: 16, top: 16, left: 25, right: 25),
+                            height: 130,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                                // image: DecorationImage(
+                                //   image: courseImageAssets(courses.courseCategory),
+                                //   fit: BoxFit.cover,
+                                // ),
+                                gradient: LinearGradient(
+                                  colors: [Colors.white, builtyPinkColor],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                      offset: Offset(4, 4))
                                 ],
-                              ),
-                            ],
-                          )),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24))),
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 9,
+                                    ),
+                                    Text(courses.myCourseName ?? '',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.w500)),
+                                    SizedBox(
+                                      width: 9,
+                                    ),
+                                    // Text('+' + courses.userNumbers.toString() + '',
+                                    //     style: TextStyle(
+                                    //         color: orengeColor, fontSize: 18)),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      ),
                     );
                   }).followedBy([
                     GestureDetector(
@@ -282,8 +308,14 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return Provider<UserData>.value(
-                                value: userdata,
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  Provider<List<CourseInfo>>.value(
+                                      value: course)
+                                ],
                                 child: SearchGroup(),
                               );
                             },
