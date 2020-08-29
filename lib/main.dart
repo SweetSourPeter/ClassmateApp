@@ -1,6 +1,7 @@
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,11 @@ class MyApp extends StatelessWidget {
         StreamProvider(create: (context) => AuthMethods().user), //Login user
         ChangeNotifierProvider(
             create: (context) => CourseProvider()), //course Provider
+        ChangeNotifierProvider(
+            create: (context) => ContactProvider()), //course Provider
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Wrapper(),
       ),
     );

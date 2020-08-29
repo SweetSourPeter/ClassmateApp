@@ -1,6 +1,7 @@
 import 'package:app_test/MainMenu.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -17,9 +18,11 @@ class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool emailExist = false;
+  String errorMessage;
 
   AuthMethods authMethods = new AuthMethods();
   DatabaseMehods databaseMehods = new DatabaseMehods();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   // TextEditingController usernameTextEditingController =
   //     new TextEditingController();
@@ -43,20 +46,41 @@ class _SignUpPageState extends State<SignUpPage> {
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
-        if (val == null) {
-          isLoading = false;
-          //check if the email already exist
-          setState(() {
-            emailExist = true;
-          });
-        } else {
-          // databaseMehods.uploadUserInfo(userInfoMap, val.userID);
-
-          isLoading = false;
-          print("User value is " + "${val.user.uid.toString()}");
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainMenu()));
+        isLoading = false;
+        print("User value is " + "${val.user.uid.toString()}");
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Wrapper()));
+      }).catchError((error) {
+        isLoading = false;
+        print(error.code);
+        String tempError;
+        switch (error.code) {
+          case "ERROR_OPERATION_NOT_ALLOWED":
+            tempError = "Anonymous accounts are not enabled";
+            break;
+          case "ERROR_WEAK_PASSWORD":
+            tempError = "Your password is too weak";
+            break;
+          case "ERROR_INVALID_EMAIL":
+            tempError = "Your email is invalid";
+            break;
+          case "ERROR_EMAIL_ALREADY_IN_USE":
+            tempError = "Email is already in use on different account";
+            break;
+          case "ERROR_INVALID_CREDENTIAL":
+            tempError = "Your email is invalid";
+            break;
+          default:
+            tempError = "An undefined Error happened.";
         }
+        print(tempError + 'this is it');
+        setState(() {
+          errorMessage = tempError;
+        });
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(tempError),
+          duration: Duration(seconds: 3),
+        ));
       });
     }
   }
@@ -73,6 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
+        key: _scaffoldKey,
         body: isLoading
             ? Container(child: Center(child: CircularProgressIndicator()))
             : CustomPaint(

@@ -157,6 +157,7 @@ class DatabaseMehods {
 
   //delete course for user
   Future<void> removeCourseFromUser(String courseID, String userID) {
+    print('remove course called....');
     return Firestore.instance
         .collection('users')
         .document(userID)

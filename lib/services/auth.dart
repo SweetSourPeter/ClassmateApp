@@ -37,39 +37,70 @@ class AuthMethods {
 
   // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
+    FirebaseUser firebaseUser;
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser firebaseUser = result.user;
+      firebaseUser = result.user;
       return _userFromFirebaseUser(firebaseUser);
-    } catch (e) {
-      // FirebaseA
-      print(e.toString());
+    } catch (error) {
+      throw error;
+      // switch (error.code) {
+      //   case "ERROR_INVALID_EMAIL":
+      //     errorMessage = "Your email address appears to be malformed.";
+      //     break;
+      //   case "ERROR_WRONG_PASSWORD":
+      //     errorMessage = "Your password is wrong.";
+      //     break;
+      //   case "ERROR_USER_NOT_FOUND":
+      //     errorMessage = "User with this email doesn't exist.";
+      //     break;
+      //   case "ERROR_USER_DISABLED":
+      //     errorMessage = "User with this email has been disabled.";
+      //     break;
+      //   case "ERROR_TOO_MANY_REQUESTS":
+      //     errorMessage = "Too many requests. Try again later.";
+      //     break;
+      //   case "ERROR_OPERATION_NOT_ALLOWED":
+      //     errorMessage = "Signing in with Email and Password is not enabled.";
+      //     break;
+      //   default:
+      //     errorMessage = "An undefined Error happened.";
+      // }
     }
+    // if (errorMessage != null) {
+    //   print('returning the error message');
+    //   throw (errorMessage);
+    //   // return Future.error(errorMessage);
+    // }
+
+    // return _userFromFirebaseUser(firebaseUser);
   }
 
   // sign up with email and password
   Future signUpWithEmailAndPassword(
       String email, String password, String university) async {
-    bool emailExist = false;
-    FirebaseUser firebaseUser;
+    // bool emailExist = false;
+    // FirebaseUser firebaseUser;
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser firebaseUser = result.user;
       await UserDatabaseService(userID: firebaseUser.uid)
           .updateUserData(email, email, university);
-      print(firebaseUser.email);
-    } catch (e) {
-      if (e is PlatformException) {
-        if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
-          emailExist = true;
-        }
-        emailExist = true;
-      }
-      print("error code is " + e.code.toString());
+      return _userFromFirebaseUser(firebaseUser);
+    } catch (error) {
+      throw error;
+
+      // if (e is PlatformException) {
+      //   if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+      //     emailExist = true;
+      //   }
+      //   emailExist = true;
+      // }
+      // print("error code is " + e.code.toString());
     }
-    return emailExist ? null : _userFromFirebaseUser(firebaseUser);
+    // return emailExist ? null : _userFromFirebaseUser(firebaseUser);
   }
 
   Future resetPassword(String email) async {

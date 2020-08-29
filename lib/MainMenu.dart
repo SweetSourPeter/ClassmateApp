@@ -1,13 +1,17 @@
 import 'package:app_test/MainScreen.dart';
+import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/course_menu.dart';
+import 'package:app_test/widgets/favorite_contacts.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-
+import 'package:provider/provider.dart';
 import 'models/constant.dart';
+import 'dart:developer' as dev;
 
 class MainMenu extends StatefulWidget {
   @override
@@ -17,8 +21,12 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   AuthMethods authMethods = new AuthMethods();
   int _currentIndex = 0;
-  final tabs = [CourseMainMenu(), FriendsScreen()];
-  final tabTitle = ['Course', 'Friends'];
+  final tabs = [
+    CourseMainMenu(),
+    FriendsScreen(),
+    FavoriteContacts(),
+  ];
+  // final tabTitle = ['Course', 'Friends'];
   Offset _offset = Offset(0, 0);
   GlobalKey globalKey = GlobalKey();
   List<double> limits = [];
@@ -59,9 +67,11 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 0.65;
     double menuContainerHeight = mediaQuery.height / 2;
+    // dev.debugger();
 
     return SafeArea(
         child: Scaffold(
@@ -149,17 +159,16 @@ class _MainMenuState extends State<MainMenu> {
                               child: Center(
                                 child: Column(
                                   children: <Widget>[
-                                    CircleAvatar(
-                                      radius: sidebarSize / 4.5,
-                                      backgroundImage: AssetImage(
-                                          "assets/images/olivia.jpg"),
-                                    ),
+                                    creatUserImage(sidebarSize / 5, userdata),
                                     // Image.asset(
                                     //   "assets/images/olivia.jpg",
                                     //   width: sidebarSize / 2,
                                     // ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
                                     Text(
-                                      "Jane Studio",
+                                      userdata.userName ?? '',
                                       style: TextStyle(color: Colors.black45),
                                     ),
                                   ],
@@ -201,12 +210,13 @@ class _MainMenuState extends State<MainMenu> {
                                   ),
                                   MyButton(
                                     onTap: () {
-                                      authMethods.signOut();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Wrapper()),
-                                      );
+                                      authMethods.signOut().then((value) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Wrapper()),
+                                        );
+                                      });
                                     },
                                     text: "Log Out",
                                     iconData: Icons.offline_bolt,
@@ -222,13 +232,13 @@ class _MainMenuState extends State<MainMenu> {
                       AnimatedPositioned(
                         duration: Duration(milliseconds: 400),
                         right: (isMenuOpen) ? 10 : sidebarSize,
-                        bottom: 30,
+                        bottom: 35,
                         child: IconButton(
                           enableFeedback: true,
                           icon: Icon(
                             Icons.keyboard_backspace,
-                            color: Colors.black45,
-                            size: 30,
+                            color: orengeColor,
+                            size: 40,
                           ),
                           onPressed: () {
                             setMenuOpenState(false);
@@ -251,9 +261,9 @@ class _MainMenuState extends State<MainMenu> {
     //open
     if (state) {
       this.setState(() {
-        xOffset = 280;
-        yOffset = 150;
-        scaleFactor = 0.6;
+        xOffset = 250;
+        yOffset = 0;
+        scaleFactor = 1;
       });
     } else {
       //close
@@ -275,6 +285,11 @@ class _MainMenuState extends State<MainMenu> {
       items: <Widget>[
         Icon(
           Icons.class_,
+          size: 19,
+          color: Colors.black,
+        ),
+        Icon(
+          Icons.chat,
           size: 19,
           color: Colors.black,
         ),
@@ -315,57 +330,57 @@ class _MainMenuState extends State<MainMenu> {
   //   );
   // }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      centerTitle: true,
-      backgroundColor: orengeColor,
-      elevation: 5,
-      leading: IconButton(
-        iconSize: 35,
-        color: darkBlueColor,
-        padding: EdgeInsets.only(left: kDefaultPadding),
-        icon: Icon(Icons.menu),
-        onPressed: () {
-          setMenuOpenState(true);
-        },
-      ),
-      title: Container(
-          child: Text(
-        tabTitle[_currentIndex],
-      )),
-      actions: <Widget>[
-        IconButton(
-          iconSize: 38,
-          color: darkBlueColor,
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          icon: Icon(Icons.search),
-          onPressed: () {
-            //TODO
-            switch (_currentIndex) {
-              case 0:
-                {
-                  //TODO for search course ot sth
-                }
-                break;
-              case 1:
-                {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SearchUsers()),
-                  );
-                }
-                break;
-              default:
-                {
-                  //TODO search for sth;
-                }
-                break;
-            }
-          },
-        )
-      ],
-    );
-  }
+  // AppBar buildAppBar() {
+  //   return AppBar(
+  //     centerTitle: true,
+  //     backgroundColor: orengeColor,
+  //     elevation: 5,
+  //     leading: IconButton(
+  //       iconSize: 35,
+  //       color: darkBlueColor,
+  //       padding: EdgeInsets.only(left: kDefaultPadding),
+  //       icon: Icon(Icons.menu),
+  //       onPressed: () {
+  //         setMenuOpenState(true);
+  //       },
+  //     ),
+  //     title: Container(
+  //         child: Text(
+  //       tabTitle[_currentIndex],
+  //     )),
+  //     actions: <Widget>[
+  //       IconButton(
+  //         iconSize: 38,
+  //         color: darkBlueColor,
+  //         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+  //         icon: Icon(Icons.search),
+  //         onPressed: () {
+  //           //TODO
+  //           switch (_currentIndex) {
+  //             case 0:
+  //               {
+  //                 //TODO for search course ot sth
+  //               }
+  //               break;
+  //             case 1:
+  //               {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(builder: (context) => SearchUsers()),
+  //                 );
+  //               }
+  //               break;
+  //             default:
+  //               {
+  //                 //TODO search for sth;
+  //               }
+  //               break;
+  //           }
+  //         },
+  //       )
+  //     ],
+  //   );
+  // }
 }
 
 class MyButton extends StatelessWidget {

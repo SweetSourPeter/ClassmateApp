@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/addCourse.dart';
+import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
+// import 'dart:developer' as dev;
 
 class SearchGroup extends StatefulWidget {
   @override
@@ -23,6 +27,8 @@ class _SearchGroupState extends State<SearchGroup> {
   var _selectedSemester;
   @override
   Widget build(BuildContext context) {
+    final course = Provider.of<List<CourseInfo>>(context);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -48,11 +54,12 @@ class _SearchGroupState extends State<SearchGroup> {
         // title: Text('Search Course'),
         // centerTitle: true,
       ),
-      body: _stateBody(context, searchSnapshot),
+      body: _stateBody(context, searchSnapshot, course),
     );
   }
 
-  Widget _stateBody(BuildContext context, QuerySnapshot searchSnapshot) {
+  Widget _stateBody(BuildContext context, QuerySnapshot searchSnapshot,
+      List<CourseInfo> course) {
     final userdata = Provider.of<UserData>(context);
     // var _selectedYear;
     // List<String> _years = [
@@ -211,10 +218,13 @@ class _SearchGroupState extends State<SearchGroup> {
                     return;
                   } else {
                     initiateSearch(_selectedSemester);
+                    print(searchBegain);
                   }
                   _formKey.currentState.save();
+                  searchBegain
+                      ? showBottomSheet(course)
+                      : CircularProgressIndicator();
                 },
-                //TODO
                 child: Text(
                   'Search',
                   style: TextStyle(
@@ -237,7 +247,6 @@ class _SearchGroupState extends State<SearchGroup> {
               //   },
               // ),
             ),
-            searchList(context),
           ],
         ),
       ),
@@ -246,6 +255,7 @@ class _SearchGroupState extends State<SearchGroup> {
 
   DatabaseMehods databaseMehods = new DatabaseMehods();
   bool searchBegain = false;
+
   initiateSearch(var _selectedSemester) async {
     var a = _selectedSemester;
     print('aaaa' + '$a');
@@ -254,6 +264,7 @@ class _SearchGroupState extends State<SearchGroup> {
       courseNameTextEditingController.text.toUpperCase(),
       sectionTextEditingController.text.toUpperCase(),
     );
+    print('get temp');
     // if (temp == null) return;
     setState(() {
       searchSnapshot = temp;
@@ -261,6 +272,7 @@ class _SearchGroupState extends State<SearchGroup> {
         if ((searchSnapshot.documents.length >= 1) &&
             (courseNameTextEditingController.text.isNotEmpty) &&
             (sectionTextEditingController.text.isNotEmpty)) {
+          print('reached search');
           searchBegain = true;
         }
       }
@@ -273,38 +285,110 @@ class _SearchGroupState extends State<SearchGroup> {
     });
   }
 
-  Widget searchList(context) {
+  void showBottomSheet(List<CourseInfo> course) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        )),
+        context: context,
+        builder: (context) {
+          return searchList(context, course);
+        });
+  }
+
+  Widget searchList(context, List<CourseInfo> course) {
+    print(searchBegain);
     // var count = searchSnapshot.documents.length;
     // print('index length is ' + '$count');
     return searchBegain
-        ? ListView.builder(
-            itemCount: searchSnapshot.documents.length,
-            shrinkWrap: true, //when you have listview in column
-            itemBuilder: (context, index) {
-              return CourseSearchTile(
-                courseName:
-                    // "peter",
-                    searchSnapshot.documents[index].data['myCourseName'],
-                section:
-                    // "731957665@qq.com",
-                    searchSnapshot.documents[index].data['section'],
-              );
-            })
+        ? Container(
+            // decoration: BoxDecoration(
+            //   color: Colors.blue,
+            //   borderRadius: BorderRadius.only(
+            //     topLeft: Radius.circular(30.0),
+            //     topRight: Radius.circular(30.0),
+            //   ),
+            // ),
+            child: Column(
+              children: [
+                topLineBar(),
+                ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return Divider();
+                    },
+                    itemCount: searchSnapshot.documents.length,
+                    shrinkWrap: true, //when you have listview in column
+                    itemBuilder: (context, index) {
+                      var id = searchSnapshot.documents[index].data['courseID'];
+                      return Provider<List<CourseInfo>>.value(
+                        value: course,
+                        child: CourseSearchTile(
+                          courseName:
+                              // "peter",
+                              searchSnapshot
+                                  .documents[index].data['myCourseName'],
+                          section:
+                              // "731957665@qq.com",
+                              searchSnapshot.documents[index].data['section'],
+                          college:
+                              // "731957665@qq.com",
+                              searchSnapshot.documents[index].data['college'],
+                          term: searchSnapshot.documents[index].data['term'],
+                          department: searchSnapshot
+                              .documents[index].data['department'],
+                          courseID: id,
+                          isAdd: course
+                              .where((element) => element.courseID == id)
+                              .isNotEmpty,
+                        ),
+                      );
+                    }),
+              ],
+            ),
+          )
         : Container();
   }
 }
 
-class CourseSearchTile extends StatelessWidget {
+class CourseSearchTile extends StatefulWidget {
   final String courseName;
   final String section;
-  CourseSearchTile({this.courseName, this.section});
+  final String college;
+  final String term;
+  final String department;
+  final String courseID;
+  bool isAdd;
+  CourseSearchTile({
+    this.courseName,
+    this.section,
+    this.college,
+    this.term,
+    this.department,
+    this.courseID,
+    this.isAdd,
+  });
+
+  @override
+  _CourseSearchTileState createState() => _CourseSearchTileState();
+}
+
+class _CourseSearchTileState extends State<CourseSearchTile> {
+  // bool add = widget.isAdd;
+  bool add = false;
 
   @override
   Widget build(BuildContext context) {
+    final course = Provider.of<List<CourseInfo>>(context);
+    final courseProvider = Provider.of<CourseProvider>(context);
+    // final course = Provider.of<List<CourseInfo>>(context);
+
     // print('course name is ' + courseName);
     // print('section is ' + section);
+    // print('is ${widget.isAdd}' + widget.courseID);
     return Container(
-      color: orengeColor,
+      color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: <Widget>[
@@ -312,16 +396,73 @@ class CourseSearchTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                courseName ?? '',
+                (widget.courseName + '  ' + widget.section) ?? '',
                 style: simpleTextStyleBlack(),
               ),
               Text(
-                section ?? '',
+                widget.college ?? '',
                 style: simpleTextStyleBlack(),
               ),
             ],
           ),
           Spacer(),
+          Expanded(
+            child: (widget.isAdd || add)
+                ? RaisedGradientButton(
+                    width: 30,
+                    height: 40,
+                    gradient: LinearGradient(
+                      colors: <Color>[Colors.red, orengeColor],
+                    ),
+                    onPressed: () {
+                      //TODO Nothing
+                    },
+                    //TODO
+                    child: Text(
+                      'Added',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : RaisedGradientButton(
+                    width: 30,
+                    height: 40,
+                    gradient: LinearGradient(
+                      colors: <Color>[Colors.red, orengeColor],
+                    ),
+                    onPressed: () {
+                      //TODO
+                      // print(term);
+                      // print(college);
+                      // print(department);
+                      // print(courseName);
+                      // print(courseID);
+                      setState(() {
+                        add = true;
+                        print('set add is $add');
+                      });
+
+                      courseProvider.changeTerm(widget.term);
+                      courseProvider.changeCourseCollege(widget.college);
+                      courseProvider.changeCourseDepartment(widget.department);
+                      courseProvider.changeCourseName(widget.courseName);
+                      courseProvider.changeCourseSection(widget.section);
+                      courseProvider.saveCourseToUser(context, widget.courseID);
+                    },
+                    //之后需要根据friendsProvider改这部分display
+                    //TODO
+                    child: Text(
+                      'ADD',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+          ),
+          // Spacer(),
         ],
       ),
     );

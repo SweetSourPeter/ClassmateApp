@@ -2,6 +2,7 @@ import 'package:app_test/MainMenu.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
+import 'package:app_test/services/wrapper.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 
@@ -20,6 +21,8 @@ AuthMethods authMethods = new AuthMethods();
 TextEditingController emailTextEditingController = new TextEditingController();
 TextEditingController passwordTextEditingController =
     new TextEditingController();
+String errorMessage;
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class _SignInState extends State<SignIn> {
   signMeIn() {
@@ -32,9 +35,46 @@ class _SignInState extends State<SignIn> {
           .signInWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text)
           .then((val) {
+        print('object');
+        // print(val.error.toString());
         isLoading = false;
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainMenu()));
+            context, MaterialPageRoute(builder: (context) => Wrapper()));
+      }).catchError((error) {
+        //TODO
+        isLoading = false;
+        print(error.code);
+        String tempError;
+        switch (error.code) {
+          case "ERROR_INVALID_EMAIL":
+            tempError = "Your email address appears to be malformed.";
+            break;
+          case "ERROR_WRONG_PASSWORD":
+            tempError = "Your password is wrong.";
+            break;
+          case "ERROR_USER_NOT_FOUND":
+            tempError = "User with this email doesn't exist.";
+            break;
+          case "ERROR_USER_DISABLED":
+            tempError = "User with this email has been disabled.";
+            break;
+          case "ERROR_TOO_MANY_REQUESTS":
+            tempError = "Too many requests. Try again later.";
+            break;
+          case "ERROR_OPERATION_NOT_ALLOWED":
+            tempError = "Signing in with Email and Password is not enabled.";
+            break;
+          default:
+            tempError = "An undefined Error happened.";
+        }
+        print(tempError + 'this is it');
+        setState(() {
+          errorMessage = tempError;
+        });
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(tempError),
+          duration: Duration(seconds: 3),
+        ));
       });
     }
   }
@@ -51,8 +91,10 @@ class _SignInState extends State<SignIn> {
           currentFocus.unfocus();
         }
       },
+
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
+        key: _scaffoldKey,
         body: isLoading
             ? Container(child: Center(child: CircularProgressIndicator()))
             : CustomPaint(
