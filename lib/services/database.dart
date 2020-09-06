@@ -184,5 +184,20 @@ class DatabaseMehods {
   //----------School database methods----------//
   //create a new school
 
-  //
+  //report save to satabase
+  Future<void> saveReports(
+      String reports, String badUserID, String goodUserID) {
+    print('saveReports');
+    //First update in the user level
+
+    return Firestore.instance.collection('reports').add({
+      'reportMessage': reports,
+      'isSolved': false,
+      'reportedBadUserID': badUserID,
+      'reportGoodUser': goodUserID,
+    }).catchError((e) {
+      print(e.toString());
+    });
+    //also update in the course level
+  }
 }

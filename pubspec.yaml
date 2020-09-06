@@ -39,7 +39,9 @@ dependencies:
   uuid: ^2.2.0 #generate a unique ID for firestore storage
   flutter_typeahead: ^1.8.7 #auto complete the text Field
   focused_menu: ^1.0.1 #long hold on the tab to desplay stuf
-
+  flutter_email_sender: ^3.0.1 #send emails to admin report users
+  image_picker: ^0.6.7+7
+  multi_image_picker: ^4.7.12
 dev_dependencies:
   flutter_test:
     sdk: flutter

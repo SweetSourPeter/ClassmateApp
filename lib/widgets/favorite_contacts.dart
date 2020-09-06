@@ -1,7 +1,10 @@
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/models/message_model.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
@@ -11,6 +14,55 @@ class FavoriteContacts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final contacts = Provider.of<List<UserData>>(context);
+    void showBottomSheet() {
+      showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(width: 15, color: Colors.transparent),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+                // bottomLeft: Radius.circular(30.0),
+                // bottomRight: Radius.circular(30.0),
+              )),
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return ReportUser();
+          });
+      showCupertinoModalPopup(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoActionSheet(
+                actions: <Widget>[
+                  CupertinoActionSheetAction(
+                    child: Text('Block'),
+                    onPressed: () {},
+                    isDestructiveAction: true,
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('Report'),
+                    onPressed: () {},
+                    isDestructiveAction: true,
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('Save Profile QR Code'),
+                    onPressed: () {},
+                    isDefaultAction: true,
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('Share this Profile'),
+                    onPressed: () {},
+                    isDefaultAction: true,
+                  ),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  child: Text('Cancle'),
+                  onPressed: () {},
+                  isDefaultAction: false,
+                ));
+          });
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
@@ -32,11 +84,13 @@ class FavoriteContacts extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(
-                    Icons.more_horiz,
+                    Icons.more_vert,
                   ),
                   iconSize: 30.0,
                   color: Colors.blueGrey,
-                  onPressed: () {},
+                  onPressed: () {
+                    showBottomSheet();
+                  },
                 ),
               ],
             ),
