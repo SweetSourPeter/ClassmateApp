@@ -39,6 +39,7 @@ dependencies:
   uuid: ^2.2.0 #generate a unique ID for firestore storage
   flutter_typeahead: ^1.8.7 #auto complete the text Field
   focused_menu: ^1.0.1 #long hold on the tab to desplay stuf
+  google_fonts:
 
 dev_dependencies:
   flutter_test:

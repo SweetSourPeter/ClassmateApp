@@ -95,3 +95,39 @@ class RaisedGradientButton extends StatelessWidget {
     );
   }
 }
+
+class PlainGradientButton extends StatelessWidget {
+  final Widget child;
+  final Gradient gradient;
+  final double width;
+  final double height;
+  final Function onPressed;
+
+  const PlainGradientButton({
+    Key key,
+    @required this.child,
+    this.gradient,
+    this.width,
+    this.height,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.all(Radius.circular(24))),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+            onTap: onPressed,
+            child: Center(
+              child: child,
+            )),
+      ),
+    );
+  }
+}
