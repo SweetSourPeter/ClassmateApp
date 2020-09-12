@@ -2,6 +2,7 @@
 // import 'dart:ffi';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -233,30 +234,31 @@ class DatabaseMehods {
     }
   }
 
-  Future<void> updateAllTags(String userID, List major, List gpa, List language,
-      List studyHabits, List other) async {
+  Future<void> updateAllTags(String userID, UserTags userTags) async {
     //used to remove a single Tag from the user
     DocumentReference docRef =
         Firestore.instance.collection('users').document(userID);
     docRef.updateData({
       'tags': {
-        'majorTags': major,
-        'gpaTags': gpa,
-        'languageTags': language,
-        'studyHabitsTags': studyHabits,
-        'otherTags': other,
+        'college': userTags.college,
+        'gpa': userTags.gpa,
+        'language': userTags.language,
+        'strudyHabits': userTags.strudyHabits,
       }
     }).catchError((e) {
       print(e.toString());
     });
   }
 
-  Future<void> getAllTage(String userID, List tags) async {
+  Future<UserTags> getAllTage(String userID) async {
     //used to remove a single Tag from the user
 
     DocumentReference docRef =
         Firestore.instance.collection('users').document(userID);
     DocumentSnapshot doc = await docRef.get();
-    return doc.data['tags'];
+    return UserTags.fromFirestoreTags(doc.data['tags']);
+    // .catchError((e) {
+    //   print(e.toString());
+    // }));
   }
 }

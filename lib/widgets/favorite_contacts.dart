@@ -1,5 +1,3 @@
-import 'package:app_test/models/constant.dart';
-import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';

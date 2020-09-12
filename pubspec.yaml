@@ -42,6 +42,8 @@ dependencies:
   flutter_email_sender: ^3.0.1 #send emails to admin report users
   image_picker: ^0.6.7+7
   multi_image_picker: ^4.7.12
+  flutter_tags: ^0.4.8+2
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

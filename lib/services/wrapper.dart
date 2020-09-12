@@ -37,8 +37,10 @@ class Wrapper extends StatelessWidget {
           StreamProvider(
               create: (context) => UserDatabaseService()
                   .getMyContacts(user.userID)), // get all contacts
+          FutureProvider(
+              create: (context) => DatabaseMehods().getAllTage(user.userID)),
         ],
-        child: MainMenu(),
+        child: TagSelecting(),
       );
     }
   }

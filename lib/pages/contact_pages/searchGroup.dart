@@ -92,7 +92,7 @@ class _SearchGroupState extends State<SearchGroup> {
                   child: Text(
                     'Search Course',
                     textAlign: TextAlign.left,
-                    style: largeTitleTextStyle(),
+                    style: largeTitleTextStyle(Colors.black),
                   ),
                 ),
               ),

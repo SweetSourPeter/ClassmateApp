@@ -49,9 +49,8 @@ TextStyle biggerTextStyle() {
   return TextStyle(color: Colors.white, fontSize: 17);
 }
 
-TextStyle largeTitleTextStyle() {
-  return TextStyle(
-      color: Colors.black, fontSize: 32, fontWeight: FontWeight.w700);
+TextStyle largeTitleTextStyle(Color color) {
+  return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700);
 }
 
 class RaisedGradientButton extends StatelessWidget {

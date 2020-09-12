@@ -1,8 +1,6 @@
-import 'package:app_test/MainScreen.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
-import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/course_menu.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
@@ -103,7 +101,7 @@ class _MainMenuState extends State<MainMenu> {
               }
             },
             child: Container(
-              color: darkBlueColor,
+              color: Colors.white,
               width: mediaQuery.width,
               child: Stack(
                 children: <Widget>[

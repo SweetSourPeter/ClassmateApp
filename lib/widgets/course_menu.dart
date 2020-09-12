@@ -192,7 +192,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           child: Text(
                             'My Courses',
                             textAlign: TextAlign.left,
-                            style: largeTitleTextStyle(),
+                            style: largeTitleTextStyle(Colors.black),
                           ),
                         ),
                       ),
