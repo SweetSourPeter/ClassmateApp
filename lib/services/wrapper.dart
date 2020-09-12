@@ -4,6 +4,7 @@ import 'package:app_test/MainMenu.dart';
 import 'package:app_test/MainScreen.dart';
 import 'package:app_test/pages/contact_pages/addCourse.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
+import 'package:app_test/pages/explore_pages/tagSelectingStepper.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/database.dart';

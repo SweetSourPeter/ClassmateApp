@@ -1,9 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/contact_pages/addCourse.dart';
 import 'package:app_test/pages/contact_pages/searchGroup.dart';
-import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
