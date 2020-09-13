@@ -1,8 +1,6 @@
-import 'package:app_test/MainScreen.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
-import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/course_menu.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
@@ -73,187 +71,192 @@ class _MainMenuState extends State<MainMenu> {
     double menuContainerHeight = mediaQuery.height / 2;
     // dev.debugger();
 
-    return SafeArea(
-        child: Scaffold(
-            body: GestureDetector(
-      //if menu close and slide to right-> menu opens
-      onPanUpdate: (details) {
-        if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
-          setMenuOpenState(true);
-        }
-        // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
-        //   print('b');
-        //   setState(() {
-        //     _currentIndex = 1;
-        //   });
-        // }
-        // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
-        //   print('c');
-        //   setState(() {
-        //     _currentIndex = 0;
-        //   });
-        // }
-      },
-      //if the menu opens and tap on the side->close menu
-      onTapDown: (details) {
-        if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
-          setMenuOpenState(false);
-        }
-      },
-      child: Container(
-        color: darkBlueColor,
-        width: mediaQuery.width,
-        child: Stack(
-          children: <Widget>[
-            AnimatedContainer(
-              transform: Matrix4.translationValues(xOffset, yOffset, 20)
-                ..scale(scaleFactor),
-              duration: Duration(microseconds: 250),
-              child: Scaffold(
-                backgroundColor: Colors.white,
-                // appBar: buildAppBar(),
-                body: tabs[_currentIndex],
-                bottomNavigationBar: buildBottomNavigationBar(),
-              ),
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 1500),
-              left: isMenuOpen ? 0 : -sidebarSize + 0,
-              top: 0,
-              curve: Curves.elasticOut,
-              child: SizedBox(
-                width: sidebarSize,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    if (details.localPosition.dx <= sidebarSize) {
-                      setState(() {
-                        _offset = details.localPosition;
-                      });
-                    }
+    return (userdata == null)
+        ? CircularProgressIndicator()
+        : SafeArea(
+            child: Scaffold(
+                body: GestureDetector(
+            //if menu close and slide to right-> menu opens
+            onPanUpdate: (details) {
+              if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
+                setMenuOpenState(true);
+              }
+              // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
+              //   print('b');
+              //   setState(() {
+              //     _currentIndex = 1;
+              //   });
+              // }
+              // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
+              //   print('c');
+              //   setState(() {
+              //     _currentIndex = 0;
+              //   });
+              // }
+            },
+            //if the menu opens and tap on the side->close menu
+            onTapDown: (details) {
+              if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
+                setMenuOpenState(false);
+              }
+            },
+            child: Container(
+              color: Colors.white,
+              width: mediaQuery.width,
+              child: Stack(
+                children: <Widget>[
+                  AnimatedContainer(
+                    transform: Matrix4.translationValues(xOffset, yOffset, 20)
+                      ..scale(scaleFactor),
+                    duration: Duration(microseconds: 250),
+                    child: Scaffold(
+                      backgroundColor: Colors.white,
+                      // appBar: buildAppBar(),
+                      body: tabs[_currentIndex],
+                      bottomNavigationBar: buildBottomNavigationBar(),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                    duration: Duration(milliseconds: 1500),
+                    left: isMenuOpen ? 0 : -sidebarSize + 0,
+                    top: 0,
+                    curve: Curves.elasticOut,
+                    child: SizedBox(
+                      width: sidebarSize,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          if (details.localPosition.dx <= sidebarSize) {
+                            setState(() {
+                              _offset = details.localPosition;
+                            });
+                          }
 
-                    if (details.localPosition.dx > sidebarSize - 20 &&
-                        details.delta.distanceSquared > 2) {
-                      setMenuOpenState(true);
-                    }
-                  },
-                  onPanEnd: (details) {
-                    setState(() {
-                      _offset = Offset(0, 0);
-                    });
-                  },
-                  child: Stack(
-                    children: <Widget>[
-                      CustomPaint(
-                        size: Size(sidebarSize, mediaQuery.height),
-                        painter: DrawerPainter(offset: _offset),
-                      ),
-                      Container(
-                        height: mediaQuery.height,
-                        width: sidebarSize,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
+                          if (details.localPosition.dx > sidebarSize - 20 &&
+                              details.delta.distanceSquared > 2) {
+                            setMenuOpenState(true);
+                          }
+                        },
+                        onPanEnd: (details) {
+                          setState(() {
+                            _offset = Offset(0, 0);
+                          });
+                        },
+                        child: Stack(
                           children: <Widget>[
+                            CustomPaint(
+                              size: Size(sidebarSize, mediaQuery.height),
+                              painter: DrawerPainter(offset: _offset),
+                            ),
                             Container(
-                              height: mediaQuery.height * 0.25,
-                              child: Center(
-                                child: Column(
-                                  children: <Widget>[
-                                    creatUserImage(sidebarSize / 5, userdata),
-                                    // Image.asset(
-                                    //   "assets/images/olivia.jpg",
-                                    //   width: sidebarSize / 2,
-                                    // ),
-                                    SizedBox(
-                                      height: 3,
+                              height: mediaQuery.height,
+                              width: sidebarSize,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Container(
+                                    height: mediaQuery.height * 0.25,
+                                    child: Center(
+                                      child: Column(
+                                        children: <Widget>[
+                                          creatUserImage(
+                                              sidebarSize / 5, userdata),
+                                          // Image.asset(
+                                          //   "assets/images/olivia.jpg",
+                                          //   width: sidebarSize / 2,
+                                          // ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Text(
+                                            userdata.userName ?? '',
+                                            style: TextStyle(
+                                                color: Colors.black45),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    Text(
-                                      userdata.userName ?? '',
-                                      style: TextStyle(color: Colors.black45),
+                                  ),
+                                  Divider(
+                                    thickness: 1,
+                                  ),
+                                  Container(
+                                    key: globalKey,
+                                    width: double.infinity,
+                                    height: menuContainerHeight,
+                                    child: Column(
+                                      children: <Widget>[
+                                        MyButton(
+                                          text: "Profile",
+                                          iconData: Icons.person,
+                                          textSize: getSize(0),
+                                          height: (menuContainerHeight) / 6,
+                                        ),
+                                        MyButton(
+                                          text: "Friends",
+                                          iconData: Icons.contacts,
+                                          textSize: getSize(1),
+                                          height: (menuContainerHeight) / 6,
+                                        ),
+                                        MyButton(
+                                          text: "Notifications",
+                                          iconData: Icons.notifications,
+                                          textSize: getSize(2),
+                                          height: (mediaQuery.height / 2) / 6,
+                                        ),
+                                        MyButton(
+                                          text: "Settings",
+                                          iconData: Icons.settings,
+                                          textSize: getSize(3),
+                                          height: (menuContainerHeight) / 6,
+                                        ),
+                                        MyButton(
+                                          onTap: () {
+                                            authMethods.signOut().then((value) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Wrapper()),
+                                              );
+                                            });
+                                          },
+                                          text: "Log Out",
+                                          iconData: Icons.offline_bolt,
+                                          textSize: getSize(3),
+                                          height: (menuContainerHeight) / 6,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
                             ),
-                            Divider(
-                              thickness: 1,
-                            ),
-                            Container(
-                              key: globalKey,
-                              width: double.infinity,
-                              height: menuContainerHeight,
-                              child: Column(
-                                children: <Widget>[
-                                  MyButton(
-                                    text: "Profile",
-                                    iconData: Icons.person,
-                                    textSize: getSize(0),
-                                    height: (menuContainerHeight) / 6,
-                                  ),
-                                  MyButton(
-                                    text: "Friends",
-                                    iconData: Icons.contacts,
-                                    textSize: getSize(1),
-                                    height: (menuContainerHeight) / 6,
-                                  ),
-                                  MyButton(
-                                    text: "Notifications",
-                                    iconData: Icons.notifications,
-                                    textSize: getSize(2),
-                                    height: (mediaQuery.height / 2) / 6,
-                                  ),
-                                  MyButton(
-                                    text: "Settings",
-                                    iconData: Icons.settings,
-                                    textSize: getSize(3),
-                                    height: (menuContainerHeight) / 6,
-                                  ),
-                                  MyButton(
-                                    onTap: () {
-                                      authMethods.signOut().then((value) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Wrapper()),
-                                        );
-                                      });
-                                    },
-                                    text: "Log Out",
-                                    iconData: Icons.offline_bolt,
-                                    textSize: getSize(3),
-                                    height: (menuContainerHeight) / 6,
-                                  ),
-                                ],
+                            AnimatedPositioned(
+                              duration: Duration(milliseconds: 400),
+                              right: (isMenuOpen) ? 10 : sidebarSize,
+                              bottom: 35,
+                              child: IconButton(
+                                enableFeedback: true,
+                                icon: Icon(
+                                  Icons.keyboard_backspace,
+                                  color: orengeColor,
+                                  size: 40,
+                                ),
+                                onPressed: () {
+                                  setMenuOpenState(false);
+                                },
                               ),
                             )
                           ],
                         ),
                       ),
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: 400),
-                        right: (isMenuOpen) ? 10 : sidebarSize,
-                        bottom: 35,
-                        child: IconButton(
-                          enableFeedback: true,
-                          icon: Icon(
-                            Icons.keyboard_backspace,
-                            color: orengeColor,
-                            size: 40,
-                          ),
-                          onPressed: () {
-                            setMenuOpenState(false);
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
-    )));
+            ),
+          )));
   }
 
   void setMenuOpenState(bool state) {

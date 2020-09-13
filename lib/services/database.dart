@@ -2,7 +2,9 @@
 // import 'dart:ffi';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class DatabaseMehods {
@@ -184,5 +186,79 @@ class DatabaseMehods {
   //----------School database methods----------//
   //create a new school
 
-  //
+  //-------User report save to satabase---------
+  Future<void> saveReports(
+      String reports, String badUserID, String goodUserID) {
+    print('saveReports');
+    //First update in the user level
+
+    return Firestore.instance.collection('reports').add({
+      'reportMessage': reports,
+      'isSolved': false,
+      'reportedBadUserID': badUserID,
+      'reportGoodUser': goodUserID,
+    }).catchError((e) {
+      print(e.toString());
+    });
+    //    .document(badUserID)
+    //     .setData({
+    //   'reportMessage': reports,
+    //   'isSolved': false,
+    //   'reportedBadUserID': badUserID,
+    //   'reportGoodUser': goodUserID,
+    // }).catchError((e) {
+    //   print(e.toString());
+    // });
+    //also update in the course level
+  }
+
+  //---------UserTags---------
+
+  Future<void> removeSingleTag(
+      String userID, String removeTag, String tagCategory) async {
+    //used to remove a single Tag from the user
+    //tag category includes: major, gpa, language, studyHabits, other
+
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    DocumentSnapshot doc = await docRef.get();
+    List tags = doc.data['tags'];
+    if (tags.contains(tagCategory.contains(removeTag))) {
+      docRef.updateData({
+        'tags': {
+          tagCategory: FieldValue.arrayRemove([removeTag])
+        }
+      }).catchError((e) {
+        print(e.toString());
+      });
+    }
+  }
+
+  Future<void> updateAllTags(String userID, UserTags userTags) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    docRef.updateData({
+      'tags': {
+        'college': userTags.college,
+        'gpa': userTags.gpa,
+        'language': userTags.language,
+        'strudyHabits': userTags.strudyHabits,
+      }
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future<UserTags> getAllTage(String userID) async {
+    //used to remove a single Tag from the user
+
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    DocumentSnapshot doc = await docRef.get();
+    return UserTags.fromFirestoreTags(doc.data['tags']);
+    // .catchError((e) {
+    //   print(e.toString());
+    // }));
+  }
 }

@@ -114,7 +114,7 @@ class _SearchUsersState extends State<SearchUsers> {
                   child: Text(
                     'Search User',
                     textAlign: TextAlign.left,
-                    style: largeTitleTextStyle(),
+                    style: largeTitleTextStyle(Colors.black),
                   ),
                 ),
               ),

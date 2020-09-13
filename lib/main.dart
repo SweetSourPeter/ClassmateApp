@@ -3,6 +3,7 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -23,7 +24,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => CourseProvider()), //course Provider
         ChangeNotifierProvider(
-            create: (context) => ContactProvider()), //course Provider
+            create: (context) => ContactProvider()), //contacts Provider
+        ChangeNotifierProvider(
+            create: (context) => UserTagsProvider()), //tag Provider
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
