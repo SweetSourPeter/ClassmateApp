@@ -1,9 +1,5 @@
-import 'dart:developer';
-
 import 'package:app_test/models/constant.dart';
-import 'package:app_test/models/userTags.dart';
 import 'package:app_test/providers/tagProvider.dart';
-import 'package:app_test/widgets/category_selector.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -23,6 +19,7 @@ class _TagSelectingState extends State<TagSelecting> {
   double _fontSize = 14;
   //for category selector
   int selectedIndex = 0;
+
   final List<String> categories = [
     'College',
     'GPA',
@@ -32,14 +29,39 @@ class _TagSelectingState extends State<TagSelecting> {
   @override
   void initState() {
     super.initState();
+    _items = college;
     // if you store data on a local database (sqflite), then you could do something like this
+  }
+
+  void changepRroviderList(UserTagsProvider userTagProvider) {
+    switch (selectedIndex) {
+      case 0:
+        userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0]));
+        // return college;
+        break;
+      case 1:
+        userTagProvider.changeTagGPA(_getAllItem(tagStateKeyList[1]));
+        // return gpa;
+        break;
+      case 2:
+        userTagProvider.changeTagLanguage(_getAllItem(tagStateKeyList[2]));
+        // return language;
+        break;
+      case 3:
+        userTagProvider.changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
+        // return strudyHabits;
+        break;
+      default:
+        break;
+      // return [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final userTags = Provider.of<UserTags>(context);
+    // final userTags = Provider.of<UserTags>(context);
     final userTagProvider = Provider.of<UserTagsProvider>(context);
-    print(userTags);
+
     // var allTags = (userTags != null)
     //     ? [
     //         userTags.college,
@@ -49,25 +71,9 @@ class _TagSelectingState extends State<TagSelecting> {
     //       ].expand((x) => x).toList()
     //     : [];
     Size mediaQuery = MediaQuery.of(context).size;
-    // List findTheList() {
-    //   switch (selectedIndex) {
-    //     case 0:
-    //       userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0]));
-    //       return college;
-    //     case 1:
-    //       userTagProvider.changeTagGPA(_getAllItem(tagStateKeyList[1]));
-    //       return gpa;
-    //     case 2:
-    //       userTagProvider.changeTagLanguage(_getAllItem(tagStateKeyList[2]));
-    //       return language;
-    //     case 3:
-    //       userTagProvider
-    //           .changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
-    //       return strudyHabits;
-    //     default:
-    //       return [];
-    //   }
-    // }
+    // final List<Function> providerFunctions = [
+    //   userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0])),
+    // ];
 
     return Scaffold(
       body: Column(
@@ -130,10 +136,35 @@ class _TagSelectingState extends State<TagSelecting> {
                     SizedBox(
                       height: 20,
                     ),
-                    buildBottomTags(_items, tagStateKeyList[selectedIndex]),
+                    buildBottomTags(_items, tagStateKeyList[selectedIndex],
+                        userTagProvider),
                     SizedBox(
                       height: 20,
-                    )
+                    ),
+                    RaisedGradientButton(
+                      width: 200,
+                      height: 40,
+                      gradient: LinearGradient(
+                        colors: <Color>[orengeColor, orengeColor],
+                      ),
+                      onPressed: () {
+                        //TODO send data to database
+                        print('object');
+                        userTagProvider.addTagsToContact(context);
+                      },
+                      //之后需要根据friendsProvider改这部分display
+                      //TODO
+                      child: Text(
+                        'Complete',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ),
               ),
@@ -250,10 +281,13 @@ class _TagSelectingState extends State<TagSelecting> {
           index: index, // required
           title: item,
           activeColor: Colors.deepOrange,
+          textColor: Colors.white,
+          color: Colors.deepOrange,
           // active: item.active,
           // customData: item.customData,
           textStyle: TextStyle(
             fontSize: _fontSize,
+            // color: Colors.white,
           ),
           combine: ItemTagsCombine.withTextBefore,
           removeButton: ItemTagsRemoveButton(
@@ -281,35 +315,21 @@ class _TagSelectingState extends State<TagSelecting> {
     );
   }
 
-  Tags buildBottomTags(
-    List tagLists,
-    GlobalKey<TagsState> tagStateKey,
-  ) {
+  Tags buildBottomTags(List tagLists, GlobalKey<TagsState> tagStateKey,
+      UserTagsProvider userTagProvider) {
     return Tags(
       alignment: WrapAlignment.start,
       key: tagStateKey,
       spacing: 20,
       runSpacing: 18,
-      // textField: TagsTextField(
-      //   textStyle: TextStyle(fontSize: _fontSize),
-      //   constraintSuggestion: true,
-      //   suggestions: [],
-      //   onSubmitted: (String str) {
-      //     // Add item to the data source.
-      //     setState(() {
-      //       // required
-      //       tagLists.add(str);
-      //     });
-      //   },
-      // ),
       itemCount: tagLists.length, // required
       itemBuilder: (int index) {
         final item = tagLists[index];
-
         return ItemTags(
           customData: false,
           // Each ItemTags must contain a Key. Keys allow Flutter to
           // uniquely identify widgets.
+          color: Colors.deepOrange,
           key: Key(index.toString()),
           index: index, // required
           title: item,
@@ -319,16 +339,18 @@ class _TagSelectingState extends State<TagSelecting> {
           ),
           border: Border.all(color: Colors.deepOrange),
           activeColor: Colors.white,
+          textActiveColor: Colors.deepOrange,
           // active: item.active,
           // customData: item.customData,
-          textStyle: TextStyle(fontSize: _fontSize, color: Colors.deepOrange),
-          textColor: Colors.deepOrange,
-          textActiveColor: Colors.deepOrange,
+          textStyle: TextStyle(fontSize: _fontSize, color: Colors.white),
+          textColor: Colors.white,
+
           combine: ItemTagsCombine.withTextBefore,
           onPressed: (item) {
             print(item.title);
             setState(() {
               if (!allTags.contains(item.title)) {
+                changepRroviderList(userTagProvider);
                 allTags.add(item.title);
               } else {
                 allTags.remove(item.title);
@@ -349,9 +371,13 @@ class _TagSelectingState extends State<TagSelecting> {
   ];
 
 // Allows you to get a list of all the ItemTags
-  _getAllItem(GlobalKey<TagsState> tagStateKey) {
+  List _getAllItem(GlobalKey<TagsState> tagStateKey) {
+    print('get all item called');
     List<Item> lst = tagStateKey.currentState?.getAllItem;
+    List<String> lst2 = [];
     if (lst != null)
-      lst.where((a) => a.active == true).forEach((a) => print(a));
+      lst.where((a) => a.active == false).forEach((a) => lst2.add(a.title));
+    print(lst2);
+    return lst2;
   }
 }
