@@ -6,6 +6,9 @@ const darkBlueColor = Color(0xFF000839);
 const midBlueColor = Color(0xFF005082);
 const lightBlueColor = Color(0xFF00A8CC);
 
+const themeOrange = Color(0xFFFF7E40);
+const gradientYellow = Color(0xFFFFB811);
+
 const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
 const lightBlueColor2 = Color(0xFF5BC7DE);

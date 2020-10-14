@@ -40,7 +40,7 @@ class Wrapper extends StatelessWidget {
           FutureProvider(
               create: (context) => DatabaseMehods().getAllTage(user.userID)),
         ],
-        child: TagSelecting(),
+        child: UserInfo(),
       );
     }
   }
