@@ -3,10 +3,12 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/MainMenu.dart';
 import 'package:app_test/MainScreen.dart';
 import 'package:app_test/pages/contact_pages/addCourse.dart';
-import 'package:app_test/pages/contact_pages/userInfo/userInfo.dart';
+import 'package:app_test/pages/explore_pages/reportUser.dart';
+import 'package:app_test/pages/explore_pages/tagSelectingStepper.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/services/userDatabase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/providers/courseProvider.dart';
@@ -17,6 +19,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     // AuthMethods authMethods = new AuthMethods();
+    print('wrapper called');
 
     // return either the Home or Authenticate widget\
     if (user == null) {
@@ -31,6 +34,11 @@ class Wrapper extends StatelessWidget {
           StreamProvider(
               create: (context) =>
                   DatabaseMehods().getMyCourses(user.userID)), // get all course
+          StreamProvider(
+              create: (context) => UserDatabaseService()
+                  .getMyContacts(user.userID)), // get all contacts
+          FutureProvider(
+              create: (context) => DatabaseMehods().getAllTage(user.userID)),
         ],
         child: UserInfo(),
       );

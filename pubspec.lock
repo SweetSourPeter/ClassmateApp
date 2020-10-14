@@ -174,13 +174,27 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_email_sender:
+    dependency: "direct main"
+    description:
+      name: flutter_email_sender
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
       name: flutter_keyboard_visibility
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.2"
+    version: "3.2.1"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.8"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -188,6 +202,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.4"
+  flutter_tags:
+    dependency: "direct main"
+    description:
+      name: flutter_tags
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.8+2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -254,13 +275,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.4"
-  intl:
-    dependency: transitive
+  image_picker:
+    dependency: "direct main"
     description:
-      name: intl
+      name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.1"
+    version: "0.6.7+7"
+  image_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: image_picker_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   js:
     dependency: transitive
     description:
@@ -282,6 +310,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  multi_image_picker:
+    dependency: "direct main"
+    description:
+      name: multi_image_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.7.12"
   nested:
     dependency: transitive
     description:

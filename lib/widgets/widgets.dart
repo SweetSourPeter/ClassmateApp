@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
 
 //input that is commenly used inside the app
@@ -48,9 +49,8 @@ TextStyle biggerTextStyle() {
   return TextStyle(color: Colors.white, fontSize: 17);
 }
 
-TextStyle largeTitleTextStyle() {
-  return TextStyle(
-      color: Colors.black, fontSize: 32, fontWeight: FontWeight.w700);
+TextStyle largeTitleTextStyle(Color color) {
+  return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700);
 }
 
 class RaisedGradientButton extends StatelessWidget {
@@ -96,6 +96,7 @@ class RaisedGradientButton extends StatelessWidget {
   }
 }
 
+
 class PlainGradientButton extends StatelessWidget {
   final Widget child;
   final Gradient gradient;
@@ -131,3 +132,70 @@ class PlainGradientButton extends StatelessWidget {
     );
   }
 }
+
+
+//used on top of dragble sheet and showModalBottomSheet
+Padding topLineBar() {
+  return Padding(
+      padding: EdgeInsets.fromLTRB(10, 10, 8, 5),
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+          bottomLeft: Radius.circular(30.0),
+          bottomRight: Radius.circular(30.0),
+        ),
+        child: SizedBox(
+          width: 55.0,
+          height: 5.0,
+          child: const DecoratedBox(
+            decoration: const BoxDecoration(color: lightOrangeColor),
+          ),
+        ),
+      )
+      // child: Container(
+      //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+      //   color: Colors.black,
+      // )
+      );
+}
+
+// used to create user image
+CircleAvatar creatUserImage(double radius, UserData userdata) {
+  return CircleAvatar(
+    backgroundColor: orengeColor,
+    radius: radius,
+    child: Container(
+      child: (userdata.userImageUrl == null)
+          ? Text(
+              userdata.userName[0].toUpperCase(),
+              style: TextStyle(fontSize: 35, color: Colors.white),
+            )
+          : null,
+    ),
+    backgroundImage: (userdata.userImageUrl == null)
+        ? null
+        : NetworkImage(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
+  );
+}
+
+CircleAvatar creatUserImageWithString(
+    double radius, String userImageUrl, String userName) {
+  print("my user image url is $userImageUrl");
+  return CircleAvatar(
+    backgroundColor: orengeColor,
+    radius: radius,
+    child: Container(
+      child: (userImageUrl == '')
+          ? Text(
+              userName[0].toUpperCase(),
+              style: TextStyle(fontSize: 35, color: Colors.white),
+            )
+          : null,
+    ),
+    backgroundImage: (userImageUrl == '')
+        ? null
+        : NetworkImage(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
+  );

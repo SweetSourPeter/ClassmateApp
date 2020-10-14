@@ -53,4 +53,34 @@ class UserDatabaseService {
         .snapshots()
         .map(_userDataFromSnapshot);
   }
+
+  //get all my courses from firestore
+  Stream<List<UserData>> getMyContacts(String userID) {
+    print('gettre contact called');
+    return Firestore.instance
+        .collection('users')
+        .document(userID)
+        .collection('contacts')
+        .snapshots()
+        .map((snapshot) => snapshot.documents
+            .map((document) => UserData.fromFirestoreContacts(document.data))
+            .toList());
+  }
+
+  Future<void> addUserTOcontact(UserData contact, String userID) {
+    print('addUserTOcontact');
+    var a = contact.userID;
+    print('$userID');
+    //First update in the user level
+    return Firestore.instance
+        .collection('users')
+        .document(userID)
+        .collection('contacts')
+        .document(contact.userID)
+        .setData(contact.toMapIntoUsers())
+        .catchError((e) {
+      print(e.toString());
+    });
+    //also update in the course level
+  }
 }

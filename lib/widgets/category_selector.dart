@@ -7,13 +7,30 @@ class CategorySelector extends StatefulWidget {
 
 class _CategorySelectorState extends State<CategorySelector> {
   int selectedIndex = 0;
-  final List<String> categories = ['MainChat', 'Online', 'Groups', 'Requests'];
+  final List<String> categories = [
+    'College',
+    'GPA',
+    'Languages',
+    'Study habits',
+  ];
 
   @override
   Widget build(BuildContext context) {
+    Size mediaQuery = MediaQuery.of(context).size;
     return Container(
-      height: 90.0,
-      color: Theme.of(context).primaryColor,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 1.0,
+          ),
+        ],
+      ),
+      height: mediaQuery.height * 0.1,
+      // color: Colors.white,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -26,14 +43,19 @@ class _CategorySelectorState extends State<CategorySelector> {
             },
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 30.0,
+                horizontal: 18.0,
+                vertical: 20.0,
               ),
               child: Text(
                 categories[index],
                 style: TextStyle(
-                  color: index == selectedIndex ? Colors.white : Colors.white60,
-                  fontSize: 24.0,
+                  decoration:
+                      index == selectedIndex ? TextDecoration.underline : null,
+                  decorationColor: Colors.deepOrange[200],
+                  decorationThickness: 3,
+                  decorationStyle: TextDecorationStyle.solid,
+                  color: index == selectedIndex ? Colors.black : Colors.black87,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                 ),

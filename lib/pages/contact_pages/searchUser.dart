@@ -1,10 +1,14 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/message_model.dart';
+import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/services/userDatabase.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as dev;
+
+import 'package:provider/provider.dart';
 
 class SearchUsers extends StatefulWidget {
   @override
@@ -18,7 +22,6 @@ class _SearchUsersState extends State<SearchUsers> {
   // FocusNode _focus = new FocusNode();
   QuerySnapshot searchSnapshot;
   DatabaseMehods databaseMehods = new DatabaseMehods();
-
   // @override
   // void initState() {
   //   super.initState();
@@ -111,7 +114,7 @@ class _SearchUsersState extends State<SearchUsers> {
                   child: Text(
                     'Search User',
                     textAlign: TextAlign.left,
-                    style: largeTitleTextStyle(),
+                    style: largeTitleTextStyle(Colors.black),
                   ),
                 ),
               ),
@@ -200,6 +203,8 @@ class _SearchUsersState extends State<SearchUsers> {
             shrinkWrap: true, //when you have listview in column
             itemBuilder: (context, index) {
               return SearchTile(
+                school: searchSnapshot.documents[index].data['school'],
+                userID: searchSnapshot.documents[index].documentID,
                 userName:
                     // "peter",
                     searchSnapshot.documents[index].data['userName'],
@@ -207,7 +212,8 @@ class _SearchUsersState extends State<SearchUsers> {
                     // "731957665@qq.com",
                     searchSnapshot.documents[index].data['email'],
                 imageURL:
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                    // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                    searchSnapshot.documents[index].data['userImageUrl'],
               );
             })
         : Container(
@@ -233,22 +239,29 @@ class _SearchUsersState extends State<SearchUsers> {
 //searchTile for searchList
 
 class SearchTile extends StatelessWidget {
+  UserDatabaseService userDatabaseService = UserDatabaseService();
+  final String school;
+  final String userID;
   final String userName;
   final String userEmail;
   final String imageURL;
-  SearchTile({this.userName, this.userEmail, this.imageURL});
+  SearchTile(
+      {this.school, this.userID, this.userName, this.userEmail, this.imageURL});
 
   @override
   Widget build(BuildContext context) {
+    final contactProvider = Provider.of<ContactProvider>(context);
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: <Widget>[
-          CircleAvatar(
-            radius: 30.0,
-            backgroundImage: NetworkImage("${imageURL}"),
-            backgroundColor: Colors.transparent,
-          ),
+          creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
+          // CircleAvatar(
+          //   radius: 30.0,
+          //   backgroundImage: NetworkImage("${imageURL}"),
+          //   backgroundColor: Colors.transparent,
+          // ),
           SizedBox(
             width: 20,
           ),
@@ -287,6 +300,12 @@ class SearchTile extends StatelessWidget {
               ),
               onPressed: () {
                 //TODO
+                contactProvider.changeSchool(school);
+                contactProvider.changeUserID(userID);
+                contactProvider.changeEmail(userEmail);
+                contactProvider.changeUserName(userName);
+                contactProvider.changeUserImageUrl(imageURL);
+                contactProvider.addUserToContact(context);
               },
               //之后需要根据friendsProvider改这部分display
               //TODO

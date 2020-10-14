@@ -1,8 +1,9 @@
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/contact_pages/userInfo/userInfo.dart';
+import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -17,17 +18,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: UserInfo());
-//    return MultiProvider(
-//      providers: [
-//        StreamProvider(create: (context) => AuthMethods().user), //Login user
-//        ChangeNotifierProvider(
-//            create: (context) => CourseProvider()), //course Provider
-//      ],
-//      child: MaterialApp(
-//        home: Wrapper(),
-//      ),
-//    );
+    return MultiProvider(
+      providers: [
+        StreamProvider(create: (context) => AuthMethods().user), //Login user
+        ChangeNotifierProvider(
+            create: (context) => CourseProvider()), //course Provider
+        ChangeNotifierProvider(
+            create: (context) => ContactProvider()), //contacts Provider
+        ChangeNotifierProvider(
+            create: (context) => UserTagsProvider()), //tag Provider
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Wrapper(),
+      ),
+    );
   }
   // Widget build(BuildContext context) {
   //   return MaterialApp(
