@@ -3,6 +3,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/MainMenu.dart';
 import 'package:app_test/MainScreen.dart';
 import 'package:app_test/pages/contact_pages/addCourse.dart';
+import 'package:app_test/pages/contact_pages/userInfo/userInfo.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/database.dart';
@@ -31,7 +32,7 @@ class Wrapper extends StatelessWidget {
               create: (context) =>
                   DatabaseMehods().getMyCourses(user.userID)), // get all course
         ],
-        child: MainMenu(),
+        child: UserInfo(),
       );
     }
   }
