@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class TopBar extends StatelessWidget {
   const TopBar({
     Key key,
-}) : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +18,7 @@ class TopBar extends StatelessWidget {
             color: Colors.black,
             onPressed: () {
               //navigate to previous page
+              Navigator.pop(context);
               print("previous page");
             },
           ),
@@ -47,7 +48,7 @@ class TopBar extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 print("blocked");
                               },
                               child: Center(
@@ -55,9 +56,7 @@ class TopBar extends StatelessWidget {
                                   child: Text(
                                     "Block",
                                     style: GoogleFonts.openSans(
-                                      fontSize: 20.0,
-                                      color: themeOrange
-                                    ),
+                                        fontSize: 20.0, color: themeOrange),
                                   ),
                                 ),
                               ),
@@ -66,7 +65,7 @@ class TopBar extends StatelessWidget {
                               height: 0.0,
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 print("reported");
                               },
                               child: Center(
@@ -74,9 +73,7 @@ class TopBar extends StatelessWidget {
                                   child: Text(
                                     "Report",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 20.0,
-                                        color: themeOrange
-                                    ),
+                                        fontSize: 20.0, color: themeOrange),
                                   ),
                                 ),
                               ),
@@ -85,7 +82,7 @@ class TopBar extends StatelessWidget {
                               height: 0.0,
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 print("copied");
                               },
                               child: Center(
@@ -93,9 +90,7 @@ class TopBar extends StatelessWidget {
                                   child: Text(
                                     "Copy Profile URL",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 20.0,
-                                        color: Colors.black
-                                    ),
+                                        fontSize: 20.0, color: Colors.black),
                                   ),
                                 ),
                               ),
@@ -104,7 +99,7 @@ class TopBar extends StatelessWidget {
                               height: 0.0,
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 print("shared");
                               },
                               child: Center(
@@ -112,44 +107,40 @@ class TopBar extends StatelessWidget {
                                   child: Text(
                                     "Share This Profile",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 20.0,
-                                        color: Colors.black
-                                    ),
+                                        fontSize: 20.0, color: Colors.black),
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        margin: EdgeInsets.only(bottom: 10.0, left: 20.0, right: 20.0),
+                        margin: EdgeInsets.only(
+                            bottom: 10.0, left: 20.0, right: 20.0),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15.0)
-                        ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15.0)),
                       ),
                       Container(
                         height: 50,
                         child: GestureDetector(
-                          onTap:() {
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           child: Center(
                             child: Material(
                               child: Text(
-                                  "Cancel",
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 20.0,
-                                    color: Colors.black
-                                  ),
+                                "Cancel",
+                                style: GoogleFonts.openSans(
+                                    fontSize: 20.0, color: Colors.black),
                               ),
                             ),
                           ),
                         ),
-                        margin: EdgeInsets.only(bottom: 5.0, left: 20.0, right: 20.0),
+                        margin: EdgeInsets.only(
+                            bottom: 5.0, left: 20.0, right: 20.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0)
-                        ),
+                            borderRadius: BorderRadius.circular(15.0)),
                       ),
                     ],
                   );
@@ -168,6 +159,4 @@ class TopBar extends StatelessWidget {
     );
     throw UnimplementedError();
   }
-
-
 }

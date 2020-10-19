@@ -16,7 +16,37 @@ class DatabaseMehods {
         .snapshots()
         .map((snapshot) => UserData.fromFirestore(snapshot.data, userID));
   }
+//  Future<UserTags> getAllTage(String userID) async {
+//     //used to remove a single Tag from the user
 
+//     DocumentReference docRef =
+//         Firestore.instance.collection('users').document(userID);
+//     DocumentSnapshot doc = await docRef.get();
+//     return UserTags.fromFirestoreTags(doc.data['tags']);
+//     // .catchError((e) {
+//     //   print(e.toString());
+//     // }));
+//   }
+  Future<UserData> getUserDetailsByID(String userID) async {
+    print('called userdetails stream');
+    // return Firestore.instance
+    //     .collection('users')
+    //     .document(userID)
+    //     .snapshots()
+    //     .map((snapshot) => UserData.fromFirestore(snapshot.data, userID));
+
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    DocumentSnapshot doc = await docRef.get();
+    var userData = UserData(
+      email: doc.data['email'],
+      school: doc.data['school'],
+      userID: doc.data[userID],
+      userName: doc.data['userName'],
+      userImageUrl: doc.data['userImageUrl'],
+    );
+    return userData;
+  }
   // Stream<List<CourseInfo>> getMyCourses(String userID) {
   //   print('gettre cources called');
   //   return Firestore.instance
@@ -257,8 +287,5 @@ class DatabaseMehods {
         Firestore.instance.collection('users').document(userID);
     DocumentSnapshot doc = await docRef.get();
     return UserTags.fromFirestoreTags(doc.data['tags']);
-    // .catchError((e) {
-    //   print(e.toString());
-    // }));
   }
 }

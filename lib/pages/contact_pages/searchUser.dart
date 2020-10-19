@@ -1,5 +1,6 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/message_model.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/userDatabase.dart';
@@ -252,74 +253,86 @@ class SearchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final contactProvider = Provider.of<ContactProvider>(context);
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Row(
-        children: <Widget>[
-          creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
-          // CircleAvatar(
-          //   radius: 30.0,
-          //   backgroundImage: NetworkImage("${imageURL}"),
-          //   backgroundColor: Colors.transparent,
-          // ),
-          SizedBox(
-            width: 20,
-          ),
-          Container(
-            // color: Colors.black12,
-            width: 180,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  userName ?? '',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 3,
-                ),
-                Text(
-                  userEmail ?? '',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FriendProfile(
+              userID: userID, // to be modified to friend's ID
             ),
           ),
-          // SizedBox(
-          //   width: 10,
-          // ),
-          Expanded(
-            child: RaisedGradientButton(
-              width: 100,
-              height: 40,
-              gradient: LinearGradient(
-                colors: <Color>[Colors.red, orengeColor],
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: <Widget>[
+            creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
+            // CircleAvatar(
+            //   radius: 30.0,
+            //   backgroundImage: NetworkImage("${imageURL}"),
+            //   backgroundColor: Colors.transparent,
+            // ),
+            SizedBox(
+              width: 20,
+            ),
+            Container(
+              // color: Colors.black12,
+              width: 180,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    userName ?? '',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    userEmail ?? '',
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ],
               ),
-              onPressed: () {
+            ),
+            // SizedBox(
+            //   width: 10,
+            // ),
+            Expanded(
+              child: RaisedGradientButton(
+                width: 100,
+                height: 40,
+                gradient: LinearGradient(
+                  colors: <Color>[Colors.red, orengeColor],
+                ),
+                onPressed: () {
+                  //TODO
+                  contactProvider.changeSchool(school);
+                  contactProvider.changeUserID(userID);
+                  contactProvider.changeEmail(userEmail);
+                  contactProvider.changeUserName(userName);
+                  contactProvider.changeUserImageUrl(imageURL);
+                  contactProvider.addUserToContact(context);
+                },
+                //之后需要根据friendsProvider改这部分display
                 //TODO
-                contactProvider.changeSchool(school);
-                contactProvider.changeUserID(userID);
-                contactProvider.changeEmail(userEmail);
-                contactProvider.changeUserName(userName);
-                contactProvider.changeUserImageUrl(imageURL);
-                contactProvider.addUserToContact(context);
-              },
-              //之后需要根据friendsProvider改这部分display
-              //TODO
-              child: Text(
-                'ADD',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
+                child: Text(
+                  'ADD',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-          // Spacer(),
-        ],
+            // Spacer(),
+          ],
+        ),
       ),
     );
   }

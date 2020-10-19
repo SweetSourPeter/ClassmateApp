@@ -1,6 +1,9 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/message_model.dart';
+import 'package:app_test/models/userTags.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 
 class ExpandedButton extends StatefulWidget {
@@ -113,7 +116,9 @@ class ShrinkButton extends StatefulWidget {
   final double height;
   final Function onPressed;
   final Duration duration;
+  final String userName;
   final TextStyle initialStyle, finalStyle;
+  final UserTags userTag;
   ValueNotifier reset = ValueNotifier(false);
   ShrinkButton(
       {this.initialText,
@@ -124,7 +129,9 @@ class ShrinkButton extends StatefulWidget {
       this.gradient,
       this.finalStyle,
       this.initialStyle,
-      this.onPressed});
+      this.onPressed,
+      this.userName,
+      this.userTag});
 
   _ShrinkButtonState createState() => _ShrinkButtonState();
 }
@@ -134,10 +141,15 @@ class _ShrinkButtonState extends State<ShrinkButton>
   AnimationController _controller;
   ButtonState _currentState;
   Duration _duration;
-
+  final List<GlobalKey<TagsState>> tagStateKeyList = [
+    GlobalKey<TagsState>(),
+    GlobalKey<TagsState>(),
+    GlobalKey<TagsState>(),
+    GlobalKey<TagsState>(),
+    GlobalKey<TagsState>(),
+  ];
   void initState() {
     super.initState();
-
     widget.reset.addListener(() {
       debugPrint("value notifier is true");
       toggleState();
@@ -219,7 +231,8 @@ class _ShrinkButtonState extends State<ShrinkButton>
   Future showMyDialog() {
     return showDialog(
         context: context,
-        child: Container(
+        child: Padding(
+          padding: EdgeInsets.only(top: 240.0),
           child: Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -232,11 +245,14 @@ class _ShrinkButtonState extends State<ShrinkButton>
   }
 
   dialogContent(BuildContext context) {
+    print(widget.userTag.college.toString());
     return Stack(
       children: [
         Container(
+          height: 320,
+          width: 400,
           padding: EdgeInsets.only(
-            top: 100,
+            top: 10,
             bottom: 16,
             left: 16,
             right: 16,
@@ -253,18 +269,165 @@ class _ShrinkButtonState extends State<ShrinkButton>
                     offset: Offset(0.0, 10.0))
               ]),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            // mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'peter',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w300),
-              )
+                'About ' + widget.userName,
+                // 'About Peter',
+                style: simpleTextStyleBlack(),
+              ),
+              Expanded(
+                child: Container(
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: ListTile.divideTiles(
+                      context: context,
+                      tiles: [
+                        ListTile(
+                          title: Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              'College',
+                              style: simpleTextStyleBlack(),
+                            ),
+                          ),
+                          subtitle: buildTags(
+                              widget.userTag.college, tagStateKeyList[0]),
+                        ),
+                        ListTile(
+                          title: Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              'Language',
+                              style: simpleTextStyleBlack(),
+                            ),
+                          ),
+                          subtitle: buildTags(
+                              widget.userTag.language, tagStateKeyList[1]),
+                        ),
+                        ListTile(
+                          title: Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              'GPA',
+                              style: simpleTextStyleBlack(),
+                            ),
+                          ),
+                          subtitle:
+                              buildTags(widget.userTag.gpa, tagStateKeyList[2]),
+                        ),
+                        ListTile(
+                          title: Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              'Study Habits',
+                              style: simpleTextStyleBlack(),
+                            ),
+                          ),
+                          subtitle: buildTags(
+                              widget.userTag.strudyHabits, tagStateKeyList[3]),
+                        ),
+                      ],
+                    ).toList(),
+                  ),
+                ),
+              ),
             ],
           ),
-        )
+        ),
+        Positioned(
+          top: 0,
+          left: 16,
+          right: 16,
+          child: CustomPaint(size: Size(200, 200), painter: DrawTriangle()),
+        ),
       ],
+    );
+  }
+
+  Tags buildTags(
+    List tagLists,
+    GlobalKey<TagsState> tagStateKey,
+  ) {
+    return Tags(
+      alignment: WrapAlignment.start,
+      key: tagStateKey,
+      spacing: 6,
+      runSpacing: 6,
+      // direction: Axis.horizontal,
+      // symmetry: true,
+      // textField: TagsTextField(
+      //   textStyle: TextStyle(fontSize: _fontSize),
+      //   constraintSuggestion: true,
+      //   suggestions: [],
+      //   onSubmitted: (String str) {
+      //     // Add item to the data source.
+      //     setState(() {
+      //       // required
+      //       tagLists.add(str);
+      //     });
+      //   },
+      // ),
+      itemCount: tagLists.length, // required
+      itemBuilder: (int index) {
+        final item = tagLists[index];
+        return ItemTags(
+          customData: false,
+          padding: EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 4.0,
+          ),
+          // Each ItemTags must contain a Key. Keys allow Flutter to
+          // uniquely identify widgets.
+          key: Key(index.toString()),
+          index: index, // required
+          title: item,
+          activeColor: Colors.deepOrange,
+          textColor: Colors.white,
+          color: Colors.deepOrange,
+          // active: item.active,
+          // customData: item.customData,
+          textStyle: TextStyle(
+            fontSize: 14,
+            // color: Colors.white,
+          ),
+          combine: ItemTagsCombine.withTextBefore,
+          onPressed: (item) {
+            setState(() {
+              // required
+              tagLists.removeAt(index);
+            });
+          },
+          onLongPressed: (item) => print(item),
+        );
+      },
     );
   }
 }
 
 enum ButtonState { BEFORE_CLICK, AFTER_CLICK }
+
+class DrawTriangle extends CustomPainter {
+  Paint _paint;
+  DrawTriangle() {
+    _paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+  }
+  @override
+  void paint(Canvas canvas, Size size) {
+    var path = Path();
+    path.moveTo(size.width / 2, 0);
+    path.lineTo(size.width / 3 + 25, 20);
+    path.lineTo(size.width * 2 / 3 - 25, 20);
+    path.close();
+
+    canvas.drawPath(path, _paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}

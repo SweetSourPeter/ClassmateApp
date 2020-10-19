@@ -3,6 +3,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/MainMenu.dart';
 import 'package:app_test/MainScreen.dart';
 import 'package:app_test/pages/contact_pages/addCourse.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/pages/explore_pages/tagSelectingStepper.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
@@ -18,30 +19,33 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    // AuthMethods authMethods = new AuthMethods();
+    // AuthMethods
+    authMethods = new AuthMethods();
     print('wrapper called');
 
     // return either the Home or Authenticate widget\
     if (user == null) {
       return SignIn();
     } else {
-      return MultiProvider(
-        providers: [
-          StreamProvider(
-              create: (context) => DatabaseMehods()
-                  .userDetails(user.userID)), //Login user data details
-          // authMethods.isUserLogged().then((value) => null);
-          StreamProvider(
-              create: (context) =>
-                  DatabaseMehods().getMyCourses(user.userID)), // get all course
-          StreamProvider(
-              create: (context) => UserDatabaseService()
-                  .getMyContacts(user.userID)), // get all contacts
-          FutureProvider(
-              create: (context) => DatabaseMehods().getAllTage(user.userID)),
-        ],
-        child: UserInfo(),
-      );
+      return MultiProvider(providers: [
+        StreamProvider(
+            create: (context) => DatabaseMehods()
+                .userDetails(user.userID)), //Login user data details
+        // authMethods.isUserLogged().then((value) => null);
+        StreamProvider(
+            create: (context) =>
+                DatabaseMehods().getMyCourses(user.userID)), // get all course
+        StreamProvider(
+            create: (context) => UserDatabaseService()
+                .getMyContacts(user.userID)), // get all contacts
+        FutureProvider(
+            create: (context) => DatabaseMehods().getAllTage(user.userID)),
+      ], child: MainMenu()
+
+          // FriendProfile(
+          //   userID: user.userID, // to be modified to friend's ID
+          // ),
+          );
     }
   }
 }

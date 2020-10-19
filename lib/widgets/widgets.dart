@@ -96,7 +96,6 @@ class RaisedGradientButton extends StatelessWidget {
   }
 }
 
-
 class PlainGradientButton extends StatelessWidget {
   final Widget child;
   final Gradient gradient;
@@ -132,7 +131,6 @@ class PlainGradientButton extends StatelessWidget {
     );
   }
 }
-
 
 //used on top of dragble sheet and showModalBottomSheet
 Padding topLineBar() {
@@ -199,3 +197,4 @@ CircleAvatar creatUserImageWithString(
         : NetworkImage(
             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
+}

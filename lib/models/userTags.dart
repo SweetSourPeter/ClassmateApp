@@ -11,7 +11,7 @@ class UserTags {
     this.strudyHabits,
   });
 
-  UserTags.fromFirestoreTags(Map<List, dynamic> firestore)
+  UserTags.fromFirestoreTags(Map<String, dynamic> firestore)
       : gpa = firestore['gpa'],
         college = firestore['college'],
         language = firestore['language'],

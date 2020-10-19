@@ -1,30 +1,55 @@
+import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/animatedButton.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'topBar.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 
 class BasicInfo extends StatefulWidget {
-  const BasicInfo({
+  final String userID;
+  final Future<UserTags> userTag;
+  final Future<UserData> userData;
+  BasicInfo({
     Key key,
+    @required this.userID,
+    @required this.userTag,
+    @required this.userData,
   }) : super(key: key);
 
   @override
-  _BasicInfoState createState() => _BasicInfoState();
+  _BasicInfoState createState() => _BasicInfoState(
+        userID,
+        userTag,
+        userData,
+      );
 }
 
 class _BasicInfoState extends State<BasicInfo> {
+  String userID;
+  Future<UserTags> userTag;
+  Future<UserData> userData;
+  _BasicInfoState(this.userID, this.userTag, this.userData); //constructor
+  final databaseMehods = DatabaseMehods();
+
   @override
   Widget build(BuildContext context) {
+    Size mediaQuery = MediaQuery.of(context).size;
+    double sidebarSize = mediaQuery.width * 0.65;
     int matchingPercentage = 80;
-    return Container(
-      height: 400,
-      child: Stack(
-        children: <Widget>[
-          Container(
-            height: 200.0,
-            color: Colors.orange[50],
+    return FutureBuilder(
+        future: Future.wait([widget.userData, widget.userTag]),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              height: 400,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: 200.0,
+                    color: Colors.orange[50],
 //            add background image here
 //            decoration: BoxDecoration(
 //              image: DecorationImage(
@@ -32,40 +57,45 @@ class _BasicInfoState extends State<BasicInfo> {
 //                fit: BoxFit.cover,
 //              )
 //            ),
-          ),
-          Align(
-            alignment: Alignment(0, 0.5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 68.0,
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/olivia.jpg'),
-                    radius: 60.0,
                   ),
-                ),
-                SizedBox(
-                  height: 4.0,
-                ),
-                ShrinkButton(
-                  width: 90.0,
-                  height: 30.0,
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [themeOrange, gradientYellow],
-                  ),
-                  duration: Duration(milliseconds: 100),
-                  initialText: matchingPercentage.toString() + "%",
-                  finalText: " match",
-                  initialStyle: GoogleFonts.montserrat(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  finalStyle:
-                      GoogleFonts.openSans(fontSize: 10.0, color: Colors.white),
+                  Align(
+                    alignment: Alignment(0, 0.5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 60.0,
+                          child:
+                              creatUserImage(sidebarSize / 5, snapshot.data[0]),
+                          // creatUserImage(sidebarSize / 5, userData),
+                          //     CircleAvatar(
+                          //   backgroundImage: AssetImage('assets/images/olivia.jpg'),
+                          //   radius: 60.0,
+                          // ),
+                        ),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        ShrinkButton(
+                          userTag: snapshot.data[1],
+                          userName: snapshot.data[0].userName,
+                          width: 90.0,
+                          height: 30.0,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [themeOrange, gradientYellow],
+                          ),
+                          duration: Duration(milliseconds: 100),
+                          initialText: matchingPercentage.toString() + "%",
+                          finalText: " match",
+                          initialStyle: GoogleFonts.montserrat(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                          finalStyle: GoogleFonts.openSans(
+                              fontSize: 10.0, color: Colors.white),
 //                  child: Row(
 //                    mainAxisAlignment: MainAxisAlignment.center,
 //                    children: [
@@ -86,32 +116,36 @@ class _BasicInfoState extends State<BasicInfo> {
 //                      )
 //                    ],
 //                  ),
-                  onPressed: () {
-                    //TODO
-                  },
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text("Alexandra Murphy",
-                    style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                      color: themeOrange,
-                    )),
-                SizedBox(
-                  height: 4.0,
-                ),
-                Text("amurphy@bu.edu",
-                    style: GoogleFonts.openSans(
-                        fontSize: 10.0, color: Colors.black))
-              ],
-            ),
-          ),
-          TopBar(),
-        ],
-      ),
-    );
+                          onPressed: () {
+                            //TODO
+                          },
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text(snapshot.data[0].userName,
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                              color: themeOrange,
+                            )),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        Text(snapshot.data[0].email,
+                            style: GoogleFonts.openSans(
+                                fontSize: 10.0, color: Colors.black))
+                      ],
+                    ),
+                  ),
+                  TopBar(),
+                ],
+              ),
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 }
 
