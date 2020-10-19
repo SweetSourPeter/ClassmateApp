@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,6 +10,23 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void showBottomSheet() {
+      showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(width: 15, color: Colors.transparent),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+                // bottomLeft: Radius.circular(30.0),
+                // bottomRight: Radius.circular(30.0),
+              )),
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return ReportUser();
+          });
+    }
+
     return SafeArea(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,6 +85,8 @@ class TopBar extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 print("reported");
+                                Navigator.of(context).pop();
+                                showBottomSheet();
                               },
                               child: Center(
                                 child: Material(

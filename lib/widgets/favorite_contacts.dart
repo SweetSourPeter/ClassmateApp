@@ -1,5 +1,6 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -103,15 +104,26 @@ class FavoriteContacts extends StatelessWidget {
                     crossAxisCount: 5,
                     children: List.generate(contacts.length, (index) {
                       return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ChatScreen(
-                              //TODO
-                              user: favorites[index],
+                        // onTap: () => Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => ChatScreen(
+                        //       //TODO
+                        //       user: favorites[index],
+                        //     ),
+                        //   ),
+                        // ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FriendProfile(
+                                userID: contacts[index]
+                                    .userID, // to be modified to friend's ID
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                         child: Container(
                             child: Column(
                           children: <Widget>[
