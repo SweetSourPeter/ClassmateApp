@@ -112,7 +112,7 @@ class _SignInState extends State<SignIn> {
                         ],
                       ),
                     ),
-                    // _getBackBtn(),
+                    _getBackBtn(),
                   ],
                 ),
               ),
@@ -130,6 +130,21 @@ class _SignInState extends State<SignIn> {
 //     ),
 //   );
 // }
+  _getBackBtn() {
+    return Positioned(
+      top: 35,
+      left: 25,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 
   _getBottomRow(context) {
     return Expanded(
