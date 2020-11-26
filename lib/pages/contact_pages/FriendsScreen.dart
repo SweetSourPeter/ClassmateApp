@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/widgets/category_selector.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
@@ -13,20 +14,6 @@ class FriendsScreen extends StatefulWidget {
 }
 
 class _FriendsScreenState extends State<FriendsScreen> {
-  //BOTTOM POP UP SHEET showing Favorite contacts
-  void showBottomSheet() {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
-        )),
-        context: context,
-        builder: (context) {
-          return FavoriteContacts();
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -41,10 +28,13 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 color: darkBlueColor,
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 //TODO change icon
-                icon: Icon(Icons.contact_phone),
+                icon: Icon(Icons.search),
                 onPressed: () {
-                  //TODO show recent contacts
-                  showBottomSheet();
+                  //search for users
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchUsers()));
+
+                  //TODO show recent contacts ?
                 })
           ],
         ),
@@ -52,9 +42,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: EdgeInsets.only(left: 33, top: 5, bottom: 12),
+              padding: EdgeInsets.only(left: 33, top: 5, bottom: 20),
               child: Container(
-                // color: orengeColor,
                 child: Text(
                   'Chats',
                   textAlign: TextAlign.left,
@@ -82,7 +71,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   decoration: BoxDecoration(
-                    color: chat.unread ? Color(0xFFFFEFEE) : Colors.white,
+                    color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(20.0),
                       bottomRight: Radius.circular(20.0),
@@ -94,29 +83,48 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       Row(
                         children: <Widget>[
                           CircleAvatar(
-                            radius: 35.0,
+                            radius: 32.0,
                             backgroundImage: AssetImage(chat.sender.imageUrl),
+                            child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: chat.unread
+                                    ? CircleAvatar(
+                                        backgroundColor: themeOrange,
+                                        radius: 10.0,
+                                        child: Text(
+                                          chat.unreadNumber <= 99
+                                              ? chat.unreadNumber.toString()
+                                              : '...',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ))
+                                    : null),
                           ),
-                          SizedBox(width: 10.0),
+                          SizedBox(width: 15.0),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
                                 chat.sender.name,
                                 style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      chat.unread ? themeOrange : Colors.black,
+                                  fontSize: 17.0,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                              SizedBox(height: 5.0),
+                              SizedBox(height: 8.0),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.45,
                                 child: Text(
                                   chat.text,
                                   style: TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontSize: 15.0,
+                                    color: Colors.black87,
+                                    fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -136,26 +144,26 @@ class _FriendsScreenState extends State<FriendsScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 5.0),
-                          chat.unread
-                              ? Container(
-                                  width: 40.0,
-                                  height: 20.0,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'NEW',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                )
-                              : Text(''),
+                          SizedBox(height: 19.0),
+                          // chat.unread
+                          //     ? Container(
+                          //         width: 40.0,
+                          //         height: 20.0,
+                          //         decoration: BoxDecoration(
+                          //           color: Theme.of(context).primaryColor,
+                          //           borderRadius: BorderRadius.circular(30.0),
+                          //         ),
+                          //         alignment: Alignment.center,
+                          //         child: Text(
+                          //           'NEW',
+                          //           style: TextStyle(
+                          //             color: Colors.white,
+                          //             fontSize: 12.0,
+                          //             fontWeight: FontWeight.bold,
+                          //           ),
+                          //         ),
+                          //       )
+                          //     : Text(''),
                         ],
                       ),
                     ],

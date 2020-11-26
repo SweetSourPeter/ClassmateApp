@@ -1,6 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 //input that is commenly used inside the app
 InputDecoration buildInputDecorationPinky(
@@ -38,19 +39,28 @@ InputDecoration textFieldInputDecoration(String hintText) {
 }
 
 TextStyle simpleTextStyle() {
-  return TextStyle(color: Colors.white, fontSize: 16);
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(color: Colors.white, fontSize: 16),
+  );
 }
 
 TextStyle simpleTextStyleBlack() {
-  return TextStyle(color: Colors.black, fontSize: 16);
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(color: Colors.black, fontSize: 16),
+  );
 }
 
 TextStyle biggerTextStyle() {
-  return TextStyle(color: Colors.white, fontSize: 17);
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(color: Colors.white, fontSize: 17),
+  );
 }
 
 TextStyle largeTitleTextStyle(Color color) {
-  return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700);
+  return GoogleFonts.montserrat(
+    textStyle:
+        TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700),
+  );
 }
 
 class RaisedGradientButton extends StatelessWidget {
