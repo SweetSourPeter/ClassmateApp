@@ -68,7 +68,7 @@ class FavoriteContacts extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.0),
             child: Column(
               children: <Widget>[
-                topLineBar(),
+                // topLineBar(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(

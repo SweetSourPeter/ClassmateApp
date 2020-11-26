@@ -6,13 +6,18 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 
 class TagSelecting extends StatefulWidget {
-  TagSelecting({Key key}) : super(key: key);
+  final PageController pageController;
+  final Color buttonColor;
+  const TagSelecting({Key key, this.pageController, this.buttonColor})
+      : super(key: key);
+  // TagSelecting({Key key}) : super(key: key);
 
   @override
   _TagSelectingState createState() => _TagSelectingState();
 }
 
 class _TagSelectingState extends State<TagSelecting> {
+  double _scaleHolder = 0;
   List _items = [];
 
   List allTags = [];
@@ -79,8 +84,17 @@ class _TagSelectingState extends State<TagSelecting> {
       body: Column(
         children: [
           Container(
+            // decoration: BoxDecoration(
+            //   boxShadow: <BoxShadow>[
+            //     BoxShadow(
+            //         color: Colors.white,
+            //         blurRadius: 15.0,
+            //         offset: Offset(0.0, 0.75))
+            //   ],
+            //   color: orengeColor,
+            // ),
             height: mediaQuery.height * 0.45,
-            color: orengeColor,
+            color: Colors.grey[300],
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -97,7 +111,7 @@ class _TagSelectingState extends State<TagSelecting> {
                         child: Text(
                           'Choose your tags',
                           textAlign: TextAlign.left,
-                          style: largeTitleTextStyle(Colors.white),
+                          style: largeTitleTextStyle(Colors.black),
                         ),
                       ),
                     ),
@@ -109,10 +123,13 @@ class _TagSelectingState extends State<TagSelecting> {
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                         padding: EdgeInsets.only(
-                            left: mediaQuery.width * 0.10, top: 0, bottom: 0),
+                            left: mediaQuery.width * 0.10,
+                            top: 0,
+                            bottom: 0,
+                            right: mediaQuery.width * 0.20),
                         child: Text(
-                          'Tags help us to match you with who have similar background, study habits and hobbies.',
-                          style: simpleTextStyle(),
+                          'Tags help us to match you with who have similar background and study habits.',
+                          style: simpleTextStyle(Colors.black),
                         )),
                   ),
                   SizedBox(
@@ -121,7 +138,11 @@ class _TagSelectingState extends State<TagSelecting> {
                   Padding(
                       padding: EdgeInsets.only(
                           left: mediaQuery.width * 0.10, bottom: 30),
-                      child: buildTopTags(allTags, tagStateKeyList[4])),
+                      child: buildTopTags(
+                        widget.buttonColor,
+                        allTags,
+                        tagStateKeyList[4],
+                      )),
                 ],
               ),
             ),
@@ -132,50 +153,92 @@ class _TagSelectingState extends State<TagSelecting> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    categorySelector(mediaQuery, userTagProvider),
+                    categorySelector(
+                        widget.buttonColor, mediaQuery, userTagProvider),
                     SizedBox(
                       height: 20,
                     ),
-                    buildBottomTags(_items, tagStateKeyList[selectedIndex],
-                        userTagProvider),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    RaisedGradientButton(
-                      width: 200,
-                      height: 40,
-                      gradient: LinearGradient(
-                        colors: <Color>[orengeColor, orengeColor],
-                      ),
-                      onPressed: () {
-                        //TODO send data to database
-                        print('object');
-                        userTagProvider.addTagsToContact(context);
-                      },
-                      //之后需要根据friendsProvider改这部分display
-                      //TODO
-                      child: Text(
-                        'Complete',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    buildBottomTags(widget.buttonColor, _items,
+                        tagStateKeyList[selectedIndex], userTagProvider),
                   ],
                 ),
               ),
             ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          // RaisedGradientButton(
+          //   width: 200,
+          //   height: 40,
+          //   gradient: LinearGradient(
+          //     colors: <Color>[orengeColor, orengeColor],
+          //   ),
+          //   onPressed: () {
+          //     //TODO send data to database
+          //     userTagProvider.addTagsToContact(context);
+          //   },
+          //   //之后需要根据friendsProvider改这部分display
+          //   //TODO
+          //   child: Text(
+          //     'Complete',
+          //     style: TextStyle(
+          //         fontSize: 20,
+          //         color: Colors.white,
+          //         fontWeight: FontWeight.w600),
+          //   ),
+          // ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black38,
+                    offset: Offset(0, 10),
+                    blurRadius: 15),
+              ],
+            ),
+            height: mediaQuery.height * 0.06,
+            width: mediaQuery.width * 0.3,
+            child: RaisedButton(
+              onHighlightChanged: (press) {
+                setState(() {
+                  if (press) {
+                    _scaleHolder = 0.1;
+                  } else {
+                    _scaleHolder = 0.0;
+                  }
+                });
+              },
+              hoverColor: widget.buttonColor,
+              hoverElevation: 0,
+              highlightColor: widget.buttonColor,
+              highlightElevation: 0,
+              elevation: 1,
+              color: widget.buttonColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              onPressed: () {
+                userTagProvider.addTagsToContact(context);
+                widget.pageController.animateToPage(2,
+                    duration: Duration(milliseconds: 800),
+                    curve: Curves.easeInCubic);
+              },
+              child: Text(
+                'Complete',
+                style: simpleTextStyle(Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
           ),
         ],
       ),
     );
   }
 
-  Widget categorySelector(Size mediaQuery, userTagProvider) {
+  Widget categorySelector(Color color, Size mediaQuery, userTagProvider) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5.0),
@@ -228,7 +291,7 @@ class _TagSelectingState extends State<TagSelecting> {
                 style: TextStyle(
                   decoration:
                       index == selectedIndex ? TextDecoration.underline : null,
-                  decorationColor: Colors.deepOrange[200],
+                  decorationColor: color,
                   decorationThickness: 3,
                   decorationStyle: TextDecorationStyle.solid,
                   color: index == selectedIndex ? Colors.black : Colors.black87,
@@ -245,6 +308,7 @@ class _TagSelectingState extends State<TagSelecting> {
   }
 
   Tags buildTopTags(
+    Color tagColor,
     List tagLists,
     GlobalKey<TagsState> tagStateKey,
   ) {
@@ -280,9 +344,9 @@ class _TagSelectingState extends State<TagSelecting> {
           key: Key(index.toString()),
           index: index, // required
           title: item,
-          activeColor: Colors.deepOrange,
+          activeColor: tagColor,
           textColor: Colors.white,
-          color: Colors.deepOrange,
+          color: tagColor,
           // active: item.active,
           // customData: item.customData,
           textStyle: TextStyle(
@@ -315,8 +379,8 @@ class _TagSelectingState extends State<TagSelecting> {
     );
   }
 
-  Tags buildBottomTags(List tagLists, GlobalKey<TagsState> tagStateKey,
-      UserTagsProvider userTagProvider) {
+  Tags buildBottomTags(Color tagColor, List tagLists,
+      GlobalKey<TagsState> tagStateKey, UserTagsProvider userTagProvider) {
     return Tags(
       alignment: WrapAlignment.start,
       key: tagStateKey,
@@ -329,7 +393,7 @@ class _TagSelectingState extends State<TagSelecting> {
           customData: false,
           // Each ItemTags must contain a Key. Keys allow Flutter to
           // uniquely identify widgets.
-          color: Colors.deepOrange,
+          color: tagColor,
           key: Key(index.toString()),
           index: index, // required
           title: item,
@@ -337,9 +401,9 @@ class _TagSelectingState extends State<TagSelecting> {
             horizontal: 10.0,
             vertical: 8.0,
           ),
-          border: Border.all(color: Colors.deepOrange),
+          border: Border.all(color: tagColor),
           activeColor: Colors.white,
-          textActiveColor: Colors.deepOrange,
+          textActiveColor: tagColor,
           // active: item.active,
           // customData: item.customData,
           textStyle: TextStyle(fontSize: _fontSize, color: Colors.white),

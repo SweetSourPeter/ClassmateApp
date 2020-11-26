@@ -1,6 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 //input that is commenly used inside the app
 InputDecoration buildInputDecorationPinky(
@@ -37,20 +38,48 @@ InputDecoration textFieldInputDecoration(String hintText) {
           UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)));
 }
 
-TextStyle simpleTextStyle() {
-  return TextStyle(color: Colors.white, fontSize: 16);
+TextStyle simpleTextStyle(Color color) {
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      color: color,
+      letterSpacing: .5,
+      fontSize: 14,
+    ),
+  );
+  // TextStyle(color: Colors.white, fontSize: 16);
 }
 
 TextStyle simpleTextStyleBlack() {
-  return TextStyle(color: Colors.black, fontSize: 16);
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+        color: Colors.black,
+        letterSpacing: .5,
+        fontSize: 16,
+        fontWeight: FontWeight.w700),
+  );
+  // TextStyle(color: Colors.black, fontSize: 16);
 }
 
 TextStyle biggerTextStyle() {
-  return TextStyle(color: Colors.white, fontSize: 17);
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+        color: Colors.white,
+        letterSpacing: .5,
+        fontSize: 17,
+        fontWeight: FontWeight.w700),
+  );
+  // TextStyle(color: Colors.white, fontSize: 17);
 }
 
 TextStyle largeTitleTextStyle(Color color) {
-  return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700);
+  // return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700);
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+        color: color,
+        letterSpacing: .5,
+        fontSize: 28,
+        fontWeight: FontWeight.w700),
+  );
 }
 
 class RaisedGradientButton extends StatelessWidget {

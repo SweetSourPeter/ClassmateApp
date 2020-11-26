@@ -1,6 +1,6 @@
-import 'package:app_test/pages/initialPage/first_page.dart';
+import 'package:app_test/pages/my_pages/first_page_login.dart';
 import 'package:app_test/pages/utils/animation_item.dart';
-import 'package:app_test/pages/utils/consts.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -63,7 +63,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
           SizedBox(
             height: _height,
             width: _height,
-            child: FirstPage(
+            child: FirstPageLogin(
               pageController: _pageController,
               buttonColor: listColors[_currentIndexColor].colors[1],
             ),

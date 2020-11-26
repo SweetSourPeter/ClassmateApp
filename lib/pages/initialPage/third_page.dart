@@ -1,5 +1,5 @@
 import 'package:app_test/pages/initialPage/start_page.dart';
-import 'package:app_test/pages/utils/consts.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/change_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -44,7 +44,7 @@ class _ThirdPageState extends State<ThirdPage>
           Padding(
             padding: const EdgeInsets.only(left: 30, right: 30),
             child: Text(
-              'Escolha a cor que mais te representa!',
+              'Choose your profile picture!',
               style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -58,9 +58,9 @@ class _ThirdPageState extends State<ThirdPage>
           Padding(
             padding: const EdgeInsets.only(left: 30, right: 30),
             child: Text(
-              'NÃO SE PREOCUPE ISSO PODE SER ALTERADO DEPOIS',
+              'Select the color you like',
               style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: Colors.black26),
               textAlign: TextAlign.left,
@@ -158,7 +158,7 @@ class _ThirdPageState extends State<ThirdPage>
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
                               child: Text(
-                                'TERMINEI',
+                                'Ready to meet classmates',
                                 style: TextStyle(
                                   color: listColors[_currentindex.round()]
                                       .colors[1],

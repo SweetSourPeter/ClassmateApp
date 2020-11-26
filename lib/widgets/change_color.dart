@@ -6,12 +6,14 @@ class ChangeColor extends StatelessWidget {
   final int index;
   final double offset;
   final VoidCallback onTap;
-  
+
   const ChangeColor(
       {Key key,
       this.border,
       this.offset,
-      this.index, this.onTap, this.linearGradient})
+      this.index,
+      this.onTap,
+      this.linearGradient})
       : super(key: key);
 
   @override
@@ -26,29 +28,39 @@ class ChangeColor extends StatelessWidget {
             : index == offset.round() ? (_height * 0.25) : (_height * 0.30),
         child: GestureDetector(
           onTap: onTap,
-                  child: Center(
+          child: Center(
             child: TweenAnimationBuilder(
               duration: Duration(milliseconds: 200),
               builder: (BuildContext context, value, Widget child) {
                 return Transform.scale(scale: value, child: child);
               },
-              tween: Tween(begin: 0.8, end: index == offset.round() ? 1.0 : 0.8),
+              tween:
+                  Tween(begin: 0.8, end: index == offset.round() ? 1.0 : 0.8),
               child: Container(
                 height: 80,
                 width: 80,
-                decoration: BoxDecoration(
-                  border: border == null
-                      ? Border.all(width: 4, color: Colors.white)
-                      : border,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black45,
-                        offset: Offset(0, 10),
-                        blurRadius: 10)
-                  ],
-                  gradient: linearGradient
+                child: Center(
+                  child: Text(
+                    'J',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
+                decoration: BoxDecoration(
+                    border: border == null
+                        ? Border.all(width: 4, color: Colors.white)
+                        : border,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(0, 10),
+                          blurRadius: 10)
+                    ],
+                    gradient: linearGradient),
               ),
             ),
           ),

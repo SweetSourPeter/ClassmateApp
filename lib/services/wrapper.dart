@@ -13,6 +13,7 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+
     // AuthMethods
     authMethods = new AuthMethods();
     print('wrapper called');
@@ -34,7 +35,7 @@ class Wrapper extends StatelessWidget {
                 .getMyContacts(user.userID)), // get all contacts
         FutureProvider(
             create: (context) => DatabaseMehods().getAllTage(user.userID)),
-      ], child: StartPage()
+      ], child: MainMenu()
 
           // FriendProfile(
           //   userID: user.userID, // to be modified to friend's ID

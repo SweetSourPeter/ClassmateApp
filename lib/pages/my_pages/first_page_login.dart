@@ -2,17 +2,17 @@ import 'package:app_test/pages/utils/animation_item.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 
-class FirstPage extends StatefulWidget {
+class FirstPageLogin extends StatefulWidget {
   final PageController pageController;
   final Color buttonColor;
 
-  const FirstPage({Key key, this.pageController, this.buttonColor})
+  const FirstPageLogin({Key key, this.pageController, this.buttonColor})
       : super(key: key);
   @override
-  _FirstPageState createState() => _FirstPageState();
+  _FirstPageLoginState createState() => _FirstPageLoginState();
 }
 
-class _FirstPageState extends State<FirstPage> {
+class _FirstPageLoginState extends State<FirstPageLogin> {
   List<AnimationItem> animationlist = [];
   double _scaleHolder = 0;
   @override
@@ -100,10 +100,10 @@ class _FirstPageState extends State<FirstPage> {
                                   left: 30, right: 30, top: 15 + paddingvalue),
                               child: Text.rich(
                                 TextSpan(
-                                  text: 'Ready to change your \n',
+                                  text: 'A place to meet your \n',
                                   children: [
                                     TextSpan(
-                                      text: 'Profile?',
+                                      text: 'classmates',
                                     )
                                   ],
                                   style: TextStyle(
@@ -172,7 +172,7 @@ class _FirstPageState extends State<FirstPage> {
                                         curve: Curves.easeInCubic);
                                   },
                                   child: Text(
-                                    'Let\'s Start',
+                                    'Hi, MeetCor',
                                     style: TextStyle(color: widget.buttonColor),
                                   ),
                                 ),
@@ -184,27 +184,27 @@ class _FirstPageState extends State<FirstPage> {
                     );
                   },
                 ),
-                // TweenAnimationBuilder(
-                //     //child: LogoWidget(),
-                //     duration: Duration(milliseconds: 1000),
-                //     curve: Curves.elasticOut,
-                //     tween: findAnimation('button_scale', 0.0, animationlist),
-                //     builder: (context, value, child) {
-                //       return Transform.scale(
-                //         scale: value,
-                //         child: GestureDetector(
-                //           onTap: () {
-                //             widget.pageController.animateToPage(2,
-                //                 duration: Duration(milliseconds: 800),
-                //                 curve: Curves.easeInCubic);
-                //           },
-                //           child: Text(
-                //             'I ALREADY HAVE AN ACCOUNT',
-                //             style: TextStyle(color: Colors.white),
-                //           ),
-                //         ),
-                //       );
-                //     }),
+                TweenAnimationBuilder(
+                    //child: LogoWidget(),
+                    duration: Duration(milliseconds: 1000),
+                    curve: Curves.elasticOut,
+                    tween: findAnimation('button_scale', 0.0, animationlist),
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: GestureDetector(
+                          onTap: () {
+                            widget.pageController.animateToPage(2,
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.easeInCubic);
+                          },
+                          child: Text(
+                            'I ALREADY HAVE AN ACCOUNT',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      );
+                    }),
               ],
             ),
           )
