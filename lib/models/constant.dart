@@ -13,6 +13,8 @@ const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
 const lightBlueColor2 = Color(0xFF5BC7DE);
 const builtyPinkColor = Color(0xFFeedad1);
+const pinkColor = Color(0xFFFF3B7C);
+const riceColor = Color(0xFFF9F6F1);
 
 const redCircleColor = Color(0xFF5F4E);
 const unselectedColor = Color(0xFFDFAF);
