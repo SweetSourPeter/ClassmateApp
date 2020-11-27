@@ -351,8 +351,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         child: Container(
                           // color: Colors.red,
                           margin: const EdgeInsets.only(
-                              bottom: 16, top: 16, left: 25, right: 25),
-                          height: 120,
+                              bottom: 16, top: 16, left: 38, right: 38),
+                          height: 150,
                           // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
