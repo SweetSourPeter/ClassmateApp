@@ -49,7 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
         isLoading = false;
         print("User value is " + "${val.user.uid.toString()}");
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Wrapper()));
+            context, MaterialPageRoute(builder: (context) => Wrapper(true)));
       }).catchError((error) {
         isLoading = false;
         print(error.code);

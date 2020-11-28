@@ -231,7 +231,7 @@ class _TagSelectingState extends State<TagSelecting> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 35,
           ),
         ],
       ),

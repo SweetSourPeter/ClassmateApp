@@ -1,5 +1,5 @@
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/explore_pages/tagSelectingStepper.dart';
+import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/first_page.dart';
 import 'package:app_test/pages/initialPage/password_page.dart';
 import 'package:app_test/pages/initialPage/second_page.dart';
@@ -104,8 +104,12 @@ class _StartPageState extends State<StartPage> {
                         buttonColor: listColors[_currentIndexColor].colors[1],
                       ),
                       // SecondPage(),
-                      SecondPage(),
+                      SecondPage(
+                        pageController: _pageController,
+                        buttonColor: listColors[_currentIndexColor].colors[1],
+                      ),
                       ThirdPage(
+                        userName: userdata.userName,
                         initialIndex: _currentIndexColor,
                         valueChanged: (index) {
                           setState(() {
@@ -147,8 +151,8 @@ class _StartPageState extends State<StartPage> {
                   },
                 ),
                 AnimatedPositioned(
-                  top: _height * 0.85,
-                  right: _currentIndex == null || _currentIndex == 0 ? -40 : 10,
+                  top: _height * 0.05,
+                  left: _currentIndex == null || _currentIndex == 0 ? -40 : 9,
                   width: 40,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.easeOutCubic,
@@ -156,8 +160,11 @@ class _StartPageState extends State<StartPage> {
                     children: <Widget>[
                       IconButton(
                         icon: Icon(
-                          Icons.expand_less,
-                          color: Colors.white54,
+                          Icons.arrow_back_ios,
+                          color: _currentIndex == 1
+                              ? Colors.black
+                              : Colors.white54,
+                          size: 30,
                         ),
                         onPressed: () {
                           _pageController.animateToPage(_currentIndex - 1,
@@ -165,30 +172,32 @@ class _StartPageState extends State<StartPage> {
                               curve: Curves.easeInCubic);
                         },
                       ),
-                      SizedBox(
-                        height: 0,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.expand_more,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          _pageController.animateToPage(_currentIndex + 1,
-                              duration: Duration(milliseconds: 800),
-                              curve: Curves.easeInCubic);
-                        },
-                      ),
+                      // SizedBox(
+                      //   height: 0,
+                      // ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     Icons.expand_more,
+                      //     color: Colors.white,
+                      //   ),
+                      //   onPressed: () {
+                      //     _pageController.animateToPage(_currentIndex + 1,
+                      //         duration: Duration(milliseconds: 800),
+                      //         curve: Curves.easeInCubic);
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
                 AnimatedPositioned(
-                  top: _height * 0.15,
-                  right: _currentIndex == null || _currentIndex == 0 ? -40 : 10,
-                  width: 40,
+                  top: _height * 0.94,
+                  right: _currentIndex == null || _currentIndex == 0
+                      ? -400
+                      : _width / 2 - 60,
+                  height: 40,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.easeOutCubic,
-                  child: Column(
+                  child: Row(
                     children: <Widget>[
                       AnimatedContainer(
                         duration: Duration(milliseconds: 300),
@@ -201,7 +210,7 @@ class _StartPageState extends State<StartPage> {
                             shape: BoxShape.circle),
                       ),
                       SizedBox(
-                        height: 12,
+                        width: 12,
                       ),
                       AnimatedContainer(
                         duration: Duration(milliseconds: 300),
@@ -214,7 +223,7 @@ class _StartPageState extends State<StartPage> {
                             shape: BoxShape.circle),
                       ),
                       SizedBox(
-                        height: 12,
+                        width: 12,
                       ),
                       AnimatedContainer(
                         duration: Duration(milliseconds: 300),

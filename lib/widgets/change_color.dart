@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChangeColor extends StatelessWidget {
+  final String displayName;
   final LinearGradient linearGradient;
   final BoxBorder border;
   final int index;
@@ -9,6 +10,7 @@ class ChangeColor extends StatelessWidget {
 
   const ChangeColor(
       {Key key,
+      this.displayName,
       this.border,
       this.offset,
       this.index,
@@ -41,7 +43,7 @@ class ChangeColor extends StatelessWidget {
                 width: 80,
                 child: Center(
                   child: Text(
-                    'J',
+                    displayName,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22.0,

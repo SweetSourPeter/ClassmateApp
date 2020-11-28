@@ -209,6 +209,15 @@ class _MainMenuState extends State<MainMenu> {
                                           iconData: Icons.settings,
                                           textSize: getSize(3),
                                           height: (menuContainerHeight) / 6,
+                                          onTap: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Wrapper(true),
+                                              ),
+                                            );
+                                          },
                                         ),
                                         MyButton(
                                           onTap: () {
@@ -217,7 +226,7 @@ class _MainMenuState extends State<MainMenu> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        Wrapper()),
+                                                        Wrapper(false)),
                                               );
                                             });
                                           },

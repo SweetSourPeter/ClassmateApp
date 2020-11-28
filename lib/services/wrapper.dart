@@ -10,6 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:app_test/services/auth.dart';
 
 class Wrapper extends StatelessWidget {
+  bool reset;
+  // Constructor, with syntactic sugar for assignment to members.
+  Wrapper(this.reset) {
+    // Initialization code goes here.
+  }
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -20,7 +25,27 @@ class Wrapper extends StatelessWidget {
 
     // return either the Home or Authenticate widget
     if (user == null) {
-      return StartLoginPage();
+      return SignIn();
+    } else if (reset) {
+      return MultiProvider(providers: [
+        StreamProvider(
+            create: (context) => DatabaseMehods()
+                .userDetails(user.userID)), //Login user data details
+        // authMethods.isUserLogged().then((value) => null);
+        StreamProvider(
+            create: (context) =>
+                DatabaseMehods().getMyCourses(user.userID)), // get all course
+        StreamProvider(
+            create: (context) => UserDatabaseService()
+                .getMyContacts(user.userID)), // get all contacts
+        FutureProvider(
+            create: (context) => DatabaseMehods().getAllTage(user.userID)),
+      ], child: StartPage()
+
+          // FriendProfile(
+          //   userID: user.userID, // to be modified to friend's ID
+          // ),
+          );
     } else {
       return MultiProvider(providers: [
         StreamProvider(

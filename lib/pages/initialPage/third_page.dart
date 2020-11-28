@@ -1,14 +1,21 @@
+import 'package:app_test/MainMenu.dart';
+import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/services/database.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/change_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 //import 'dart:math' as math;
 
 class ThirdPage extends StatefulWidget {
+  final String userName;
   final ValueChanged<int> valueChanged;
   final int initialIndex;
-  ThirdPage({Key key, this.valueChanged, this.initialIndex}) : super(key: key);
+  ThirdPage({Key key, this.userName, this.valueChanged, this.initialIndex})
+      : super(key: key);
   @override
   _ThirdPageState createState() => _ThirdPageState();
 }
@@ -16,7 +23,7 @@ class ThirdPage extends StatefulWidget {
 class _ThirdPageState extends State<ThirdPage>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController;
-
+  final databaseMehods = DatabaseMehods();
   //double _offset = 0;
   double _currentindex = 0;
   @override
@@ -34,6 +41,7 @@ class _ThirdPageState extends State<ThirdPage>
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
     //double _width = MediaQuery.of(context).size.width;
     return Padding(
@@ -78,6 +86,7 @@ class _ThirdPageState extends State<ThirdPage>
                 pageSnapping: true,
                 children: <Widget>[
                   ChangeColor(
+                    displayName: widget.userName[0],
                     onTap: () {
                       widget.valueChanged(_pageController.page.round());
                     },
@@ -87,6 +96,7 @@ class _ThirdPageState extends State<ThirdPage>
                     linearGradient: listColors[0],
                   ),
                   ChangeColor(
+                    displayName: widget.userName[0],
                     offset: _currentindex,
                     index: 1,
                     linearGradient: listColors[1],
@@ -95,6 +105,7 @@ class _ThirdPageState extends State<ThirdPage>
                     },
                   ),
                   ChangeColor(
+                    displayName: widget.userName[0],
                     index: 2,
                     offset: _currentindex,
                     linearGradient: listColors[2],
@@ -103,6 +114,7 @@ class _ThirdPageState extends State<ThirdPage>
                     },
                   ),
                   ChangeColor(
+                    displayName: widget.userName[0],
                     offset: _currentindex,
                     index: 3,
                     linearGradient: listColors[3],
@@ -111,6 +123,7 @@ class _ThirdPageState extends State<ThirdPage>
                     },
                   ),
                   ChangeColor(
+                    displayName: widget.userName[0],
                     offset: _currentindex,
                     index: 4,
                     linearGradient: listColors[4],
@@ -165,10 +178,13 @@ class _ThirdPageState extends State<ThirdPage>
                                 ),
                               ),
                               onPressed: () {
+                                databaseMehods.updateUserProfileColor(
+                                    user.userID, _currentindex);
+                                print('color num saved');
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => StartPage(),
+                                    builder: (context) => Wrapper(false),
                                   ),
                                 );
                               },
