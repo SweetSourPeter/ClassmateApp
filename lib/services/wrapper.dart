@@ -34,7 +34,8 @@ class Wrapper extends StatelessWidget {
               create: (context) =>
                   DatabaseMethods().getMyCourses(user.userID)), // get all course
         ],
-        child: ChatRoom(myName: 'bidijzx@bu.edu'),
+        child: MainMenu()
+        // ChatRoom(myName: 'bidijzx@bu.edu'),
       );
     }
   }
