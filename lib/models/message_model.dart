@@ -8,14 +8,15 @@ class Message {
   final String text;
   final bool isLiked;
   final bool unread;
+  final int unreadNumber;
 
-  Message({
-    this.sender,
-    this.time,
-    this.text,
-    this.isLiked,
-    this.unread,
-  });
+  Message(
+      {this.sender,
+      this.time,
+      this.text,
+      this.isLiked,
+      this.unread,
+      this.unreadNumber});
 }
 
 // YOU - current user
@@ -99,6 +100,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: true,
+    unreadNumber: 0,
   ),
   Message(
     sender: olivia,
@@ -106,6 +108,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: true,
+    unreadNumber: 10,
   ),
   Message(
     sender: john,
@@ -113,6 +116,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: false,
+    unreadNumber: 0,
   ),
   Message(
     sender: sophia,
@@ -120,6 +124,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: true,
+    unreadNumber: 100,
   ),
   Message(
     sender: steven,
@@ -127,6 +132,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: false,
+    unreadNumber: 1110,
   ),
   Message(
     sender: sam,
@@ -134,6 +140,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: false,
+    unreadNumber: 0,
   ),
   Message(
     sender: greg,
@@ -141,6 +148,7 @@ List<Message> chats = [
     text: 'Hey, how\'s it going? What did you do today?',
     isLiked: false,
     unread: false,
+    unreadNumber: 7,
   ),
 ];
 

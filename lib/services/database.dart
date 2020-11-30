@@ -2,7 +2,9 @@
 // import 'dart:ffi';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class DatabaseMethods {
@@ -14,7 +16,37 @@ class DatabaseMethods {
         .snapshots()
         .map((snapshot) => UserData.fromFirestore(snapshot.data, userID));
   }
+//  Future<UserTags> getAllTage(String userID) async {
+//     //used to remove a single Tag from the user
 
+//     DocumentReference docRef =
+//         Firestore.instance.collection('users').document(userID);
+//     DocumentSnapshot doc = await docRef.get();
+//     return UserTags.fromFirestoreTags(doc.data['tags']);
+//     // .catchError((e) {
+//     //   print(e.toString());
+//     // }));
+//   }
+  Future<UserData> getUserDetailsByID(String userID) async {
+    print('called userdetails stream');
+    // return Firestore.instance
+    //     .collection('users')
+    //     .document(userID)
+    //     .snapshots()
+    //     .map((snapshot) => UserData.fromFirestore(snapshot.data, userID));
+
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    DocumentSnapshot doc = await docRef.get();
+    var userData = UserData(
+      email: doc.data['email'],
+      school: doc.data['school'],
+      userID: doc.data[userID],
+      userName: doc.data['userName'],
+      userImageUrl: doc.data['userImageUrl'],
+    );
+    return userData;
+  }
   // Stream<List<CourseInfo>> getMyCourses(String userID) {
   //   print('gettre cources called');
   //   return Firestore.instance
@@ -158,6 +190,7 @@ class DatabaseMethods {
 
   //delete course for user
   Future<void> removeCourseFromUser(String courseID, String userID) {
+    print('remove course called....');
     return Firestore.instance
         .collection('users')
         .document(userID)
@@ -210,6 +243,70 @@ class DatabaseMethods {
     });
   }
 
+  //-------User report save to satabase---------
+  Future<void> saveReports(
+      String reports, String badUserID, String goodUserID) {
+    print('saveReports');
+    //First update in the user level
+
+    return Firestore.instance.collection('reports').add({
+      'reportMessage': reports,
+      'isSolved': false,
+      'reportedBadUserID': badUserID,
+      'reportGoodUser': goodUserID,
+    }).catchError((e) {
+      print(e.toString());
+    });
+    //    .document(badUserID)
+    //     .setData({
+    //   'reportMessage': reports,
+    //   'isSolved': false,
+    //   'reportedBadUserID': badUserID,
+    //   'reportGoodUser': goodUserID,
+    // }).catchError((e) {
+    //   print(e.toString());
+    // });
+    //also update in the course level
+  }
+
+  //---------UserTags---------
+
+  Future<void> removeSingleTag(
+      String userID, String removeTag, String tagCategory) async {
+    //used to remove a single Tag from the user
+    //tag category includes: major, gpa, language, studyHabits, other
+
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    DocumentSnapshot doc = await docRef.get();
+    List tags = doc.data['tags'];
+    if (tags.contains(tagCategory.contains(removeTag))) {
+      docRef.updateData({
+        'tags': {
+          tagCategory: FieldValue.arrayRemove([removeTag])
+        }
+      }).catchError((e) {
+        print(e.toString());
+      });
+    }
+  }
+
+  Future<void> updateAllTags(String userID, UserTags userTags) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    docRef.updateData({
+      'tags': {
+        'college': userTags.college,
+        'gpa': userTags.gpa,
+        'language': userTags.language,
+        'strudyHabits': userTags.strudyHabits,
+      }
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
   getChatMessages(String chatRoomId) async {
     return await Firestore.instance
         .collection('chatroom')
@@ -224,5 +321,14 @@ class DatabaseMethods {
         .collection('chatroom')
         .where('users', arrayContains: userName)
         .snapshots();
+  }
+
+  Future<UserTags> getAllTage(String userID) async {
+    //used to remove a single Tag from the user
+
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    DocumentSnapshot doc = await docRef.get();
+    return UserTags.fromFirestoreTags(doc.data['tags']);
   }
 }

@@ -63,11 +63,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                   ),
                                 ),
                               )
-                              // child: Container(
-                              //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
-                              //   color: Colors.black,
-                              // )
-                              ),
+                            // child: Container(
+                            //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+                            //   color: Colors.black,
+                            // )
+                          ),
                           Expanded(
                             child: ListView.builder(
                               controller: scrolController,
@@ -99,7 +99,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Row(
                                           children: <Widget>[
@@ -111,7 +111,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                             SizedBox(width: 10.0),
                                             Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Text(
                                                   chat.sender.name,
@@ -124,8 +124,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                 SizedBox(height: 5.0),
                                                 Container(
                                                   width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
+                                                      .size
+                                                      .width *
                                                       0.45,
                                                   child: Text(
                                                     chat.text,
@@ -133,10 +133,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                       color: Colors.blueGrey,
                                                       fontSize: 15.0,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                     ),
                                                     overflow:
-                                                        TextOverflow.ellipsis,
+                                                    TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                               ],
@@ -156,26 +156,26 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                             SizedBox(height: 5.0),
                                             chat.unread
                                                 ? Container(
-                                                    width: 40.0,
-                                                    height: 20.0,
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              30.0),
-                                                    ),
-                                                    alignment: Alignment.center,
-                                                    child: Text(
-                                                      'NEW',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12.0,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  )
+                                              width: 40.0,
+                                              height: 20.0,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    30.0),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                'NEW',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.0,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                ),
+                                              ),
+                                            )
                                                 : Text(''),
                                           ],
                                         ),
