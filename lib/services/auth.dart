@@ -81,11 +81,11 @@ class AuthMethods {
   Future signUpWithEmailAndPassword(
       String email, String password, String university) async {
     // bool emailExist = false;
-    // FirebaseUser firebaseUser;
+    FirebaseUser firebaseUser;
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser firebaseUser = result.user;
+      firebaseUser = result.user;
       await UserDatabaseService(userID: firebaseUser.uid)
           .updateUserData(email, email, university);
       return _userFromFirebaseUser(firebaseUser);

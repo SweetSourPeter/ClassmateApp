@@ -184,7 +184,7 @@ class _ThirdPageState extends State<ThirdPage>
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Wrapper(true),
+                                    builder: (context) => Wrapper(false),
                                   ),
                                 );
                               },

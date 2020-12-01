@@ -1,4 +1,3 @@
-import 'package:app_test/MainMenu.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -47,7 +46,6 @@ class _SignUpPageState extends State<SignUpPage> {
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
         isLoading = false;
-        print("User value is " + "${val.user.uid.toString()}");
         Navigator.pop(context);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Wrapper(true)));
