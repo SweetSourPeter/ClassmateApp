@@ -29,6 +29,7 @@ class CourseInfo {
     return {
       'myCourseName': myCourseName,
       'courseID': courseID,
+      'section': section,
     };
   }
 

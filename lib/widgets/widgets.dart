@@ -39,46 +39,27 @@ InputDecoration textFieldInputDecoration(String hintText) {
 }
 
 TextStyle simpleTextStyle(Color color) {
-  return GoogleFonts.lato(
-    textStyle: TextStyle(
-      color: color,
-      letterSpacing: .5,
-      fontSize: 14,
-    ),
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(color: color, fontSize: 16),
   );
-  // TextStyle(color: Colors.white, fontSize: 16);
 }
 
 TextStyle simpleTextStyleBlack() {
-  return GoogleFonts.lato(
-    textStyle: TextStyle(
-        color: Colors.black,
-        letterSpacing: .5,
-        fontSize: 16,
-        fontWeight: FontWeight.w700),
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(color: Colors.black, fontSize: 16),
   );
-  // TextStyle(color: Colors.black, fontSize: 16);
 }
 
 TextStyle biggerTextStyle() {
-  return GoogleFonts.lato(
-    textStyle: TextStyle(
-        color: Colors.white,
-        letterSpacing: .5,
-        fontSize: 17,
-        fontWeight: FontWeight.w700),
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(color: Colors.white, fontSize: 17),
   );
-  // TextStyle(color: Colors.white, fontSize: 17);
 }
 
 TextStyle largeTitleTextStyle(Color color) {
-  // return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700);
-  return GoogleFonts.lato(
-    textStyle: TextStyle(
-        color: color,
-        letterSpacing: .5,
-        fontSize: 28,
-        fontWeight: FontWeight.w700),
+  return GoogleFonts.montserrat(
+    textStyle:
+        TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700),
   );
 }
 

@@ -114,6 +114,7 @@ class CourseProvider with ChangeNotifier {
 
     var newCourseToUser = CourseInfo(
       myCourseName: myCourseName.toUpperCase(),
+      section: courseSection.toUpperCase(),
       courseID: courseId,
     );
     databaseMehods.saveCourseToUser(newCourseToUser, userId);
