@@ -1,4 +1,6 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
+import 'package:app_test/pages/explore_pages/seatNotify.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -170,7 +172,6 @@ class _MainMenuState extends State<MainMenu> {
                                               //   width: 10,
                                               //   color: Colors.black,
                                               // )
-
                                               creatUserImage(
                                                   sidebarSize / 10, userdata),
                                         ),
@@ -213,7 +214,7 @@ class _MainMenuState extends State<MainMenu> {
                                         ),
                                         Padding(
                                           padding: EdgeInsets.fromLTRB(
-                                              sidebarSize / 5,
+                                              sidebarSize / 20,
                                               mediaQuery.height * 0.15 - 25,
                                               15,
                                               30),
@@ -238,7 +239,7 @@ class _MainMenuState extends State<MainMenu> {
                                       userInfoDetailsBox(
                                           mediaQuery, '8', 'My tags'),
                                       userInfoDetailsBox(
-                                          mediaQuery, '26', 'My posts'),
+                                          mediaQuery, '6', 'Seat Notify'),
                                       userInfoDetailsBox(
                                           mediaQuery, '4', 'My classes'),
                                     ],
@@ -268,6 +269,14 @@ class _MainMenuState extends State<MainMenu> {
                                           },
                                         ),
                                         MyButton(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SeatsNotification()),
+                                            );
+                                          },
                                           text: "Seats Notification",
                                           iconData: Icons.event_seat,
                                           textSize: getSize(1),
@@ -296,6 +305,14 @@ class _MainMenuState extends State<MainMenu> {
                                           height: (menuContainerHeight) / 6,
                                         ),
                                         MyButton(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AboutTheAPP()),
+                                            );
+                                          },
                                           text: "About the app",
                                           iconData: Icons.info,
                                           textSize: getSize(0),
