@@ -1,6 +1,9 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +27,7 @@ TextEditingController sectionTextEditingController =
 class _addCourseState extends State<addCourse> {
   var currentSelectedValue;
   List<String> deviceTypes = ["Spring", "Fall", "Winter", "Summer1", "Summer2"];
+  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +215,7 @@ class _addCourseState extends State<addCourse> {
                   //TODO create class in database
                   if (formKey.currentState.validate()) {
                     courseProvider.saveNewCourse(context);
+                    createGroupChatAndStartConversation(courseProvider.courseID);
                     Navigator.pop(context);
                   }
                 },
@@ -241,4 +246,38 @@ class _addCourseState extends State<addCourse> {
       ),
     );
   }
+
+  createGroupChatAndStartConversation(String courseID){
+    final currentUser = Provider.of<UserData>(context, listen: false);
+    final myName = currentUser.userName;
+    // if(userName != myName) {
+    String groupChatId = courseID;
+
+    List<String> users = [myName];
+    Map<String, dynamic> chatRoomMap = {
+      'users' : users,
+      'chatRoomId' : groupChatId,
+      'latestMessage' : '',
+      'lastMessageTime' : ''
+    };
+
+    databaseMethods.createChatRoom(groupChatId, chatRoomMap);
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: currentUser,
+              )
+            ],
+            child: GroupChat(chatRoomId: groupChatId,),
+          );
+        }
+    ));
+    // } else {
+    //   print('This is your account!');
+    // }
+  }
 }
+
+

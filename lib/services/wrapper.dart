@@ -38,8 +38,7 @@ class Wrapper extends StatelessWidget {
                 .getMyContacts(user.userID)), // get all contacts
         FutureProvider(
             create: (context) => DatabaseMethods().getAllTage(user.userID)),
-      ], child: ChatRoom()
-      // MainMenu()
+      ], child: MainMenu()
 
           // FriendProfile(
           //   userID: user.userID, // to be modified to friend's ID

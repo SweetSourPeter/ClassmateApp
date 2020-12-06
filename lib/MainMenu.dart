@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -21,7 +22,8 @@ class _MainMenuState extends State<MainMenu> {
   int _currentIndex = 0;
   final tabs = [
     CourseMainMenu(),
-    FriendsScreen(),
+    // FriendsScreen(),
+    ChatRoom(myName: 'test16@bu.edu',),
     FavoriteContacts(),
   ];
   // final tabTitle = ['Course', 'Friends'];
@@ -71,9 +73,10 @@ class _MainMenuState extends State<MainMenu> {
     double menuContainerHeight = mediaQuery.height / 2;
     // dev.debugger();
 
-    return (userdata == null)
-        ? CircularProgressIndicator()
-        : SafeArea(
+    if ((userdata == null)) {
+      return CircularProgressIndicator();
+    } else {
+      return SafeArea(
             child: Scaffold(
                 body: GestureDetector(
             //if menu close and slide to right-> menu opens
@@ -112,7 +115,9 @@ class _MainMenuState extends State<MainMenu> {
                     child: Scaffold(
                       backgroundColor: Colors.white,
                       // appBar: buildAppBar(),
-                      body: tabs[_currentIndex],
+                      body: _currentIndex == 0 ? CourseMainMenu()
+                      : _currentIndex == 1 ? ChatRoom(myName: userdata.email,)
+                      : FavoriteContacts(),
                       bottomNavigationBar: buildBottomNavigationBar(),
                     ),
                   ),
@@ -257,6 +262,7 @@ class _MainMenuState extends State<MainMenu> {
               ),
             ),
           )));
+    }
   }
 
   void setMenuOpenState(bool state) {

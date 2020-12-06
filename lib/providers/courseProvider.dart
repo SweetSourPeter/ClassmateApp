@@ -94,6 +94,7 @@ class CourseProvider with ChangeNotifier {
       userNumbers: 1,
       courseID: courseId,
     );
+
     databaseMethods.saveCourseToCourse(newCourseToCourse);
     // var newUser = User(userID: userId, admin: true);
     databaseMethods.addUserToCourse(courseId, user);

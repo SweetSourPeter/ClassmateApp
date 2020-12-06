@@ -1,7 +1,6 @@
-import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
@@ -17,17 +16,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 
-class ChatScreen extends StatefulWidget {
+class GroupChat extends StatefulWidget {
   final String chatRoomId;
-  final String friendName;
+  final String courseName;
 
-  ChatScreen({this.chatRoomId, this.friendName});
+  GroupChat({this.chatRoomId, this.courseName});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _GroupChatState createState() => _GroupChatState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _GroupChatState extends State<GroupChat> {
   File _imageFile;
   String _uploadedFileURL;
   final _picker = ImagePicker();
@@ -46,45 +45,45 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data['time']);
-                  if (index == 0) {
-                    displayTime = true;
-                  } else {
-                    DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index - 1].data['time']);
-                    final difference = current.difference(prev).inDays;
-                    if (difference >= 1) {
-                      displayTime = true;
-                    } else {
-                      displayTime = false;
-                    }
-                  }
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              DateTime current = DateTime.fromMillisecondsSinceEpoch(
+                  snapshot.data.documents[index].data['time']);
+              if (index == 0) {
+                displayTime = true;
+              } else {
+                DateTime prev = DateTime.fromMillisecondsSinceEpoch(
+                    snapshot.data.documents[index - 1].data['time']);
+                final difference = current.difference(prev).inDays;
+                if (difference >= 1) {
+                  displayTime = true;
+                } else {
+                  displayTime = false;
+                }
+              }
 
-                  if (DateTime.now().difference(current).inDays <= 7) {
-                    displayWeek = true;
-                  } else {
-                    displayWeek = false;
-                  }
+              if (DateTime.now().difference(current).inDays <= 7) {
+                displayWeek = true;
+              } else {
+                displayWeek = false;
+              }
 
-                  return snapshot.data.documents[index].data['messageType'] ==
-                          'text'
-                      ? MessageTile(
-                          snapshot.data.documents[index].data['message'],
-                          snapshot.data.documents[index].data['sendBy'] ==
-                              myName,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek)
-                      : ImageTile(
-                          snapshot.data.documents[index].data['message'],
-                          snapshot.data.documents[index].data['sendBy'] ==
-                              myName);
-                })
+              return snapshot.data.documents[index].data['messageType'] ==
+                  'text'
+                  ? MessageTile(
+                  snapshot.data.documents[index].data['message'],
+                  snapshot.data.documents[index].data['sendBy'] ==
+                      myName,
+                  DateTime.fromMillisecondsSinceEpoch(
+                      snapshot.data.documents[index].data['time'])
+                      .toString(),
+                  displayTime,
+                  displayWeek)
+                  : ImageTile(
+                  snapshot.data.documents[index].data['message'],
+                  snapshot.data.documents[index].data['sendBy'] ==
+                      myName);
+            })
             : Container();
       },
     );
@@ -100,8 +99,8 @@ class _ChatScreenState extends State<ChatScreen> {
         'time': lastMessageTime
       };
 
-      databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-      databaseMethods.setLastestMessage(widget.chatRoomId, messageController.text, lastMessageTime);
+      databaseMethods.addGroupChatMessages(widget.chatRoomId, messageMap);
+      // databaseMethods.setLastestMessage(widget.chatRoomId, messageController.text, lastMessageTime);
       messageController.text = '';
     }
   }
@@ -115,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'time': DateTime.now().millisecondsSinceEpoch,
       };
 
-      databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+      databaseMethods.addGroupChatMessages(widget.chatRoomId, messageMap);
       _uploadedFileURL = '';
     }
   }
@@ -140,7 +139,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future _uploadFile(myName) async {
     String fileName = basename(_imageFile.path);
     StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(fileName);
+    FirebaseStorage.instance.ref().child(fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
@@ -171,7 +170,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    databaseMethods.getChatMessages(widget.chatRoomId).then((value) {
+    databaseMethods.getGroupChatMessages(widget.chatRoomId).then((value) {
       setState(() {
         chatMessageStream = value;
       });
@@ -216,67 +215,56 @@ class _ChatScreenState extends State<ChatScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/back_arrow.pic',
-                              height: 23,
-                              width: 23
-                            ),
+                            icon: Image.asset('assets/images/back_arrow.png'),
                             // iconSize: 30.0,
-                            color: const Color(0xFFFFB811),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                         ),
                         Container(
                           // height: 30.0,
                           child: Text(
-                              // currentUser.email,
-                              widget.friendName,
+                            // currentUser.email,
+                              widget.courseName,
                               style: GoogleFonts.montserrat(
-                                  fontSize: 22,
+                                  fontSize: 18,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold)),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/find.png',
-                              height: 23,
-                              width: 23
-                            ),
-                            // iconSize: 10.0,
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return MultiProvider(
-                                  providers: [
-                                    Provider<UserData>.value(
-                                      value: currentUser,
-                                    )
-                                  ],
-                                  child: SearchChat(widget.chatRoomId),
-                                );
-                              }));
-                            },
-                          ),
+                        IconButton(
+                          icon: Image.asset('assets/images/find.jpeg'),
+                          // iconSize: 30.0,
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: currentUser,
+                                      )
+                                    ],
+                                    child: SearchChat(widget.chatRoomId),
+                                  );
+                                }));
+                          },
                         ),
                       ],
                     ),
                   ),
+                  SizedBox(height: 5,),
                   Expanded(
                       child: Container(
                           child: chatMessageList(currentUser.userName))),
                   Container(
                       decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  )),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                      )),
                   Container(
                     alignment: Alignment.center,
                     height: 74.0,
@@ -292,45 +280,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         //                           icon: Icon(Icons.photo_library),
                         //                           onPressed: () => _pickImage(ImageSource.gallery, currentUser.userName)
                         //                       ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: TextField(
-                                  onTap: () {
-                                    setState(() {
-                                      showStickerKeyboard = false;
-                                      showTextKeyboard = true;
-                                    });
-                                  },
-                                  controller: messageController,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                  ),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding:
-                                          EdgeInsets.only(left: 10.0, bottom: 7.0)),
-                                  textInputAction: TextInputAction.send,
-                                  onSubmitted: (value) {
-                                    sendMessage(currentUser.userName);
-                                  },
-                                ),
-                        ),
-                            )),
-                        GestureDetector(
-                            child: Image.asset('assets/images/smile.png',
+                        IconButton(
+                            icon: Image.asset('assets/images/smile.png',
                                 width: 25.36, height: 25.36),
-                            onTap: () {
+                            onPressed: () {
                               showTextKeyboard
                                   ? setState(() {
                                 FocusScopeNode currentFocus =
@@ -347,14 +300,46 @@ class _ChatScreenState extends State<ChatScreen> {
                                 !showStickerKeyboard;
                               });
                             }),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                          child: GestureDetector(
-                            child: Image.asset(
-                              'assets/images/plus.png',
-                              width: 25.36,
-                              height: 25.36,
-                            ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: TextField(
+                                onTap: () {
+                                  setState(() {
+                                    showStickerKeyboard = false;
+                                    showTextKeyboard = true;
+                                  });
+                                },
+                                controller: messageController,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                ),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                    EdgeInsets.only(left: 10.0, bottom: 7.0)),
+                                textInputAction: TextInputAction.send,
+                                onSubmitted: (value) {
+                                  sendMessage(currentUser.userName);
+                                },
+                              ),
+                            )),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        IconButton(
+                          icon: Image.asset(
+                            'assets/images/plus.png',
+                            width: 25.36,
+                            height: 25.36,
                           ),
                         )
                         // GestureDetector(
@@ -423,97 +408,99 @@ class MessageTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-                ? Padding(
-                  padding: const EdgeInsets.only(),
-                  child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        DateFormat('EEEE')
-                                .format(DateTime.parse(currentTime))
-                                .substring(0, 3) +
-                            ', ' +
-                            DateFormat('MMMM')
-                                .format(DateTime.parse(currentTime))
-                                .substring(0, 3) +
-                            ' ' +
-                            DateFormat('d').format(DateTime.parse(currentTime)),
-                        style: GoogleFonts.openSans(
-                          fontSize: 14,
-                          color: const Color(0xff949494),
-                        ),
-                      ),
-                    ),
-                )
-                : Container()
+            ? Container(
+          alignment: Alignment.center,
+          child: Text(
+            DateFormat('EEEE')
+                .format(DateTime.parse(currentTime))
+                .substring(0, 3) +
+                ', ' +
+                DateFormat('MMMM')
+                    .format(DateTime.parse(currentTime))
+                    .substring(0, 3) +
+                ' ' +
+                DateFormat('d').format(DateTime.parse(currentTime)),
+            style: GoogleFonts.openSans(
+              fontSize: 10,
+              color: const Color(0xff949494),
+            ),
+          ),
+        )
+            : Container()
             : displayTime
-                ? Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      currentTime.substring(0, currentTime.length - 13),
-                      style: GoogleFonts.openSans(
-                        fontSize: 14,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                  )
-                : Container(),
+            ? Container(
+          alignment: Alignment.center,
+          child: Text(
+            currentTime.substring(0, currentTime.length - 13),
+            style: GoogleFonts.openSans(
+              fontSize: 10,
+              color: const Color(0xff949494),
+            ),
+          ),
+        )
+            : Container(),
         Container(
           padding: EdgeInsets.only(
+              top: 8,
+              bottom: 8,
               left: isSendByMe ? 0 : 24,
               right: isSendByMe ? 24 : 0),
           alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              isSendByMe ? Text(
-                currentTime.substring(11, currentTime.length - 7),
-                style: GoogleFonts.openSans(
-                  fontSize: 12,
-                  color: const Color(0xff949494),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12.0, bottom: 18.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                isSendByMe ? Text(
+                  currentTime.substring(11, currentTime.length - 7),
+                  style: GoogleFonts.openSans(
+                    fontSize: 12,
+                    color: const Color(0xff949494),
+                  ),
+                ) : Container(),
+                Container(
+                  margin: isSendByMe ? EdgeInsets.only(left: 10)
+                      : EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: isSendByMe
+                          ? BorderRadius.only(
+                          bottomRight: Radius.circular(12),
+                          topLeft: Radius.circular(12),
+                          bottomLeft: Radius.circular(12))
+                          : BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                          bottomRight: Radius.circular(12)),
+                      // gradient: LinearGradient(
+                      //   colors: isSendByMe ? [
+                      //     const Color(0xff007EF4),
+                      //     const Color(0xff2A75BC)
+                      //   ]
+                      //       : [
+                      //     const Color(0x1AFFFFFF),
+                      //     const Color(0x1AFFFFFF)
+                      //   ],
+                      // )
+                      color: isSendByMe ? const Color(0xffFFB811) : Colors.white),
+                  child: Text(message,
+                      textAlign: TextAlign.start,
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        color: Colors.black,
+                      )),
                 ),
-              ) : Container(),
-              Container(
-                margin: isSendByMe ? EdgeInsets.only(left: 10)
-                : EdgeInsets.only(right: 10),
-                padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                decoration: BoxDecoration(
-                    borderRadius: isSendByMe
-                        ? BorderRadius.only(
-                            bottomRight: Radius.circular(12),
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12))
-                        : BorderRadius.only(
-                            bottomLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
-                            bottomRight: Radius.circular(12)),
-                    // gradient: LinearGradient(
-                    //   colors: isSendByMe ? [
-                    //     const Color(0xff007EF4),
-                    //     const Color(0xff2A75BC)
-                    //   ]
-                    //       : [
-                    //     const Color(0x1AFFFFFF),
-                    //     const Color(0x1AFFFFFF)
-                    //   ],
-                    // )
-                    color: isSendByMe ? const Color(0xffFFB811) : Colors.white),
-                child: Text(message,
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.openSans(
-                      fontSize: 16,
-                      color: Colors.black,
-                    )),
-              ),
-              isSendByMe ? Container()
-              : Text(
-                currentTime.substring(11, currentTime.length - 7),
-                style: GoogleFonts.openSans(
-                  fontSize: 12,
-                  color: const Color(0xff949494),
-                ),
-              )
-            ],
+                isSendByMe ? Container()
+                    : Text(
+                  currentTime.substring(11, currentTime.length - 7),
+                  style: GoogleFonts.openSans(
+                    fontSize: 12,
+                    color: const Color(0xff949494),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ],
@@ -538,18 +525,18 @@ class ImageTile extends StatelessWidget {
       alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin:
-            isSendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
+        isSendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
         padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
         decoration: BoxDecoration(
             borderRadius: isSendByMe
                 ? BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomLeft: Radius.circular(23))
+                topLeft: Radius.circular(23),
+                topRight: Radius.circular(23),
+                bottomLeft: Radius.circular(23))
                 : BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomRight: Radius.circular(23)),
+                topLeft: Radius.circular(23),
+                topRight: Radius.circular(23),
+                bottomRight: Radius.circular(23)),
             // gradient: LinearGradient(
             //   colors: isSendByMe ? [
             //     const Color(0xff007EF4),

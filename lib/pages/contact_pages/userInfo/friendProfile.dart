@@ -26,7 +26,7 @@ class _FriendProfileState extends State<FriendProfile> {
   _FriendProfileState(this.userID); //constructor
   double currentIndex = 0;
 
-  final databaseMehods = DatabaseMehods();
+  final databaseMehods = DatabaseMethods();
   @override
   Widget build(BuildContext context) {
     int courseDataCount = 1;

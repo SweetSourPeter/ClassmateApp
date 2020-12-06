@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class UserTagsProvider with ChangeNotifier {
-  final databaseMehods = DatabaseMehods();
+  final databaseMehods = DatabaseMethods();
   List _gpa;
   List _college;
   List _language;

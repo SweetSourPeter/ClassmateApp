@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:provider/provider.dart';
+import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({
@@ -262,7 +263,18 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         child: GestureDetector(
                           onTap: () {
                             //TODO navigate into course fourm
-                            print(courses.courseID);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  )
+                                ],
+                                child: GroupChat(
+                                    chatRoomId: courses.courseID,
+                                    courseName: courses.myCourseName),
+                              );
+                            }));
                           },
                           child: Container(
                               margin: const EdgeInsets.only(

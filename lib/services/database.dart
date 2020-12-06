@@ -243,6 +243,18 @@ class DatabaseMethods {
     });
   }
 
+  addGroupChatMessages(String courseID, messageMap) {
+    Firestore.instance
+        .collection('courses')
+        .document(courseID)
+        .collection('chats')
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+    //also update in the course level
+  }
+
   //-------User report save to satabase---------
   Future<void> saveReports(
       String reports, String badUserID, String goodUserID) {
@@ -316,11 +328,32 @@ class DatabaseMethods {
         .snapshots();
   }
 
+  getGroupChatMessages(String chatRoomId) async {
+    return await Firestore.instance
+        .collection('courses')
+        .document(chatRoomId)
+        .collection('chats')
+        .orderBy('time', descending: false)
+        .snapshots();
+  }
+
   getChatRooms(String userName) async {
     return await Firestore.instance
         .collection('chatroom')
         .where('users', arrayContains: userName)
         .snapshots();
+  }
+
+  setLastestMessage(String chatRoomId, String latestMessage, int lastMessageTime) async {
+    Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .updateData({
+          'latestMessage' : latestMessage,
+          'lastMessageTime' : lastMessageTime
+        }).catchError((e) {
+          print(e.toString());
+        });
   }
 
   Future<UserTags> getAllTage(String userID) async {

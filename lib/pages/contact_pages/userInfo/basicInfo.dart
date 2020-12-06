@@ -32,7 +32,7 @@ class _BasicInfoState extends State<BasicInfo> {
   Future<UserTags> userTag;
   Future<UserData> userData;
   _BasicInfoState(this.userID, this.userTag, this.userData); //constructor
-  final databaseMehods = DatabaseMehods();
+  final databaseMethods = DatabaseMethods();
 
   @override
   Widget build(BuildContext context) {

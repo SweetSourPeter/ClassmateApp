@@ -15,7 +15,7 @@ class ReportUser extends StatefulWidget {
 }
 
 class _ReportUserState extends State<ReportUser> {
-  DatabaseMehods databaseMehods = new DatabaseMehods();
+  DatabaseMethods databaseMehods = new DatabaseMethods();
 
   var pageIndex = 0;
   void setIndex(int value) {
