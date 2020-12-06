@@ -7,7 +7,9 @@ import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
 import 'dart:developer' as dev;
 
@@ -67,7 +69,7 @@ class _MainMenuState extends State<MainMenu> {
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 0.65;
+    double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     // dev.debugger();
 
@@ -151,35 +153,99 @@ class _MainMenuState extends State<MainMenu> {
                               height: mediaQuery.height,
                               width: sidebarSize,
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                // mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   Container(
+                                    // color: Colors.black,
                                     height: mediaQuery.height * 0.25,
-                                    child: Center(
-                                      child: Column(
-                                        children: <Widget>[
-                                          creatUserImage(
-                                              sidebarSize / 5, userdata),
-                                          // Image.asset(
-                                          //   "assets/images/olivia.jpg",
-                                          //   width: sidebarSize / 2,
-                                          // ),
-                                          SizedBox(
-                                            height: 3,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(45, 45, 0, 0),
+                                          child:
+                                              // Container(
+                                              //   height: 10,
+                                              //   width: 10,
+                                              //   color: Colors.black,
+                                              // )
+
+                                              creatUserImage(
+                                                  sidebarSize / 10, userdata),
+                                        ),
+                                        // Image.asset(
+                                        //   "assets/images/olivia.jpg",
+                                        //   width: sidebarSize / 2,
+                                        // ),
+
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              sidebarSize / 20,
+                                              mediaQuery.height * 0.15 - 10,
+                                              15,
+                                              10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(userdata.userName ?? '',
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 22,
+                                                        fontWeight:
+                                                            FontWeight.w900),
+                                                  )),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(userdata.email ?? '',
+                                                  style: GoogleFonts.lato(
+                                                    textStyle: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  )),
+                                            ],
                                           ),
-                                          Text(
-                                            userdata.userName ?? '',
-                                            style: TextStyle(
-                                                color: Colors.black45),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              sidebarSize / 5,
+                                              mediaQuery.height * 0.15 - 25,
+                                              15,
+                                              30),
+                                          child: QrImage(
+                                            data: userdata.userID,
+                                            version: QrVersions.auto,
+                                            size: mediaQuery.width / 8.43,
+                                            gapless: false,
+                                            // embeddedImage: AssetImage(
+                                            //     'assets/images/my_embedded_image.png'),
+                                            // embeddedImageStyle:
+                                            //     QrEmbeddedImageStyle(
+                                            //   size: Size(80, 80),
+                                            // ),
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  Divider(
-                                    thickness: 1,
+                                  Row(
+                                    children: [
+                                      userInfoDetailsBox(
+                                          mediaQuery, '8', 'My tags'),
+                                      userInfoDetailsBox(
+                                          mediaQuery, '26', 'My posts'),
+                                      userInfoDetailsBox(
+                                          mediaQuery, '4', 'My classes'),
+                                    ],
                                   ),
+                                  // Divider(
+                                  //   thickness: 1,
+                                  // ),
                                   Container(
                                     key: globalKey,
                                     width: double.infinity,
@@ -187,28 +253,31 @@ class _MainMenuState extends State<MainMenu> {
                                     child: Column(
                                       children: <Widget>[
                                         MyButton(
-                                          text: "Profile",
-                                          iconData: Icons.person,
-                                          textSize: getSize(0),
+                                          text: "Edit Profile",
+                                          iconData: Icons.edit,
+                                          textSize: getSize(3),
                                           height: (menuContainerHeight) / 6,
+                                          onTap: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Wrapper(true),
+                                              ),
+                                            );
+                                          },
                                         ),
                                         MyButton(
-                                          text: "Friends",
-                                          iconData: Icons.contacts,
+                                          text: "Seats Notification",
+                                          iconData: Icons.event_seat,
                                           textSize: getSize(1),
                                           height: (menuContainerHeight) / 6,
                                         ),
                                         MyButton(
-                                          text: "Notifications",
-                                          iconData: Icons.notifications,
+                                          text: "Help & Feedback",
+                                          iconData: Icons.help,
                                           textSize: getSize(2),
                                           height: (mediaQuery.height / 2) / 6,
-                                        ),
-                                        MyButton(
-                                          text: "Settings",
-                                          iconData: Icons.settings,
-                                          textSize: getSize(3),
-                                          height: (menuContainerHeight) / 6,
                                         ),
                                         MyButton(
                                           onTap: () {
@@ -217,13 +286,19 @@ class _MainMenuState extends State<MainMenu> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        Wrapper()),
+                                                        Wrapper(false)),
                                               );
                                             });
                                           },
                                           text: "Log Out",
-                                          iconData: Icons.offline_bolt,
+                                          iconData: Icons.link_off,
                                           textSize: getSize(3),
+                                          height: (menuContainerHeight) / 6,
+                                        ),
+                                        MyButton(
+                                          text: "About the app",
+                                          iconData: Icons.info,
+                                          textSize: getSize(0),
                                           height: (menuContainerHeight) / 6,
                                         ),
                                       ],
@@ -232,31 +307,58 @@ class _MainMenuState extends State<MainMenu> {
                                 ],
                               ),
                             ),
-                            AnimatedPositioned(
-                              duration: Duration(milliseconds: 400),
-                              right: (isMenuOpen) ? 10 : sidebarSize,
-                              bottom: 35,
-                              child: IconButton(
-                                enableFeedback: true,
-                                icon: Icon(
-                                  Icons.keyboard_backspace,
-                                  color: orengeColor,
-                                  size: 40,
-                                ),
-                                onPressed: () {
-                                  setMenuOpenState(false);
-                                },
-                              ),
-                            )
                           ],
                         ),
                       ),
+                    ),
+                  ),
+                  AnimatedPositioned(
+                    duration: Duration(milliseconds: 300),
+                    left: (isMenuOpen) ? 10 : sidebarSize - 20,
+                    // left: (isMenuOpen) ? 10 : 100,
+                    top: 5,
+                    child: IconButton(
+                      enableFeedback: true,
+                      icon: Icon(
+                        Icons.chevron_left,
+                        color: Colors.black,
+                        size: 40,
+                      ),
+                      onPressed: () {
+                        setMenuOpenState(false);
+                      },
                     ),
                   )
                 ],
               ),
             ),
           )));
+  }
+
+  Padding userInfoDetailsBox(
+      Size mediaQuery, String topText, String bottomText) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 60),
+      child: Column(
+        children: [
+          Container(
+            height: 20,
+            child: Text(
+              topText,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: themeOrange,
+                  fontWeight: FontWeight.w800),
+            ),
+          ),
+          Text(
+            bottomText,
+            style: TextStyle(
+                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
+          ),
+        ],
+      ),
+    );
   }
 
   void setMenuOpenState(bool state) {
@@ -400,20 +502,36 @@ class MyButton extends StatelessWidget {
     // TODO: implement build
     return MaterialButton(
       height: height,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Icon(
-            iconData,
-            color: Colors.black45,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Icon(
+                iconData,
+                color: Colors.black45,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Text(
+                text,
+                style: TextStyle(color: Colors.black87, fontSize: textSize),
+              ),
+              new Spacer(),
+              Icon(
+                Icons.chevron_right,
+                size: 26,
+                color: Colors.black54,
+              )
+            ],
           ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            text,
-            style: TextStyle(color: Colors.black45, fontSize: textSize),
+          Divider(
+            height: 25,
+            indent: 45,
+            thickness: 0.5,
+            color: Colors.black38,
           ),
         ],
       ),

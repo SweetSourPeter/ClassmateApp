@@ -1,4 +1,3 @@
-import 'package:app_test/MainMenu.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -47,33 +46,31 @@ class _SignUpPageState extends State<SignUpPage> {
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
         isLoading = false;
-        print("User value is " + "${val.user.uid.toString()}");
+        Navigator.pop(context);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Wrapper()));
+            context, MaterialPageRoute(builder: (context) => Wrapper(true)));
       }).catchError((error) {
         isLoading = false;
-        print(error.code);
         String tempError;
-        switch (error.code) {
-          case "ERROR_OPERATION_NOT_ALLOWED":
-            tempError = "Anonymous accounts are not enabled";
-            break;
-          case "ERROR_WEAK_PASSWORD":
-            tempError = "Your password is too weak";
-            break;
-          case "ERROR_INVALID_EMAIL":
-            tempError = "Your email is invalid";
-            break;
-          case "ERROR_EMAIL_ALREADY_IN_USE":
-            tempError = "Email is already in use on different account";
-            break;
-          case "ERROR_INVALID_CREDENTIAL":
-            tempError = "Your email is invalid";
-            break;
-          default:
-            tempError = "An undefined Error happened.";
-        }
-        print(tempError + 'this is it');
+        // switch (error.code) {
+        //   case "ERROR_OPERATION_NOT_ALLOWED":
+        //     tempError = "Anonymous accounts are not enabled";
+        //     break;
+        //   case "ERROR_WEAK_PASSWORD":
+        //     tempError = "Your password is too weak";
+        //     break;
+        //   case "ERROR_INVALID_EMAIL":
+        //     tempError = "Your email is invalid";
+        //     break;
+        //   case "ERROR_EMAIL_ALREADY_IN_USE":
+        //     tempError = "Email is already in use on different account";
+        //     break;
+        //   case "ERROR_INVALID_CREDENTIAL":
+        //     tempError = "Your email is invalid";
+        //     break;
+        //   default:
+        //     tempError = "An undefined Error happened.";
+        // }
         setState(() {
           errorMessage = tempError;
         });

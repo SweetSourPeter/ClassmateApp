@@ -86,3 +86,41 @@ List strudyHabits = [
   '#listener',
   '#leader',
 ];
+
+const List<LinearGradient> listColors = [
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.orange,
+        Colors.deepOrange,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.indigoAccent,
+        Colors.teal,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.purple,
+        Colors.red,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.green,
+        Colors.blue,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.purple,
+        Colors.blue,
+      ]),
+];

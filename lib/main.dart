@@ -5,6 +5,7 @@ import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/services/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Wrapper(),
+        home: SplashScreen(),
       ),
     );
   }

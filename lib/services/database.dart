@@ -4,8 +4,6 @@ import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 class DatabaseMehods {
   Stream<UserData> userDetails(String userID) {
@@ -287,5 +285,29 @@ class DatabaseMehods {
         Firestore.instance.collection('users').document(userID);
     DocumentSnapshot doc = await docRef.get();
     return UserTags.fromFirestoreTags(doc.data['tags']);
+  }
+
+//update user Profile Color and Name
+
+  Future<void> updateUserName(String userID, String name) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    docRef.updateData({
+      'userName': name,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future<void> updateUserProfileColor(String userID, double color) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        Firestore.instance.collection('users').document(userID);
+    docRef.updateData({
+      'profileColor': color,
+    }).catchError((e) {
+      print(e.toString());
+    });
   }
 }

@@ -38,9 +38,9 @@ InputDecoration textFieldInputDecoration(String hintText) {
           UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)));
 }
 
-TextStyle simpleTextStyle() {
+TextStyle simpleTextStyle(Color color) {
   return GoogleFonts.montserrat(
-    textStyle: TextStyle(color: Colors.white, fontSize: 16),
+    textStyle: TextStyle(color: color, fontSize: 16),
   );
 }
 
