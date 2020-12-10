@@ -280,6 +280,12 @@ class _MainMenuState extends State<MainMenu> {
                                           height: (mediaQuery.height / 2) / 6,
                                         ),
                                         MyButton(
+                                          text: "About the app",
+                                          iconData: Icons.info,
+                                          textSize: getSize(0),
+                                          height: (menuContainerHeight) / 6,
+                                        ),
+                                        MyButton(
                                           onTap: () {
                                             authMethods.signOut().then((value) {
                                               Navigator.push(
@@ -291,14 +297,8 @@ class _MainMenuState extends State<MainMenu> {
                                             });
                                           },
                                           text: "Log Out",
-                                          iconData: Icons.link_off,
+                                          iconData: Icons.login,
                                           textSize: getSize(3),
-                                          height: (menuContainerHeight) / 6,
-                                        ),
-                                        MyButton(
-                                          text: "About the app",
-                                          iconData: Icons.info,
-                                          textSize: getSize(0),
                                           height: (menuContainerHeight) / 6,
                                         ),
                                       ],

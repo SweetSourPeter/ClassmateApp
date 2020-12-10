@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Colos that use in our app
+const transparent = Color(0x00000000);
 const orengeColor = Color(0xFFFfA41B);
 const darkBlueColor = Color(0xFF000839);
 const midBlueColor = Color(0xFF005082);

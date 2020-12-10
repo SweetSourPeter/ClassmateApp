@@ -188,6 +188,14 @@ CircleAvatar creatUserImage(double radius, UserData userdata) {
   );
 }
 
+CircleAvatar creatAddIconImage() {
+  return CircleAvatar(
+    backgroundColor: transparent,
+    radius: 30,
+    backgroundImage: AssetImage('./assets/images/add_icon.png'),
+  );
+}
+
 CircleAvatar creatUserImageWithString(
     double radius, String userImageUrl, String userName) {
   print("my user image url is $userImageUrl");

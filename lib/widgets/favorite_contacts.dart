@@ -1,6 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/pages/contact_pages/courseInfo.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -188,7 +189,7 @@ class FavoriteContacts extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SearchUsers()));
+                                    builder: (context) => CourseInfo()));
                           },
                           child: Container(
                               child: Column(
