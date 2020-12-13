@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
+import 'widgets/my_account.dart';
 import 'dart:developer' as dev;
 
 class MainMenu extends StatefulWidget {
@@ -19,9 +20,8 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  AuthMethods authMethods = new AuthMethods();
   int _currentIndex = 0;
-  final tabs = [
+  var tabs = [
     CourseMainMenu(),
     FriendsScreen(),
     FavoriteContacts(),
@@ -41,6 +41,10 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
+    tabs[2] = MyAccount(
+      key: globalKey,
+      getSize: getSize,
+    );
     WidgetsBinding.instance.addPostFrameCallback(getPosition);
   }
 
@@ -68,9 +72,9 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
+    
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
-    double menuContainerHeight = mediaQuery.height / 2;
     // dev.debugger();
 
     return (userdata == null)
@@ -81,7 +85,7 @@ class _MainMenuState extends State<MainMenu> {
             //if menu close and slide to right-> menu opens
             onPanUpdate: (details) {
               if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
-                setMenuOpenState(true);
+                //setMenuOpenState(true); //remove this to enable side menu
               }
               // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
               //   print('b');
@@ -148,164 +152,6 @@ class _MainMenuState extends State<MainMenu> {
                             CustomPaint(
                               size: Size(sidebarSize, mediaQuery.height),
                               painter: DrawerPainter(offset: _offset),
-                            ),
-                            Container(
-                              height: mediaQuery.height,
-                              width: sidebarSize,
-                              child: Column(
-                                // mainAxisAlignment: MainAxisAlignment.center,
-                                // mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Container(
-                                    // color: Colors.black,
-                                    height: mediaQuery.height * 0.25,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(45, 45, 0, 0),
-                                          child:
-                                              // Container(
-                                              //   height: 10,
-                                              //   width: 10,
-                                              //   color: Colors.black,
-                                              // )
-
-                                              creatUserImage(
-                                                  sidebarSize / 10, userdata),
-                                        ),
-                                        // Image.asset(
-                                        //   "assets/images/olivia.jpg",
-                                        //   width: sidebarSize / 2,
-                                        // ),
-
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              sidebarSize / 20,
-                                              mediaQuery.height * 0.15 - 10,
-                                              15,
-                                              10),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(userdata.userName ?? '',
-                                                  style: GoogleFonts.lato(
-                                                    textStyle: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 22,
-                                                        fontWeight:
-                                                            FontWeight.w900),
-                                                  )),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(userdata.email ?? '',
-                                                  style: GoogleFonts.lato(
-                                                    textStyle: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              sidebarSize / 5,
-                                              mediaQuery.height * 0.15 - 25,
-                                              15,
-                                              30),
-                                          child: QrImage(
-                                            data: userdata.userID,
-                                            version: QrVersions.auto,
-                                            size: mediaQuery.width / 8.43,
-                                            gapless: false,
-                                            // embeddedImage: AssetImage(
-                                            //     'assets/images/my_embedded_image.png'),
-                                            // embeddedImageStyle:
-                                            //     QrEmbeddedImageStyle(
-                                            //   size: Size(80, 80),
-                                            // ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      userInfoDetailsBox(
-                                          mediaQuery, '8', 'My tags'),
-                                      userInfoDetailsBox(
-                                          mediaQuery, '26', 'My posts'),
-                                      userInfoDetailsBox(
-                                          mediaQuery, '4', 'My classes'),
-                                    ],
-                                  ),
-                                  // Divider(
-                                  //   thickness: 1,
-                                  // ),
-                                  Container(
-                                    key: globalKey,
-                                    width: double.infinity,
-                                    height: menuContainerHeight,
-                                    child: Column(
-                                      children: <Widget>[
-                                        MyButton(
-                                          text: "Edit Profile",
-                                          iconData: Icons.edit,
-                                          textSize: getSize(3),
-                                          height: (menuContainerHeight) / 6,
-                                          onTap: () {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Wrapper(true),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        MyButton(
-                                          text: "Seats Notification",
-                                          iconData: Icons.event_seat,
-                                          textSize: getSize(1),
-                                          height: (menuContainerHeight) / 6,
-                                        ),
-                                        MyButton(
-                                          text: "Help & Feedback",
-                                          iconData: Icons.help,
-                                          textSize: getSize(2),
-                                          height: (mediaQuery.height / 2) / 6,
-                                        ),
-                                        MyButton(
-                                          text: "About the app",
-                                          iconData: Icons.info,
-                                          textSize: getSize(0),
-                                          height: (menuContainerHeight) / 6,
-                                        ),
-                                        MyButton(
-                                          onTap: () {
-                                            authMethods.signOut().then((value) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Wrapper(false)),
-                                              );
-                                            });
-                                          },
-                                          text: "Log Out",
-                                          iconData: Icons.login,
-                                          textSize: getSize(3),
-                                          height: (menuContainerHeight) / 6,
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
                             ),
                           ],
                         ),
