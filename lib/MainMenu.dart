@@ -137,9 +137,14 @@ class _MainMenuState extends State<MainMenu> {
                             });
                           }
 
-                          if (details.localPosition.dx > sidebarSize - 20 &&
+                          if (details.localPosition.dx > sidebarSize - 25 &&
                               details.delta.distanceSquared > 2) {
                             setMenuOpenState(true);
+                          }
+
+                          if (details.localPosition.dx < sidebarSize + 25 &&
+                              details.delta.distanceSquared < 2) {
+                            setMenuOpenState(false);
                           }
                         },
                         onPanEnd: (details) {

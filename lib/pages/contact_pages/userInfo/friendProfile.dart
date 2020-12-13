@@ -8,10 +8,8 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'basicInfo.dart';
-import 'package:app_test/models/CourseCard.dart';
 
 class FriendProfile extends StatefulWidget {
   final String userID;

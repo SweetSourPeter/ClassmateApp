@@ -2,6 +2,9 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/wrapper.dart';
+import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
+import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
+import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
 import 'package:app_test/widgets/course_menu.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -94,9 +97,12 @@ class _MyAccountState extends State<MyAccount> {
                     ],
                   ),
                 ),
-                /*Padding(
+                Padding(
                   padding: EdgeInsets.fromLTRB(
-                      sidebarSize / 5, mediaQuery.height * 0.15 - 25, 15, 30),
+                      sidebarSize / 20,
+                      mediaQuery.height * 0.15 - 25,
+                      15,
+                      30),
                   child: QrImage(
                     data: userdata.userID,
                     version: QrVersions.auto,
@@ -108,8 +114,8 @@ class _MyAccountState extends State<MyAccount> {
                     //     QrEmbeddedImageStyle(
                     //   size: Size(80, 80),
                     // ),
-                  ),
-                )*/
+                  )
+                )
               ],
             ),
           ),
@@ -161,6 +167,27 @@ class _MyAccountState extends State<MyAccount> {
                   iconData: Icons.event_seat,
                   textSize: widget.getSize(1),
                   height: (menuContainerHeight) / 6,
+                   onTap: () {
+                    showBottomPopSheet(
+                        context,
+                        SeatNotifyDashboard(
+                          userID: userdata.userID,
+                          userSchool: userdata.school,
+                          userEmail: userdata.email,
+                        ));
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           SeatNotifyDashboard(
+                    //             userID: userdata.userID,
+                    //             userSchool:
+                    //                 userdata.school,
+                    //             userEmail:
+                    //                 userdata.email,
+                    //           )),
+                    // );
+                  },
                 ),
                 Divider(
                   height: 0,
@@ -183,6 +210,14 @@ class _MyAccountState extends State<MyAccount> {
                   iconData: Icons.info,
                   textSize: widget.getSize(0),
                   height: (menuContainerHeight) / 6,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              AboutTheAPP()),
+                    );
+                  },
                 ),
                 Divider(
                   height: 0,

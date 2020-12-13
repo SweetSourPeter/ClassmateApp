@@ -2,7 +2,6 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/MainMenu.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
-import 'package:app_test/pages/my_pages/start_login.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/userDatabase.dart';
 import 'package:flutter/material.dart';
