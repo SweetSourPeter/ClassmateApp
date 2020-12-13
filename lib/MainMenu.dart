@@ -1,6 +1,7 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
-import 'package:app_test/pages/explore_pages/seatNotify.dart';
+import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
+import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -135,9 +136,14 @@ class _MainMenuState extends State<MainMenu> {
                             });
                           }
 
-                          if (details.localPosition.dx > sidebarSize - 20 &&
+                          if (details.localPosition.dx > sidebarSize - 25 &&
                               details.delta.distanceSquared > 2) {
                             setMenuOpenState(true);
+                          }
+
+                          if (details.localPosition.dx < sidebarSize + 25 &&
+                              details.delta.distanceSquared < 2) {
+                            setMenuOpenState(false);
                           }
                         },
                         onPanEnd: (details) {
@@ -270,12 +276,25 @@ class _MainMenuState extends State<MainMenu> {
                                         ),
                                         MyButton(
                                           onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SeatsNotification()),
-                                            );
+                                            showBottomPopSheet(
+                                                context,
+                                                SeatNotifyDashboard(
+                                                  userID: userdata.userID,
+                                                  userSchool: userdata.school,
+                                                  userEmail: userdata.email,
+                                                ));
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           SeatNotifyDashboard(
+                                            //             userID: userdata.userID,
+                                            //             userSchool:
+                                            //                 userdata.school,
+                                            //             userEmail:
+                                            //                 userdata.email,
+                                            //           )),
+                                            // );
                                           },
                                           text: "Seats Notification",
                                           iconData: Icons.event_seat,

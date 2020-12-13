@@ -1,5 +1,6 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/logo_widget.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class AboutTheAPP extends StatelessWidget {
@@ -7,6 +8,7 @@ class AboutTheAPP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size mediaQuery = MediaQuery.of(context).size;
     return Container(
       child: Scaffold(
           appBar: AppBar(
@@ -29,7 +31,36 @@ class AboutTheAPP extends StatelessWidget {
           ),
           body: Center(
               child: Column(
-            children: [LogoWidget()],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: mediaQuery.height / 8),
+              LogoWidget(),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'MeetCor',
+                style: largeTitleTextStyle(themeOrange),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'Version 1.0.00',
+                style: simpleTextStyleBlack(),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                'Term of Use',
+                style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
           ))),
     );
   }

@@ -208,3 +208,20 @@ CircleAvatar creatUserImageWithString(
             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
 }
+
+void showBottomPopSheet(BuildContext context, Widget widget) {
+  showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+          side: BorderSide(width: 15, color: Colors.transparent),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            // bottomLeft: Radius.circular(30.0),
+            // bottomRight: Radius.circular(30.0),
+          )),
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return widget;
+      });
+}
