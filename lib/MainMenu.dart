@@ -79,7 +79,14 @@ class _MainMenuState extends State<MainMenu> {
 
     return (userdata == null)
         ? CircularProgressIndicator()
-        : SafeArea(
+        :Scaffold(
+          backgroundColor: orengeColor,
+          appBar: AppBar(
+            backgroundColor: riceColor,
+            toolbarHeight: 0,
+            elevation: 0,
+          ),
+          body: SafeArea(
             child: Scaffold(
                 body: GestureDetector(
             //if menu close and slide to right-> menu opens
@@ -116,7 +123,7 @@ class _MainMenuState extends State<MainMenu> {
                       ..scale(scaleFactor),
                     duration: Duration(microseconds: 250),
                     child: Scaffold(
-                      backgroundColor: Colors.white,
+                      backgroundColor: riceColor,
                       // appBar: buildAppBar(),
                       body: tabs[_currentIndex],
                       bottomNavigationBar: buildBottomNavigationBar(),
@@ -183,7 +190,9 @@ class _MainMenuState extends State<MainMenu> {
                 ],
               ),
             ),
-          )));
+          ))),
+        );
+        
   }
 
   Padding userInfoDetailsBox(
@@ -337,60 +346,6 @@ class _MainMenuState extends State<MainMenu> {
   //     ],
   //   );
   // }
-}
-
-class MyButton extends StatelessWidget {
-  final String text;
-  final IconData iconData;
-  final double textSize;
-  final double height;
-  final GestureTapCallback onTap;
-
-  MyButton({this.text, this.iconData, this.textSize, this.height, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialButton(
-      height: height,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Icon(
-                iconData,
-                color: Colors.black45,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text(
-                text,
-                style: TextStyle(color: Colors.black87, fontSize: textSize),
-              ),
-              new Spacer(),
-              Icon(
-                Icons.chevron_right,
-                size: 26,
-                color: Colors.black54,
-              )
-            ],
-          ),
-          Divider(
-            height: 25,
-            indent: 45,
-            thickness: 0.5,
-            color: Colors.black38,
-          ),
-        ],
-      ),
-      onPressed: () {
-        onTap();
-      },
-    );
-  }
 }
 
 class DrawerPainter extends CustomPainter {

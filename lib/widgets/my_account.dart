@@ -51,8 +51,9 @@ class _MyAccountState extends State<MyAccount> {
         // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Container(
-            //color: Colors.black,
+            //color: Colors.white,
             height: mediaQuery.height * 0.25,
+            
             child: Row(
               children: <Widget>[
                 Padding(
@@ -134,7 +135,7 @@ class _MyAccountState extends State<MyAccount> {
           //   thickness: 1,
           // ),
           Container(
-            key: widget.key,
+            //key: widget.key,
             width: double.infinity,
             height: menuContainerHeight,
             child: Column(
