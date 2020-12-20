@@ -5,16 +5,27 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ReportUser extends StatefulWidget {
-  const ReportUser({Key key}) : super(key: key);
+class HelpFeedback extends StatefulWidget {
+  const HelpFeedback({Key key}) : super(key: key);
 
   @override
-  _ReportUserState createState() => _ReportUserState();
+  _HelpFeedbackState createState() => _HelpFeedbackState();
 }
 
-class _ReportUserState extends State<ReportUser> {
+class _HelpFeedbackState extends State<HelpFeedback> {
   DatabaseMehods databaseMehods = new DatabaseMehods();
-
+  List<String> faqTitle = [
+    'Course FAQ',
+    'Friends FAQ',
+    'Course Seats FAQ',
+    'Personal Account FAQ',
+  ];
+  List<String> faqAnswer = [
+    'Course deletion/share can be done by holding on the course widget card.',
+    'Friends are added automaticaly after a chat, you can delete the contact by entering their profile page',
+    'Course Seats Notification will be sent to your account email when there is a seat. Wecurrently only have this service provide in Boston University',
+    'Logout, profile Settings can be found in your personal account page.',
+  ];
   var pageIndex = 0;
   void setIndex(int value) {
     setState(() {
@@ -40,7 +51,7 @@ class _ReportUserState extends State<ReportUser> {
       case 1:
         return userTypeTheProblem(context, user.userID);
       case 2:
-        return thankYouPage(user.userID);
+        return fqaPage(user.userID);
       default:
         return reportSelectingPage(user.userID);
     }
@@ -48,7 +59,7 @@ class _ReportUserState extends State<ReportUser> {
     // reportSelectingPage();
   }
 
-  Container thankYouPage(String userID) {
+  Container fqaPage(String userID) {
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -75,7 +86,7 @@ class _ReportUserState extends State<ReportUser> {
                     fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
-                'Your feedback is important in helping us keep the community safe',
+                'Your feedback is important to our future improvments',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.black,
@@ -104,7 +115,7 @@ class _ReportUserState extends State<ReportUser> {
         Container(
           alignment: Alignment.center,
           child: Text(
-            'Report',
+            'Issue',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
           ),
         ),
@@ -116,7 +127,7 @@ class _ReportUserState extends State<ReportUser> {
                 color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
           ),
           subtitle: Text(
-            'We won\'t let them know if you take any of these actions.',
+            'We will get back to you ASAP.',
             style: TextStyle(
                 color: Colors.black, fontSize: 10, fontWeight: FontWeight.w300),
           ),
@@ -142,7 +153,7 @@ class _ReportUserState extends State<ReportUser> {
         GestureDetector(
           onTap: () {
             setIndex(2);
-            saveReportData(reportTextEditingController.text, '1111111', userID);
+            // saveReportData(reportTextEditingController.text, '1111111', userID);
           },
           child: SizedBox(
             height: 40,
@@ -168,21 +179,21 @@ class _ReportUserState extends State<ReportUser> {
             Container(
               alignment: Alignment.center,
               child: Text(
-                'Report',
+                'Help & Feedback',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
             ),
             Divider(),
             ListTile(
               title: Text(
-                'Why are you reporting this person?',
+                'Here are the FQA about our service.',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.w600),
               ),
               subtitle: Text(
-                'We won\'t let them know if you take any of these actions.',
+                'Can\'t find the problem? Click on \'Something Else\'.',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 10,
@@ -192,52 +203,45 @@ class _ReportUserState extends State<ReportUser> {
             ),
             ListTile(
               title: Text(
-                'Pretending to be a Real Person',
+                'Course ',
                 style: TextStyle(color: Colors.black, fontSize: 16),
               ),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData(
-                    'Pretending to be a Real Person', '1111111', userID);
               },
             ),
             Divider(),
             ListTile(
               title: Text(
-                'Pretending to be Someone Fake',
+                'Friends',
                 style: TextStyle(color: Colors.black, fontSize: 16),
               ),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData(
-                    'Pretending to be Someone Fake', '1111111', userID);
               },
             ),
             Divider(),
             ListTile(
               title: Text(
-                'Posting inappropriate Things',
+                'Course Seats Notification',
                 style: TextStyle(color: Colors.black, fontSize: 16),
               ),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData(
-                    'Posting inappropriate Things', '1111111', userID);
               },
             ),
             Divider(),
             ListTile(
               title: Text(
-                'Harassment or Bullying',
+                'Personal Account ',
                 style: TextStyle(color: Colors.black, fontSize: 16),
               ),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData('Harassment or Bullying', '1111111', userID);
               },
             ),
             Divider(),

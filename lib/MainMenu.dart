@@ -1,6 +1,6 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
-import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
+import 'package:app_test/pages/explore_pages/help&feedback.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
@@ -14,7 +14,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
-import 'dart:developer' as dev;
 
 class MainMenu extends StatefulWidget {
   @override
@@ -306,6 +305,10 @@ class _MainMenuState extends State<MainMenu> {
                                           iconData: Icons.help,
                                           textSize: getSize(2),
                                           height: (mediaQuery.height / 2) / 6,
+                                          onTap: () {
+                                            showBottomPopSheet(
+                                                context, HelpFeedback());
+                                          },
                                         ),
                                         MyButton(
                                           onTap: () {

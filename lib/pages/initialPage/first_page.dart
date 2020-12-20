@@ -77,7 +77,7 @@ class _FirstPageState extends State<FirstPage> {
                         opacity: value == 20 ? 0 : 1,
                         duration: Duration(milliseconds: 800),
                         child: Text(
-                          'I\'m MeetCor',
+                          'nice to Meechu!',
                           style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,

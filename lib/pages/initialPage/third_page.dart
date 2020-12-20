@@ -1,9 +1,6 @@
-import 'package:app_test/MainMenu.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/change_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,10 +8,16 @@ import 'package:provider/provider.dart';
 //import 'dart:math' as math;
 
 class ThirdPage extends StatefulWidget {
+  final PageController pageController;
   final String userName;
   final ValueChanged<int> valueChanged;
   final int initialIndex;
-  ThirdPage({Key key, this.userName, this.valueChanged, this.initialIndex})
+  ThirdPage(
+      {Key key,
+      this.userName,
+      this.valueChanged,
+      this.pageController,
+      this.initialIndex})
       : super(key: key);
   @override
   _ThirdPageState createState() => _ThirdPageState();
@@ -181,12 +184,9 @@ class _ThirdPageState extends State<ThirdPage>
                                 databaseMehods.updateUserProfileColor(
                                     user.userID, _currentindex);
                                 print('color num saved');
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Wrapper(false),
-                                  ),
-                                );
+                                widget.pageController.animateToPage(3,
+                                    duration: Duration(milliseconds: 800),
+                                    curve: Curves.easeInCubic);
                               },
                             ),
                           ),

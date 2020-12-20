@@ -117,7 +117,7 @@ class _SecondPageState extends State<SecondPage>
                       borderRadius: BorderRadius.circular(30)),
                   onPressed: () {
                     //TODO add username
-                    widget.pageController.animateToPage(3,
+                    widget.pageController.animateToPage(2,
                         duration: Duration(milliseconds: 800),
                         curve: Curves.easeInCubic);
                     databaseMehods.updateUserName(user.userID, _nikname);

@@ -22,12 +22,22 @@ class FriendProfile extends StatefulWidget {
 class _FriendProfileState extends State<FriendProfile> {
   String userID;
   _FriendProfileState(this.userID); //constructor
-  double currentIndex = 0;
-
+  int courseDataCount = 1;
+  double _currentPage;
+  PageController _pageController = PageController();
   final databaseMehods = DatabaseMehods();
   @override
+  void initState() {
+    _pageController.addListener(() {
+      setState(() {
+        _currentPage = _pageController.page;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int courseDataCount = 1;
     Stream<List<CourseInfo>> courseData = databaseMehods.getMyCourses(userID);
     Future<UserTags> userTag = databaseMehods.getAllTage(userID);
     Future<UserData> userData = databaseMehods.getUserDetailsByID(userID);
@@ -36,6 +46,8 @@ class _FriendProfileState extends State<FriendProfile> {
         future: Future.wait([userData, userTag]),
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
+            courseDataCount = snapshot.data.length;
+
             return Scaffold(
               body: Column(
                 children: <Widget>[
@@ -47,12 +59,25 @@ class _FriendProfileState extends State<FriendProfile> {
                   StreamBuilder(
                     stream: courseData,
                     builder: (context, snapshot) {
-                      _onPageViewChange(int page) {
-                        setState(() {
-                          currentIndex = page.toDouble();
-                          courseDataCount = snapshot.data.length;
-                        });
-                      }
+                      // _onPageViewChange(int page) {
+                      //   // print(courseDataCount);
+                      //   // print(currentIndex);
+                      //   print(page);
+                      //   setState(() {
+                      //     currentIndex = (page - 1).toDouble();
+                      //     print(currentIndex);
+                      //   });
+                      // }
+                      // _onPageViewChange(int page) {
+                      //   print("Current Page: " + page.toString());
+
+                      //   // int previousPage = page;
+                      //   // if (page != 0)
+                      //   //   previousPage--;
+                      //   // else
+                      //   //   previousPage = 2;
+                      //   // print("Previous page: $previousPage");
+                      // }
 
                       if (snapshot.hasError)
                         return Center(
@@ -66,12 +91,18 @@ class _FriendProfileState extends State<FriendProfile> {
                               ? Center(
                                   child: Text("Empty"),
                                 )
-                              : Stack(
+                              : Column(
                                   children: [
                                     Container(
                                       height: 129.0,
                                       child: PageView.builder(
-                                        onPageChanged: _onPageViewChange,
+                                        // onPageChanged: (index) {
+                                        //   setState(() {
+                                        //     print(_currentPage);
+                                        //     _currentPage = index.toDouble();
+                                        //     print(_currentPage);
+                                        //   });
+                                        // },
                                         scrollDirection: Axis.horizontal,
                                         controller: PageController(
                                             initialPage: 0,
@@ -86,21 +117,23 @@ class _FriendProfileState extends State<FriendProfile> {
                                         itemCount: snapshot.data.length,
                                       ),
                                     ),
+                                    // DotsIndicator(
+                                    //   dotsCount: snapshot.data.length,
+                                    //   position: _currentPage,
+                                    //   decorator: DotsDecorator(
+                                    //     size: const Size.square(6.0),
+                                    //     activeSize: const Size.square(7.0),
+                                    //     spacing: const EdgeInsets.only(
+                                    //         left: 10.0, right: 10.0),
+                                    //     color:
+                                    //         builtyPinkColor, // Inactive color
+                                    //     activeColor: themeOrange,
+                                    //   ),
+                                    // ),
                                   ],
                                 );
                       }
                     },
-                  ),
-                  DotsIndicator(
-                    dotsCount: courseDataCount,
-                    position: currentIndex,
-                    decorator: DotsDecorator(
-                      size: const Size.square(6.0),
-                      activeSize: const Size.square(7.0),
-                      spacing: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      color: builtyPinkColor, // Inactive color
-                      activeColor: themeOrange,
-                    ),
                   ),
                   SizedBox(
                     height: 30.0,

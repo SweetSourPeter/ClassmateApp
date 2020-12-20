@@ -7,7 +7,7 @@ const midBlueColor = Color(0xFF005082);
 const lightBlueColor = Color(0xFF00A8CC);
 
 const themeOrange = Color(0xFFFF7E40);
-const gradientYellow = Color(0xFFFFB811);
+const gradientYellow = Color(0xFFFFAE18);
 
 const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
@@ -94,7 +94,7 @@ const List<LinearGradient> listColors = [
       end: Alignment.bottomCenter,
       colors: [
         Colors.orange,
-        Colors.deepOrange,
+        themeOrange,
       ]),
   LinearGradient(
       begin: Alignment.topCenter,
