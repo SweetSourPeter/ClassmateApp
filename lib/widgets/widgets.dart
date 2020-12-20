@@ -227,6 +227,10 @@ class ButtonLink extends StatefulWidget {
   final bool isSimple;
   @required
   final bool isSwitch;
+  @required
+  final bool isEdit;
+  @required
+  String editText;
 
   ButtonLink(
       {this.text,
@@ -235,7 +239,9 @@ class ButtonLink extends StatefulWidget {
       this.height,
       this.onTap,
       this.isSimple = false,
-      this.isSwitch = false});
+      this.isSwitch = false,
+      this.isEdit = false,
+      this.editText = ''});
 
   @override
   _ButtonLinkState createState() => _ButtonLinkState();
@@ -250,6 +256,9 @@ class _ButtonLinkState extends State<ButtonLink> {
     return Column(
       children: [
         FlatButton(
+          padding: widget.isEdit
+              ? EdgeInsets.fromLTRB(20, 10, 20, 10)
+              : EdgeInsets.fromLTRB(20, 0, 20, 0),
           height: widget.height,
           color: Colors.white,
           child: Column(
@@ -258,21 +267,35 @@ class _ButtonLinkState extends State<ButtonLink> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  !widget.isSimple
-                      ? Icon(
+                  (widget.isSimple || widget.isEdit)
+                      ? Container()
+                      : Icon(
                           widget.iconData,
                           color:
                               !widget.isSimple ? Colors.black45 : orengeColor,
-                        )
-                      : Container(),
+                        ),
                   SizedBox(
-                    width: 20,
+                    width: widget.isEdit ? 10 : 20,
                   ),
-                  Text(
-                    widget.text,
-                    style: GoogleFonts.montserrat(
-                        color: !widget.isSimple ? Colors.black87 : orengeColor,
-                        fontSize: widget.textSize),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.text,
+                        style: GoogleFonts.montserrat(
+                            color:
+                                !widget.isSimple ? Colors.black87 : orengeColor,
+                            fontSize: widget.textSize),
+                      ),
+                      widget.isEdit
+                          ? Text(
+                              widget.editText,
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.black45,
+                                  fontSize: widget.textSize),
+                            )
+                          : Container(),
+                    ],
                   ),
                   new Spacer(),
                   !widget.isSimple
@@ -292,7 +315,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                                     });
                                   },
                                   activeTrackColor: orengeColor,
-                                  activeColor: Colors.white, 
+                                  activeColor: Colors.white,
                                 ))
                       : Container()
                 ],
@@ -308,7 +331,7 @@ class _ButtonLinkState extends State<ButtonLink> {
   }
 }
 
-class MyButton extends StatelessWidget {
+/*class MyButton extends StatelessWidget {
   final String text;
   final IconData iconData;
   final double textSize;
@@ -360,33 +383,31 @@ class MyButton extends StatelessWidget {
       },
     );
   }
+}*/
+
+Padding userInfoDetailsBox(Size mediaQuery, String topText, String bottomText) {
+  return Padding(
+    padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 0),
+    child: Column(
+      children: [
+        Container(
+          height: 20,
+          child: Text(
+            topText,
+            style: TextStyle(
+                fontSize: 16, color: themeOrange, fontWeight: FontWeight.w800),
+          ),
+        ),
+        Text(
+          bottomText,
+          style: TextStyle(
+              fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
+        ),
+      ],
+    ),
+  );
 }
 
-Padding userInfoDetailsBox(
-      Size mediaQuery, String topText, String bottomText) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 0),
-      child: Column(
-        children: [
-          Container(
-            height: 20,
-            child: Text(
-              topText,
-              style: TextStyle(
-                  fontSize: 16,
-                  color: themeOrange,
-                  fontWeight: FontWeight.w800),
-            ),
-          ),
-          Text(
-            bottomText,
-            style: TextStyle(
-                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
-          ),
-        ],
-      ),
-    );
-  }
 void showBottomPopSheet(BuildContext context, Widget widget) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
