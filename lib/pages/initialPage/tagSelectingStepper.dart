@@ -1,5 +1,6 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/providers/tagProvider.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -93,13 +94,13 @@ class _TagSelectingState extends State<TagSelecting> {
             //   ],
             //   color: orengeColor,
             // ),
-            height: mediaQuery.height * 0.45,
-            color: Colors.grey[300],
+            height: mediaQuery.height * 0.55,
+            color: riceColor,
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(
-                    height: mediaQuery.height * 0.06,
+                    height: mediaQuery.height * 0.16,
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
@@ -111,7 +112,10 @@ class _TagSelectingState extends State<TagSelecting> {
                         child: Text(
                           'Choose your tags',
                           textAlign: TextAlign.left,
-                          style: largeTitleTextStyle(Colors.black),
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                         ),
                       ),
                     ),
@@ -129,7 +133,10 @@ class _TagSelectingState extends State<TagSelecting> {
                             right: mediaQuery.width * 0.20),
                         child: Text(
                           'Tags help us to match you with who have similar background and study habits.',
-                          style: simpleTextStyle(Colors.black),
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black26),
                         )),
                   ),
                   SizedBox(
@@ -147,26 +154,28 @@ class _TagSelectingState extends State<TagSelecting> {
               ),
             ),
           ),
+          categorySelector(widget.buttonColor, mediaQuery, userTagProvider),
           Expanded(
             child: Container(
               color: Colors.white,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    categorySelector(
-                        widget.buttonColor, mediaQuery, userTagProvider),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
-                    buildBottomTags(widget.buttonColor, _items,
-                        tagStateKeyList[selectedIndex], userTagProvider),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: buildBottomTags(widget.buttonColor, _items,
+                          tagStateKeyList[selectedIndex], userTagProvider),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 6,
           ),
           // RaisedGradientButton(
           //   width: 200,
@@ -188,15 +197,16 @@ class _TagSelectingState extends State<TagSelecting> {
           //         fontWeight: FontWeight.w600),
           //   ),
           // ),
+
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black38,
-                    offset: Offset(0, 10),
-                    blurRadius: 15),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //       color: Colors.black38,
+              //       offset: Offset(0, 10),
+              //       blurRadius: 15),
+              // ],
             ),
             height: mediaQuery.height * 0.06,
             width: mediaQuery.width * 0.3,
@@ -220,9 +230,13 @@ class _TagSelectingState extends State<TagSelecting> {
                   borderRadius: BorderRadius.circular(30)),
               onPressed: () {
                 userTagProvider.addTagsToContact(context);
-                widget.pageController.animateToPage(2,
-                    duration: Duration(milliseconds: 800),
-                    curve: Curves.easeInCubic);
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Wrapper(false),
+                  ),
+                );
               },
               child: Text(
                 'Complete',
@@ -231,7 +245,7 @@ class _TagSelectingState extends State<TagSelecting> {
             ),
           ),
           SizedBox(
-            height: 35,
+            height: 6,
           ),
         ],
       ),
@@ -245,64 +259,69 @@ class _TagSelectingState extends State<TagSelecting> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.grey[350],
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 1.0,
           ),
         ],
       ),
-      height: mediaQuery.height * 0.1,
+      height: mediaQuery.height * 0.08,
       // color: Colors.white,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedIndex = index;
-                if (index == 0) {
-                  // userTagProvider
-                  //     .changeTagCollege(_getAllItem(tagStateKeyList[0]));
-                  _items = college;
-                } else if (index == 1) {
-                  // userTagProvider.changeTagGPA(_getAllItem(tagStateKeyList[1]));
-                  _items = gpa;
-                } else if (index == 2) {
-                  // userTagProvider
-                  //     .changeTagLanguage(_getAllItem(tagStateKeyList[2]));
-                  _items = language;
-                } else if (index == 3) {
-                  // userTagProvider
-                  //     .changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
-                  _items = strudyHabits;
-                } else {
-                  _items = [];
-                }
-              });
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 18.0,
-                vertical: 20.0,
-              ),
-              child: Text(
-                categories[index],
-                style: TextStyle(
-                  decoration:
-                      index == selectedIndex ? TextDecoration.underline : null,
-                  decorationColor: color,
-                  decorationThickness: 3,
-                  decorationStyle: TextDecorationStyle.solid,
-                  color: index == selectedIndex ? Colors.black : Colors.black87,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
+      child: Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: categories.length,
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIndex = index;
+                  if (index == 0) {
+                    // userTagProvider
+                    //     .changeTagCollege(_getAllItem(tagStateKeyList[0]));
+                    _items = college;
+                  } else if (index == 1) {
+                    // userTagProvider.changeTagGPA(_getAllItem(tagStateKeyList[1]));
+                    _items = gpa;
+                  } else if (index == 2) {
+                    // userTagProvider
+                    //     .changeTagLanguage(_getAllItem(tagStateKeyList[2]));
+                    _items = language;
+                  } else if (index == 3) {
+                    // userTagProvider
+                    //     .changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
+                    _items = strudyHabits;
+                  } else {
+                    _items = [];
+                  }
+                });
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 15.0,
+                  vertical: 20.0,
+                ),
+                child: Text(
+                  categories[index],
+                  style: TextStyle(
+                    decoration: index == selectedIndex
+                        ? TextDecoration.underline
+                        : null,
+                    decorationColor: color,
+                    decorationThickness: 3,
+                    decorationStyle: TextDecorationStyle.solid,
+                    color:
+                        index == selectedIndex ? Colors.black : Colors.black87,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -315,7 +334,7 @@ class _TagSelectingState extends State<TagSelecting> {
     return Tags(
       alignment: WrapAlignment.start,
       key: tagStateKey,
-      spacing: 20,
+      spacing: 15,
       runSpacing: 18,
       // textField: TagsTextField(
       //   textStyle: TextStyle(fontSize: _fontSize),
@@ -344,6 +363,7 @@ class _TagSelectingState extends State<TagSelecting> {
           key: Key(index.toString()),
           index: index, // required
           title: item,
+
           activeColor: tagColor,
           textColor: Colors.white,
           color: tagColor,
@@ -384,7 +404,7 @@ class _TagSelectingState extends State<TagSelecting> {
     return Tags(
       alignment: WrapAlignment.start,
       key: tagStateKey,
-      spacing: 20,
+      spacing: 15,
       runSpacing: 18,
       itemCount: tagLists.length, // required
       itemBuilder: (int index) {

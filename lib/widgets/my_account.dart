@@ -5,7 +5,7 @@ import 'package:app_test/pages/edit_pages/editHomePage.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
-import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
+import 'package:app_test/pages/explore_pages/help&feedback.dart';
 import 'package:app_test/widgets/course_menu.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -198,6 +198,9 @@ class _MyAccountState extends State<MyAccount> {
                     iconData: Icons.help,
                     textSize: widget.getSize(2),
                     height: (menuContainerHeight) / 6,
+                    onTap: () {
+                      showBottomPopSheet(context, HelpFeedback());
+                    },
                   ),
                   Divider(
                     height: 0,

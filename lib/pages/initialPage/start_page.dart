@@ -99,16 +99,14 @@ class _StartPageState extends State<StartPage> {
                         pageController: _pageController,
                         buttonColor: listColors[_currentIndexColor].colors[1],
                       ),
-                      TagSelecting(
-                        pageController: _pageController,
-                        buttonColor: listColors[_currentIndexColor].colors[1],
-                      ),
+
                       // SecondPage(),
                       SecondPage(
                         pageController: _pageController,
                         buttonColor: listColors[_currentIndexColor].colors[1],
                       ),
                       ThirdPage(
+                        pageController: _pageController,
                         userName: userdata.userName,
                         initialIndex: _currentIndexColor,
                         valueChanged: (index) {
@@ -118,6 +116,10 @@ class _StartPageState extends State<StartPage> {
                             _animacaoColor = Tween(begin: 0.0, end: 2.3);
                           });
                         },
+                      ),
+                      TagSelecting(
+                        pageController: _pageController,
+                        buttonColor: listColors[_currentIndexColor].colors[1],
                       ),
                     ],
                   ),
@@ -161,9 +163,8 @@ class _StartPageState extends State<StartPage> {
                       IconButton(
                         icon: Icon(
                           Icons.arrow_back_ios,
-                          color: _currentIndex == 1
-                              ? Colors.black
-                              : Colors.white54,
+                          color:
+                              _currentIndex == 3 ? Colors.black : Colors.white,
                           size: 30,
                         ),
                         onPressed: () {
@@ -189,55 +190,56 @@ class _StartPageState extends State<StartPage> {
                     ],
                   ),
                 ),
-                AnimatedPositioned(
-                  top: _height * 0.94,
-                  right: _currentIndex == null || _currentIndex == 0
-                      ? -400
-                      : _width / 2 - 60,
-                  height: 40,
-                  duration: Duration(milliseconds: 400),
-                  curve: Curves.easeOutCubic,
-                  child: Row(
-                    children: <Widget>[
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        height: 8,
-                        width: 8,
-                        decoration: BoxDecoration(
-                            color: _currentIndex == 1
-                                ? Colors.white
-                                : Colors.white54,
-                            shape: BoxShape.circle),
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        height: 8,
-                        width: 68,
-                        decoration: BoxDecoration(
-                            color: _currentIndex == 2
-                                ? Colors.white
-                                : Colors.white54,
-                            shape: BoxShape.circle),
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        height: 8,
-                        width: 8,
-                        decoration: BoxDecoration(
-                            color: _currentIndex == 3
-                                ? Colors.white
-                                : Colors.white54,
-                            shape: BoxShape.circle),
-                      ),
-                    ],
-                  ),
-                )
+                // dots
+                // AnimatedPositioned(
+                //   top: _height * 0.05,
+                //   right: _currentIndex == null || _currentIndex == 0
+                //       ? -400
+                //       : _width / 2 - 60,
+                //   height: 40,
+                //   duration: Duration(milliseconds: 400),
+                //   curve: Curves.easeOutCubic,
+                //   child: Row(
+                //     children: <Widget>[
+                //       AnimatedContainer(
+                //         duration: Duration(milliseconds: 300),
+                //         height: 8,
+                //         width: 8,
+                //         decoration: BoxDecoration(
+                //             color: _currentIndex == 1
+                //                 ? Colors.white
+                //                 : Colors.white54,
+                //             shape: BoxShape.circle),
+                //       ),
+                //       SizedBox(
+                //         width: 6,
+                //       ),
+                //       AnimatedContainer(
+                //         duration: Duration(milliseconds: 300),
+                //         height: 8,
+                //         width: 68,
+                //         decoration: BoxDecoration(
+                //             color: _currentIndex == 2
+                //                 ? Colors.white
+                //                 : Colors.white54,
+                //             shape: BoxShape.circle),
+                //       ),
+                //       SizedBox(
+                //         width: 6,
+                //       ),
+                //       AnimatedContainer(
+                //         duration: Duration(milliseconds: 300),
+                //         height: 8,
+                //         width: 8,
+                //         decoration: BoxDecoration(
+                //             color: _currentIndex == 3
+                //                 ? Colors.white
+                //                 : Colors.white54,
+                //             shape: BoxShape.circle),
+                //       ),
+                //     ],
+                //   ),
+                // )
               ],
             ),
           );
