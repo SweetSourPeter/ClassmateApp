@@ -67,7 +67,15 @@ class _TagSelectingState extends State<TagSelecting> {
   Widget build(BuildContext context) {
     // final userTags = Provider.of<UserTags>(context);
     final userTagProvider = Provider.of<UserTagsProvider>(context);
+    Color submitButtonColor = Colors.white;
+    Color submitButtonTextColor = widget.buttonColor;
+    String submitButtonString = 'Next';
 
+    if (selectedIndex >= 3) {
+      submitButtonColor = widget.buttonColor;
+      submitButtonTextColor = Colors.white;
+      submitButtonString = 'Complete';
+    }
     // var allTags = (userTags != null)
     //     ? [
     //         userTags.college,
@@ -82,7 +90,8 @@ class _TagSelectingState extends State<TagSelecting> {
     // ];
 
     return Scaffold(
-      body: Column(
+        body: SafeArea(
+      child: Column(
         children: [
           Container(
             // decoration: BoxDecoration(
@@ -220,36 +229,63 @@ class _TagSelectingState extends State<TagSelecting> {
                   }
                 });
               },
-              hoverColor: widget.buttonColor,
+              hoverColor: submitButtonColor,
               hoverElevation: 0,
-              highlightColor: widget.buttonColor,
+              highlightColor: submitButtonColor,
               highlightElevation: 0,
               elevation: 1,
-              color: widget.buttonColor,
+              color: submitButtonColor,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+                  borderRadius: BorderRadius.circular(30),
+                  side: BorderSide(color: widget.buttonColor)),
               onPressed: () {
-                userTagProvider.addTagsToContact(context);
+                if (selectedIndex >= 3) {
+                  userTagProvider.addTagsToContact(context);
 
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Wrapper(false),
-                  ),
-                );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Wrapper(false),
+                    ),
+                  );
+                } else {
+                  selectedIndex++;
+                  changeCategory(selectedIndex);
+                }
               },
               child: Text(
-                'Complete',
-                style: simpleTextStyle(Colors.white),
+                submitButtonString,
+                style: simpleTextStyle(submitButtonTextColor),
               ),
             ),
           ),
-          SizedBox(
-            height: 6,
-          ),
         ],
       ),
-    );
+    ));
+  }
+
+  void changeCategory(int index) {
+    setState(() {
+      selectedIndex = index;
+      if (index == 0) {
+        // userTagProvider
+        //     .changeTagCollege(_getAllItem(tagStateKeyList[0]));
+        _items = college;
+      } else if (index == 1) {
+        // userTagProvider.changeTagGPA(_getAllItem(tagStateKeyList[1]));
+        _items = gpa;
+      } else if (index == 2) {
+        // userTagProvider
+        //     .changeTagLanguage(_getAllItem(tagStateKeyList[2]));
+        _items = language;
+      } else if (index == 3) {
+        // userTagProvider
+        //     .changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
+        _items = strudyHabits;
+      } else {
+        _items = [];
+      }
+    });
   }
 
   Widget categorySelector(Color color, Size mediaQuery, userTagProvider) {
@@ -257,15 +293,15 @@ class _TagSelectingState extends State<TagSelecting> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5.0),
         color: Colors.white,
-        boxShadow: [
+        /*boxShadow: [
           BoxShadow(
             color: Colors.grey[350],
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 1.0,
           ),
-        ],
+        ],*/
       ),
-      height: mediaQuery.height * 0.08,
+      height: mediaQuery.height * 0.07,
       // color: Colors.white,
       child: Padding(
         padding: EdgeInsets.only(left: 10),
@@ -275,27 +311,7 @@ class _TagSelectingState extends State<TagSelecting> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                setState(() {
-                  selectedIndex = index;
-                  if (index == 0) {
-                    // userTagProvider
-                    //     .changeTagCollege(_getAllItem(tagStateKeyList[0]));
-                    _items = college;
-                  } else if (index == 1) {
-                    // userTagProvider.changeTagGPA(_getAllItem(tagStateKeyList[1]));
-                    _items = gpa;
-                  } else if (index == 2) {
-                    // userTagProvider
-                    //     .changeTagLanguage(_getAllItem(tagStateKeyList[2]));
-                    _items = language;
-                  } else if (index == 3) {
-                    // userTagProvider
-                    //     .changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
-                    _items = strudyHabits;
-                  } else {
-                    _items = [];
-                  }
-                });
+                changeCategory(index);
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
