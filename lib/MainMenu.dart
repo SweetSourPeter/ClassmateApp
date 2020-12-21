@@ -14,6 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
+import 'dart:developer' as dev;
 
 class MainMenu extends StatefulWidget {
   @override
@@ -43,19 +44,24 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
-    WidgetsBinding.instance.addPostFrameCallback(getPosition);
+    // print("object1");
+    // WidgetsBinding.instance.addPostFrameCallback(getPosition);
   }
 
   getPosition(duration) {
+    // print("object2");
     RenderBox renderBox = globalKey.currentContext.findRenderObject();
+    // print("object3");
     final position = renderBox.localToGlobal(Offset.zero);
     double start = position.dy - 20;
     double contLimit = position.dy + renderBox.size.height - 20;
     double step = (contLimit - start) / 5;
     limits = [];
+    // print("object");
     for (double x = start; x <= contLimit; x = x + step) {
       limits.add(x);
     }
+
     setState(() {
       limits = limits;
     });
@@ -73,10 +79,11 @@ class _MainMenuState extends State<MainMenu> {
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
-    // dev.debugger();
-
+    if (userdata != null) {
+      WidgetsBinding.instance.addPostFrameCallback(getPosition);
+    }
     return (userdata == null)
-        ? CircularProgressIndicator()
+        ? Container(height: 20, width: 20, child: CircularProgressIndicator())
         : SafeArea(
             child: Scaffold(
                 body: GestureDetector(
