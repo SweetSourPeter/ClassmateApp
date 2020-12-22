@@ -198,13 +198,16 @@ class _SearchUsersState extends State<SearchUsers> {
   }
 
   // a function to create chat room
-  createChatRoomAndStartConversation(String userName){
+  createChatRoomAndStartConversation(String userName, String userEmail){
     final currentUser = Provider.of<UserData>(context, listen: false);
     final myName = currentUser.userName;
-    if(userName != myName) {
+    final myEmail = currentUser.email;
+    if(userEmail != myEmail) {
       String chatRoomId = getChatRoomId(userName, myName);
 
-      List<String> users = [userName, myName];
+      List<String> users = [userName, userEmail, myName, myEmail];
+      print('users map is:   ');
+      print(users);
       Map<String, dynamic> chatRoomMap = {
         'users' : users,
         'chatRoomId' : chatRoomId,
@@ -221,7 +224,11 @@ class _SearchUsersState extends State<SearchUsers> {
                   value: currentUser,
                 )
               ],
-              child: ChatScreen(chatRoomId: chatRoomId,),
+              child: ChatScreen(
+                chatRoomId: chatRoomId,
+                friendEmail: userEmail,
+                friendName: userName,
+              ),
             );
           }
       ));
@@ -288,7 +295,7 @@ class _SearchUsersState extends State<SearchUsers> {
               ),
               onPressed: () {
                 //TODO
-                createChatRoomAndStartConversation(userName);
+                createChatRoomAndStartConversation(userName, userEmail);
               },
               //之后需要根据friendsProvider改这部分display
               //TODO

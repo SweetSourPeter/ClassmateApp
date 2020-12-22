@@ -324,24 +324,38 @@ class DatabaseMethods {
         .collection('chatroom')
         .document(chatRoomId)
         .collection('chats')
-        .orderBy('time', descending: false)
+        .orderBy('time', descending: true)
         .snapshots();
   }
 
   getGroupChatMessages(String chatRoomId) async {
-    return await Firestore.instance
+    return Firestore.instance
         .collection('courses')
         .document(chatRoomId)
         .collection('chats')
-        .orderBy('time', descending: false)
+        .orderBy('time', descending: true)
         .snapshots();
   }
 
   getChatRooms(String userName) async {
-    return await Firestore.instance
+    return Firestore.instance
         .collection('chatroom')
         .where('users', arrayContains: userName)
         .snapshots();
+  }
+
+  getFriendCourses(String userEmail) {
+    return Firestore.instance
+        .collection('users')
+        .where('email', isEqualTo: userEmail)
+        .getDocuments().then((value) {
+          print(value.documents.first.documentID);
+    });
+    // return Firestore.instance
+    //     .collection('users')
+    //     .document('wm7cwLR8OTPvDeGJwYf3B3pv1E73')
+    //     .collection('courses')
+    //     .getDocuments();
   }
 
   setLastestMessage(String chatRoomId, String latestMessage, int lastMessageTime) async {

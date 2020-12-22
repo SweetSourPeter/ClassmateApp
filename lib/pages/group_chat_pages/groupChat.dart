@@ -15,6 +15,7 @@ import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:app_test/pages/contact_pages/courseDetailPage.dart';
 
 class GroupChat extends StatefulWidget {
   final String chatRoomId;
@@ -36,6 +37,7 @@ class _GroupChatState extends State<GroupChat> {
   TextEditingController messageController = new TextEditingController();
   bool displayTime;
   bool displayWeek;
+  bool showFunctions;
 
   Stream chatMessageStream;
 
@@ -45,6 +47,7 @@ class _GroupChatState extends State<GroupChat> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+            padding: EdgeInsets.all(0),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
               DateTime current = DateTime.fromMillisecondsSinceEpoch(
@@ -78,7 +81,9 @@ class _GroupChatState extends State<GroupChat> {
                       snapshot.data.documents[index].data['time'])
                       .toString(),
                   displayTime,
-                  displayWeek)
+                  displayWeek,
+                  snapshot.data.documents[index].data['sendBy']
+              )
                   : ImageTile(
                   snapshot.data.documents[index].data['message'],
                   snapshot.data.documents[index].data['sendBy'] ==
@@ -177,6 +182,7 @@ class _GroupChatState extends State<GroupChat> {
     });
     showStickerKeyboard = false;
     showTextKeyboard = false;
+    showFunctions = false;
     super.initState();
   }
 
@@ -215,8 +221,13 @@ class _GroupChatState extends State<GroupChat> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: IconButton(
-                            icon: Image.asset('assets/images/back_arrow.png'),
+                            icon: Image.asset(
+                                'assets/images/back_arrow.pic',
+                                height: 23,
+                                width: 23
+                            ),
                             // iconSize: 30.0,
+                            color: const Color(0xFFFFB811),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                         ),
@@ -226,34 +237,40 @@ class _GroupChatState extends State<GroupChat> {
                             // currentUser.email,
                               widget.courseName,
                               style: GoogleFonts.montserrat(
-                                  fontSize: 18,
+                                  fontSize: 22,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold)),
                         ),
-                        IconButton(
-                          icon: Image.asset('assets/images/find.jpeg'),
-                          // iconSize: 30.0,
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: currentUser,
-                                      )
-                                    ],
-                                    child: SearchChat(widget.chatRoomId),
-                                  );
-                                }));
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: IconButton(
+                            icon: Image.asset(
+                                'assets/images/group_more.png',
+                                height: 26,
+                                width: 50
+                            ),
+                            // iconSize: 10.0,
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: currentUser,
+                                        )
+                                      ],
+                                      child: CourseDetailPage(),
+                                    );
+                                  }));
+                            },
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 5,),
                   Expanded(
-                      child: Container(
-                          child: chatMessageList(currentUser.userName))),
+                      child: chatMessageList(currentUser.userName)
+                  ),
                   Container(
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -280,91 +297,80 @@ class _GroupChatState extends State<GroupChat> {
                         //                           icon: Icon(Icons.photo_library),
                         //                           onPressed: () => _pickImage(ImageSource.gallery, currentUser.userName)
                         //                       ),
-                        IconButton(
-                            icon: Image.asset('assets/images/smile.png',
-                                width: 25.36, height: 25.36),
-                            onPressed: () {
-                              showTextKeyboard
-                                  ? setState(() {
-                                FocusScopeNode currentFocus =
-                                FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();
-                                  showTextKeyboard = false;
-                                }
-                                showStickerKeyboard =
-                                !showStickerKeyboard;
-                              })
-                                  : setState(() {
-                                showStickerKeyboard =
-                                !showStickerKeyboard;
-                              });
-                            }),
                         SizedBox(
                           width: 16,
                         ),
                         Expanded(
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: TextField(
-                                onTap: () {
-                                  setState(() {
-                                    showStickerKeyboard = false;
-                                    showTextKeyboard = true;
-                                  });
-                                },
-                                controller: messageController,
-                                style: GoogleFonts.openSans(
-                                  fontSize: 12,
-                                  color: Colors.black,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding:
-                                    EdgeInsets.only(left: 10.0, bottom: 7.0)),
-                                textInputAction: TextInputAction.send,
-                                onSubmitted: (value) {
-                                  sendMessage(currentUser.userName);
-                                },
+                                child: TextField(
+                                  onTap: () {
+                                    setState(() {
+                                      showStickerKeyboard = false;
+                                      showTextKeyboard = true;
+                                    });
+                                  },
+                                  controller: messageController,
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding:
+                                      EdgeInsets.only(left: 10.0, bottom: 7.0)),
+                                  textInputAction: TextInputAction.send,
+                                  onSubmitted: (value) {
+                                    sendMessage(currentUser.userName);
+                                  },
+                                ),
                               ),
                             )),
-                        SizedBox(
-                          width: 16,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: GestureDetector(
+                              child: Image.asset('assets/images/smile.png',
+                                  width: 25.36, height: 25.36),
+                              onTap: () {
+                                showTextKeyboard
+                                    ? setState(() {
+                                  FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                    showTextKeyboard = false;
+                                  }
+                                  showStickerKeyboard =
+                                  !showStickerKeyboard;
+                                })
+                                    : setState(() {
+                                  showStickerKeyboard =
+                                  !showStickerKeyboard;
+                                });
+                              }),
                         ),
-                        IconButton(
-                          icon: Image.asset(
-                            'assets/images/plus.png',
-                            width: 25.36,
-                            height: 25.36,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              print('showFunctions value: ' + showFunctions.toString());
+                              setState(() {
+                                showFunctions = !showFunctions;
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/plus.png',
+                              width: 25.36,
+                              height: 25.36,
+                            ),
                           ),
                         )
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     sendMessage(currentUser.userName);
-                        //   },
-                        //   child: Container(
-                        //       height: 40,
-                        //       width: 40,
-                        //       decoration: BoxDecoration(
-                        //           // gradient: LinearGradient(
-                        //           //     colors: [
-                        //           //       const Color(0x36FFFFFF),
-                        //           //       const Color(0x0FFFFFFF)
-                        //           //     ],
-                        //           //     begin: FractionalOffset.topLeft,
-                        //           //     end: FractionalOffset.bottomRight
-                        //           // ),
-                        //           color: Colors.orange,
-                        //           borderRadius: BorderRadius.circular(40)
-                        //       ),
-                        //       padding: EdgeInsets.all(12),
-                        //       child: Image.asset("assets/images/send.png",
-                        //         height: 25, width: 25,)),
-                        // ),
                       ],
                     ),
                   ),
@@ -398,111 +404,177 @@ class MessageTile extends StatelessWidget {
   final String currentTime;
   final bool displayTime;
   final bool displayWeek;
+  final String senderName;
 
   MessageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek);
+      this.displayWeek, this.senderName);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        displayWeek
-            ? displayTime
-            ? Container(
-          alignment: Alignment.center,
-          child: Text(
-            DateFormat('EEEE')
-                .format(DateTime.parse(currentTime))
-                .substring(0, 3) +
-                ', ' +
-                DateFormat('MMMM')
+        // Date Box
+        displayWeek ? displayTime ?
+          Padding(
+            padding: const EdgeInsets.only(top: 35),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                DateFormat('EEEE')
                     .format(DateTime.parse(currentTime))
                     .substring(0, 3) +
-                ' ' +
-                DateFormat('d').format(DateTime.parse(currentTime)),
-            style: GoogleFonts.openSans(
-              fontSize: 10,
-              color: const Color(0xff949494),
-            ),
-          ),
-        )
-            : Container()
-            : displayTime
-            ? Container(
-          alignment: Alignment.center,
-          child: Text(
-            currentTime.substring(0, currentTime.length - 13),
-            style: GoogleFonts.openSans(
-              fontSize: 10,
-              color: const Color(0xff949494),
-            ),
-          ),
-        )
-            : Container(),
-        Container(
-          padding: EdgeInsets.only(
-              top: 8,
-              bottom: 8,
-              left: isSendByMe ? 0 : 24,
-              right: isSendByMe ? 24 : 0),
-          alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 12.0, bottom: 18.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                isSendByMe ? Text(
-                  currentTime.substring(11, currentTime.length - 7),
-                  style: GoogleFonts.openSans(
-                    fontSize: 12,
-                    color: const Color(0xff949494),
-                  ),
-                ) : Container(),
-                Container(
-                  margin: isSendByMe ? EdgeInsets.only(left: 10)
-                      : EdgeInsets.only(right: 10),
-                  padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: isSendByMe
-                          ? BorderRadius.only(
-                          bottomRight: Radius.circular(12),
-                          topLeft: Radius.circular(12),
-                          bottomLeft: Radius.circular(12))
-                          : BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                          bottomRight: Radius.circular(12)),
-                      // gradient: LinearGradient(
-                      //   colors: isSendByMe ? [
-                      //     const Color(0xff007EF4),
-                      //     const Color(0xff2A75BC)
-                      //   ]
-                      //       : [
-                      //     const Color(0x1AFFFFFF),
-                      //     const Color(0x1AFFFFFF)
-                      //   ],
-                      // )
-                      color: isSendByMe ? const Color(0xffFFB811) : Colors.white),
-                  child: Text(message,
-                      textAlign: TextAlign.start,
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        color: Colors.black,
-                      )),
+                    ', ' +
+                    DateFormat('MMMM')
+                        .format(DateTime.parse(currentTime))
+                        .substring(0, 3) +
+                    ' ' +
+                    DateFormat('d').format(DateTime.parse(currentTime)),
+                style: GoogleFonts.openSans(
+                  fontSize: 14,
+                  color: const Color(0xff949494),
                 ),
-                isSendByMe ? Container()
-                    : Text(
-                  currentTime.substring(11, currentTime.length - 7),
-                  style: GoogleFonts.openSans(
-                    fontSize: 12,
-                    color: const Color(0xff949494),
-                  ),
-                )
-              ],
+              ),
             ),
+          ) : Container() : displayTime ?
+          Padding(
+            padding: const EdgeInsets.only(top: 35),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                currentTime.substring(0, currentTime.length - 13),
+                style: GoogleFonts.openSans(
+                  fontSize: 14,
+                  color: const Color(0xff949494),
+                ),
+              ),
+            ),
+          ) : Container(),
+        // Message Box
+        isSendByMe ? Container(
+          padding: EdgeInsets.only(top: 20, right: 25),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Sender's name
+              Container(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    senderName,
+                    style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xffFFB811),
+                    ),
+                  ),
+                ),
+              ),
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(12),
+                                topLeft: Radius.circular(12),
+                                bottomLeft: Radius.circular(12)),
+                            color: const Color(0xffFFB811)),
+                        child: Text(
+                            message,
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ),
+        )
+            : Container(
+          padding: EdgeInsets.only(top: 20, left: 25),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Sender's name
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    senderName,
+                    style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xffFFB811),
+                    ),
+                  ),
+                ),
+              ),
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(12),
+                              topRight: Radius.circular(12),
+                              bottomRight: Radius.circular(12)
+                            ),
+                            color: Colors.white
+                        ),
+                        child: Text(
+                            message,
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
+                            )
+                        ),
+                      ),
+                    ),
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

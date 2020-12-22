@@ -21,6 +21,7 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   Stream chatRooms;
   String friendName;
+  String friendEmail;
   String latestMessage;
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -38,9 +39,11 @@ class _ChatRoomState extends State<ChatRoom> {
                 itemBuilder: (context, index) {
                   final userList = snapshot.data.documents[index].data['users'];
                   if (userList[0] == widget.myName) {
-                    friendName = userList[1];
+                    friendName = userList[2];
+                    friendEmail = userList[3];
                   } else {
                     friendName = userList[0];
+                    friendEmail = userList[1];
                   }
 
                   latestMessage = snapshot.data.documents[index].data['latestMessage'];
@@ -57,7 +60,8 @@ class _ChatRoomState extends State<ChatRoom> {
                         snapshot.data.documents[index].data["chatRoomId"],
                     friendName: friendName,
                     latestMessage: latestMessage,
-                    lastMessageTime: lastMessageTime
+                    lastMessageTime: lastMessageTime,
+                    friendEmail: friendEmail,
                   );
                 })
             : Container();
@@ -83,19 +87,11 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<UserData>(context, listen: false);
     return Scaffold(
       body: Container(
         color: Colors.white,
         child: Column(
           children: [
-            // Align(
-            //   alignment: Alignment.centerRight,
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(top: 8.0, right:15.0),
-            //     child:
-            //   ),
-            // ),
             Container(
               child: Row(
                 children: [
@@ -106,10 +102,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         'Chats',
                         textAlign: TextAlign.left,
                         style: largeTitleTextStyle(
-                        // GoogleFonts.montserrat(
                           Colors.black,
-                          // fontWeight: FontWeight.bold,
-                          // fontSize: 28
                         )
                       ),
                     ),
@@ -134,8 +127,10 @@ class ChatRoomsTile extends StatelessWidget {
   final String friendName;
   final String latestMessage;
   final String lastMessageTime;
+  final String friendEmail;
 
-  ChatRoomsTile({this.userName, @required this.chatRoomId, this.friendName, this.latestMessage, this.lastMessageTime});
+  ChatRoomsTile({this.userName, @required this.chatRoomId, this.friendName,
+    this.latestMessage, this.lastMessageTime, this.friendEmail});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +146,8 @@ class ChatRoomsTile extends StatelessWidget {
             ],
             child: ChatScreen(
               chatRoomId: chatRoomId,
-              friendName: friendName
+              friendName: friendName,
+              friendEmail: friendEmail,
             ),
           );
         }));

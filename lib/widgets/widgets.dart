@@ -208,3 +208,125 @@ CircleAvatar creatUserImageWithString(
             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
 }
+
+class ButtonLink extends StatefulWidget {
+  final String text;
+  final IconData iconData;
+  final double textSize;
+  final double height;
+  final GestureTapCallback onTap;
+  @required
+  final bool isSimple;
+  @required
+  final bool isSwitch;
+  @required
+  final bool isEdit;
+  @required
+  String editText;
+
+  ButtonLink(
+      {this.text,
+        this.iconData,
+        this.textSize,
+        this.height,
+        this.onTap,
+        this.isSimple = false,
+        this.isSwitch = false,
+        this.isEdit = false,
+        this.editText = ''});
+
+  @override
+  _ButtonLinkState createState() => _ButtonLinkState();
+}
+
+class _ButtonLinkState extends State<ButtonLink> {
+  bool isSwitched = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Column(
+      children: [
+        FlatButton(
+          padding: widget.isEdit
+              ? EdgeInsets.fromLTRB(20, 10, 20, 10)
+              : EdgeInsets.fromLTRB(20, 0, 20, 0),
+          height: widget.height,
+          color: Colors.white,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  (widget.isSimple || widget.isEdit)
+                      ? Container()
+                      : Icon(
+                    widget.iconData,
+                    color:
+                    !widget.isSimple ? Colors.black45 : orengeColor,
+                  ),
+                  SizedBox(
+                    width: widget.isEdit ? 10 : 20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.text,
+                        style: GoogleFonts.montserrat(
+                            color:
+                            !widget.isSimple ? Colors.black87 : orengeColor,
+                            fontSize: widget.textSize),
+                      ),
+                      widget.isEdit
+                          ? Text(
+                        widget.editText,
+                        style: GoogleFonts.montserrat(
+                            color: Colors.black45,
+                            fontSize: widget.textSize),
+                      )
+                          : Container(),
+                    ],
+                  ),
+                  new Spacer(),
+                  !widget.isSimple
+                      ? Container(
+                      child: !widget.isSwitch
+                          ? Icon(
+                        Icons.chevron_right,
+                        size: 26,
+                        color: Colors.black54,
+                      )
+                          : Switch(
+                        value: isSwitched,
+                        onChanged: (value) {
+                          setState(() {
+                            isSwitched = value;
+                            print(isSwitched);
+                          });
+                        },
+                        activeTrackColor: orengeColor,
+                        activeColor: Colors.white,
+                      ))
+                      : Container()
+                ],
+              ),
+            ],
+          ),
+          onPressed: () {
+            widget.onTap();
+          },
+        )
+      ],
+    );
+  }
+}
+
+CircleAvatar creatAddIconImage(double radius) {
+  return CircleAvatar(
+    backgroundColor: transparent,
+    radius: radius,
+    backgroundImage: AssetImage('./assets/images/add_icon.png'),
+  );
+}

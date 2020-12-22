@@ -1,3 +1,4 @@
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,8 +21,9 @@ import 'package:intl/intl.dart';
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
   final String friendName;
+  final String friendEmail;
 
-  ChatScreen({this.chatRoomId, this.friendName});
+  ChatScreen({this.chatRoomId, this.friendName, this.friendEmail});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -37,8 +39,13 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController = new TextEditingController();
   bool displayTime;
   bool displayWeek;
+  bool showFunctions;
+  bool lastMessage;
+  List<String> friendCourse = List<String>();
+  ScrollController _controller;
 
   Stream chatMessageStream;
+  Future friendCoursesFuture;
 
   Widget chatMessageList(String myName) {
     return StreamBuilder(
@@ -46,21 +53,30 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+                reverse: true,
+                controller: _controller,
+                padding: EdgeInsets.all(0),
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.documents[index].data['time']);
-                  if (index == 0) {
+                  if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index - 1].data['time']);
+                        snapshot.data.documents[index + 1].data['time']);
                     final difference = current.difference(prev).inDays;
                     if (difference >= 1) {
                       displayTime = true;
                     } else {
                       displayTime = false;
                     }
+                  }
+
+                  if (index == 0) {
+                    lastMessage = true;
+                  } else {
+                    lastMessage = false;
                   }
 
                   if (DateTime.now().difference(current).inDays <= 7) {
@@ -79,11 +95,20 @@ class _ChatScreenState extends State<ChatScreen> {
                                   snapshot.data.documents[index].data['time'])
                               .toString(),
                           displayTime,
-                          displayWeek)
+                          displayWeek,
+                          lastMessage,
+                  )
                       : ImageTile(
                           snapshot.data.documents[index].data['message'],
                           snapshot.data.documents[index].data['sendBy'] ==
-                              myName);
+                              myName,
+                          DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[index].data['time'])
+                              .toString(),
+                          displayTime,
+                          displayWeek,
+                          lastMessage,
+                  );
                 })
             : Container();
       },
@@ -102,6 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
       databaseMethods.setLastestMessage(widget.chatRoomId, messageController.text, lastMessageTime);
+      _controller.jumpTo(_controller.position.minScrollExtent);
       messageController.text = '';
     }
   }
@@ -153,21 +179,21 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  Future _cropImage() async {
-    File cropped = await ImageCropper.cropImage(
-      sourcePath: _imageFile.path,
-    );
-
-    setState(() {
-      _imageFile = cropped ?? _imageFile;
-    });
-  }
-
-  void _clear() {
-    setState(() {
-      _imageFile = null;
-    });
-  }
+  // Future _cropImage() async {
+  //   File cropped = await ImageCropper.cropImage(
+  //     sourcePath: _imageFile.path,
+  //   );
+  //
+  //   setState(() {
+  //     _imageFile = cropped ?? _imageFile;
+  //   });
+  // }
+  //
+  // void _clear() {
+  //   setState(() {
+  //     _imageFile = null;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -176,8 +202,18 @@ class _ChatScreenState extends State<ChatScreen> {
         chatMessageStream = value;
       });
     });
+    friendCoursesFuture = databaseMethods.getFriendCourses(widget.friendEmail);
+    friendCoursesFuture.then((value) {
+      value.documents.forEach((element) {
+        setState(() {
+          friendCourse.add(element.data['myCourseName']);
+        });
+      });
+    });
     showStickerKeyboard = false;
     showTextKeyboard = false;
+    showFunctions = false;
+    _controller = ScrollController();
     super.initState();
   }
 
@@ -197,210 +233,263 @@ class _ChatScreenState extends State<ChatScreen> {
             setState(() {
               showStickerKeyboard = false;
               showTextKeyboard = false;
+              showFunctions = false;
             });
           },
-          child: Stack(
+          child: Column(
             children: [
-              Column(
-                children: [
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Container(
-                    color: Colors.white,
-                    height: 73,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/back_arrow.pic',
-                              height: 23,
-                              width: 23
-                            ),
-                            // iconSize: 30.0,
-                            color: const Color(0xFFFFB811),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
+              SizedBox(
+                height: 25,
+              ),
+              Container(
+                color: Colors.white,
+                height: 73,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/images/back_arrow.pic',
+                          height: 23,
+                          width: 23
                         ),
-                        Container(
-                          // height: 30.0,
-                          child: Text(
-                              // currentUser.email,
-                              widget.friendName,
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 22,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/find.png',
-                              height: 23,
-                              width: 23
-                            ),
-                            // iconSize: 10.0,
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return MultiProvider(
-                                  providers: [
-                                    Provider<UserData>.value(
-                                      value: currentUser,
-                                    )
-                                  ],
-                                  child: SearchChat(widget.chatRoomId),
-                                );
-                              }));
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                      child: Container(
-                          child: chatMessageList(currentUser.userName))),
-                  Container(
-                      decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3), // changes position of shadow
+                        // iconSize: 30.0,
+                        color: const Color(0xFFFFB811),
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
-                    ],
-                  )),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 74.0,
-                    width: MediaQuery.of(context).size.width,
-                    color: const Color(0xffF9F6F1),
-                    child: Row(
-                      children: [
-                        //                       IconButton(
-                        //                           icon: Icon(Icons.photo_camera),
-                        // //                          onPressed: () => _pickImage(ImageSource.camera)
-                        //                       ),
-                        //                       IconButton(
-                        //                           icon: Icon(Icons.photo_library),
-                        //                           onPressed: () => _pickImage(ImageSource.gallery, currentUser.userName)
-                        //                       ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
+                    ),
+                    Container(
+                      // height: 30.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Container(
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(32),
+                                child: Image.network(
+                                  'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                                  height: 45,
+                                  width: 45,
                                 ),
-                                child: TextField(
-                                  onTap: () {
-                                    setState(() {
-                                      showStickerKeyboard = false;
-                                      showTextKeyboard = true;
-                                    });
-                                  },
-                                  controller: messageController,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                widget.friendName,
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 18,
                                     color: Colors.black,
-                                  ),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding:
-                                          EdgeInsets.only(left: 10.0, bottom: 7.0)),
-                                  textInputAction: TextInputAction.send,
-                                  onSubmitted: (value) {
-                                    sendMessage(currentUser.userName);
-                                  },
-                                ),
+                                    fontWeight: FontWeight.bold)
+                              ),
+                              Text(
+                                friendCourse.toString().substring(1, friendCourse.toString().length-1),
+                                style: GoogleFonts.openSans(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                )
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/images/find.png',
+                          height: 23,
+                          width: 23
                         ),
-                            )),
-                        GestureDetector(
-                            child: Image.asset('assets/images/smile.png',
-                                width: 25.36, height: 25.36),
-                            onTap: () {
-                              showTextKeyboard
-                                  ? setState(() {
+                        // iconSize: 10.0,
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return MultiProvider(
+                              providers: [
+                                Provider<UserData>.value(
+                                  value: currentUser,
+                                )
+                              ],
+                              child: SearchChat(widget.chatRoomId),
+                            );
+                          }));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: chatMessageList(currentUser.userName)),
+              Container(
+                  decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              )),
+              Container(
+                alignment: Alignment.center,
+                height: 74.0,
+                width: MediaQuery.of(context).size.width,
+                color: const Color(0xffF9F6F1),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: TextField(
+                              onTap: () {
+                                setState(() {
+                                  showStickerKeyboard = false;
+                                  showTextKeyboard = true;
+                                  showFunctions = false;
+                                });
+                                Timer(
+                                    Duration(milliseconds: 160), () => _controller.jumpTo(_controller.position.minScrollExtent)
+                                );
+                              },
+                              controller: messageController,
+                              style: GoogleFonts.openSans(
+                                fontSize: 12,
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(left: 10.0, bottom: 8.0)
+                              ),
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (value) {
+                                sendMessage(currentUser.userName);
+                              },
+                            ),
+                    ),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25.0),
+                      child: GestureDetector(
+                          child: Image.asset('assets/images/smile.png',
+                              width: 25.36, height: 25.36),
+                          onTap: () {
+                            if (showTextKeyboard) {
+                              setState(() {
                                 FocusScopeNode currentFocus =
                                 FocusScope.of(context);
                                 if (!currentFocus.hasPrimaryFocus) {
                                   currentFocus.unfocus();
                                   showTextKeyboard = false;
                                 }
-                                showStickerKeyboard =
-                                !showStickerKeyboard;
-                              })
-                                  : setState(() {
-                                showStickerKeyboard =
-                                !showStickerKeyboard;
                               });
-                            }),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                          child: GestureDetector(
-                            child: Image.asset(
-                              'assets/images/plus.png',
-                              width: 25.36,
-                              height: 25.36,
-                            ),
-                          ),
-                        )
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     sendMessage(currentUser.userName);
-                        //   },
-                        //   child: Container(
-                        //       height: 40,
-                        //       width: 40,
-                        //       decoration: BoxDecoration(
-                        //           // gradient: LinearGradient(
-                        //           //     colors: [
-                        //           //       const Color(0x36FFFFFF),
-                        //           //       const Color(0x0FFFFFFF)
-                        //           //     ],
-                        //           //     begin: FractionalOffset.topLeft,
-                        //           //     end: FractionalOffset.bottomRight
-                        //           // ),
-                        //           color: Colors.orange,
-                        //           borderRadius: BorderRadius.circular(40)
-                        //       ),
-                        //       padding: EdgeInsets.all(12),
-                        //       child: Image.asset("assets/images/send.png",
-                        //         height: 25, width: 25,)),
-                        // ),
-                      ],
+                            } else {
+                              if (showFunctions) {
+                                setState(() {
+                                  showFunctions = false;
+                                });
+                              } else {}
+                            }
+                            setState(() {
+                              showStickerKeyboard = !showStickerKeyboard;
+                            });
+                            Timer(
+                                Duration(milliseconds: 30), () => _controller.jumpTo(_controller.position.minScrollExtent)
+                            );
+                          }),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (showTextKeyboard) {
+                            setState(() {
+                              FocusScopeNode currentFocus =
+                              FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus) {
+                                currentFocus.unfocus();
+                                showTextKeyboard = false;
+                              }
+                            });
+                          } else {
+                            if (showStickerKeyboard) {
+                              setState(() {
+                                showStickerKeyboard = false;
+                              });
+                            } else {}
+                          }
+                          setState(() {
+                            showFunctions = !showFunctions;
+                          });
+                          Timer(
+                              Duration(milliseconds: 30), () => _controller.jumpTo(_controller.position.minScrollExtent)
+                          );
+                        },
+                        child: Image.asset(
+                          'assets/images/plus.png',
+                          width: 25.36,
+                          height: 25.36,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              showStickerKeyboard ? AnimatedContainer(
+                duration: Duration(milliseconds: 80),
+                height: 300,
+                // showStickerKeyboard ? 400 : 0,
+                child: EmojiPicker(
+                  rows: 4,
+                  columns: 7,
+                  buttonMode: ButtonMode.MATERIAL,
+                  numRecommended: 10,
+                  onEmojiSelected: (emoji, category) {
+                    setState(() {
+                      messageController.text =
+                          messageController.text + emoji.emoji;
+                    });
+                  },
+                ),
+              ) : Container(),
+              showFunctions ? AnimatedContainer(
+                duration: Duration(milliseconds: 80),
+                height: 100,
+                child: Container(
+                  color: const Color(0xffF9F6F1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                          icon: Image.asset('assets/images/camera.png'),
+                          onPressed: () => _pickImage(ImageSource.camera, currentUser.userName)
+                      ),
+                      IconButton(
+                          icon: Image.asset('assets/images/photo_library.png'),
+                          onPressed: () => _pickImage(ImageSource.gallery, currentUser.userName)
+                      ),
+                    ],
                   ),
-                  AnimatedContainer(
-                    duration: Duration(milliseconds: 80),
-                    height: showStickerKeyboard ? 293 : 0,
-                    child: EmojiPicker(
-                      rows: 4,
-                      columns: 7,
-                      buttonMode: ButtonMode.MATERIAL,
-                      numRecommended: 10,
-                      onEmojiSelected: (emoji, category) {
-                        setState(() {
-                          messageController.text =
-                              messageController.text + emoji.emoji;
-                        });
-                      },
-                    ),
-                  )
-                ],
-              )
+                ),
+              ) : Container(),
             ],
           ),
         ));
@@ -413,109 +502,149 @@ class MessageTile extends StatelessWidget {
   final String currentTime;
   final bool displayTime;
   final bool displayWeek;
+  final bool lastMessage;
 
   MessageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek);
+      this.displayWeek, this.lastMessage);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        displayWeek
-            ? displayTime
-                ? Padding(
-                  padding: const EdgeInsets.only(),
-                  child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        DateFormat('EEEE')
-                                .format(DateTime.parse(currentTime))
-                                .substring(0, 3) +
-                            ', ' +
-                            DateFormat('MMMM')
-                                .format(DateTime.parse(currentTime))
-                                .substring(0, 3) +
-                            ' ' +
-                            DateFormat('d').format(DateTime.parse(currentTime)),
-                        style: GoogleFonts.openSans(
-                          fontSize: 14,
-                          color: const Color(0xff949494),
-                        ),
-                      ),
-                    ),
-                )
-                : Container()
-            : displayTime
-                ? Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      currentTime.substring(0, currentTime.length - 13),
+        displayWeek ? displayTime ?
+        Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              DateFormat('EEEE')
+                  .format(DateTime.parse(currentTime))
+                  .substring(0, 3) +
+                  ', ' +
+                  DateFormat('MMMM')
+                      .format(DateTime.parse(currentTime))
+                      .substring(0, 3) +
+                  ' ' +
+                  DateFormat('d').format(DateTime.parse(currentTime)),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        ) : Container() : displayTime ?
+        Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              currentTime.substring(0, currentTime.length - 13),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        ) : Container(),
+        // Message Box
+        isSendByMe ? Container(
+          padding: EdgeInsets.only(top: 20, right: 25),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
                       style: GoogleFonts.openSans(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: const Color(0xff949494),
                       ),
                     ),
-                  )
-                : Container(),
-        Container(
-          padding: EdgeInsets.only(
-              left: isSendByMe ? 0 : 24,
-              right: isSendByMe ? 24 : 0),
-          alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              isSendByMe ? Text(
-                currentTime.substring(11, currentTime.length - 7),
-                style: GoogleFonts.openSans(
-                  fontSize: 12,
-                  color: const Color(0xff949494),
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(12),
+                                topLeft: Radius.circular(12),
+                                bottomLeft: Radius.circular(12)),
+                            color: const Color(0xffFFB811)),
+                        child: Text(
+                            message,
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
+                            )),
+                      ),
+                    ),
+                  ],
                 ),
-              ) : Container(),
-              Container(
-                margin: isSendByMe ? EdgeInsets.only(left: 10)
-                : EdgeInsets.only(right: 10),
-                padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                decoration: BoxDecoration(
-                    borderRadius: isSendByMe
-                        ? BorderRadius.only(
-                            bottomRight: Radius.circular(12),
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12))
-                        : BorderRadius.only(
-                            bottomLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
-                            bottomRight: Radius.circular(12)),
-                    // gradient: LinearGradient(
-                    //   colors: isSendByMe ? [
-                    //     const Color(0xff007EF4),
-                    //     const Color(0xff2A75BC)
-                    //   ]
-                    //       : [
-                    //     const Color(0x1AFFFFFF),
-                    //     const Color(0x1AFFFFFF)
-                    //   ],
-                    // )
-                    color: isSendByMe ? const Color(0xffFFB811) : Colors.white),
-                child: Text(message,
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.openSans(
-                      fontSize: 16,
-                      color: Colors.black,
-                    )),
               ),
-              isSendByMe ? Container()
-              : Text(
-                currentTime.substring(11, currentTime.length - 7),
-                style: GoogleFonts.openSans(
-                  fontSize: 12,
-                  color: const Color(0xff949494),
+            ],
+          ),
+        )
+            : Container(
+          padding: EdgeInsets.only(top: 20, left: 25),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(12),
+                                topRight: Radius.circular(12),
+                                bottomRight: Radius.circular(12)
+                            ),
+                            color: Colors.white
+                        ),
+                        child: Text(
+                            message,
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
+                            )
+                        ),
+                      ),
+                    ),
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
+        SizedBox(
+          height: lastMessage ? 20 : 0,
+        )
       ],
     );
   }
@@ -524,51 +653,139 @@ class MessageTile extends StatelessWidget {
 class ImageTile extends StatelessWidget {
   final String message;
   final bool isSendByMe;
+  final String currentTime;
+  final bool displayTime;
+  final bool displayWeek;
+  final bool lastMessage;
 
-  ImageTile(this.message, this.isSendByMe);
+  ImageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime, this.displayWeek, this.lastMessage);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: 8,
-          bottom: 8,
-          left: isSendByMe ? 0 : 24,
-          right: isSendByMe ? 24 : 0),
-      alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin:
-            isSendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
-        padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
-        decoration: BoxDecoration(
-            borderRadius: isSendByMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomLeft: Radius.circular(23))
-                : BorderRadius.only(
-                    topLeft: Radius.circular(23),
-                    topRight: Radius.circular(23),
-                    bottomRight: Radius.circular(23)),
-            // gradient: LinearGradient(
-            //   colors: isSendByMe ? [
-            //     const Color(0xff007EF4),
-            //     const Color(0xff2A75BC)
-            //   ]
-            //       : [
-            //     const Color(0x1AFFFFFF),
-            //     const Color(0x1AFFFFFF)
-            //   ],
-            // )
-            color: isSendByMe ? const Color(0xffFFB811) : Colors.white),
-        child: CachedNetworkImage(
-          imageUrl: message,
-          placeholder: (context, url) => new CircularProgressIndicator(),
-          errorWidget: (context, url, error) => new Icon(Icons.error),
-          height: 150.0,
-          width: 150.0,
+    return Column(
+      children: [
+        displayWeek ? displayTime ?
+        Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              DateFormat('EEEE')
+                  .format(DateTime.parse(currentTime))
+                  .substring(0, 3) +
+                  ', ' +
+                  DateFormat('MMMM')
+                      .format(DateTime.parse(currentTime))
+                      .substring(0, 3) +
+                  ' ' +
+                  DateFormat('d').format(DateTime.parse(currentTime)),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        ) : Container() : displayTime ?
+        Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              currentTime.substring(0, currentTime.length - 13),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        ) : Container(),
+        // Message Box
+        isSendByMe ? Container(
+          padding: EdgeInsets.only(top: 20, right: 25),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: CachedNetworkImage(
+                            imageUrl: message,
+                            placeholder: (context, url) => new CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => new Icon(Icons.error),
+                            height: 180.0,
+                          ),
+                        )
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+            : Container(
+          padding: EdgeInsets.only(top: 20, left: 25),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: CachedNetworkImage(
+                              imageUrl: message,
+                              placeholder: (context, url) => new CircularProgressIndicator(),
+                              errorWidget: (context, url, error) => new Icon(Icons.error),
+                              height: 180.0,
+                            ),
+                          )
+                      ),
+                    ),
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        SizedBox(
+          height: lastMessage ? 20 : 0,
+        )
+      ],
     );
   }
 }
