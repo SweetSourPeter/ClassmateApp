@@ -1,13 +1,13 @@
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 
-class forgetpassword extends StatefulWidget {
+class Forgetpassword extends StatefulWidget {
   @override
-  _forgetpasswordState createState() => _forgetpasswordState();
+  _ForgetpasswordState createState() => _ForgetpasswordState();
 }
 
-class _forgetpasswordState extends State<forgetpassword> {
-  final formKey = GlobalKey<FormState>();
+class _ForgetpasswordState extends State<Forgetpassword> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool hasSend = false;
   TextEditingController emailTextEditingController =
