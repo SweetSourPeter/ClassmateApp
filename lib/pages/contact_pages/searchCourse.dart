@@ -300,23 +300,28 @@ class _SearchCourseState extends State<SearchCourse> {
                       shrinkWrap: true, //when you have listview in column
                       itemBuilder: (context, index) {
                         var id =
-                            searchSnapshot.documents[index].data['courseID'];
+                            searchSnapshot.docs[index].data()['courseID'] ?? '';
                         return Provider<List<CourseInfo>>.value(
                           value: course,
                           child: CourseSearchTile(
                             courseName:
                                 // "peter",
-                                searchSnapshot
-                                    .documents[index].data['myCourseName'],
+                                searchSnapshot.docs[index]
+                                        .data()['myCourseName'] ??
+                                    '',
                             section:
                                 // "731957665@qq.com",
-                                searchSnapshot.documents[index].data['section'],
+                                searchSnapshot.docs[index].data()['section'] ??
+                                    '',
                             college:
                                 // "731957665@qq.com",
-                                searchSnapshot.documents[index].data['college'],
-                            term: searchSnapshot.documents[index].data['term'],
-                            department: searchSnapshot
-                                .documents[index].data['department'],
+                                searchSnapshot.docs[index].data()['college'] ??
+                                    '',
+                            term:
+                                searchSnapshot.docs[index].data()['term'] ?? '',
+                            department: searchSnapshot.docs[index]
+                                    .data()['department'] ??
+                                '',
                             courseID: id,
                             isAdd: course
                                 .where((element) => element.courseID == id)

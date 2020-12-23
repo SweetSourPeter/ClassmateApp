@@ -191,7 +191,7 @@ class _SearchUsersState extends State<SearchUsers> {
 
       print('aaaa');
       print(searchSnapshot.toString() + 'aaaaaaaaaaa');
-      print(searchSnapshot.documents.length);
+      print(searchSnapshot.docs.length);
       // print(searchTextEditingController.text);
     });
   }
@@ -204,17 +204,17 @@ class _SearchUsersState extends State<SearchUsers> {
             shrinkWrap: true, //when you have listview in column
             itemBuilder: (context, index) {
               return SearchTile(
-                school: searchSnapshot.documents[index].data['school'],
-                userID: searchSnapshot.documents[index].documentID,
+                school: searchSnapshot.docs[index].data()['school'] ?? '',
+                userID: searchSnapshot.docs[index].id,
                 userName:
                     // "peter",
-                    searchSnapshot.documents[index].data['userName'],
+                    searchSnapshot.docs[index].data()['userName'] ?? '',
                 userEmail:
                     // "731957665@qq.com",
-                    searchSnapshot.documents[index].data['email'],
+                    searchSnapshot.docs[index].data()['email'] ?? '',
                 imageURL:
                     // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                    searchSnapshot.documents[index].data['userImageUrl'],
+                    searchSnapshot.docs[index].data()['userImageUrl'] ?? '',
               );
             })
         : Container(
