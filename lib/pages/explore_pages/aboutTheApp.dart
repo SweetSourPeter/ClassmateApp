@@ -2,6 +2,8 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_filereader/flutter_filereader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutTheAPP extends StatelessWidget {
   const AboutTheAPP({Key key}) : super(key: key);
@@ -40,7 +42,7 @@ class AboutTheAPP extends StatelessWidget {
                 height: 20,
               ),
               Text(
-                'MeetCor',
+                'Meechu',
                 style: largeTitleTextStyle(themeOrange),
               ),
               SizedBox(
@@ -53,8 +55,32 @@ class AboutTheAPP extends StatelessWidget {
               SizedBox(
                 height: 50,
               ),
+              GestureDetector(
+                onTap: () {
+                  print('open file');
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => FileReaderView(
+                  //         filePath: 'docs/Terms of Service.docx',
+                  //       ),
+                  //     ));
+                  // OpenFile.open("assets/docs/Terms of Service.docx");
+                  _launchURL();
+                },
+                child: Text(
+                  'Term of Use',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Text(
-                'Term of Use',
+                'Privacy Policy',
                 style: TextStyle(
                     color: Colors.blueAccent,
                     fontSize: 12,
@@ -63,5 +89,15 @@ class AboutTheAPP extends StatelessWidget {
             ],
           ))),
     );
+  }
+
+  _launchURL() async {
+    const url = 'https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y';
+    if (await canLaunch(url)) {
+      print(url);
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
