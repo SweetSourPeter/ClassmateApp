@@ -240,7 +240,7 @@ class _TagSelectingState extends State<TagSelecting> {
               },
               child: Text(
                 'Complete',
-                style: simpleTextStyle(Colors.white),
+                style: simpleTextStyle(Colors.white, 16),
               ),
             ),
           ),

@@ -2,7 +2,6 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_filereader/flutter_filereader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutTheAPP extends StatelessWidget {

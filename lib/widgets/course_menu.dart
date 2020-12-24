@@ -197,20 +197,53 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           child: Container(
                             // color: orengeColor,
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'My Courses',
                                   textAlign: TextAlign.left,
                                   style: largeTitleTextStyle(Colors.black),
                                 ),
+                                Expanded(
+                                  child: Container(),
+                                ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 2, top: 10),
+                                  padding: EdgeInsets.only(top: 5, right: 25),
                                   //TODO replace Icon
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    size: 28,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(userdata.school);
+                                      //TODO add course
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiProvider(
+                                              providers: [
+                                                Provider<UserData>.value(
+                                                  value: userdata,
+                                                ),
+                                                Provider<
+                                                        List<CourseInfo>>.value(
+                                                    value: course)
+                                              ],
+                                              child: SearchCourse(),
+                                            );
+                                          },
+                                        ),
+                                      );
+
+                                      // MaterialPageRoute(
+                                      //     builder: (context) => SearchGroup()));
+                                    },
+                                    child: Text(
+                                      'Add',
+                                      textAlign: TextAlign.left,
+                                      style:
+                                          simpleTextStyle(gradientYellow, 24),
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),

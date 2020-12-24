@@ -271,7 +271,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
                 child: Text(
                   'Sorry we dont have seat reminder service in your school yet.',
                   textAlign: TextAlign.center,
-                  style: simpleTextStyle(Colors.black),
+                  style: simpleTextStyle(Colors.black, 16),
                 ),
               ),
             ),
