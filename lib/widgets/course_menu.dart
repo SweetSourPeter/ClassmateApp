@@ -263,21 +263,27 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         child: GestureDetector(
                           onTap: () {
                             //TODO navigate into course fourm
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
                               return MultiProvider(
                                 providers: [
                                   Provider<UserData>.value(
                                     value: userdata,
                                   ),
-                                  StreamProvider<CourseProvider>.value(
-                                    value: courseProvider,
-                                  )
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
                                 ],
                                 child: GroupChat(
                                   chatRoomId: courses.courseID,
                                   myEmail: userdata.email,
                                   myName: userdata.userName,
                                   initialChat: 0,
+                                  myCourses: courses,
                                 ),
                               );
                             }));

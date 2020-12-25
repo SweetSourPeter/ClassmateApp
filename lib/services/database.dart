@@ -71,13 +71,13 @@ class DatabaseMethods {
     print('$email');
     return await Firestore.instance
         .collection("users")
-    // .where("email", isEqualTo: email)
+        // .where("email", isEqualTo: email)
         .where(
-      'email',
-      isGreaterThanOrEqualTo: email,
-      isLessThan: email.substring(0, email.length - 1) +
-          String.fromCharCode(email.codeUnitAt((email.length - 1)) + 1),
-    )
+          'email',
+          isGreaterThanOrEqualTo: email,
+          isLessThan: email.substring(0, email.length - 1) +
+              String.fromCharCode(email.codeUnitAt((email.length - 1)) + 1),
+        )
         .getDocuments()
         .catchError((e) {
       print(e.toString());
@@ -94,12 +94,12 @@ class DatabaseMethods {
         .where("section", isEqualTo: section.toUpperCase())
         .where("term", isEqualTo: term.toUpperCase())
         .where(
-      'myCourseName',
-      isGreaterThanOrEqualTo: courseName,
-      isLessThan: courseName.substring(0, courseName.length - 1) +
-          String.fromCharCode(
-              courseName.codeUnitAt((courseName.length - 1)) + 1),
-    )
+          'myCourseName',
+          isGreaterThanOrEqualTo: courseName,
+          isLessThan: courseName.substring(0, courseName.length - 1) +
+              String.fromCharCode(
+                  courseName.codeUnitAt((courseName.length - 1)) + 1),
+        )
         .getDocuments()
         .catchError((e) {
       print(e.toString());
@@ -182,8 +182,7 @@ class DatabaseMethods {
         .document(userID)
         .collection('courses')
         .snapshots()
-        .map((snapshot) =>
-        snapshot.documents
+        .map((snapshot) => snapshot.documents
             .map((document) => CourseInfo.fromFirestore(document.data))
             .toList());
   }
@@ -254,23 +253,17 @@ class DatabaseMethods {
     });
     //also update in the course level
   }
-  
+
   setUnreadNumber(String chatRoomId, String userEmail, int unreadNumber) {
-    Firestore.instance
-        .collection('chatroom')
-        .document(chatRoomId)
-        .updateData({
-          (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): unreadNumber
+    Firestore.instance.collection('chatroom').document(chatRoomId).updateData({
+      (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): unreadNumber
     }).catchError((e) {
       print(e.toString());
     });
   }
-  
+
   getUnreadNumber(String chatRoomId, String userEmail) async {
-    return Firestore.instance
-        .collection('chatroom')
-        .document(chatRoomId)
-        .get();
+    return Firestore.instance.collection('chatroom').document(chatRoomId).get();
   }
 
   //-------User report save to satabase---------
@@ -367,8 +360,9 @@ class DatabaseMethods {
     await Firestore.instance
         .collection('users')
         .where('email', isEqualTo: userEmail)
-        .getDocuments().then((value) {
-          friendID = value.documents.first.documentID;
+        .getDocuments()
+        .then((value) {
+      friendID = value.documents.first.documentID;
     });
     return Firestore.instance
         .collection('users')
@@ -382,16 +376,14 @@ class DatabaseMethods {
     //     .getDocuments();
   }
 
-  setLastestMessage(String chatRoomId, String latestMessage, int lastMessageTime) async {
-    Firestore.instance
-        .collection('chatroom')
-        .document(chatRoomId)
-        .updateData({
-          'latestMessage' : latestMessage,
-          'lastMessageTime' : lastMessageTime
-        }).catchError((e) {
-          print(e.toString());
-        });
+  setLastestMessage(
+      String chatRoomId, String latestMessage, int lastMessageTime) async {
+    Firestore.instance.collection('chatroom').document(chatRoomId).updateData({
+      'latestMessage': latestMessage,
+      'lastMessageTime': lastMessageTime
+    }).catchError((e) {
+      print(e.toString());
+    });
   }
 
   Future<UserTags> getAllTage(String userID) async {
