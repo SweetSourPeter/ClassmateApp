@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AboutTheAPP extends StatelessWidget {
   const AboutTheAPP({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     Size mediaQuery = MediaQuery.of(context).size;
@@ -56,16 +55,7 @@ class AboutTheAPP extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  print('open file');
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => FileReaderView(
-                  //         filePath: 'docs/Terms of Service.docx',
-                  //       ),
-                  //     ));
-                  // OpenFile.open("assets/docs/Terms of Service.docx");
-                  _launchURL();
+                  _launchURL('https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y');
                 },
                 child: Text(
                   'Term of Use',
@@ -78,20 +68,24 @@ class AboutTheAPP extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                'Privacy Policy',
-                style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
+              GestureDetector(
+                onTap: () {
+                  _launchURL('https://docs.qq.com/doc/DUEhxcUl3cmtKWk5Q');
+                },
+                child: Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
             ],
           ))),
     );
   }
 
-  _launchURL() async {
-    const url = 'https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y';
+  _launchURL(String url) async {
     if (await canLaunch(url)) {
       print(url);
       await launch(url);
