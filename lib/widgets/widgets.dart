@@ -325,7 +325,7 @@ class _ButtonLinkState extends State<ButtonLink> {
 
 CircleAvatar creatAddIconImage(double radius) {
   return CircleAvatar(
-    backgroundColor: transparent,
+    backgroundColor: Colors.transparent,
     radius: radius,
     backgroundImage: AssetImage('./assets/images/add_icon.png'),
   );

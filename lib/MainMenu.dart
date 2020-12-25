@@ -20,12 +20,12 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   AuthMethods authMethods = new AuthMethods();
   int _currentIndex = 0;
-  final tabs = [
-    CourseMainMenu(),
-    // FriendsScreen(),
-    ChatRoom(myName: 'test16@bu.edu',),
-    FavoriteContacts(),
-  ];
+  // final tabs = [
+  //   CourseMainMenu(),
+  //   // FriendsScreen(),
+  //   ChatRoom(myName: 'test16@bu.edu',),
+  //   FavoriteContacts(),
+  // ];
   // final tabTitle = ['Course', 'Friends'];
   Offset _offset = Offset(0, 0);
   GlobalKey globalKey = GlobalKey();
@@ -45,18 +45,20 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   getPosition(duration) {
-    RenderBox renderBox = globalKey.currentContext.findRenderObject();
-    final position = renderBox.localToGlobal(Offset.zero);
-    double start = position.dy - 20;
-    double contLimit = position.dy + renderBox.size.height - 20;
-    double step = (contLimit - start) / 5;
-    limits = [];
-    for (double x = start; x <= contLimit; x = x + step) {
-      limits.add(x);
+    if (globalKey.currentContext != null) {
+      RenderBox renderBox = globalKey.currentContext.findRenderObject();
+      final position = renderBox.localToGlobal(Offset.zero);
+      double start = position.dy - 20;
+      double contLimit = position.dy + renderBox.size.height - 20;
+      double step = (contLimit - start) / 5;
+      limits = [];
+      for (double x = start; x <= contLimit; x = x + step) {
+        limits.add(x);
+      }
+      setState(() {
+        limits = limits;
+      });
     }
-    setState(() {
-      limits = limits;
-    });
   }
 
   double getSize(int x) {
@@ -116,7 +118,7 @@ class _MainMenuState extends State<MainMenu> {
                       backgroundColor: Colors.white,
                       // appBar: buildAppBar(),
                       body: _currentIndex == 0 ? CourseMainMenu()
-                      : _currentIndex == 1 ? ChatRoom(myName: userdata.email,)
+                      : _currentIndex == 1 ? ChatRoom(myName: userdata.userName, myEmail: userdata.email,)
                       : FavoriteContacts(),
                       bottomNavigationBar: buildBottomNavigationBar(),
                     ),

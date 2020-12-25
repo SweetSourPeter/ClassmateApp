@@ -268,11 +268,17 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 providers: [
                                   Provider<UserData>.value(
                                     value: userdata,
+                                  ),
+                                  StreamProvider<CourseProvider>.value(
+                                    value: courseProvider,
                                   )
                                 ],
                                 child: GroupChat(
-                                    chatRoomId: courses.courseID,
-                                    courseName: courses.myCourseName),
+                                  chatRoomId: courses.courseID,
+                                  myEmail: userdata.email,
+                                  myName: userdata.userName,
+                                  initialChat: 0,
+                                ),
                               );
                             }));
                           },

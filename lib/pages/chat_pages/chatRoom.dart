@@ -11,8 +11,9 @@ import 'package:app_test/models/user.dart';
 
 class ChatRoom extends StatefulWidget {
   final String myName;
+  final String myEmail;
 
-  ChatRoom({this.myName});
+  ChatRoom({this.myName, this.myEmail});
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -28,7 +29,6 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Widget chatRoomsList() {
     final currentUser = Provider.of<UserData>(context, listen: false);
-    // print('user is:' + currentUser.userName);
     return StreamBuilder(
       stream: chatRooms,
       builder: (context, snapshot) {
@@ -55,13 +55,14 @@ class _ChatRoomState extends State<ChatRoom> {
                     userName: snapshot.data.documents[index].data['chatRoomId']
                         .toString()
                         .replaceAll("_", "")
-                        .replaceAll(currentUser.userName, ""),
+                        .replaceAll(currentUser.email, ""),
                     chatRoomId:
                         snapshot.data.documents[index].data["chatRoomId"],
                     friendName: friendName,
                     latestMessage: latestMessage,
                     lastMessageTime: lastMessageTime,
                     friendEmail: friendEmail,
+                    unreadNumber: snapshot.data.documents[index].data[widget.myEmail.substring(0, widget.myEmail.indexOf('@')) + 'unread'],
                   );
                 })
             : Container();
@@ -128,9 +129,10 @@ class ChatRoomsTile extends StatelessWidget {
   final String latestMessage;
   final String lastMessageTime;
   final String friendEmail;
+  final int unreadNumber;
 
   ChatRoomsTile({this.userName, @required this.chatRoomId, this.friendName,
-    this.latestMessage, this.lastMessageTime, this.friendEmail});
+    this.latestMessage, this.lastMessageTime, this.friendEmail, this.unreadNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +150,8 @@ class ChatRoomsTile extends StatelessWidget {
               chatRoomId: chatRoomId,
               friendName: friendName,
               friendEmail: friendEmail,
+              initialChat: 0,
+              myEmail: currentUser.email,
             ),
           );
         }));
@@ -174,9 +178,37 @@ class ChatRoomsTile extends StatelessWidget {
                   Container(
                     height: 50,
                     width: 50,
-                    child: CircleAvatar(
-                      radius: 32.0,
-                      backgroundImage: AssetImage('assets/images/sam.jpg'),
+                    child: Stack(
+                      children: [
+                        Container(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(32),
+                            child: Image.network(
+                              'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                            ),
+                          ),
+                        ),
+                        unreadNumber > 0 ? Positioned(
+                            left: 32.0,
+                            top: 32.0,
+                            child: new Container(
+                              alignment: Alignment.topCenter,
+                              width: 18,
+                              height: 18,
+                              decoration: new BoxDecoration(
+                                color: const Color(0xffffb811),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              child: new Text(
+                                unreadNumber < 100? unreadNumber.toString() : '...',
+                                style: GoogleFonts.openSans(
+                                    fontSize: 12,
+                                    color: Colors.white
+                                ),
+                              ),
+                            )
+                        ) : Container(),
+                      ],
                     ),
                   ),
                   Padding(

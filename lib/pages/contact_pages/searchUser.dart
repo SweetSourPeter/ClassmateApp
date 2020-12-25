@@ -228,6 +228,8 @@ class _SearchUsersState extends State<SearchUsers> {
                 chatRoomId: chatRoomId,
                 friendEmail: userEmail,
                 friendName: userName,
+                initialChat: 0,
+                myEmail: currentUser.email,
               ),
             );
           }

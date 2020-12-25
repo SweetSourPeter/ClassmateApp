@@ -254,6 +254,24 @@ class DatabaseMethods {
     });
     //also update in the course level
   }
+  
+  setUnreadNumber(String chatRoomId, String userEmail, int unreadNumber) {
+    Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .updateData({
+          (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): unreadNumber
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+  
+  getUnreadNumber(String chatRoomId, String userEmail) async {
+    return Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .get();
+  }
 
   //-------User report save to satabase---------
   Future<void> saveReports(
@@ -344,13 +362,19 @@ class DatabaseMethods {
         .snapshots();
   }
 
-  getFriendCourses(String userEmail) {
-    return Firestore.instance
+  getFriendCourses(String userEmail) async {
+    String friendID;
+    await Firestore.instance
         .collection('users')
         .where('email', isEqualTo: userEmail)
         .getDocuments().then((value) {
-          print(value.documents.first.documentID);
+          friendID = value.documents.first.documentID;
     });
+    return Firestore.instance
+        .collection('users')
+        .document(friendID)
+        .collection('courses')
+        .getDocuments();
     // return Firestore.instance
     //     .collection('users')
     //     .document('wm7cwLR8OTPvDeGJwYf3B3pv1E73')

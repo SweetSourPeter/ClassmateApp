@@ -22,8 +22,10 @@ class ChatScreen extends StatefulWidget {
   final String chatRoomId;
   final String friendName;
   final String friendEmail;
+  final double initialChat;
+  final String myEmail;
 
-  ChatScreen({this.chatRoomId, this.friendName, this.friendEmail});
+  ChatScreen({this.chatRoomId, this.friendName, this.friendEmail, this.initialChat, this.myEmail});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -122,11 +124,16 @@ class _ChatScreenState extends State<ChatScreen> {
         'message': messageController.text,
         'messageType': 'text',
         'sendBy': myName,
-        'time': lastMessageTime
+        'time': lastMessageTime,
       };
 
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
       databaseMethods.setLastestMessage(widget.chatRoomId, messageController.text, lastMessageTime);
+      databaseMethods.getUnreadNumber(widget.chatRoomId, widget.friendEmail).then((value) {
+        final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
+        databaseMethods.setUnreadNumber(widget.chatRoomId, widget.friendEmail, unreadNumber);
+      });
+
       _controller.jumpTo(_controller.position.minScrollExtent);
       messageController.text = '';
     }
@@ -134,14 +141,22 @@ class _ChatScreenState extends State<ChatScreen> {
 
   sendImage(myName) {
     if (_uploadedFileURL.isNotEmpty) {
+      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': _uploadedFileURL,
         'messageType': 'image',
         'sendBy': myName,
-        'time': DateTime.now().millisecondsSinceEpoch,
+        'time': lastMessageTime,
       };
 
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+      databaseMethods.setLastestMessage(widget.chatRoomId, '[image]', lastMessageTime);
+      databaseMethods.getUnreadNumber(widget.chatRoomId, widget.friendEmail).then((value) {
+        final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
+        databaseMethods.setUnreadNumber(widget.chatRoomId, widget.friendEmail, unreadNumber);
+      });
+
+      _controller.jumpTo(_controller.position.minScrollExtent);
       _uploadedFileURL = '';
     }
   }
@@ -210,187 +225,235 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       });
     });
+    databaseMethods.setUnreadNumber(widget.chatRoomId, widget.myEmail, 0);
     showStickerKeyboard = false;
     showTextKeyboard = false;
     showFunctions = false;
-    _controller = ScrollController();
+    _controller = ScrollController(initialScrollOffset: widget.initialChat * 40);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
-    return Scaffold(
-        backgroundColor: const Color(0xffF3F3F3),
-        // appBar: MyAppBar(currentUser, widget.chatRoomId),
-        body: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: const Color(0xffF3F3F3),
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
 
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-            setState(() {
-              showStickerKeyboard = false;
-              showTextKeyboard = false;
-              showFunctions = false;
-            });
-          },
-          child: Column(
-            children: [
-              SizedBox(
-                height: 25,
-              ),
-              Container(
-                color: Colors.white,
-                height: 73,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: IconButton(
-                        icon: Image.asset(
-                          'assets/images/back_arrow.pic',
-                          height: 23,
-                          width: 23
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              setState(() {
+                showStickerKeyboard = false;
+                showTextKeyboard = false;
+                showFunctions = false;
+              });
+            },
+            child: Column(
+              children: [
+                Container(
+                  color: Colors.white,
+                  height: 73,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/back_arrow.pic',
+                            ),
+                            // iconSize: 30.0,
+                            color: const Color(0xFFFFB811),
+                            onPressed: () {
+                              databaseMethods.setUnreadNumber(widget.chatRoomId, widget.myEmail, 0);
+                              Navigator.of(context).pop();
+                            },
+                          ),
                         ),
-                        // iconSize: 30.0,
-                        color: const Color(0xFFFFB811),
-                        onPressed: () => Navigator.of(context).pop(),
                       ),
-                    ),
-                    Container(
-                      // height: 30.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: Container(
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(32),
-                                child: Image.network(
-                                  'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                                  height: 45,
-                                  width: 45,
+                      Container(
+                        // height: 30.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: Container(
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(32),
+                                  child: Image.network(
+                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                                    height: 45,
+                                    width: 45,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                widget.friendName,
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold)
-                              ),
-                              Text(
-                                friendCourse.toString().substring(1, friendCourse.toString().length-1),
-                                style: GoogleFonts.openSans(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                )
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: IconButton(
-                        icon: Image.asset(
-                          'assets/images/find.png',
-                          height: 23,
-                          width: 23
-                        ),
-                        // iconSize: 10.0,
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return MultiProvider(
-                              providers: [
-                                Provider<UserData>.value(
-                                  value: currentUser,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.friendName,
+                                  style: GoogleFonts.montserrat(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold)
+                                ),
+                                Container(
+                                  width: 195,
+                                  child: Text(
+                                    friendCourse.toString().substring(1, friendCourse.toString().length-1),
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 )
                               ],
-                              child: SearchChat(widget.chatRoomId),
-                            );
-                          }));
-                        },
+                            ),
+                          ],
+                        ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: IconButton(
+                          icon: Image.asset(
+                            'assets/images/find.png',
+                            height: 23,
+                            width: 23
+                          ),
+                          // iconSize: 10.0,
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: currentUser,
+                                  )
+                                ],
+                                child: SearchChat(
+                                  chatRoomId: widget.chatRoomId,
+                                  friendName: widget.friendName,
+                                  friendEmail: widget.friendEmail,
+                                  myEmail: widget.myEmail,
+                                ),
+                              );
+                            }));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(child: chatMessageList(currentUser.email)),
+                Container(
+                    decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
                   ],
-                ),
-              ),
-              Expanded(child: chatMessageList(currentUser.userName)),
-              Container(
-                  decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              )),
-              Container(
-                alignment: Alignment.center,
-                height: 74.0,
-                width: MediaQuery.of(context).size.width,
-                color: const Color(0xffF9F6F1),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: TextField(
-                              onTap: () {
+                )),
+                Container(
+                  alignment: Alignment.center,
+                  height: 74.0,
+                  width: MediaQuery.of(context).size.width,
+                  color: const Color(0xffF9F6F1),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: TextField(
+                                onTap: () {
+                                  setState(() {
+                                    showStickerKeyboard = false;
+                                    showTextKeyboard = true;
+                                    showFunctions = false;
+                                  });
+                                  Timer(
+                                      Duration(milliseconds: 160), () => _controller.jumpTo(_controller.position.minScrollExtent)
+                                  );
+                                },
+                                controller: messageController,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(left: 15.0),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(35),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(35),
+                                  ),
+                                ),
+                                textInputAction: TextInputAction.send,
+                                onSubmitted: (value) {
+                                  sendMessage(currentUser.email);
+                                },
+                              ),
+                      ),
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0),
+                        child: GestureDetector(
+                            child: Image.asset('assets/images/smile.png',
+                                width: 25.36, height: 25.36),
+                            onTap: () {
+                              if (showTextKeyboard) {
                                 setState(() {
-                                  showStickerKeyboard = false;
-                                  showTextKeyboard = true;
-                                  showFunctions = false;
+                                  FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                    showTextKeyboard = false;
+                                  }
                                 });
-                                Timer(
-                                    Duration(milliseconds: 160), () => _controller.jumpTo(_controller.position.minScrollExtent)
-                                );
-                              },
-                              controller: messageController,
-                              style: GoogleFonts.openSans(
-                                fontSize: 12,
-                                color: Colors.black,
-                              ),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(left: 10.0, bottom: 8.0)
-                              ),
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (value) {
-                                sendMessage(currentUser.userName);
-                              },
-                            ),
-                    ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: GestureDetector(
-                          child: Image.asset('assets/images/smile.png',
-                              width: 25.36, height: 25.36),
+                              } else {
+                                if (showFunctions) {
+                                  setState(() {
+                                    showFunctions = false;
+                                  });
+                                } else {}
+                              }
+                              setState(() {
+                                showStickerKeyboard = !showStickerKeyboard;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 30), () => _controller.jumpTo(_controller.position.minScrollExtent)
+                              );
+                            }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                        child: GestureDetector(
                           onTap: () {
                             if (showTextKeyboard) {
                               setState(() {
@@ -402,97 +465,70 @@ class _ChatScreenState extends State<ChatScreen> {
                                 }
                               });
                             } else {
-                              if (showFunctions) {
+                              if (showStickerKeyboard) {
                                 setState(() {
-                                  showFunctions = false;
+                                  showStickerKeyboard = false;
                                 });
                               } else {}
                             }
                             setState(() {
-                              showStickerKeyboard = !showStickerKeyboard;
+                              showFunctions = !showFunctions;
                             });
                             Timer(
                                 Duration(milliseconds: 30), () => _controller.jumpTo(_controller.position.minScrollExtent)
                             );
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (showTextKeyboard) {
-                            setState(() {
-                              FocusScopeNode currentFocus =
-                              FocusScope.of(context);
-                              if (!currentFocus.hasPrimaryFocus) {
-                                currentFocus.unfocus();
-                                showTextKeyboard = false;
-                              }
-                            });
-                          } else {
-                            if (showStickerKeyboard) {
-                              setState(() {
-                                showStickerKeyboard = false;
-                              });
-                            } else {}
-                          }
-                          setState(() {
-                            showFunctions = !showFunctions;
-                          });
-                          Timer(
-                              Duration(milliseconds: 30), () => _controller.jumpTo(_controller.position.minScrollExtent)
-                          );
-                        },
-                        child: Image.asset(
-                          'assets/images/plus.png',
-                          width: 25.36,
-                          height: 25.36,
+                          },
+                          child: Image.asset(
+                            'assets/images/plus.png',
+                            width: 25.36,
+                            height: 25.36,
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              showStickerKeyboard ? AnimatedContainer(
-                duration: Duration(milliseconds: 80),
-                height: 300,
-                // showStickerKeyboard ? 400 : 0,
-                child: EmojiPicker(
-                  rows: 4,
-                  columns: 7,
-                  buttonMode: ButtonMode.MATERIAL,
-                  numRecommended: 10,
-                  onEmojiSelected: (emoji, category) {
-                    setState(() {
-                      messageController.text =
-                          messageController.text + emoji.emoji;
-                    });
-                  },
-                ),
-              ) : Container(),
-              showFunctions ? AnimatedContainer(
-                duration: Duration(milliseconds: 80),
-                height: 100,
-                child: Container(
-                  color: const Color(0xffF9F6F1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                          icon: Image.asset('assets/images/camera.png'),
-                          onPressed: () => _pickImage(ImageSource.camera, currentUser.userName)
-                      ),
-                      IconButton(
-                          icon: Image.asset('assets/images/photo_library.png'),
-                          onPressed: () => _pickImage(ImageSource.gallery, currentUser.userName)
-                      ),
+                      )
                     ],
                   ),
                 ),
-              ) : Container(),
-            ],
-          ),
-        ));
+                showStickerKeyboard ? AnimatedContainer(
+                  duration: Duration(milliseconds: 80),
+                  height: 300,
+                  // showStickerKeyboard ? 400 : 0,
+                  child: EmojiPicker(
+                    rows: 4,
+                    columns: 7,
+                    buttonMode: ButtonMode.MATERIAL,
+                    numRecommended: 10,
+                    onEmojiSelected: (emoji, category) {
+                      setState(() {
+                        messageController.text =
+                            messageController.text + emoji.emoji;
+                      });
+                    },
+                  ),
+                ) : Container(),
+                showFunctions ? AnimatedContainer(
+                  duration: Duration(milliseconds: 80),
+                  height: 100,
+                  child: Container(
+                    color: const Color(0xffF9F6F1),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                            icon: Image.asset('assets/images/camera.png'),
+                            onPressed: () => _pickImage(ImageSource.camera, currentUser.email)
+                        ),
+                        IconButton(
+                            icon: Image.asset('assets/images/photo_library.png'),
+                            onPressed: () => _pickImage(ImageSource.gallery, currentUser.email)
+                        ),
+                      ],
+                    ),
+                  ),
+                ) : Container(),
+              ],
+            ),
+          )),
+    );
   }
 }
 
@@ -555,7 +591,7 @@ class MessageTile extends StatelessWidget {
             children: [
               // Message and Time
               Container(
-                width: 350,
+                width: MediaQuery.of(context).size.width - 60,
                 alignment: Alignment.centerRight,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

@@ -7,7 +7,6 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/models/message_model.dart';
-import 'package:app_test/pages/chat_pages/chatScreen_v1.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:provider/provider.dart';
 

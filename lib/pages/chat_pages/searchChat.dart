@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:substring_highlight/substring_highlight.dart';
 
 class SearchChat extends StatefulWidget {
   final String chatRoomId;
-  SearchChat(this.chatRoomId);
+  final String friendName;
+  final String friendEmail;
+  final String myEmail;
+
+  SearchChat({this.chatRoomId, this.friendName, this.friendEmail, this.myEmail});
 
   @override
   _SearchChatState createState() => _SearchChatState();
@@ -24,13 +30,10 @@ class _SearchChatState extends State<SearchChat> {
     databaseMethods.getChatMessages(widget.chatRoomId).then((value) {
       setState(() {
         chatMessageStream = value;
-        print('init');
-        chatMessageStream.first.then((value) => print(value));
       });
     });
-    setState(() {
-      isSearching = false;
-    });
+
+    isSearching = false;
     super.initState();
   }
 
@@ -38,24 +41,106 @@ class _SearchChatState extends State<SearchChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
       body: GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
 
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
-            if (isSearching) {
-              setState(() {
-                isSearching = !isSearching;
-              });
-            }
           }
         },
-        child: ListView(
-          children: <Widget>[
-            inputTextBody(),
-            isSearching ? SearchList(currentUser) : relateSearchBody(),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 25,
+            ),
+            Container(
+              color: const Color(0xfff9f6f1),
+              height: 73,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      child: IconButton(
+                        icon: Image.asset(
+                            'assets/images/back_arrow.pic',
+                        ),
+                        // iconSize: 30.0,
+                        color: const Color(0xFFFFB811),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      child: TextField(
+                        style: GoogleFonts.openSans(
+                          fontSize: 20,
+                          color: const Color(0xFFffb811),
+                        ),
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (value) {
+                          setState(() {
+                            isSearching = true;
+                          });
+                        },
+                        controller: searchTextEditingController,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          filled: true,
+                          prefixIcon: Image.asset(
+                            'assets/images/magnifier.pic',
+                            height: 18,
+                            width: 18,
+                          ),
+                          hintText: 'Search Chat',
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(35),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(35),
+                          ),
+                          contentPadding: EdgeInsets.only(left: 0),
+                          hintStyle: GoogleFonts.openSans(
+                            fontSize: 20,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25, right: 25.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        clearSearchTextInput(currentFocus);
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.openSans(
+                          fontSize: 20,
+                          color: const Color(0xffffb811),
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: SearchList(currentUser),
+            ),
           ],
         )
       ),
@@ -69,13 +154,46 @@ class _SearchChatState extends State<SearchChat> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final children = <Widget>[];
+              children.add(
+                  Container(
+                    padding: const EdgeInsets.only(left: 25, right: 25, bottom: 10),
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Messages with word: ',
+                          style: GoogleFonts.montserrat(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            searchTextEditingController.text,
+                            style: GoogleFonts.montserrat(
+                                fontSize: 16,
+                                color: Color(0xFFffb811),
+                                fontWeight: FontWeight.w600
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      ]
+                    )
+                  ));
               for (var i = 0; i < snapshot.data.documents.length; i++) {
                 if(snapshot.data.documents[i].data['messageType'] == 'text' && snapshot.data.documents[i].data['message'].contains(searchTextEditingController.text)) {
-                  children.add(SearchTile(
-                    userName: snapshot.data.documents[i].data['sendBy'],
-                    message: snapshot.data.documents[i].data['message'],
-                    imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                    myName: currentUser));
+                  children.add(
+                    searchTile(
+                      userName: snapshot.data.documents[i].data['sendBy'],
+                      message: snapshot.data.documents[i].data['message'],
+                      imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                      myName: currentUser,
+                      searchWord: searchTextEditingController.text,
+                      messageIndex: i
+                    )
+                  );
                 }
               }
               return ListView.builder(
@@ -91,9 +209,9 @@ class _SearchChatState extends State<SearchChat> {
           }) : Container();
   }
 
-  Widget SearchTile({String userName, String message, String imageURL, myName}) {
+  Widget searchTile({String userName, String message, String imageURL, myName, String searchWord, int messageIndex}) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.only(left: 25, right: 25,),
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(
@@ -104,159 +222,41 @@ class _SearchChatState extends State<SearchChat> {
                       value: myName,
                     )
                   ],
-                  // child: ChatScreen(chatRoomId: chatRoomId,),
+                  child: ChatScreen(
+                    chatRoomId: widget.chatRoomId,
+                    friendName: widget.friendName,
+                    friendEmail: widget.friendEmail,
+                    initialChat: messageIndex.toDouble(),
+                    myEmail: widget.myEmail,
+                  ),
                 );
               }
           ));
         },
-        child: Row(
-          children: <Widget>[
-            CircleAvatar(
-              radius: 30.0,
-              backgroundImage: NetworkImage("${imageURL}"),
-              backgroundColor: Colors.transparent,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Container(
-              // color: Colors.black12,
-              width: 180,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    userName ?? '',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 3,
-                  ),
-                  Text(
-                    message ?? '',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget inputTextBody() {
-    return Container(
-          color: builtyPinkColor,
+        child: Container(
+          width: MediaQuery.of(context).size.width - 50,
+          padding: EdgeInsets.only(top: 10),
           child: Column(
-            children: <Widget>[
-              Container(
-                color: Color(0x54FFFFFF),
-                padding: EdgeInsets.only(top: 10, bottom: 10, left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        onTap: () {
-                          setState(() {
-                            isSearching = true;
-                          });
-                        },
-                        textInputAction: TextInputAction.search,
-                        onSubmitted: (value) {
-                          initiateSearch();
-                        },
-                        controller: searchTextEditingController,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Search chat with keywords',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          contentPadding: EdgeInsets.only(left: 15.0),
-                          hintStyle: TextStyle(color: Colors.grey), // KEY PROP
-                        ),
-                      ),
-                    ),
-                    searchTextEditingController.text.isEmpty
-                      ? Container(width: 10,)
-                      : IconButton(
-                      icon: Icon(Icons.cancel),
-                      onPressed: () {
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-                        clearSearchTextInput(currentFocus);
-                      })
-                  ],
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  children: highlightSearchWord(message, searchWord, userName)
                 ),
               ),
+              Divider(
+                height: 16,
+                thickness: 1,
+              ),
             ],
+          )
+          // Row(
+          //   children: highlightSearchWord(message, searchWord, userName),
+          // )
+        ),
       ),
-    );
-  }
-
-  Widget relateSearchBody() {
-    return Container(
-        color: builtyPinkColor,
-        height: 620.0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: Text('Search This Chat', style: TextStyle(
-                  fontSize: 25.0,
-                  color: Colors.white
-              ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 60.0,
-                    child: Text('Group Members', textAlign: TextAlign.center),
-                  ),
-                  Container(
-                    width: 60.0,
-                    child: Text('Date', textAlign: TextAlign.center),
-                  ),
-                  Container(
-                    width: 60.0,
-                    child: Text('Media', textAlign: TextAlign.center),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 60.0,
-                    child: Text('Files', textAlign: TextAlign.center),
-                  ),
-                  Container(
-                    width: 60.0,
-                    child: Text('Links', textAlign: TextAlign.center),
-                  ),
-                  Container(
-                    width: 60.0,
-                    child: Text('Music', textAlign: TextAlign.center),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        )
     );
   }
 
@@ -266,5 +266,59 @@ class _SearchChatState extends State<SearchChat> {
     currentFocus.unfocus();
   }
 
-  void initiateSearch() {}
+  List<TextSpan> highlightSearchWord(String searchResult, String searchWord, String userName) {
+    final matches = searchWord.toLowerCase().allMatches(searchResult.toLowerCase());
+    int lastMatchEnd = 0;
+    final List<TextSpan> children = [];
+
+    children.add(
+        TextSpan(
+          text: userName + ': ',
+          style: GoogleFonts.openSans(
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.w600
+          ),
+        )
+    );
+
+    for (var i = 0; i < matches.length; i++) {
+      final match = matches.elementAt(i);
+      if (match.start != lastMatchEnd) {
+        children.add(
+            TextSpan(
+              text: searchResult.substring(lastMatchEnd, match.start),
+              style: GoogleFonts.openSans(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            )
+        );
+      }
+
+      children.add(
+          TextSpan(
+            text: searchResult.substring(match.start, match.end),
+            style: GoogleFonts.openSans(
+              fontSize: 16,
+              color: const Color(0xffffb811),
+            ),
+          )
+      );
+
+      if (i == matches.length - 1 && match.end != searchResult.length) {
+        children.add(
+            TextSpan(
+              text: searchResult.substring(match.end, searchResult.length),
+              style: GoogleFonts.openSans(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            )
+        );
+      }
+      lastMatchEnd = match.end;
+    }
+    return children;
+  }
 }
