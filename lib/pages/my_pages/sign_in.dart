@@ -169,7 +169,7 @@ class _SignInState extends State<SignIn> {
           GestureDetector(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => forgetpassword()));
+                  MaterialPageRoute(builder: (context) => Forgetpassword()));
             },
             child: Text(
               'Forgot Password',
