@@ -1,5 +1,4 @@
-import 'package:app_test/models/courseInfo.dart';
-import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+// import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_cropper/image_cropper.dart';
+// import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -98,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               .toString(),
                           displayTime,
                           displayWeek,
-                          lastMessage,
+                          lastMessage
                   )
                       : ImageTile(
                           snapshot.data.documents[index].data['message'],

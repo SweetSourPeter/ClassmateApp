@@ -210,9 +210,9 @@ class _SearchUsersState extends State<SearchUsers> {
       Map<String, dynamic> chatRoomMap = {
         'users': users,
         'chatRoomId': chatRoomId,
-        'latestMessage': '',
-        'lastMessageTime': 0,
-        (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0,
+        'latestMessage': ('Say hi to ' + myName + '!'),
+        'lastMessageTime': DateTime.now().millisecondsSinceEpoch,
+        (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
         (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
       };
 
