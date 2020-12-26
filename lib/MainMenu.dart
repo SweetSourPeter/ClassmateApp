@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
 import 'widgets/my_account.dart';
-import 'dart:developer' as dev;
 
 class MainMenu extends StatefulWidget {
   @override
@@ -49,15 +48,19 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   getPosition(duration) {
+    // print("object2");
     RenderBox renderBox = globalKey.currentContext.findRenderObject();
+    // print("object3");
     final position = renderBox.localToGlobal(Offset.zero);
     double start = position.dy - 20;
     double contLimit = position.dy + renderBox.size.height - 20;
     double step = (contLimit - start) / 5;
     limits = [];
+    // print("object");
     for (double x = start; x <= contLimit; x = x + step) {
       limits.add(x);
     }
+
     setState(() {
       limits = limits;
     });
@@ -75,7 +78,6 @@ class _MainMenuState extends State<MainMenu> {
 
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
-    // dev.debugger();
 
     return (userdata == null)
         ? CircularProgressIndicator()
