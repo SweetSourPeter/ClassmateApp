@@ -20,7 +20,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorMessage;
 
   AuthMethods authMethods = new AuthMethods();
-  DatabaseMehods databaseMehods = new DatabaseMehods();
+
+  DatabaseMethods databaseMehods = new DatabaseMethods();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   // TextEditingController usernameTextEditingController =

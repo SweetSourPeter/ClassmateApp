@@ -1,6 +1,9 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,11 +27,13 @@ TextEditingController sectionTextEditingController =
 class _addCourseState extends State<addCourse> {
   var currentSelectedValue;
   List<String> deviceTypes = ["Spring", "Fall", "Winter", "Summer1", "Summer2"];
+  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   @override
   Widget build(BuildContext context) {
     //provider of the course
     final courseProvider = Provider.of<CourseProvider>(context);
+    final currentUser = Provider.of<UserData>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: Container(
@@ -211,6 +216,25 @@ class _addCourseState extends State<addCourse> {
                   //TODO create class in database
                   if (formKey.currentState.validate()) {
                     courseProvider.saveNewCourse(context);
+                    createGroupChatAndStartConversation(courseProvider.courseID, courseProvider.myCourseName, currentUser.email);
+                    // Navigator.push(context, MaterialPageRoute(
+                    //     builder: (context){
+                    //       return MultiProvider(
+                    //         providers: [
+                    //           Provider<UserData>.value(
+                    //             value: currentUser,
+                    //           )
+                    //         ],
+                    //         child: GroupChat(
+                    //           chatRoomId: courseProvider.courseID,
+                    //           courseName: courseProvider.myCourseName,
+                    //           myName: currentUser.userName,
+                    //           myEmail: currentUser.email,
+                    //           initialChat: 0,
+                    //         ),
+                    //       );
+                    //     }
+                    // ));
                     Navigator.pop(context);
                   }
                 },
@@ -241,4 +265,23 @@ class _addCourseState extends State<addCourse> {
       ),
     );
   }
+
+  createGroupChatAndStartConversation(String courseID, String courseName, String userEmail){
+    // if(userName != myName) {
+
+    List<String> users = [userEmail];
+    Map<String, dynamic> chatRoomMap = {
+      'users' : users,
+      'chatRoomId' : courseID,
+      'latestMessage' : '',
+      'lastMessageTime' : ''
+    };
+
+    databaseMethods.createChatRoom(courseID, chatRoomMap);
+    // } else {
+    //   print('This is your account!');
+    // }
+  }
 }
+
+

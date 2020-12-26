@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -127,7 +128,14 @@ class _MainMenuState extends State<MainMenu> {
                       child: Scaffold(
                         backgroundColor: riceColor,
                         // appBar: buildAppBar(),
-                        body: tabs[_currentIndex],
+                        body: _currentIndex == 0
+                            ? CourseMainMenu()
+                            : _currentIndex == 1
+                            ? ChatRoom(
+                          myName: userdata.userName,
+                          myEmail: userdata.email,
+                        )
+                            : FavoriteContacts(),
                         bottomNavigationBar: buildBottomNavigationBar(),
                       ),
                     ),

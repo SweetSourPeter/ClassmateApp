@@ -32,7 +32,7 @@ class _BasicInfoState extends State<BasicInfo> {
   Future<UserTags> userTag;
   Future<UserData> userData;
   _BasicInfoState(this.userID, this.userTag, this.userData); //constructor
-  final databaseMehods = DatabaseMehods();
+  final databaseMethods = DatabaseMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class _BasicInfoState extends State<BasicInfo> {
                           backgroundColor: Colors.white,
                           radius: 60.0,
                           child:
-                              creatUserImage(sidebarSize / 5, snapshot.data[0]),
+                              createUserImage(sidebarSize / 5, snapshot.data[0]),
                           // creatUserImage(sidebarSize / 5, userData),
                           //     CircleAvatar(
                           //   backgroundImage: AssetImage('assets/images/olivia.jpg'),
