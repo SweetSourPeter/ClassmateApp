@@ -25,7 +25,7 @@ class _FriendProfileState extends State<FriendProfile> {
   int courseDataCount = 1;
   double _currentPage;
   PageController _pageController = PageController();
-  final databaseMehods = DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   @override
   void initState() {
     _pageController.addListener(() {
@@ -38,9 +38,9 @@ class _FriendProfileState extends State<FriendProfile> {
 
   @override
   Widget build(BuildContext context) {
-    Stream<List<CourseInfo>> courseData = databaseMehods.getMyCourses(userID);
-    Future<UserTags> userTag = databaseMehods.getAllTage(userID);
-    Future<UserData> userData = databaseMehods.getUserDetailsByID(userID);
+    Stream<List<CourseInfo>> courseData = databaseMethods.getMyCourses(userID);
+    Future<UserTags> userTag = databaseMethods.getAllTage(userID);
+    Future<UserData> userData = databaseMethods.getUserDetailsByID(userID);
 
     return FutureBuilder(
         future: Future.wait([userData, userTag]),

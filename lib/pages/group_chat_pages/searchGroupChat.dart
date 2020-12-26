@@ -5,7 +5,6 @@ import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
 import './groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:substring_highlight/substring_highlight.dart';
 
 class SearchGroupChat extends StatefulWidget {
   final String courseId;

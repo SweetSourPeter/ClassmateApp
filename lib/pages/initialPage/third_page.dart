@@ -26,7 +26,7 @@ class ThirdPage extends StatefulWidget {
 class _ThirdPageState extends State<ThirdPage>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController;
-  final databaseMehods = DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   //double _offset = 0;
   double _currentindex = 0;
   @override
@@ -181,7 +181,7 @@ class _ThirdPageState extends State<ThirdPage>
                                 ),
                               ),
                               onPressed: () {
-                                databaseMehods.updateUserProfileColor(
+                                databaseMethods.updateUserProfileColor(
                                     user.userID, _currentindex);
                                 print('color num saved');
                                 widget.pageController.animateToPage(3,

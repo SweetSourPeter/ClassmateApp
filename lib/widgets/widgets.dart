@@ -169,7 +169,7 @@ Padding topLineBar() {
 }
 
 // used to create user image
-CircleAvatar creatUserImage(double radius, UserData userdata) {
+CircleAvatar createUserImage(double radius, UserData userdata) {
   return CircleAvatar(
     backgroundColor: orengeColor,
     radius: radius,

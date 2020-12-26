@@ -66,7 +66,7 @@ class _MyAccountState extends State<MyAccount> {
                         //   color: Colors.black,
                         // )
 
-                        creatUserImage(sidebarSize / 10, userdata),
+                        createUserImage(sidebarSize / 10, userdata),
                   ),
                   // Image.asset(
                   //   "assets/images/olivia.jpg",

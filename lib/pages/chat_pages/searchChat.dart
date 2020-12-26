@@ -5,7 +5,6 @@ import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:substring_highlight/substring_highlight.dart';
 
 class SearchChat extends StatefulWidget {
   final String chatRoomId;
