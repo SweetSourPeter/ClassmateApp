@@ -211,7 +211,7 @@ class _SearchUsersState extends State<SearchUsers> {
         'users': users,
         'chatRoomId': chatRoomId,
         'latestMessage': '',
-        'lastMessageTime': '',
+        'lastMessageTime': 0,
         (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0,
         (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
       };

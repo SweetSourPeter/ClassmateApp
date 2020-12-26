@@ -50,21 +50,23 @@ class _MainMenuState extends State<MainMenu> {
 
   getPosition(duration) {
     // print("object2");
-    RenderBox renderBox = globalKey.currentContext.findRenderObject();
-    // print("object3");
-    final position = renderBox.localToGlobal(Offset.zero);
-    double start = position.dy - 20;
-    double contLimit = position.dy + renderBox.size.height - 20;
-    double step = (contLimit - start) / 5;
-    limits = [];
-    // print("object");
-    for (double x = start; x <= contLimit; x = x + step) {
-      limits.add(x);
-    }
+    if (globalKey.currentContext != null) {
+      RenderBox renderBox = globalKey.currentContext.findRenderObject();
+      // print("object3");
+      final position = renderBox.localToGlobal(Offset.zero);
+      double start = position.dy - 20;
+      double contLimit = position.dy + renderBox.size.height - 20;
+      double step = (contLimit - start) / 5;
+      limits = [];
+      // print("object");
+      for (double x = start; x <= contLimit; x = x + step) {
+        limits.add(x);
+      }
 
-    setState(() {
-      limits = limits;
-    });
+      setState(() {
+        limits = limits;
+      });
+    }
   }
 
   double getSize(int x) {
