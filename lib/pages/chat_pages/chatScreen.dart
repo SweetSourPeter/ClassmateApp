@@ -49,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Stream chatMessageStream;
   Future friendCoursesFuture;
 
-  Widget chatMessageList(String myName) {
+  Widget chatMessageList(String myEmail) {
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context, snapshot) {
@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? MessageTile(
                           snapshot.data.documents[index].data['message'],
                           snapshot.data.documents[index].data['sendBy'] ==
-                              myName,
+                              myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data['time'])
                               .toString(),
@@ -103,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       : ImageTile(
                           snapshot.data.documents[index].data['message'],
                           snapshot.data.documents[index].data['sendBy'] ==
-                              myName,
+                              myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                               snapshot.data.documents[index].data['time'])
                               .toString(),
@@ -117,13 +117,13 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  sendMessage(myName) {
+  sendMessage(myEmail) {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
         'messageType': 'text',
-        'sendBy': myName,
+        'sendBy': myEmail,
         'time': lastMessageTime,
       };
 
@@ -139,13 +139,13 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  sendImage(myName) {
+  sendImage(myEmail) {
     if (_uploadedFileURL.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': _uploadedFileURL,
         'messageType': 'image',
-        'sendBy': myName,
+        'sendBy': myEmail,
         'time': lastMessageTime,
       };
 
@@ -161,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future _pickImage(ImageSource source, myName) async {
+  Future _pickImage(ImageSource source, myEmail) async {
     PickedFile selected = await _picker.getImage(source: source);
 
     setState(() {
@@ -169,7 +169,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     if (selected != null) {
-      _uploadFile(myName);
+      _uploadFile(myEmail);
       print('Image Path $_imageFile');
     }
 
@@ -178,7 +178,7 @@ class _ChatScreenState extends State<ChatScreen> {
 //    ));
   }
 
-  Future _uploadFile(myName) async {
+  Future _uploadFile(myEmail) async {
     String fileName = basename(_imageFile.path);
     StorageReference firebaseStorageRef =
         FirebaseStorage.instance.ref().child(fileName);
@@ -189,7 +189,7 @@ class _ChatScreenState extends State<ChatScreen> {
         _uploadedFileURL = downloadUrl;
         print('picture uploaded');
         print(_uploadedFileURL);
-        sendImage(myName);
+        sendImage(myEmail);
       });
     });
   }
@@ -311,7 +311,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Container(
                                   width: 195,
                                   child: Text(
-                                    friendCourse.toString().substring(1, friendCourse.toString().length-1),
+                                    friendCourse.isNotEmpty ? friendCourse.toString().substring(1, friendCourse.toString().length-1)
+                                    : 'No courses yet',
                                     style: GoogleFonts.openSans(
                                         fontSize: 14,
                                         color: Colors.black,
@@ -347,6 +348,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   friendName: widget.friendName,
                                   friendEmail: widget.friendEmail,
                                   myEmail: widget.myEmail,
+                                  myName: currentUser.userName,
                                 ),
                               );
                             }));

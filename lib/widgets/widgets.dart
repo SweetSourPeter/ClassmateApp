@@ -169,7 +169,7 @@ Padding topLineBar() {
 }
 
 // used to create user image
-CircleAvatar creatUserImage(double radius, UserData userdata) {
+CircleAvatar createUserImage(double radius, UserData userdata) {
   return CircleAvatar(
     backgroundColor: orengeColor,
     radius: radius,
@@ -177,7 +177,7 @@ CircleAvatar creatUserImage(double radius, UserData userdata) {
       child: (userdata.userImageUrl == null)
           ? Text(
               userdata.userName[0].toUpperCase(),
-              style: TextStyle(fontSize: 35, color: Colors.white),
+              style: TextStyle(fontSize: 35, color: Colors.black),
             )
           : null,
     ),

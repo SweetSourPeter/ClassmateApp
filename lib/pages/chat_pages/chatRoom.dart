@@ -38,7 +38,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   final userList = snapshot.data.documents[index].data['users'];
-                  if (userList[0] == widget.myName) {
+                  if (userList[1] == widget.myEmail) {
                     friendName = userList[2];
                     friendEmail = userList[3];
                   } else {
@@ -72,16 +72,16 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
-    getUserInfogetChats(widget.myName);
+    getUserInfogetChats(widget.myEmail);
     super.initState();
   }
 
-  getUserInfogetChats(myName) async {
-    databaseMethods.getChatRooms(myName).then((snapshots) {
+  getUserInfogetChats(myEmail) async {
+    databaseMethods.getChatRooms(myEmail).then((snapshots) {
       setState(() {
         chatRooms = snapshots;
         print(
-            "we got the data + ${chatRooms.toString()} this is name  ${myName}");
+            "we got the data + ${chatRooms.toString()} this is name  ${myEmail}");
       });
     });
   }

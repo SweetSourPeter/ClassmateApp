@@ -380,7 +380,6 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
 
   @override
   Widget build(BuildContext context) {
-    final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
     // final course = Provider.of<List<CourseInfo>>(context);
 

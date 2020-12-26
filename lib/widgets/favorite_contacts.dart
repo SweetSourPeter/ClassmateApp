@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
@@ -154,7 +155,7 @@ class FavoriteContacts extends StatelessWidget {
                           child: Container(
                               child: Column(
                             children: <Widget>[
-                              creatUserImage(30.0, contacts[index]),
+                              createUserImage(30.0, contacts[index]),
                               // CircleAvatar(
                               //   radius: 30.0,
                               //   child: Container(
@@ -195,7 +196,7 @@ class FavoriteContacts extends StatelessWidget {
                                   ),
                                   // 这个需要的话直接uncomment
                                   // Provider<List<CourseInfo>>.value(
-                                  //   value: course,
+                                  //   value: course,F
                                   // ),
                                   // final courseProvider = Provider.of<CourseProvider>(context);
                                   // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，

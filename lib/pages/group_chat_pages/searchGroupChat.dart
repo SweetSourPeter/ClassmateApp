@@ -3,24 +3,22 @@ import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
-import 'package:app_test/pages/chat_pages/chatScreen.dart';
+import './groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
-class SearchChat extends StatefulWidget {
-  final String chatRoomId;
-  final String friendName;
-  final String friendEmail;
+class SearchGroupChat extends StatefulWidget {
+  final String courseId;
   final String myEmail;
   final String myName;
 
-  SearchChat({this.chatRoomId, this.friendName, this.friendEmail, this.myEmail, this.myName});
+  SearchGroupChat({this.courseId, this.myEmail, this.myName});
 
   @override
-  _SearchChatState createState() => _SearchChatState();
+  _SearchGroupChatState createState() => _SearchGroupChatState();
 }
 
-class _SearchChatState extends State<SearchChat> {
+class _SearchGroupChatState extends State<SearchGroupChat> {
   bool isSearching;
   TextEditingController searchTextEditingController = TextEditingController();
   Stream chatMessageStream;
@@ -28,7 +26,7 @@ class _SearchChatState extends State<SearchChat> {
 
   @override
   void initState() {
-    databaseMethods.getChatMessages(widget.chatRoomId).then((value) {
+    databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
       setState(() {
         chatMessageStream = value;
       });
@@ -158,6 +156,7 @@ class _SearchChatState extends State<SearchChat> {
               children.add(
                   Container(
                     padding: const EdgeInsets.only(left: 25, right: 25, bottom: 10),
+                    width: MediaQuery.of(context).size.width - 50,
                     child: Row(
                       children: [
                         Text(
@@ -186,7 +185,7 @@ class _SearchChatState extends State<SearchChat> {
                 if(snapshot.data.documents[i].data['messageType'] == 'text' && snapshot.data.documents[i].data['message'].contains(searchTextEditingController.text)) {
                   children.add(
                     searchTile(
-                      userEmail: snapshot.data.documents[i].data['sendBy'],
+                      userName: snapshot.data.documents[i].data['sendBy'],
                       message: snapshot.data.documents[i].data['message'],
                       imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
                       userData: currentUser,
@@ -209,13 +208,7 @@ class _SearchChatState extends State<SearchChat> {
           }) : Container();
   }
 
-  Widget searchTile({String userEmail, String message, String imageURL, userData, String searchWord, int messageIndex}) {
-    String userName = '';
-    if (userEmail == widget.friendEmail) {
-      userName = widget.friendName;
-    } else {
-      userName = widget.myName;
-    }
+  Widget searchTile({String userName, String message, String imageURL, userData, String searchWord, int messageIndex}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
@@ -226,12 +219,11 @@ class _SearchChatState extends State<SearchChat> {
                     value: userData,
                   )
                 ],
-                child: ChatScreen(
-                  chatRoomId: widget.chatRoomId,
-                  friendName: widget.friendName,
-                  friendEmail: widget.friendEmail,
+                child: GroupChat(
+                  courseId: widget.courseId,
                   initialChat: messageIndex.toDouble(),
                   myEmail: widget.myEmail,
+                  myName: widget.myName,
                 ),
               );
             }
@@ -276,7 +268,7 @@ class _SearchChatState extends State<SearchChat> {
 
     children.add(
         TextSpan(
-          text: (userName != null ? userName : '') + ': ',
+          text: userName + ': ',
           style: GoogleFonts.openSans(
               fontSize: 16,
               color: Colors.black,

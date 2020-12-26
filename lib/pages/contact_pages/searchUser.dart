@@ -202,7 +202,7 @@ class _SearchUsersState extends State<SearchUsers> {
     final myName = currentUser.userName;
     final myEmail = currentUser.email;
     if (userEmail != myEmail) {
-      String chatRoomId = getChatRoomId(userName, myName);
+      String chatRoomId = getChatRoomId(userEmail, myEmail);
 
       List<String> users = [userName, userEmail, myName, myEmail];
       print('users map is:   ');
@@ -211,7 +211,9 @@ class _SearchUsersState extends State<SearchUsers> {
         'users': users,
         'chatRoomId': chatRoomId,
         'latestMessage': '',
-        'lastMessageTime': ''
+        'lastMessageTime': '',
+        (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0,
+        (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
       };
 
       databaseMethods.createChatRoom(chatRoomId, chatRoomMap);

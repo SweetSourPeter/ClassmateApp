@@ -369,11 +369,45 @@ class DatabaseMethods {
         .document(friendID)
         .collection('courses')
         .getDocuments();
-    // return Firestore.instance
-    //     .collection('users')
-    //     .document('wm7cwLR8OTPvDeGJwYf3B3pv1E73')
-    //     .collection('courses')
-    //     .getDocuments();
+  }
+  
+  getCourseInfo(String courseId) async {
+    return Firestore.instance
+        .collection('courses')
+        .where('courseID', isEqualTo: courseId)
+        .getDocuments();
+  }
+
+  getNumberOfMembersInCourse(String courseId) async {
+    return Firestore.instance
+        .collection('courses')
+        .document(courseId)
+        .collection('users')
+        .getDocuments();
+  }
+
+  getMembersInCourse(String courseId) async {
+    List<String> members = List<String>();
+    await Firestore.instance
+        .collection('courses')
+        .document(courseId)
+        .collection('users')
+        .getDocuments()
+        .then((value) async {
+          for (var i=0; i < value.documents.length; i++) {
+            final tmpUserId = value.documents[i].data['userID'];
+            await Firestore.instance
+              .collection('users')
+              .document(tmpUserId)
+              .get().then((value) {
+                final userName = value.data['userName'];
+                // List<String> userInfo = [userName];
+                members.add(userName);
+            });
+          }
+    });
+
+    return members;
   }
 
   setLastestMessage(

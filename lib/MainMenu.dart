@@ -169,7 +169,7 @@ class _MainMenuState extends State<MainMenu> {
                                 child: Center(
                                   child: Column(
                                     children: <Widget>[
-                                      creatUserImage(sidebarSize / 5, userdata),
+                                      createUserImage(sidebarSize / 5, userdata),
                                       // Image.asset(
                                       //   "assets/images/olivia.jpg",
                                       //   width: sidebarSize / 2,

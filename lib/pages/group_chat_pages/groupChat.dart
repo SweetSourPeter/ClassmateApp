@@ -1,6 +1,5 @@
-import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
-import 'package:app_test/pages/group_chat_pages/courseDetailPage.dart';
+import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,24 +13,22 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker/emoji_picker.dart';
-import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 
 class GroupChat extends StatefulWidget {
-  final String chatRoomId;
+  final String courseId;
   final double initialChat;
   final String myEmail;
   final String myName;
-  final CourseInfo myCourses;
 
-  GroupChat(
-      {this.chatRoomId,
-      this.initialChat,
-      this.myEmail,
-      this.myName,
-      this.myCourses});
+  GroupChat({
+    this.courseId,
+    this.initialChat,
+    this.myEmail,
+    this.myName,
+  });
 
   @override
   _GroupChatState createState() => _GroupChatState();
@@ -50,11 +47,15 @@ class _GroupChatState extends State<GroupChat> {
   bool showFunctions;
   bool lastMessage;
   ScrollController _controller;
+  String courseName;
+  String courseSection;
+  String courseTerm;
+  int numberOfMembers = 0;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
 
-  Widget chatMessageList(String myName) {
+  Widget chatMessageList(String myEmail) {
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context, snapshot) {
@@ -97,24 +98,26 @@ class _GroupChatState extends State<GroupChat> {
                       ? MessageTile(
                           snapshot.data.documents[index].data['message'],
                           snapshot.data.documents[index].data['sendBy'] ==
-                              myName,
+                              myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
+                          snapshot.data.documents[index].data['sendBy']
                         )
                       : ImageTile(
                           snapshot.data.documents[index].data['message'],
                           snapshot.data.documents[index].data['sendBy'] ==
-                              myName,
+                              myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
+                          snapshot.data.documents[index].data['sendBy']
                         );
                 })
             : Container();
@@ -122,21 +125,21 @@ class _GroupChatState extends State<GroupChat> {
     );
   }
 
-  sendMessage(myName) {
+  sendMessage(myEmail) {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
         'messageType': 'text',
-        'sendBy': myName,
+        'sendBy': myEmail,
         'time': lastMessageTime,
       };
 
-      databaseMethods.addGroupChatMessages(widget.chatRoomId, messageMap);
-      // databaseMethods.setLastestMessage(widget.chatRoomId, messageController.text, lastMessageTime);
-      // databaseMethods.getUnreadNumber(widget.chatRoomId, widget.friendEmail).then((value) {
+      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
+      // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
-      //   databaseMethods.setUnreadNumber(widget.chatRoomId, widget.friendEmail, unreadNumber);
+      //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
       // });
 
       _controller.jumpTo(_controller.position.minScrollExtent);
@@ -144,21 +147,21 @@ class _GroupChatState extends State<GroupChat> {
     }
   }
 
-  sendImage(myName) {
+  sendImage(myEmail) {
     if (_uploadedFileURL.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': _uploadedFileURL,
         'messageType': 'image',
-        'sendBy': myName,
+        'sendBy': myEmail,
         'time': lastMessageTime,
       };
 
-      databaseMethods.addGroupChatMessages(widget.chatRoomId, messageMap);
-      // databaseMethods.setLastestMessage(widget.chatRoomId, '[image]', lastMessageTime);
-      // databaseMethods.getUnreadNumber(widget.chatRoomId, widget.friendEmail).then((value) {
+      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
+      // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
-      //   databaseMethods.setUnreadNumber(widget.chatRoomId, widget.friendEmail, unreadNumber);
+      //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
       // });
 
       _controller.jumpTo(_controller.position.minScrollExtent);
@@ -166,7 +169,7 @@ class _GroupChatState extends State<GroupChat> {
     }
   }
 
-  Future _pickImage(ImageSource source, myName) async {
+  Future _pickImage(ImageSource source, myEmail) async {
     PickedFile selected = await _picker.getImage(source: source);
 
     setState(() {
@@ -174,7 +177,7 @@ class _GroupChatState extends State<GroupChat> {
     });
 
     if (selected != null) {
-      _uploadFile(myName);
+      _uploadFile(myEmail);
       print('Image Path $_imageFile');
     }
 
@@ -183,7 +186,7 @@ class _GroupChatState extends State<GroupChat> {
 //    ));
   }
 
-  Future _uploadFile(myName) async {
+  Future _uploadFile(myEmail) async {
     String fileName = basename(_imageFile.path);
     StorageReference firebaseStorageRef =
         FirebaseStorage.instance.ref().child(fileName);
@@ -194,7 +197,7 @@ class _GroupChatState extends State<GroupChat> {
         _uploadedFileURL = downloadUrl;
         print('picture uploaded');
         print(_uploadedFileURL);
-        sendImage(myName);
+        sendImage(myEmail);
       });
     });
   }
@@ -217,12 +220,26 @@ class _GroupChatState extends State<GroupChat> {
 
   @override
   void initState() {
-    databaseMethods.getGroupChatMessages(widget.chatRoomId).then((value) {
+    databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
       setState(() {
         chatMessageStream = value;
       });
     });
-    // databaseMethods.setUnreadNumber(widget.chatRoomId, widget.myEmail, 0);
+    // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+    databaseMethods.getCourseInfo(widget.courseId).then((value) {
+      setState(() {
+        courseName = value.documents[0].data['myCourseName'];
+        courseSection = value.documents[0].data['section'];
+        courseTerm = value.documents[0].data['term'];
+      });
+    });
+
+    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        numberOfMembers = value.documents.length;
+      });
+    });
+
     showStickerKeyboard = false;
     showTextKeyboard = false;
     showFunctions = false;
@@ -234,6 +251,7 @@ class _GroupChatState extends State<GroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: const Color(0xffF3F3F3),
@@ -271,7 +289,7 @@ class _GroupChatState extends State<GroupChat> {
                             // iconSize: 30.0,
                             color: const Color(0xFFFFB811),
                             onPressed: () {
-                              // databaseMethods.setUnreadNumber(widget.chatRoomId, widget.myEmail, 0);
+                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
                               Navigator.of(context).pop();
                             },
                           ),
@@ -279,13 +297,26 @@ class _GroupChatState extends State<GroupChat> {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 34),
-                        child: Text(
-                            // currentUser.email,
-                            widget.myCourses.myCourseName,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 22,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              (courseName ?? '') + ' ' + (courseSection ?? '') + ' ' + (courseTerm ?? ''),
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.black,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                                numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
+                                : numberOfMembers.toString() + ' ' + 'person',
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.black38,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.normal,
+                                )),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -306,8 +337,8 @@ class _GroupChatState extends State<GroupChat> {
                                       value: currentUser,
                                     ),
                                   ],
-                                  child: CourseDetailPage(
-                                    chatRoomId: widget.chatRoomId,
+                                  child: CourseDetail(
+                                    courseId: widget.courseId,
                                     myEmail: widget.myEmail,
                                     myName: widget.myName,
                                   ),
@@ -513,9 +544,10 @@ class MessageTile extends StatelessWidget {
   final bool displayTime;
   final bool displayWeek;
   final bool lastMessage;
+  final String senderName;
 
   MessageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage);
+      this.displayWeek, this.lastMessage, this.senderName);
 
   @override
   Widget build(BuildContext context) {
@@ -568,6 +600,21 @@ class MessageTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    // Sender's name
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          senderName,
+                          style: GoogleFonts.openSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xffFFB811),
+                          ),
+                        ),
+                      ),
+                    ),
                     // Message and Time
                     Container(
                       width: MediaQuery.of(context).size.width - 60,
@@ -614,6 +661,21 @@ class MessageTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Sender's name
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          senderName,
+                          style: GoogleFonts.openSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xffFFB811),
+                          ),
+                        ),
+                      ),
+                    ),
                     // Message and Time
                     Container(
                       width: 350,
@@ -669,9 +731,10 @@ class ImageTile extends StatelessWidget {
   final bool displayTime;
   final bool displayWeek;
   final bool lastMessage;
+  final String senderName;
 
   ImageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage);
+      this.displayWeek, this.lastMessage, this.senderName);
 
   @override
   Widget build(BuildContext context) {
@@ -724,6 +787,21 @@ class ImageTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    // Sender's name
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          senderName,
+                          style: GoogleFonts.openSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xffFFB811),
+                          ),
+                        ),
+                      ),
+                    ),
                     // Message and Time
                     Container(
                       width: 350,
@@ -766,6 +844,21 @@ class ImageTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Sender's name
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          senderName,
+                          style: GoogleFonts.openSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xffFFB811),
+                          ),
+                        ),
+                      ),
+                    ),
                     // Message and Time
                     Container(
                       width: 350,

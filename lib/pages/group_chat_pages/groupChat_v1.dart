@@ -14,7 +14,7 @@ import 'package:emoji_picker/emoji_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-import 'package:app_test/pages/group_chat_pages/courseDetailPage.dart';
+import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 
 class GroupChat extends StatefulWidget {
   final String chatRoomId;
@@ -259,7 +259,7 @@ class _GroupChatState extends State<GroupChat> {
                                           value: currentUser,
                                         )
                                       ],
-                                      child: CourseDetailPage(),
+                                      child: CourseDetail(),
                                     );
                                   }));
                             },

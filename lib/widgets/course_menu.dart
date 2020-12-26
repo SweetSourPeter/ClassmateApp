@@ -279,11 +279,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   // 不需要pass到push里面，直接复制上面这行即可
                                 ],
                                 child: GroupChat(
-                                  chatRoomId: courses.courseID,
+                                  courseId: courses.courseID,
                                   myEmail: userdata.email,
                                   myName: userdata.userName,
                                   initialChat: 0,
-                                  myCourses: courses,
                                 ),
                               );
                             }));
