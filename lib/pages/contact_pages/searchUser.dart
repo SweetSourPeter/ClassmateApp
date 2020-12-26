@@ -20,7 +20,6 @@ class _SearchUsersState extends State<SearchUsers> {
   QuerySnapshot searchSnapshot;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
-
   // @override
   // void initState() {
   //   super.initState();
@@ -41,7 +40,7 @@ class _SearchUsersState extends State<SearchUsers> {
   }
 
   TextEditingController searchTextEditingController =
-  new TextEditingController();
+      new TextEditingController();
   @override
   Widget build(BuildContext context) {
     // dev.debugger();
@@ -128,42 +127,42 @@ class _SearchUsersState extends State<SearchUsers> {
                 children: <Widget>[
                   Expanded(
                       child: Focus(
-                        // onFocusChange: (focus) => showCanclChange(),
-                        child: TextField(
-                          textInputAction: TextInputAction.go,
-                          onSubmitted: (value) {
-                            initiateSearch();
-                          },
-                          // focusNode: _focus,
-                          controller: searchTextEditingController,
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          decoration: buildInputDecorationPinky(
-                            true,
-                            Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
-                            'Search email...',
-                            20,
-                          ),
+                    // onFocusChange: (focus) => showCanclChange(),
+                    child: TextField(
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: (value) {
+                        initiateSearch();
+                      },
+                      // focusNode: _focus,
+                      controller: searchTextEditingController,
+                      textAlign: TextAlign.left,
+                      autofocus: true,
+                      decoration: buildInputDecorationPinky(
+                        true,
+                        Icon(
+                          Icons.search,
+                          color: Colors.black,
                         ),
-                      )),
+                        'Search email...',
+                        20,
+                      ),
+                    ),
+                  )),
                   // showCancel
                   searchTextEditingController.text.isEmpty
                       ? Container()
                       :
-                  // Container(
-                  // height: 40,
-                  // width: 40,
-                  // padding: EdgeInsets.only(left: kDefaultPadding),
-                  // child:
-                  IconButton(
-                      icon: Icon(Icons.cancel),
-                      onPressed: () {
-                        // initiateSearch();
-                        clearSearchTextInput(currentFocus);
-                      })
+                      // Container(
+                      // height: 40,
+                      // width: 40,
+                      // padding: EdgeInsets.only(left: kDefaultPadding),
+                      // child:
+                      IconButton(
+                          icon: Icon(Icons.cancel),
+                          onPressed: () {
+                            // initiateSearch();
+                            clearSearchTextInput(currentFocus);
+                          })
                   // )
                   // : Container(),
                 ],
@@ -179,7 +178,7 @@ class _SearchUsersState extends State<SearchUsers> {
   bool searchBegain = false;
   initiateSearch() async {
     var temp =
-    await databaseMethods.getUsersByEmail(searchTextEditingController.text);
+        await databaseMethods.getUsersByEmail(searchTextEditingController.text);
     // if (temp == null) return;
     setState(() {
       searchSnapshot = temp;
@@ -198,42 +197,40 @@ class _SearchUsersState extends State<SearchUsers> {
   }
 
   // a function to create chat room
-  createChatRoomAndStartConversation(String userName, String userEmail){
+  createChatRoomAndStartConversation(String userName, String userEmail) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final myName = currentUser.userName;
     final myEmail = currentUser.email;
-    if(userEmail != myEmail) {
+    if (userEmail != myEmail) {
       String chatRoomId = getChatRoomId(userName, myName);
 
       List<String> users = [userName, userEmail, myName, myEmail];
       print('users map is:   ');
       print(users);
       Map<String, dynamic> chatRoomMap = {
-        'users' : users,
-        'chatRoomId' : chatRoomId,
-        'latestMessage' : '',
-        'lastMessageTime' : ''
+        'users': users,
+        'chatRoomId': chatRoomId,
+        'latestMessage': '',
+        'lastMessageTime': ''
       };
 
       databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context){
-            return MultiProvider(
-              providers: [
-                Provider<UserData>.value(
-                  value: currentUser,
-                )
-              ],
-              child: ChatScreen(
-                chatRoomId: chatRoomId,
-                friendEmail: userEmail,
-                friendName: userName,
-                initialChat: 0,
-                myEmail: currentUser.email,
-              ),
-            );
-          }
-      ));
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return MultiProvider(
+          providers: [
+            Provider<UserData>.value(
+              value: currentUser,
+            )
+          ],
+          child: ChatScreen(
+            chatRoomId: chatRoomId,
+            friendEmail: userEmail,
+            friendName: userName,
+            initialChat: 0,
+            myEmail: currentUser.email,
+          ),
+        );
+      }));
     } else {
       print('This is your account!');
     }
@@ -319,37 +316,37 @@ class _SearchUsersState extends State<SearchUsers> {
   Widget searchList() {
     return searchBegain && searchTextEditingController.text.isNotEmpty
         ? ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: searchSnapshot.documents.length,
-        shrinkWrap: true, //when you have listview in column
-        itemBuilder: (context, index) {
-          return searchTile(
-            userName:
-            // "peter",
-            searchSnapshot.documents[index].data['userName'],
-            userEmail:
-            // "731957665@qq.com",
-            searchSnapshot.documents[index].data['email'],
-            imageURL:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-          );
-        })
+            scrollDirection: Axis.vertical,
+            itemCount: searchSnapshot.documents.length,
+            shrinkWrap: true, //when you have listview in column
+            itemBuilder: (context, index) {
+              return searchTile(
+                userName:
+                    // "peter",
+                    searchSnapshot.documents[index].data['userName'],
+                userEmail:
+                    // "731957665@qq.com",
+                    searchSnapshot.documents[index].data['email'],
+                imageURL:
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+              );
+            })
         : Container(
-      // padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
-      // child: Row(
-      //   children: <Widget>[
-      //     Column(
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: <Widget>[
-      //         Text(
-      //           "Please enter the correct Email",
-      //           style: simpleTextStyle(),
-      //         ),
-      //       ],
-      //     ),
-      //     Spacer(),
-      //   ],
-      // ),
-    );
+            // padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
+            // child: Row(
+            //   children: <Widget>[
+            //     Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: <Widget>[
+            //         Text(
+            //           "Please enter the correct Email",
+            //           style: simpleTextStyle(),
+            //         ),
+            //       ],
+            //     ),
+            //     Spacer(),
+            //   ],
+            // ),
+            );
   }
 }
