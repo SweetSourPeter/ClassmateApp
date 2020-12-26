@@ -30,150 +30,162 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
   Widget build(BuildContext context) {
     Stream<List<Map<String, dynamic>>> data =
         databaseMehods.getUserReminderLists(widget.userID);
+    double modal_height = MediaQuery.of(context).size.height - 50;
+
     return Container(
+        height: modal_height,
         child: Container(
-      child:
-          // RefreshIndicator(
-          // key: refreshKey,
-          // onRefresh: () async {
-          //   await refreshList();
-          // },
-          // child:
-          Column(
-        children: [
-          topLineBar(),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 25, top: 20, bottom: 0),
-              child: Container(
-                // color: orengeColor,
-                child: Row(
-                  children: [
-                    Text(
-                      'Your notify list',
-                      textAlign: TextAlign.left,
-                      style: largeTitleTextStyle(Colors.black),
+          child:
+              // RefreshIndicator(
+              // key: refreshKey,
+              // onRefresh: () async {
+              //   await refreshList();
+              // },
+              // child:
+              Column(
+            children: [
+              topLineBar(),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 25, top: 20, bottom: 0),
+                  child: Container(
+                    // color: orengeColor,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Your notify list',
+                          textAlign: TextAlign.left,
+                          style: largeTitleTextStyle(Colors.black),
+                        ),
+                        GestureDetector(
+                          child: Icon(
+                            Icons.add,
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SeatsNotification(
+                                        userID: widget.userID,
+                                        userSchool: widget.userSchool,
+                                        userEmail: widget.userEmail,
+                                      )),
+                            );
+                          },
+                        )
+                      ],
                     ),
-                    GestureDetector(
-                      child: Icon(
-                        Icons.add,
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SeatsNotification(
-                                    userID: widget.userID,
-                                    userSchool: widget.userSchool,
-                                    userEmail: widget.userEmail,
-                                  )),
-                        );
-                      },
-                    )
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-              child: StreamBuilder(
-                  stream: data,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError)
-                      return Center(
-                        child: Text("Error"),
-                      );
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Loading();
-                      default:
-                        return !snapshot.hasData
-                            ? Center(
-                                child:
-                                    Text("You dont have a notification list"),
-                              )
-                            : ListView.builder(
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (context, index) {
-                                  return FocusedMenuHolder(
-                                    blurSize: 4,
-                                    menuItemExtent: 45,
-                                    menuWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.80,
-                                    menuBoxDecoration: BoxDecoration(
-                                        color: Colors.grey,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15.0))),
-                                    onPressed: () {
-                                      //press on the item
-                                    },
-                                    menuItems: <FocusedMenuItem>[
-                                      FocusedMenuItem(
-                                          title: Text(
-                                            'Delete',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                          trailingIcon: Icon(Icons.delete),
-                                          backgroundColor: Colors.redAccent,
-                                          onPressed: () async {
-                                            print('delete reminder called');
-                                            print(snapshot.data[index]
-                                                    ['reminderID']
-                                                .toString());
-                                            databaseMehods.deleteCourseReminder(
-                                                snapshot.data[index]
-                                                    ['reminderID'],
-                                                widget.userID);
+              Expanded(
+                  child: StreamBuilder(
+                      stream: data,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError)
+                          return Center(
+                            child: Text("Error"),
+                          );
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                            return Loading();
+                          default:
+                            return !snapshot.hasData
+                                ? Center(
+                                    child: Text(
+                                        "You dont have a notification list"),
+                                  )
+                                : ListView.builder(
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context, index) {
+                                      return FocusedMenuHolder(
+                                        blurSize: 4,
+                                        menuItemExtent: 45,
+                                        menuWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.80,
+                                        menuBoxDecoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15.0))),
+                                        onPressed: () {
+                                          //press on the item
+                                        },
+                                        menuItems: <FocusedMenuItem>[
+                                          FocusedMenuItem(
+                                              title: Text(
+                                                'Delete',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              trailingIcon: Icon(Icons.delete),
+                                              backgroundColor: Colors.redAccent,
+                                              onPressed: () async {
+                                                print('delete reminder called');
+                                                print(snapshot.data[index]
+                                                        ['reminderID']
+                                                    .toString());
+                                                databaseMehods
+                                                    .deleteCourseReminder(
+                                                        snapshot.data[index]
+                                                            ['reminderID'],
+                                                        widget.userID);
 
-                                            var response = await databaseMehods
-                                                .deleteReminder(
-                                              snapshot.data[index]['semester'],
-                                              widget.userEmail,
-                                              snapshot.data[index]['college'],
-                                              snapshot.data[index]
-                                                  ['department'],
-                                              snapshot.data[index]['course'],
+                                                var response =
+                                                    await databaseMehods
+                                                        .deleteReminder(
+                                                  snapshot.data[index]
+                                                      ['semester'],
+                                                  widget.userEmail,
+                                                  snapshot.data[index]
+                                                      ['college'],
+                                                  snapshot.data[index]
+                                                      ['department'],
+                                                  snapshot.data[index]
+                                                      ['course'],
+                                                  snapshot.data[index]
+                                                      ['section'],
+                                                );
+                                                print(
+                                                    'Response status: ${response.statusCode}');
+                                                print(
+                                                    'Response body: ${response.body}');
+                                                if (response.statusCode ==
+                                                    202) {
+                                                  Navigator.pop(context);
+                                                } else {
+                                                  setState(() {
+                                                    subtitle = response.body;
+                                                  });
+                                                }
+                                              }),
+                                        ],
+                                        child: ListTile(
+                                          title: buildCard(
+                                              context,
+                                              //  '37', 'a',
+                                              // Timestamp.now(), 'a',
+                                              snapshot.data[index]['college'] +
+                                                  ' ' +
+                                                  snapshot.data[index]
+                                                      ['department'] +
+                                                  snapshot.data[index]
+                                                      ['course'],
                                               snapshot.data[index]['section'],
-                                            );
-                                            print(
-                                                'Response status: ${response.statusCode}');
-                                            print(
-                                                'Response body: ${response.body}');
-                                            if (response.statusCode == 202) {
-                                              Navigator.pop(context);
-                                            } else {
-                                              setState(() {
-                                                subtitle = response.body;
-                                              });
-                                            }
-                                          }),
-                                    ],
-                                    child: ListTile(
-                                      title: buildCard(
-                                          context,
-                                          //  '37', 'a',
-                                          // Timestamp.now(), 'a',
-                                          snapshot.data[index]['college'] +
-                                              ' ' +
                                               snapshot.data[index]
-                                                  ['department'] +
-                                              snapshot.data[index]['course'],
-                                          snapshot.data[index]['section'],
-                                          snapshot.data[index]['submitTime'],
-                                          snapshot.data[index]['semester']),
-                                    ),
+                                                  ['submitTime'],
+                                              snapshot.data[index]['semester']),
+                                        ),
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                    }
-                  }))
-        ],
-      ),
-      // ),
-    ));
+                        }
+                      }))
+            ],
+          ),
+          // ),
+        ));
   }
 
   Widget buildCard(

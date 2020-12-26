@@ -24,7 +24,7 @@ class DatabaseMehods {
 //     // .catchError((e) {
 //     //   print(e.toString());
 //     // }));
-//   }
+//   }`
   Future<UserData> getUserDetailsByID(String userID) async {
     print('called userdetails stream');
     // return Firestore.instance
