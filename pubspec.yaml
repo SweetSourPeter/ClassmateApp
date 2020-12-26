@@ -50,7 +50,10 @@ dependencies:
   multi_image_picker: ^4.7.12
   flutter_tags: ^0.4.8+2
   substring_highlight: ^0.1.2
-
+  qr_flutter: ^3.2.0
+  auto_size_text: ^2.1.0
+  http: ^0.12.2
+  flutter_spinkit: "^4.0.0"
 
 dev_dependencies:
   flutter_test:

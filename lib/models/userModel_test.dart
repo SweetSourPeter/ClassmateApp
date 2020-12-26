@@ -1,3 +1,4 @@
+// for chat demo
 class User {
   final int id;
   final String name;
