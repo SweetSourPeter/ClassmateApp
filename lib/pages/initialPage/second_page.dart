@@ -117,14 +117,16 @@ class _SecondPageState extends State<SecondPage>
                       borderRadius: BorderRadius.circular(30)),
                   onPressed: () {
                     //TODO add username
-                    widget.pageController.animateToPage(2,
-                        duration: Duration(milliseconds: 800),
-                        curve: Curves.easeInCubic);
-                    databaseMehods.updateUserName(user.userID, _nikname);
-                    print('username saved');
+                    if (_nikname.length > 0) {
+                      widget.pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.easeInCubic);
+                      databaseMehods.updateUserName(user.userID, _nikname);
+                      print('username saved');
+                    }
                   },
-                  child: Text('Complete',
-                      style: simpleTextStyle(widget.buttonColor)),
+                  child:
+                      Text('Next', style: simpleTextStyle(widget.buttonColor)),
                 ),
               ),
             ),

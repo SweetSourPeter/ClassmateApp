@@ -28,6 +28,8 @@ class _EditNameModalState extends State<EditNameModal> {
     double modal_height = MediaQuery.of(context).size.height - 50;
     final TextEditingController _controller = TextEditingController();
     _controller.text = widget.userName;
+    _controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: _controller.text.length));
 
     return Container(
         height: modal_height,
@@ -76,12 +78,13 @@ class _EditNameModalState extends State<EditNameModal> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left:20, right:20),
+                padding: EdgeInsets.only(left: 20, right: 20),
                 child: TextField(
                   controller: _controller,
                   onChanged: (texto) {},
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black, fontSize: 21),
+                  autofocus: true,
                   decoration: InputDecoration(
                       enabledBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,

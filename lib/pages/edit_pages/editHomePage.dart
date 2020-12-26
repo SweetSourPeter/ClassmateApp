@@ -40,63 +40,63 @@ class _EditHomePageState extends State<EditHomePage> {
 
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Profile'),
-        backgroundColor: orengeColor,
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.navigate_before,
-              color: Colors.white,
-              size: 38,
-            )),
-      ),
-      body: Container(
-        color: riceColor,
-        height: mediaQuery.height,
-        width: sidebarSize,
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          // mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Container(
-              //key: widget.key,
-              margin: EdgeInsets.only(top: 30),
-              width: double.infinity,
-              height: menuContainerHeight,
-              child: Column(
-                children: <Widget>[
-                  Divider(
-                    height: 0,
-                    thickness: 1,
-                  ),
-                  ButtonLink(
-                    text: "NAME",
-                    editText: widget.userdata.userName,
-                    iconData: Icons.edit,
-                    textSize: widget.getSize(3),
-                    height: (menuContainerHeight) / 8,
-                    isEdit: true,
-                    onTap: () {
-                      showBottomPopSheet(
-                          context,
-                          EditNameModal(
-                            userName: widget.userdata.userName
-                          ));
-                    },
-                  ),
-                  Divider(
-                    height: 0,
-                    thickness: 1,
-                  )
-                ],
-              ),
-            )
-          ],
+        appBar: AppBar(
+          title: Text('Edit Profile'),
+          backgroundColor: orengeColor,
+          leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.navigate_before,
+                color: Colors.white,
+                size: 38,
+              )),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Container(
+            color: riceColor,
+            height: mediaQuery.height,
+            width: sidebarSize,
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Container(
+                  //key: widget.key,
+                  margin: EdgeInsets.only(top: 30),
+                  width: double.infinity,
+                  height: menuContainerHeight,
+                  child: Column(
+                    children: <Widget>[
+                      Divider(
+                        height: 0,
+                        thickness: 1,
+                      ),
+                      ButtonLink(
+                        text: "NAME",
+                        editText: widget.userdata.userName,
+                        iconData: Icons.edit,
+                        textSize: widget.getSize(3),
+                        height: (menuContainerHeight) / 8,
+                        isEdit: true,
+                        onTap: () {
+                          showBottomPopSheet(
+                              context,
+                              EditNameModal(
+                                  userName: widget.userdata.userName));
+                        },
+                      ),
+                      Divider(
+                        height: 0,
+                        thickness: 1,
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 }
