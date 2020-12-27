@@ -1,5 +1,6 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -80,12 +81,10 @@ class _CourseDetailState extends State<CourseDetail> {
           children: <Widget>[
             Container(
               child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: radius,
-                backgroundImage: NetworkImage(
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'
-                )
-              ),
+                  backgroundColor: Colors.white,
+                  radius: radius,
+                  backgroundImage: NetworkImage(
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg')),
             ),
             Container(
               margin: EdgeInsets.only(top: 0),
@@ -104,6 +103,7 @@ class _CourseDetailState extends State<CourseDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final courseProvider = Provider.of<CourseProvider>(context);
     var size = MediaQuery.of(context).size.width;
     double gridWidth = (size - 40 - 4 * 15) / 10;
     double gridRatio = gridWidth / (gridWidth + 10);
@@ -130,7 +130,7 @@ class _CourseDetailState extends State<CourseDetail> {
                           width: 40,
                           child: IconButton(
                             icon: Image.asset(
-                                'assets/images/back_arrow.pic',
+                              'assets/images/back_arrow.pic',
                             ),
                             // iconSize: 30.0,
                             color: const Color(0xFFFFB811),
@@ -145,14 +145,19 @@ class _CourseDetailState extends State<CourseDetail> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            (courseName ?? '') + ' ' + (courseSection ?? '') + ' ' + (courseTerm ?? ''),
+                            (courseName ?? '') +
+                                ' ' +
+                                (courseSection ?? '') +
+                                ' ' +
+                                (courseTerm ?? ''),
                             style: GoogleFonts.montserrat(
                                 color: Colors.black,
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                              numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
+                              numberOfMembers > 1
+                                  ? numberOfMembers.toString() + ' ' + 'people'
                                   : numberOfMembers.toString() + ' ' + 'person',
                               style: GoogleFonts.montserrat(
                                 color: Colors.black38,
@@ -194,8 +199,8 @@ class _CourseDetailState extends State<CourseDetail> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding:
-                            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 30),
+                        padding: EdgeInsets.only(
+                            right: 20, left: 20, top: 20, bottom: 30),
                         margin: EdgeInsets.only(top: 25),
                         color: Colors.white,
                         child: Column(children: <Widget>[
@@ -206,7 +211,8 @@ class _CourseDetailState extends State<CourseDetail> {
                               Positioned(
                                 child: Text('Group Members',
                                     style: GoogleFonts.montserrat(
-                                        fontWeight: FontWeight.w400, fontSize: 18)),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 18)),
                                 top: 0,
                               ),
                               Positioned(
@@ -215,13 +221,18 @@ class _CourseDetailState extends State<CourseDetail> {
                                       // Replace with a Row for horizontal icon + text
                                       children: <Widget>[
                                         Text(
-                                          numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
-                                              : numberOfMembers.toString() + ' ' + 'person',
-                                          style: GoogleFonts.montserrat(
-                                            color: Colors.black38,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.normal,
-                                          )),
+                                            numberOfMembers > 1
+                                                ? numberOfMembers.toString() +
+                                                    ' ' +
+                                                    'people'
+                                                : numberOfMembers.toString() +
+                                                    ' ' +
+                                                    'person',
+                                            style: GoogleFonts.montserrat(
+                                              color: Colors.black38,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.normal,
+                                            )),
                                         // Container(
                                         //   margin: EdgeInsets.only(top: 3),
                                         //   child: Icon(
@@ -238,9 +249,11 @@ class _CourseDetailState extends State<CourseDetail> {
                           ),
                           Container(
                             //color: Colors.green,
-                            height: numberOfMembers <= 5 ? (gridWidth * 2 / gridRatio) + 10 + 20
-                            : numberOfMembers <= 10 ? (gridWidth * 2 / gridRatio) * 2 + 10 + 30
-                            : (gridWidth * 2 / gridRatio) * 3 + 10 + 40,
+                            height: numberOfMembers <= 5
+                                ? (gridWidth * 2 / gridRatio) + 10 + 20
+                                : numberOfMembers <= 10
+                                    ? (gridWidth * 2 / gridRatio) * 2 + 10 + 30
+                                    : (gridWidth * 2 / gridRatio) * 3 + 10 + 40,
                             padding: EdgeInsets.only(top: 30),
                             child: GridView.count(
                               primary: false,
@@ -281,19 +294,19 @@ class _CourseDetailState extends State<CourseDetail> {
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                      return MultiProvider(
-                                        providers: [
-                                          Provider<UserData>.value(
-                                            value: currentUser,
-                                          )
-                                        ],
-                                        child: SearchGroupChat(
-                                          courseId: widget.courseId,
-                                          myEmail: widget.myEmail,
-                                          myName: widget.myName,
-                                        ),
-                                      );
-                                    }));
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: currentUser,
+                                      )
+                                    ],
+                                    child: SearchGroupChat(
+                                      courseId: widget.courseId,
+                                      myEmail: widget.myEmail,
+                                      myName: widget.myName,
+                                    ),
+                                  );
+                                }));
                               },
                             ),
                             Divider(
@@ -342,6 +355,14 @@ class _CourseDetailState extends State<CourseDetail> {
                               thickness: 1,
                             ),
                             ButtonLink(
+                                onTap: () {
+                                  var a = widget.courseId;
+                                  print('delete $a');
+                                  courseProvider.removeCourse(
+                                      context, widget.courseId);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
                                 text: "Exit Group",
                                 iconData: Icons.cleaning_services,
                                 textSize: 18,

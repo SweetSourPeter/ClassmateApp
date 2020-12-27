@@ -1,16 +1,9 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/chat_pages/chatRoom.dart';
-import 'package:app_test/services/auth.dart';
-import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
-import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/course_menu.dart';
-import 'package:app_test/widgets/favorite_contacts.dart';
-import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
 import 'widgets/my_account.dart';
 
