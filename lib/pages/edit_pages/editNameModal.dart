@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:app_test/pages/explore_pages/loadingSeatReminderList.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
 import 'package:app_test/services/course_reminder_db.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,7 +15,8 @@ import '../../models/constant.dart';
 
 class EditNameModal extends StatefulWidget {
   final String userName;
-  EditNameModal({this.userName});
+  final String id;
+  EditNameModal({this.userName, this.id});
 
   @override
   _EditNameModalState createState() => _EditNameModalState();
@@ -22,7 +24,7 @@ class EditNameModal extends StatefulWidget {
 
 class _EditNameModalState extends State<EditNameModal> {
   String subtitle;
-  final databaseMehods = CourseReminderDatabase();
+  final databaseMehods = DatabaseMehods();
   @override
   Widget build(BuildContext context) {
     double modal_height = MediaQuery.of(context).size.height - 50;
@@ -66,14 +68,24 @@ class _EditNameModalState extends State<EditNameModal> {
                           fontSize: 22)),
                   actions: <Widget>[
                     Container(
-                        margin: EdgeInsets.only(top: 15, right: 30),
-                        child: GestureDetector(
-                          child: Text(
-                            'Save',
-                            style: GoogleFonts.montserrat(
-                                color: themeOrange, fontSize: 20),
-                          ),
-                        ))
+                      margin: EdgeInsets.only(top: 15, right: 30),
+                      child: GestureDetector(
+                        child: Text(
+                          'Save',
+                          style: GoogleFonts.montserrat(
+                              color: themeOrange, fontSize: 20),
+                        ),
+                        onTap: () {
+                          String nicknam = _controller.text;
+
+                          if (nicknam.length > 0 &&
+                              nicknam != widget.userName) {
+                            databaseMehods.updateUserName(widget.id, nicknam);
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    )
                   ],
                 ),
               ),

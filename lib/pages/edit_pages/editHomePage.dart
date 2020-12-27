@@ -1,6 +1,7 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/edit_pages/EditNameModal.dart';
@@ -18,15 +19,15 @@ import '../../models/constant.dart';
 
 class EditHomePage extends StatefulWidget {
   final Function(int) getSize;
-  final UserData userdata;
 
-  EditHomePage({this.getSize, this.userdata});
+  EditHomePage({this.getSize});
 
   @override
   _EditHomePageState createState() => _EditHomePageState();
 }
 
 class _EditHomePageState extends State<EditHomePage> {
+  UserData userData_;
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,14 @@ class _EditHomePageState extends State<EditHomePage> {
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
+    final userdata = Provider.of<UserData>(context);
+    final databaseMehods = DatabaseMehods();
+
+    databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
+      setState(() {
+        userData_ = value;
+      });
+    });
 
     // TODO: implement build
     return Scaffold(
@@ -75,7 +84,7 @@ class _EditHomePageState extends State<EditHomePage> {
                       ),
                       ButtonLink(
                         text: "NAME",
-                        editText: widget.userdata.userName,
+                        editText: userData_.userName,
                         iconData: Icons.edit,
                         textSize: widget.getSize(3),
                         height: (menuContainerHeight) / 8,
@@ -84,7 +93,8 @@ class _EditHomePageState extends State<EditHomePage> {
                           showBottomPopSheet(
                               context,
                               EditNameModal(
-                                  userName: widget.userdata.userName));
+                                  userName: userData_.userName,
+                                  id: userdata.userID));
                         },
                       ),
                       Divider(
