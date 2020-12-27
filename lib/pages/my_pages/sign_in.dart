@@ -43,37 +43,34 @@ class _SignInState extends State<SignIn> {
             context, MaterialPageRoute(builder: (context) => Wrapper(false)));
       }).catchError((error) {
         //TODO
-        isLoading = false;
-        print(error.code);
-        String tempError;
-        switch (error.code) {
-          case "ERROR_INVALID_EMAIL":
-            tempError = "Your email address appears to be malformed.";
-            break;
-          case "ERROR_WRONG_PASSWORD":
-            tempError = "Your password is wrong.";
-            break;
-          case "ERROR_USER_NOT_FOUND":
-            tempError = "User with this email doesn't exist.";
-            break;
-          case "ERROR_USER_DISABLED":
-            tempError = "User with this email has been disabled.";
-            break;
-          case "ERROR_TOO_MANY_REQUESTS":
-            tempError = "Too many requests. Try again later.";
-            break;
-          case "ERROR_OPERATION_NOT_ALLOWED":
-            tempError = "Signing in with Email and Password is not enabled.";
-            break;
-          default:
-            tempError = "An undefined Error happened.";
-        }
-        print(tempError + 'this is it');
+        //TODO
         setState(() {
-          errorMessage = tempError;
+          isLoading = false;
         });
+        // switch (error.code) {
+        //   case "ERROR_INVALID_EMAIL":
+        //     tempError = "Your email address appears to be malformed.";
+        //     break;
+        //   case "ERROR_WRONG_PASSWORD":
+        //     tempError = "Your password is wrong.";
+        //     break;
+        //   case "ERROR_USER_NOT_FOUND":
+        //     tempError = "User with this email doesn't exist.";
+        //     break;
+        //   case "ERROR_USER_DISABLED":
+        //     tempError = "User with this email has been disabled.";
+        //     break;
+        //   case "ERROR_TOO_MANY_REQUESTS":
+        //     tempError = "Too many requests. Try again later.";
+        //     break;
+        //   case "ERROR_OPERATION_NOT_ALLOWED":
+        //     tempError = "Signing in with Email and Password is not enabled.";
+        //     break;
+        //   default:
+        //     tempError = "An undefined Error happened.";
+        // }
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(tempError),
+          content: Text(error.code),
           duration: Duration(seconds: 3),
         ));
       });

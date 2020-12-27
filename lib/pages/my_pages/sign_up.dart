@@ -51,8 +51,10 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Wrapper(true)));
       }).catchError((error) {
-        isLoading = false;
-        String tempError;
+        setState(() {
+          isLoading = false;
+        });
+        // String tempError;
         // switch (error.code) {
         //   case "ERROR_OPERATION_NOT_ALLOWED":
         //     tempError = "Anonymous accounts are not enabled";
@@ -72,11 +74,11 @@ class _SignUpPageState extends State<SignUpPage> {
         //   default:
         //     tempError = "An undefined Error happened.";
         // }
-        setState(() {
-          errorMessage = tempError;
-        });
+        // setState(() {
+        //   errorMessage = error.code;
+        // });
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(tempError),
+          content: Text(error.code ?? ''),
           duration: Duration(seconds: 3),
         ));
       });
