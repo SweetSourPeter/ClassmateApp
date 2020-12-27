@@ -105,8 +105,7 @@ class _GroupChatState extends State<GroupChat> {
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data['sendBy']
-                        )
+                          snapshot.data.documents[index].data['sendBy'])
                       : ImageTile(
                           snapshot.data.documents[index].data['message'],
                           snapshot.data.documents[index].data['sendBy'] ==
@@ -117,8 +116,7 @@ class _GroupChatState extends State<GroupChat> {
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data['sendBy']
-                        );
+                          snapshot.data.documents[index].data['sendBy']);
                 })
             : Container();
       },
@@ -301,15 +299,24 @@ class _GroupChatState extends State<GroupChat> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              (courseName ?? '') + ' ' + (courseSection ?? '') + ' ' + (courseTerm ?? ''),
+                              (courseName ?? '') +
+                                  ' ' +
+                                  (courseSection ?? '') +
+                                  ' ' +
+                                  (courseTerm ?? ''),
                               style: GoogleFonts.montserrat(
                                   color: Colors.black,
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                                numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
-                                : numberOfMembers.toString() + ' ' + 'person',
+                                numberOfMembers > 1
+                                    ? numberOfMembers.toString() +
+                                        ' ' +
+                                        'people'
+                                    : numberOfMembers.toString() +
+                                        ' ' +
+                                        'person',
                                 style: GoogleFonts.montserrat(
                                   color: Colors.black38,
                                   fontSize: 15,

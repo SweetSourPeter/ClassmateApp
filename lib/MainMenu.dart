@@ -21,11 +21,6 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   int _currentIndex = 0;
-  var tabs = [
-    CourseMainMenu(),
-    FriendsScreen(),
-    FavoriteContacts(),
-  ];
   // final tabTitle = ['Course', 'Friends'];
   Offset _offset = Offset(0, 0);
   GlobalKey globalKey = GlobalKey();
@@ -41,10 +36,6 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
-    tabs[2] = MyAccount(
-      key: globalKey,
-      getSize: getSize,
-    );
     WidgetsBinding.instance.addPostFrameCallback(getPosition);
   }
 
@@ -133,11 +124,14 @@ class _MainMenuState extends State<MainMenu> {
                         body: _currentIndex == 0
                             ? CourseMainMenu()
                             : _currentIndex == 1
-                            ? ChatRoom(
-                          myName: userdata.userName,
-                          myEmail: userdata.email,
-                        )
-                            : FavoriteContacts(),
+                                ? ChatRoom(
+                                    myName: userdata.userName,
+                                    myEmail: userdata.email,
+                                  )
+                                : MyAccount(
+                                    key: globalKey,
+                                    getSize: getSize,
+                                  ),
                         bottomNavigationBar: buildBottomNavigationBar(),
                       ),
                     ),
