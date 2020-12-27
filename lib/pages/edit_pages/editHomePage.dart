@@ -39,7 +39,7 @@ class _EditHomePageState extends State<EditHomePage> {
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context);
-    final databaseMehods = DatabaseMehods();
+    final databaseMehods = DatabaseMethods();
 
     databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
       setState(() {

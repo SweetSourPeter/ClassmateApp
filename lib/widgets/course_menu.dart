@@ -1,13 +1,14 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/contact_pages/searchGroup.dart';
+import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:provider/provider.dart';
+import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({
@@ -262,7 +263,29 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         child: GestureDetector(
                           onTap: () {
                             //TODO navigate into course fourm
-                            print(courses.courseID);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: GroupChat(
+                                  courseId: courses.courseID,
+                                  myEmail: userdata.email,
+                                  myName: userdata.userName,
+                                  initialChat: 0,
+                                ),
+                              );
+                            }));
                           },
                           child: Container(
                               margin: const EdgeInsets.only(
@@ -339,7 +362,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                     Provider<List<CourseInfo>>.value(
                                         value: course)
                                   ],
-                                  child: SearchGroup(),
+                                  child: SearchCourse(),
                                 );
                               },
                             ),

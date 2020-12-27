@@ -1,7 +1,7 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
-import 'package:app_test/pages/contact_pages/courseDetailPage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 class FavoriteContacts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context);
     final contacts = Provider.of<List<UserData>>(context);
     void showBottomSheet() {
       showModalBottomSheet(
@@ -154,7 +155,7 @@ class FavoriteContacts extends StatelessWidget {
                           child: Container(
                               child: Column(
                             children: <Widget>[
-                              creatUserImage(30.0, contacts[index]),
+                              createUserImage(30.0, contacts[index]),
                               // CircleAvatar(
                               //   radius: 30.0,
                               //   child: Container(
@@ -186,10 +187,24 @@ class FavoriteContacts extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             //search for users
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SearchUsers()));
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,F
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: SearchUsers(),
+                              );
+                            }));
                           },
                           child: Container(
                               child: Column(

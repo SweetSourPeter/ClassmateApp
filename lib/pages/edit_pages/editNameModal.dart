@@ -24,7 +24,7 @@ class EditNameModal extends StatefulWidget {
 
 class _EditNameModalState extends State<EditNameModal> {
   String subtitle;
-  final databaseMehods = DatabaseMehods();
+  final databaseMehods = DatabaseMethods();
   @override
   Widget build(BuildContext context) {
     double modal_height = MediaQuery.of(context).size.height - 50;

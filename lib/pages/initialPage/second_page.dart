@@ -15,7 +15,7 @@ class SecondPage extends StatefulWidget {
 
 class _SecondPageState extends State<SecondPage>
     with AutomaticKeepAliveClientMixin {
-  final databaseMehods = DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   String _nikname = '';
   double _scaleHolder = 0;
   @override
@@ -121,7 +121,7 @@ class _SecondPageState extends State<SecondPage>
                       widget.pageController.animateToPage(2,
                           duration: Duration(milliseconds: 800),
                           curve: Curves.easeInCubic);
-                      databaseMehods.updateUserName(user.userID, _nikname);
+                      databaseMethods.updateUserName(user.userID, _nikname);
                       print('username saved');
                     }
                   },

@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -12,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'models/constant.dart';
 import 'widgets/my_account.dart';
-import 'dart:developer' as dev;
 
 class MainMenu extends StatefulWidget {
   @override
@@ -21,11 +21,6 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   int _currentIndex = 0;
-  var tabs = [
-    CourseMainMenu(),
-    FriendsScreen(),
-    FavoriteContacts(),
-  ];
   // final tabTitle = ['Course', 'Friends'];
   Offset _offset = Offset(0, 0);
   GlobalKey globalKey = GlobalKey();
@@ -41,26 +36,28 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
-    tabs[2] = MyAccount(
-      key: globalKey,
-      getSize: getSize,
-    );
     WidgetsBinding.instance.addPostFrameCallback(getPosition);
   }
 
   getPosition(duration) {
-    RenderBox renderBox = globalKey.currentContext.findRenderObject();
-    final position = renderBox.localToGlobal(Offset.zero);
-    double start = position.dy - 20;
-    double contLimit = position.dy + renderBox.size.height - 20;
-    double step = (contLimit - start) / 5;
-    limits = [];
-    for (double x = start; x <= contLimit; x = x + step) {
-      limits.add(x);
+    // print("object2");
+    if (globalKey.currentContext != null) {
+      RenderBox renderBox = globalKey.currentContext.findRenderObject();
+      // print("object3");
+      final position = renderBox.localToGlobal(Offset.zero);
+      double start = position.dy - 20;
+      double contLimit = position.dy + renderBox.size.height - 20;
+      double step = (contLimit - start) / 5;
+      limits = [];
+      // print("object");
+      for (double x = start; x <= contLimit; x = x + step) {
+        limits.add(x);
+      }
+
+      setState(() {
+        limits = limits;
+      });
     }
-    setState(() {
-      limits = limits;
-    });
   }
 
   double getSize(int x) {
@@ -75,7 +72,6 @@ class _MainMenuState extends State<MainMenu> {
 
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
-    // dev.debugger();
 
     return (userdata == null)
         ? CircularProgressIndicator()
@@ -125,7 +121,17 @@ class _MainMenuState extends State<MainMenu> {
                       child: Scaffold(
                         backgroundColor: riceColor,
                         // appBar: buildAppBar(),
-                        body: tabs[_currentIndex],
+                        body: _currentIndex == 0
+                            ? CourseMainMenu()
+                            : _currentIndex == 1
+                                ? ChatRoom(
+                                    myName: userdata.userName,
+                                    myEmail: userdata.email,
+                                  )
+                                : MyAccount(
+                                    key: globalKey,
+                                    getSize: getSize,
+                                  ),
                         bottomNavigationBar: buildBottomNavigationBar(),
                       ),
                     ),

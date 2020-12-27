@@ -1,4 +1,5 @@
 import 'package:app_test/MainMenu.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
@@ -169,7 +170,7 @@ class _SignInState extends State<SignIn> {
           GestureDetector(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => forgetpassword()));
+                  MaterialPageRoute(builder: (context) => Forgetpassword()));
             },
             child: Text(
               'Forgot Password',
