@@ -27,10 +27,11 @@ class EditHomePage extends StatefulWidget {
 }
 
 class _EditHomePageState extends State<EditHomePage> {
-  UserData userData_;
+  String nickName;
   @override
   void initState() {
     super.initState();
+    nickName = 'loading';
   }
 
   @override
@@ -43,7 +44,7 @@ class _EditHomePageState extends State<EditHomePage> {
 
     databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
       setState(() {
-        userData_ = value;
+        nickName = value.userName;
       });
     });
 
@@ -84,7 +85,7 @@ class _EditHomePageState extends State<EditHomePage> {
                       ),
                       ButtonLink(
                         text: "NAME",
-                        editText: userData_.userName,
+                        editText: nickName,
                         iconData: Icons.edit,
                         textSize: widget.getSize(3),
                         height: (menuContainerHeight) / 8,
@@ -93,7 +94,7 @@ class _EditHomePageState extends State<EditHomePage> {
                           showBottomPopSheet(
                               context,
                               EditNameModal(
-                                  userName: userData_.userName,
+                                  userName: nickName,
                                   id: userdata.userID));
                         },
                       ),
