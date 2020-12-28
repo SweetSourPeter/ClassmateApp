@@ -52,17 +52,17 @@ class Wrapper extends StatelessWidget {
     else {
       return MultiProvider(providers: [
         StreamProvider(
-            create: (context) => DatabaseMehods()
+            create: (context) => DatabaseMethods()
                 .userDetails(user.userID)), //Login user data details
         // authMethods.isUserLogged().then((value) => null);
         StreamProvider(
             create: (context) =>
-                DatabaseMehods().getMyCourses(user.userID)), // get all course
+                DatabaseMethods().getMyCourses(user.userID)), // get all course
         StreamProvider(
             create: (context) => UserDatabaseService()
                 .getMyContacts(user.userID)), // get all contacts
         FutureProvider(
-            create: (context) => DatabaseMehods().getAllTage(user.userID)),
+            create: (context) => DatabaseMethods().getAllTage(user.userID)),
       ], child: reset ? StartPage() : MainMenu()
 
           // FriendProfile(

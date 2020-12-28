@@ -1,3 +1,6 @@
+import 'package:app_test/MainMenu.dart';
+import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/wrapper.dart';

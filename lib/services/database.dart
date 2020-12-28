@@ -5,7 +5,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DatabaseMehods {
+class DatabaseMethods {
   Stream<UserData> userDetails(String userID) {
     print('called userdetails stream');
     return FirebaseFirestore.instance
@@ -24,7 +24,7 @@ class DatabaseMehods {
 //     // .catchError((e) {
 //     //   print(e.toString());
 //     // }));
-//   }
+//   }`
   Future<UserData> getUserDetailsByID(String userID) async {
     print('called userdetails stream');
     // return Firestore.instance
@@ -212,8 +212,58 @@ class DatabaseMehods {
       print(e.toString());
     });
   }
+
   //----------School database methods----------//
   //create a new school
+
+  //
+
+  //--------The Chat Room Database Methods---------//
+  // create a new chat room
+  createChatRoom(String chatRoomId, chatRoomMap) {
+    Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .setData(chatRoomMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  addChatMessages(String chatRoomId, messageMap) {
+    Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .collection('chats')
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  addGroupChatMessages(String courseID, messageMap) {
+    Firestore.instance
+        .collection('courses')
+        .document(courseID)
+        .collection('chats')
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+    //also update in the course level
+  }
+
+  setUnreadNumber(String chatRoomId, String userEmail, int unreadNumber) {
+    Firestore.instance.collection('chatroom').document(chatRoomId).updateData({
+      (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): unreadNumber
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getUnreadNumber(String chatRoomId, String userEmail) async {
+    return Firestore.instance.collection('chatroom').document(chatRoomId).get();
+  }
 
   //-------User report save to satabase---------
   Future<void> saveReports(
@@ -274,6 +324,97 @@ class DatabaseMehods {
         'language': userTags.language,
         'strudyHabits': userTags.strudyHabits,
       }
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getChatMessages(String chatRoomId) async {
+    return await Firestore.instance
+        .collection('chatroom')
+        .document(chatRoomId)
+        .collection('chats')
+        .orderBy('time', descending: true)
+        .snapshots();
+  }
+
+  getGroupChatMessages(String chatRoomId) async {
+    return Firestore.instance
+        .collection('courses')
+        .document(chatRoomId)
+        .collection('chats')
+        .orderBy('time', descending: true)
+        .snapshots();
+  }
+
+  getChatRooms(String userName) async {
+    return Firestore.instance
+        .collection('chatroom')
+        .where('users', arrayContains: userName)
+        .snapshots();
+  }
+
+  getFriendCourses(String userEmail) async {
+    String friendID;
+    await Firestore.instance
+        .collection('users')
+        .where('email', isEqualTo: userEmail)
+        .getDocuments()
+        .then((value) {
+      friendID = value.documents.first.documentID;
+    });
+    return Firestore.instance
+        .collection('users')
+        .document(friendID)
+        .collection('courses')
+        .getDocuments();
+  }
+
+  getCourseInfo(String courseId) async {
+    return Firestore.instance
+        .collection('courses')
+        .where('courseID', isEqualTo: courseId)
+        .getDocuments();
+  }
+
+  getNumberOfMembersInCourse(String courseId) async {
+    return Firestore.instance
+        .collection('courses')
+        .document(courseId)
+        .collection('users')
+        .getDocuments();
+  }
+
+  getMembersInCourse(String courseId) async {
+    List<String> members = List<String>();
+    await Firestore.instance
+        .collection('courses')
+        .document(courseId)
+        .collection('users')
+        .getDocuments()
+        .then((value) async {
+      for (var i = 0; i < value.documents.length; i++) {
+        final tmpUserId = value.documents[i].data()['userID'];
+        await Firestore.instance
+            .collection('users')
+            .document(tmpUserId)
+            .get()
+            .then((value) {
+          final userName = value.data()['userName'];
+          // List<String> userInfo = [userName];
+          members.add(userName);
+        });
+      }
+    });
+
+    return members;
+  }
+
+  setLastestMessage(
+      String chatRoomId, String latestMessage, int lastMessageTime) async {
+    Firestore.instance.collection('chatroom').document(chatRoomId).updateData({
+      'latestMessage': latestMessage,
+      'lastMessageTime': lastMessageTime
     }).catchError((e) {
       print(e.toString());
     });

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -67,12 +67,12 @@ class _GroupChatState extends State<GroupChat> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data['time']);
+                      snapshot.data.documents[index].data()['time']);
                   if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index + 1].data['time']);
+                        snapshot.data.documents[index + 1].data()['time']);
                     final difference = current.difference(prev).inDays;
                     if (difference >= 1) {
                       displayTime = true;
@@ -93,30 +93,30 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
-                  return snapshot.data.documents[index].data['messageType'] ==
+                  return snapshot.data.documents[index].data()['messageType'] ==
                           'text'
                       ? MessageTile(
-                          snapshot.data.documents[index].data['message'],
-                          snapshot.data.documents[index].data['sendBy'] ==
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
                               myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data['time'])
+                                  snapshot.data.documents[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data['sendBy'])
+                          snapshot.data.documents[index].data()['sendBy'])
                       : ImageTile(
-                          snapshot.data.documents[index].data['message'],
-                          snapshot.data.documents[index].data['sendBy'] ==
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
                               myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data['time'])
+                                  snapshot.data.documents[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data['sendBy']);
+                          snapshot.data.documents[index].data()['sendBy']);
                 })
             : Container();
       },
@@ -186,10 +186,11 @@ class _GroupChatState extends State<GroupChat> {
 
   Future _uploadFile(myEmail) async {
     String fileName = basename(_imageFile.path);
-    StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    firebase_storage.Reference firebaseStorageRef =
+        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask =
+        firebaseStorageRef.putFile(_imageFile);
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
         _uploadedFileURL = downloadUrl;
@@ -226,9 +227,9 @@ class _GroupChatState extends State<GroupChat> {
     // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data['myCourseName'];
-        courseSection = value.documents[0].data['section'];
-        courseTerm = value.documents[0].data['term'];
+        courseName = value.documents[0].data()['myCourseName'];
+        courseSection = value.documents[0].data()['section'];
+        courseTerm = value.documents[0].data()['term'];
       });
     });
 

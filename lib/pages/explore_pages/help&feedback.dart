@@ -13,7 +13,7 @@ class HelpFeedback extends StatefulWidget {
 }
 
 class _HelpFeedbackState extends State<HelpFeedback> {
-  DatabaseMehods databaseMehods = new DatabaseMehods();
+  DatabaseMethods databaseMehods = new DatabaseMethods();
   List<String> faqTitle = [
     'Course FAQ',
     'Friends FAQ',

@@ -15,7 +15,7 @@ class SecondPage extends StatefulWidget {
 
 class _SecondPageState extends State<SecondPage>
     with AutomaticKeepAliveClientMixin {
-  final databaseMehods = DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   String _nikname = '';
   double _scaleHolder = 0;
   @override
@@ -117,11 +117,13 @@ class _SecondPageState extends State<SecondPage>
                       borderRadius: BorderRadius.circular(30)),
                   onPressed: () {
                     //TODO add username
-                    widget.pageController.animateToPage(2,
-                        duration: Duration(milliseconds: 800),
-                        curve: Curves.easeInCubic);
-                    databaseMehods.updateUserName(user.userID, _nikname);
-                    print('username saved');
+                    if (_nikname.length > 0) {
+                      widget.pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.easeInCubic);
+                      databaseMethods.updateUserName(user.userID, _nikname);
+                      print('username saved');
+                    }
                   },
                   child: Text('Complete',
                       style: simpleTextStyle(widget.buttonColor, 16)),
