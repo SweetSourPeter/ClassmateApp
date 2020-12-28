@@ -77,7 +77,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                         opacity: value == 20 ? 0 : 1,
                         duration: Duration(milliseconds: 800),
                         child: Text(
-                          'I\'m MeetCor',
+                          'nice to Meechu',
                           style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -172,7 +172,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                         curve: Curves.easeInCubic);
                                   },
                                   child: Text(
-                                    'Hi, MeetCor',
+                                    'Hi, Meechu',
                                     style: TextStyle(color: widget.buttonColor),
                                   ),
                                 ),

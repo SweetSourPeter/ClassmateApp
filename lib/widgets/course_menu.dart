@@ -385,7 +385,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           // color: Colors.red,
                           margin: const EdgeInsets.only(
                               bottom: 16, top: 16, left: 38, right: 38),
-                          height: 150,
+                          height: 90,
+                          width: 50,
                           // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -409,14 +410,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       top: 10, bottom: 10)),
                               Image.asset(
                                 'assets/images/add_course.png',
-                                scale: 2,
+                                scale: 5,
                               ),
                               SizedBox(
-                                height: 0,
+                                height: 2,
                               ),
                               Text('Add Course',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 28))
+                                  style: simpleTextStyle(Colors.black, 20))
                             ],
                           ),
                         ),
