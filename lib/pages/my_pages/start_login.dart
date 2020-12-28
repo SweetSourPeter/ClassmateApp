@@ -3,9 +3,6 @@ import 'package:app_test/pages/utils/animation_item.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:app_test/pages/my_pages/forgetpassword.dart';
-import 'package:app_test/pages/my_pages/sign_in.dart';
-import 'package:app_test/pages/my_pages/sign_up.dart';
 
 class StartLoginPage extends StatefulWidget {
   @override
@@ -66,37 +63,45 @@ class _StartLoginPageState extends State<StartLoginPage> {
           SizedBox(
             height: _height,
             width: _height,
-            child:
-                // FirstPageLogin(
-                //     pageController: _pageController,
-                //     buttonColor: listColors[_currentIndexColor].colors[1],
-                //   ),
-                PageView(
-              physics: NeverScrollableScrollPhysics(parent: null),
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                  switch (index) {
-                    case 0:
-                      postionLogo = Tween(begin: 0.0, end: 0.0);
-                      break;
-                    default:
-                      postionLogo = Tween(begin: 0.0, end: 0.25);
-                  }
-                });
-              },
-              scrollDirection: Axis.vertical,
-              children: <Widget>[
-                FirstPageLogin(
-                  pageController: _pageController,
-                  buttonColor: listColors[_currentIndexColor].colors[1],
-                ),
-                SignIn(),
-                SignUpPage(),
-                Forgetpassword(),
-              ],
+            child: FirstPageLogin(
+              pageController: _pageController,
+              buttonColor: listColors[_currentIndexColor].colors[1],
             ),
+            // PageView(
+            //   physics: NeverScrollableScrollPhysics(parent: null),
+            //   controller: _pageController,
+            //   onPageChanged: (index) {
+            //     setState(() {
+            //       _currentIndex = index;
+            //       switch (index) {
+            //         case 0:
+            //           postionLogo = Tween(begin: 0.0, end: 0.0);
+            //           break;
+            //         default:
+            //           postionLogo = Tween(begin: 0.0, end: 0.25);
+            //       }
+            //     });
+            //   },
+            //   scrollDirection: Axis.vertical,
+            //   children: <Widget>[
+            //     FirstPage(
+            //       pageController: _pageController,
+            //       buttonColor: listColors[_currentIndexColor].colors[1],
+            //     ),
+            //     SecondPage(),
+            //     PasswordPage(),
+            //     ThirdPage(
+            //       initialIndex: _currentIndexColor,
+            //       valueChanged: (index) {
+            //         setState(() {
+            //           _animacaoColor = Tween(begin: 4.0, end: 0.0);
+            //           _currentIndexColor = index;
+            //           _animacaoColor = Tween(begin: 0.0, end: 2.3);
+            //         });
+            //       },
+            //     ),
+            //   ],
+            // ),
           ),
           TweenAnimationBuilder(
             duration: Duration(milliseconds: 300),
