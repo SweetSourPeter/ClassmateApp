@@ -26,7 +26,7 @@ class ThirdPage extends StatefulWidget {
 class _ThirdPageState extends State<ThirdPage>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController;
-  final databaseMehods = DatabaseMehods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   //double _offset = 0;
   double _currentindex = 0;
   @override
@@ -149,7 +149,7 @@ class _ThirdPageState extends State<ThirdPage>
                   scale: value,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 80, vertical: 15),
+                        horizontal: 140, vertical: 15),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -174,14 +174,14 @@ class _ThirdPageState extends State<ThirdPage>
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
                               child: Text(
-                                'Ready to meet classmates',
+                                'Next',
                                 style: TextStyle(
                                   color: listColors[_currentindex.round()]
-                                      .colors[1],
+                                      .colors[1],fontSize: 20
                                 ),
                               ),
                               onPressed: () {
-                                databaseMehods.updateUserProfileColor(
+                                databaseMethods.updateUserProfileColor(
                                     user.userID, _currentindex);
                                 print('color num saved');
                                 widget.pageController.animateToPage(3,

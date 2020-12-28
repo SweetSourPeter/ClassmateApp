@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class CourseProvider with ChangeNotifier {
-  final databaseMehods = DatabaseMehods();
+  final databaseMethods = DatabaseMethods();
   String _term;
   String _myCourseSchool;
   String _myCourseCollege;
@@ -82,7 +82,7 @@ class CourseProvider with ChangeNotifier {
       myCourseName: myCourseName.toUpperCase(),
       courseID: courseId,
     );
-    databaseMehods.saveCourseToUser(newCourseToUser, userId);
+    databaseMethods.saveCourseToUser(newCourseToUser, userId);
     //save to Courses Document
     var newCourseToCourse = CourseInfo(
       school: userdata.school.toUpperCase(),
@@ -94,17 +94,18 @@ class CourseProvider with ChangeNotifier {
       userNumbers: 1,
       courseID: courseId,
     );
-    databaseMehods.saveCourseToCourse(newCourseToCourse);
+
+    databaseMethods.saveCourseToCourse(newCourseToCourse);
     // var newUser = User(userID: userId, admin: true);
-    databaseMehods.addUserToCourse(courseId, user);
+    databaseMethods.addUserToCourse(courseId, user);
   }
 
   removeCourse(BuildContext context, String courseID) {
     final user = Provider.of<User>(context, listen: false);
     print(user.userID);
     print(courseID);
-    databaseMehods.removeCourseFromUser(courseID, user.userID);
-    databaseMehods.removeUserFromCourse(courseID, user.userID);
+    databaseMethods.removeCourseFromUser(courseID, user.userID);
+    databaseMethods.removeUserFromCourse(courseID, user.userID);
   }
 
   //add course to user
@@ -117,8 +118,8 @@ class CourseProvider with ChangeNotifier {
       section: courseSection.toUpperCase(),
       courseID: courseId,
     );
-    databaseMehods.saveCourseToUser(newCourseToUser, userId);
+    databaseMethods.saveCourseToUser(newCourseToUser, userId);
     // var newUser = User(userID: userId, admin: true);
-    databaseMehods.addUserToCourse(courseId, user);
+    databaseMethods.addUserToCourse(courseId, user);
   }
 }
