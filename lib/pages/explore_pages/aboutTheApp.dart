@@ -2,10 +2,10 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutTheAPP extends StatelessWidget {
   const AboutTheAPP({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     Size mediaQuery = MediaQuery.of(context).size;
@@ -40,7 +40,7 @@ class AboutTheAPP extends StatelessWidget {
                 height: 20,
               ),
               Text(
-                'MeetCor',
+                'Meechu',
                 style: largeTitleTextStyle(themeOrange),
               ),
               SizedBox(
@@ -53,15 +53,44 @@ class AboutTheAPP extends StatelessWidget {
               SizedBox(
                 height: 50,
               ),
-              Text(
-                'Term of Use',
-                style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
+              GestureDetector(
+                onTap: () {
+                  _launchURL('https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y');
+                },
+                child: Text(
+                  'Term of Use',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              GestureDetector(
+                onTap: () {
+                  _launchURL('https://docs.qq.com/doc/DUEhxcUl3cmtKWk5Q');
+                },
+                child: Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
             ],
           ))),
     );
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      print(url);
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

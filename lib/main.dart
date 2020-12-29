@@ -9,17 +9,61 @@ import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  // @override
+  // Widget build(BuildContext context) {
+  //   return FutureBuilder(
+  //     // Initialize FlutterFire
+  //     future: Firebase.initializeApp(),
+  //     builder: (context, snapshot) {
+  //       // Check for errors
+  //       if (snapshot.hasError) {
+  //         return Directionality(
+  //           textDirection: TextDirection.ltr,
+  //                     child: Center(
+  //               child: Text('Opps, sothing went wrong, please check later')),
+  //         );
+  //       }
+
+  //       // Once complete, show your application
+  //       if (snapshot.connectionState == ConnectionState.done) {
+  //         return MultiProvider(
+  //           providers: [
+  //             StreamProvider(
+  //                 create: (context) => AuthMethods().user), //Login user
+  //             ChangeNotifierProvider(
+  //                 create: (context) => CourseProvider()), //course Provider
+  //             ChangeNotifierProvider(
+  //                 create: (context) => ContactProvider()), //contacts Provider
+  //             ChangeNotifierProvider(
+  //                 create: (context) => UserTagsProvider()), //tag Provider
+  //           ],
+  //           child: MaterialApp(
+  //             debugShowCheckedModeBanner: false,
+  //             home: SplashScreen(),
+  //           ),
+  //         );
+  // }
+
+  // Otherwise, show something whilst waiting for initialization to complete
+  //       return CircularProgressIndicator();
+  //     },
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

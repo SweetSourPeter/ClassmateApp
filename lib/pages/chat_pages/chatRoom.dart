@@ -37,7 +37,8 @@ class _ChatRoomState extends State<ChatRoom> {
                 itemCount: snapshot.data.documents.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  final userList = snapshot.data.documents[index].data['users'];
+                  final userList =
+                      snapshot.data.documents[index].data()['users'];
                   if (userList[1] == widget.myEmail) {
                     friendName = userList[2];
                     friendEmail = userList[3];
@@ -47,23 +48,25 @@ class _ChatRoomState extends State<ChatRoom> {
                   }
 
                   latestMessage =
-                      snapshot.data.documents[index].data['latestMessage'];
+                      snapshot.data.documents[index].data()['latestMessage'];
                   lastMessageTime = DateTime.fromMillisecondsSinceEpoch(snapshot
-                          .data.documents[index].data['lastMessageTime'])
+                          .data.documents[index]
+                          .data()['lastMessageTime'])
                       .toString();
 
                   return ChatRoomsTile(
-                    userName: snapshot.data.documents[index].data['chatRoomId']
+                    userName: snapshot.data.documents[index]
+                        .data()['chatRoomId']
                         .toString()
                         .replaceAll("_", "")
                         .replaceAll(currentUser.email, ""),
                     chatRoomId:
-                        snapshot.data.documents[index].data["chatRoomId"],
+                        snapshot.data.documents[index].data()["chatRoomId"],
                     friendName: friendName,
                     latestMessage: latestMessage,
                     lastMessageTime: lastMessageTime,
                     friendEmail: friendEmail,
-                    unreadNumber: snapshot.data.documents[index].data[widget
+                    unreadNumber: snapshot.data.documents[index].data()[widget
                             .myEmail
                             .substring(0, widget.myEmail.indexOf('@')) +
                         'unread'],

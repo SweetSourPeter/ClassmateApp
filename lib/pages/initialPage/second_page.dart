@@ -125,8 +125,8 @@ class _SecondPageState extends State<SecondPage>
                       print('username saved');
                     }
                   },
-                  child:
-                      Text('Next', style: simpleTextStyle(widget.buttonColor)),
+                  child: Text('Complete',
+                      style: simpleTextStyle(widget.buttonColor, 16)),
                 ),
               ),
             ),

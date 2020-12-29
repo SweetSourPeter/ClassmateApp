@@ -254,8 +254,8 @@ class _TagSelectingState extends State<TagSelecting> {
                 }
               },
               child: Text(
-                submitButtonString,
-                style: simpleTextStyle(submitButtonTextColor),
+                'Complete',
+                style: simpleTextStyle(Colors.white, 16),
               ),
             ),
           ),

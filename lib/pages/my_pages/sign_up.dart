@@ -41,11 +41,12 @@ class _SignUpPageState extends State<SignUpPage> {
       //   "email": emailTextEditingController.text,
       //   "school": _selectedSchool,
       // };
-
+      print('valid');
       authMethods
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
+        print('auth method finish');
         isLoading = false;
         Navigator.pop(context);
         Navigator.pushReplacement(

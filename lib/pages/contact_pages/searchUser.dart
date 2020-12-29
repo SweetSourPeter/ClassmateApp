@@ -1,6 +1,9 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
+import 'package:app_test/providers/contactProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/services/userDatabase.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -191,7 +194,7 @@ class _SearchUsersState extends State<SearchUsers> {
 
       print('aaaa');
       print(searchSnapshot.toString() + 'aaaaaaaaaaa');
-      print(searchSnapshot.documents.length);
+      print(searchSnapshot.docs.length);
       // print(searchTextEditingController.text);
     });
   }
@@ -322,15 +325,18 @@ class _SearchUsersState extends State<SearchUsers> {
             itemCount: searchSnapshot.documents.length,
             shrinkWrap: true, //when you have listview in column
             itemBuilder: (context, index) {
-              return searchTile(
+              return SearchTile(
+                school: searchSnapshot.docs[index].data()['school'] ?? '',
+                userID: searchSnapshot.docs[index].id,
                 userName:
                     // "peter",
-                    searchSnapshot.documents[index].data['userName'],
+                    searchSnapshot.docs[index].data()['userName'] ?? '',
                 userEmail:
                     // "731957665@qq.com",
-                    searchSnapshot.documents[index].data['email'],
+                    searchSnapshot.docs[index].data()['email'] ?? '',
                 imageURL:
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                    // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                    searchSnapshot.docs[index].data()['userImageUrl'] ?? '',
               );
             })
         : Container(
@@ -350,5 +356,106 @@ class _SearchUsersState extends State<SearchUsers> {
             //   ],
             // ),
             );
+  }
+}
+
+//searchTile for searchList
+
+class SearchTile extends StatelessWidget {
+  UserDatabaseService userDatabaseService = UserDatabaseService();
+  final String school;
+  final String userID;
+  final String userName;
+  final String userEmail;
+  final String imageURL;
+  SearchTile(
+      {this.school, this.userID, this.userName, this.userEmail, this.imageURL});
+
+  @override
+  Widget build(BuildContext context) {
+    final contactProvider = Provider.of<ContactProvider>(context);
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FriendProfile(
+              userID: userID, // to be modified to friend's ID
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: <Widget>[
+            creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
+            // CircleAvatar(
+            //   radius: 30.0,
+            //   backgroundImage: NetworkImage("${imageURL}"),
+            //   backgroundColor: Colors.transparent,
+            // ),
+            SizedBox(
+              width: 20,
+            ),
+            Container(
+              // color: Colors.black12,
+              width: 180,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    userName ?? '',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    userEmail ?? '',
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            // SizedBox(
+            //   width: 10,
+            // ),
+            Expanded(
+              child: RaisedGradientButton(
+                width: 100,
+                height: 40,
+                gradient: LinearGradient(
+                  colors: <Color>[Colors.red, orengeColor],
+                ),
+                onPressed: () {
+                  //TODO
+                  contactProvider.changeSchool(school);
+                  contactProvider.changeUserID(userID);
+                  contactProvider.changeEmail(userEmail);
+                  contactProvider.changeUserName(userName);
+                  contactProvider.changeUserImageUrl(imageURL);
+                  contactProvider.addUserToContact(context);
+                },
+                //之后需要根据friendsProvider改这部分display
+                //TODO
+                child: Text(
+                  'ADD',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            // Spacer(),
+          ],
+        ),
+      ),
+    );
   }
 }

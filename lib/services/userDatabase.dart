@@ -10,8 +10,9 @@ class UserDatabaseService {
       Firestore.instance.collection('users');
 
   Future<void> updateUserData(
-      String userName, String email, String school) async {
+      String userID, String userName, String email, String school) async {
     return await userCollection.document(userID).setData({
+      'UserID': userID,
       'userName': userName,
       'email': email,
       'school': school,
@@ -34,9 +35,9 @@ class UserDatabaseService {
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
       userID: userID,
-      userName: snapshot.data['userName'],
-      email: snapshot.data['email'],
-      school: snapshot.data['school'],
+      userName: snapshot.data()['userName'],
+      email: snapshot.data()['email'],
+      school: snapshot.data()['school'],
     );
   }
 
@@ -48,22 +49,19 @@ class UserDatabaseService {
 
   // get user doc stream
   Stream<UserData> get userData {
-    return userCollection
-        .document(userID)
-        .snapshots()
-        .map(_userDataFromSnapshot);
+    return userCollection.doc(userID).snapshots().map(_userDataFromSnapshot);
   }
 
   //get all my courses from firestore
   Stream<List<UserData>> getMyContacts(String userID) {
     print('gettre contact called');
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(userID)
+        .doc(userID)
         .collection('contacts')
         .snapshots()
-        .map((snapshot) => snapshot.documents
-            .map((document) => UserData.fromFirestoreContacts(document.data))
+        .map((snapshot) => snapshot.docs
+            .map((document) => UserData.fromFirestoreContacts(document.data()))
             .toList());
   }
 
@@ -72,12 +70,12 @@ class UserDatabaseService {
     var a = contact.userID;
     print('$userID');
     //First update in the user level
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(userID)
+        .doc(userID)
         .collection('contacts')
-        .document(contact.userID)
-        .setData(contact.toMapIntoUsers())
+        .doc(contact.userID)
+        .set(contact.toMapIntoUsers())
         .catchError((e) {
       print(e.toString());
     });
