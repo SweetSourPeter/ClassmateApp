@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 // Colos that use in our app
+const transparent = Color(0x00000000);
 const orengeColor = Color(0xFFFfA41B);
 const darkBlueColor = Color(0xFF000839);
 const midBlueColor = Color(0xFF005082);
 const lightBlueColor = Color(0xFF00A8CC);
 
 const themeOrange = Color(0xFFFF7E40);
-const gradientYellow = Color(0xFFFFB811);
+const gradientYellow = Color(0xFFFFAE18);
 
 const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
@@ -19,6 +20,7 @@ const riceColor = Color(0xFFF9F6F1);
 const redCircleColor = Color(0xFF5F4E);
 const unselectedColor = Color(0xFFDFAF);
 
+const whiteAndGray = Color(0xFFEEEEEE); //loading color
 const kDefaultPadding = 20.0;
 
 const kDefaultShadow = BoxShadow(
@@ -85,4 +87,42 @@ List strudyHabits = [
   '#talker',
   '#listener',
   '#leader',
+];
+
+const List<LinearGradient> listColors = [
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.orange,
+        themeOrange,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.indigoAccent,
+        Colors.teal,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.purple,
+        Colors.red,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.green,
+        Colors.blue,
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.purple,
+        Colors.blue,
+      ]),
 ];

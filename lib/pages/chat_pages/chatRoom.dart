@@ -37,7 +37,8 @@ class _ChatRoomState extends State<ChatRoom> {
                 itemCount: snapshot.data.documents.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  final userList = snapshot.data.documents[index].data['users'];
+                  final userList =
+                      snapshot.data.documents[index].data()['users'];
                   if (userList[1] == widget.myEmail) {
                     friendName = userList[2];
                     friendEmail = userList[3];
@@ -46,23 +47,29 @@ class _ChatRoomState extends State<ChatRoom> {
                     friendEmail = userList[1];
                   }
 
-                  latestMessage = snapshot.data.documents[index].data['latestMessage'];
-                  lastMessageTime = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data['lastMessageTime']
-                  ).toString();
+                  latestMessage =
+                      snapshot.data.documents[index].data()['latestMessage'];
+                  lastMessageTime = DateTime.fromMillisecondsSinceEpoch(snapshot
+                          .data.documents[index]
+                          .data()['lastMessageTime'])
+                      .toString();
 
                   return ChatRoomsTile(
-                    userName: snapshot.data.documents[index].data['chatRoomId']
+                    userName: snapshot.data.documents[index]
+                        .data()['chatRoomId']
                         .toString()
                         .replaceAll("_", "")
                         .replaceAll(currentUser.email, ""),
                     chatRoomId:
-                        snapshot.data.documents[index].data["chatRoomId"],
+                        snapshot.data.documents[index].data()["chatRoomId"],
                     friendName: friendName,
                     latestMessage: latestMessage,
                     lastMessageTime: lastMessageTime,
                     friendEmail: friendEmail,
-                    unreadNumber: snapshot.data.documents[index].data[widget.myEmail.substring(0, widget.myEmail.indexOf('@')) + 'unread'],
+                    unreadNumber: snapshot.data.documents[index].data()[widget
+                            .myEmail
+                            .substring(0, widget.myEmail.indexOf('@')) +
+                        'unread'],
                   );
                 })
             : Container();
@@ -88,6 +95,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserData>(context, listen: false);
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -104,11 +112,34 @@ class _ChatRoomState extends State<ChatRoom> {
                         textAlign: TextAlign.left,
                         style: largeTitleTextStyle(
                           Colors.black,
-                        )
+                        ),
                       ),
                     ),
                   ),
-                  // IconButton(icon: Image.asset('name'), onPressed: null)
+                  // Expanded(child: Container()),
+                  GestureDetector(
+                      onTap: () {
+                        //search for users
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MultiProvider(
+                            providers: [
+                              Provider<UserData>.value(
+                                value: currentUser,
+                              ),
+                              // 这个需要的话直接uncomment
+                              // Provider<List<CourseInfo>>.value(
+                              //   value: course,F
+                              // ),
+                              // final courseProvider = Provider.of<CourseProvider>(context);
+                              // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                              // 不需要pass到push里面，直接复制上面这行即可
+                            ],
+                            child: SearchUsers(),
+                          );
+                        }));
+                      },
+                      child: Icon(Icons.add_circle_outline))
                 ],
               ),
             ),
@@ -131,8 +162,14 @@ class ChatRoomsTile extends StatelessWidget {
   final String friendEmail;
   final int unreadNumber;
 
-  ChatRoomsTile({this.userName, @required this.chatRoomId, this.friendName,
-    this.latestMessage, this.lastMessageTime, this.friendEmail, this.unreadNumber});
+  ChatRoomsTile(
+      {this.userName,
+      @required this.chatRoomId,
+      this.friendName,
+      this.latestMessage,
+      this.lastMessageTime,
+      this.friendEmail,
+      this.unreadNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +195,7 @@ class ChatRoomsTile extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
-        padding:
-        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -188,26 +224,27 @@ class ChatRoomsTile extends StatelessWidget {
                             ),
                           ),
                         ),
-                        unreadNumber > 0 ? Positioned(
-                            left: 32.0,
-                            top: 32.0,
-                            child: new Container(
-                              alignment: Alignment.topCenter,
-                              width: 18,
-                              height: 18,
-                              decoration: new BoxDecoration(
-                                color: const Color(0xffffb811),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: new Text(
-                                unreadNumber < 100? unreadNumber.toString() : '...',
-                                style: GoogleFonts.openSans(
-                                    fontSize: 12,
-                                    color: Colors.white
-                                ),
-                              ),
-                            )
-                        ) : Container(),
+                        unreadNumber > 0
+                            ? Positioned(
+                                left: 32.0,
+                                top: 32.0,
+                                child: new Container(
+                                  alignment: Alignment.topCenter,
+                                  width: 18,
+                                  height: 18,
+                                  decoration: new BoxDecoration(
+                                    color: const Color(0xffffb811),
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  child: new Text(
+                                    unreadNumber < 100
+                                        ? unreadNumber.toString()
+                                        : '...',
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 12, color: Colors.white),
+                                  ),
+                                ))
+                            : Container(),
                       ],
                     ),
                   ),
@@ -221,27 +258,23 @@ class ChatRoomsTile extends StatelessWidget {
                           style: GoogleFonts.montserrat(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xffFF7E40)
-                          ),
+                              color: const Color(0xffFF7E40)),
                         ),
-                        SizedBox(height: 4,),
+                        SizedBox(
+                          height: 4,
+                        ),
                         Container(
                           width: 240,
-                          child: Text(
-                              latestMessage,
+                          child: Text(latestMessage,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.openSans(
-                                  fontSize: 16,
-                                  color: Colors.black
-                              )
-                          ),
+                                  fontSize: 16, color: Colors.black)),
                         )
                       ],
                     ),
                   ),
                 ],
               ),
-
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Container(

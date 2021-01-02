@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/database.dart';

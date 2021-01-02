@@ -1,7 +1,8 @@
 import 'package:app_test/main.dart';
-import 'package:app_test/models/user.dart';
+import 'package:app_test/models/user.dart' as u;
 import 'package:app_test/MainScreen.dart';
-import "package:firebase_auth/firebase_auth.dart";
+import "package:firebase_auth/firebase_auth.dart" as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:app_test/services/userDatabase.dart';
@@ -10,38 +11,40 @@ import 'package:flutter/material.dart';
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  User _userFromFirebaseUser(FirebaseUser user) {
-    return user != null ? User(userID: user.uid) : null;
+  u.User _userFromFirebaseUser(auth.User user) {
+    // return user != null ? auth.User(userID: user.uid) : null;
+    return user != null ? u.User(userID: user.uid) : null;
   }
 
   Future<bool> isUserLogged() async {
-    FirebaseUser firebaseUser = await getLoggedFirebaseUser();
+    auth.User firebaseUser = _auth.currentUser;
     if (firebaseUser != null) {
-      IdTokenResult tokenResult = await firebaseUser.getIdToken(refresh: true);
-      return tokenResult.token != null;
+      String tokenResult = await firebaseUser.getIdToken(true);
+      return tokenResult != null;
     } else {
       return false;
     }
   }
 
-  Future<FirebaseUser> getLoggedFirebaseUser() {
-    return _auth.currentUser();
-  }
+  // Future<User> getLoggedFirebaseUser() {
+  //   return _auth.currentUser;
+  // }
 
   // auth change user stream
-  Stream<User> get user {
-    return _auth.onAuthStateChanged
+  Stream<u.User> get user {
+    return _auth
+        .authStateChanges()
         //.map((FirebaseUser user) => _userFromFirebaseUser(user));
         .map(_userFromFirebaseUser);
   }
 
   // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
-    FirebaseUser firebaseUser;
+    auth.User firebaseUser;
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      firebaseUser = result.user;
+      firebaseUser = userCredential.user;
       return _userFromFirebaseUser(firebaseUser);
     } catch (error) {
       throw error;
@@ -81,15 +84,23 @@ class AuthMethods {
   Future signUpWithEmailAndPassword(
       String email, String password, String university) async {
     // bool emailExist = false;
-    // FirebaseUser firebaseUser;
+    auth.User firebaseUser;
+
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      FirebaseUser firebaseUser = result.user;
+      print('user created finished');
+      print(email);
+      print(password);
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      print(email);
+      print(password);
+      firebaseUser = userCredential.user;
       await UserDatabaseService(userID: firebaseUser.uid)
-          .updateUserData(email, email, university);
+          .updateUserData(firebaseUser.uid, email, email, university);
+      print('update finished');
       return _userFromFirebaseUser(firebaseUser);
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
+      print('error: is 1111111' + error.code);
       throw error;
 
       // if (e is PlatformException) {
@@ -111,7 +122,7 @@ class AuthMethods {
     }
   }
 
-  Future<FirebaseUser> signInWithGoogle(BuildContext context) async {
+  Future<auth.User> signInWithGoogle(BuildContext context) async {
     final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
     final GoogleSignInAccount googleSignInAccount =
@@ -123,13 +134,14 @@ class AuthMethods {
         idToken: googleSignInAuthentication.idToken,
         accessToken: googleSignInAuthentication.accessToken);
 
-    AuthResult result = await _auth.signInWithCredential(credential);
-    FirebaseUser googleUser = result.user;
+    UserCredential userCredential =
+        await _auth.signInWithCredential(credential);
+    auth.User googleUser = userCredential.user;
 
     if (googleUser == null) {
     } else {
-      await UserDatabaseService(userID: googleUser.uid)
-          .updateUserData(googleUser.email, googleUser.email, 'University');
+      await UserDatabaseService(userID: googleUser.uid).updateUserData(
+          googleUser.uid, googleUser.email, googleUser.email, 'University');
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainScreen()));
     }

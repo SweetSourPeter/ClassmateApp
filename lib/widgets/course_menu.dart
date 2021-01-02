@@ -1,7 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/contact_pages/searchGroup.dart';
+import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -198,20 +198,53 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           child: Container(
                             // color: orengeColor,
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'My Courses',
                                   textAlign: TextAlign.left,
                                   style: largeTitleTextStyle(Colors.black),
                                 ),
+                                Expanded(
+                                  child: Container(),
+                                ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 2, top: 10),
+                                  padding: EdgeInsets.only(top: 5, right: 25),
                                   //TODO replace Icon
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    size: 28,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(userdata.school);
+                                      //TODO add course
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiProvider(
+                                              providers: [
+                                                Provider<UserData>.value(
+                                                  value: userdata,
+                                                ),
+                                                Provider<
+                                                        List<CourseInfo>>.value(
+                                                    value: course)
+                                              ],
+                                              child: SearchCourse(),
+                                            );
+                                          },
+                                        ),
+                                      );
+
+                                      // MaterialPageRoute(
+                                      //     builder: (context) => SearchGroup()));
+                                    },
+                                    child: Text(
+                                      'Add',
+                                      textAlign: TextAlign.left,
+                                      style:
+                                          simpleTextStyle(gradientYellow, 24),
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -362,7 +395,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                     Provider<List<CourseInfo>>.value(
                                         value: course)
                                   ],
-                                  child: SearchGroup(),
+                                  child: SearchCourse(),
                                 );
                               },
                             ),
@@ -375,7 +408,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           // color: Colors.red,
                           margin: const EdgeInsets.only(
                               bottom: 16, top: 16, left: 38, right: 38),
-                          height: 150,
+                          height: 90,
+                          width: 50,
                           // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -399,14 +433,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       top: 10, bottom: 10)),
                               Image.asset(
                                 'assets/images/add_course.png',
-                                scale: 2,
+                                scale: 5,
                               ),
                               SizedBox(
-                                height: 0,
+                                height: 2,
                               ),
                               Text('Add Course',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 28))
+                                  style: simpleTextStyle(Colors.black, 20))
                             ],
                           ),
                         ),

@@ -274,7 +274,7 @@ class _addCourseState extends State<addCourse> {
       'users' : users,
       'chatRoomId' : courseID,
       'latestMessage' : '',
-      'lastMessageTime' : ''
+      'lastMessageTime' : 0
     };
 
     databaseMethods.createChatRoom(courseID, chatRoomMap);

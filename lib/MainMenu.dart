@@ -1,14 +1,11 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/chat_pages/chatRoom.dart';
-import 'package:app_test/services/auth.dart';
-import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/course_menu.dart';
-import 'package:app_test/widgets/favorite_contacts.dart';
-import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
+import 'widgets/my_account.dart';
 
 class MainMenu extends StatefulWidget {
   @override
@@ -16,14 +13,7 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  AuthMethods authMethods = new AuthMethods();
   int _currentIndex = 0;
-  // final tabs = [
-  //   CourseMainMenu(),
-  //   // FriendsScreen(),
-  //   ChatRoom(myName: 'test16@bu.edu',),
-  //   FavoriteContacts(),
-  // ];
   // final tabTitle = ['Course', 'Friends'];
   Offset _offset = Offset(0, 0);
   GlobalKey globalKey = GlobalKey();
@@ -43,16 +33,20 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   getPosition(duration) {
+    // print("object2");
     if (globalKey.currentContext != null) {
       RenderBox renderBox = globalKey.currentContext.findRenderObject();
+      // print("object3");
       final position = renderBox.localToGlobal(Offset.zero);
       double start = position.dy - 20;
       double contLimit = position.dy + renderBox.size.height - 20;
       double step = (contLimit - start) / 5;
       limits = [];
+      // print("object");
       for (double x = start; x <= contLimit; x = x + step) {
         limits.add(x);
       }
+
       setState(() {
         limits = limits;
       });
@@ -68,204 +62,161 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
+
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 0.65;
-    double menuContainerHeight = mediaQuery.height / 2;
-    // dev.debugger();
+    double sidebarSize = mediaQuery.width * 1.0;
 
-    if ((userdata == null)) {
-      return CircularProgressIndicator();
-    } else {
-      return SafeArea(
-          child: Scaffold(
-              body: GestureDetector(
-        //if menu close and slide to right-> menu opens
-        onPanUpdate: (details) {
-          if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
-            setMenuOpenState(true);
-          }
-          // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
-          //   print('b');
-          //   setState(() {
-          //     _currentIndex = 1;
-          //   });
-          // }
-          // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
-          //   print('c');
-          //   setState(() {
-          //     _currentIndex = 0;
-          //   });
-          // }
-        },
-        //if the menu opens and tap on the side->close menu
-        onTapDown: (details) {
-          if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
-            setMenuOpenState(false);
-          }
-        },
-        child: Container(
-          color: Colors.white,
-          width: mediaQuery.width,
-          child: Stack(
-            children: <Widget>[
-              AnimatedContainer(
-                transform: Matrix4.translationValues(xOffset, yOffset, 20)
-                  ..scale(scaleFactor),
-                duration: Duration(microseconds: 250),
+    return (userdata == null)
+        ? CircularProgressIndicator()
+        : Scaffold(
+            backgroundColor: orengeColor,
+            appBar: AppBar(
+              backgroundColor: riceColor,
+              toolbarHeight: 0,
+              elevation: 0,
+            ),
+            body: SafeArea(
                 child: Scaffold(
-                  backgroundColor: Colors.white,
-                  // appBar: buildAppBar(),
-                  body: _currentIndex == 0
-                      ? CourseMainMenu()
-                      : _currentIndex == 1
-                          ? ChatRoom(
-                              myName: userdata.userName,
-                              myEmail: userdata.email,
-                            )
-                          : FavoriteContacts(),
-                  bottomNavigationBar: buildBottomNavigationBar(),
-                ),
-              ),
-              AnimatedPositioned(
-                duration: Duration(milliseconds: 1500),
-                left: isMenuOpen ? 0 : -sidebarSize + 0,
-                top: 0,
-                curve: Curves.elasticOut,
-                child: SizedBox(
-                  width: sidebarSize,
-                  child: GestureDetector(
-                    onPanUpdate: (details) {
-                      if (details.localPosition.dx <= sidebarSize) {
-                        setState(() {
-                          _offset = details.localPosition;
-                        });
-                      }
-
-                      if (details.localPosition.dx > sidebarSize - 20 &&
-                          details.delta.distanceSquared > 2) {
-                        setMenuOpenState(true);
-                      }
-                    },
-                    onPanEnd: (details) {
-                      setState(() {
-                        _offset = Offset(0, 0);
-                      });
-                    },
-                    child: Stack(
-                      children: <Widget>[
-                        CustomPaint(
-                          size: Size(sidebarSize, mediaQuery.height),
-                          painter: DrawerPainter(offset: _offset),
-                        ),
-                        Container(
-                          height: mediaQuery.height,
-                          width: sidebarSize,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Container(
-                                height: mediaQuery.height * 0.25,
-                                child: Center(
-                                  child: Column(
-                                    children: <Widget>[
-                                      createUserImage(sidebarSize / 5, userdata),
-                                      // Image.asset(
-                                      //   "assets/images/olivia.jpg",
-                                      //   width: sidebarSize / 2,
-                                      // ),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                        userdata.userName ?? '',
-                                        style: TextStyle(color: Colors.black45),
-                                      ),
-                                    ],
+                    body: GestureDetector(
+              //if menu close and slide to right-> menu opens
+              onPanUpdate: (details) {
+                if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
+                  //setMenuOpenState(true); //remove this to enable side menu
+                }
+                // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
+                //   print('b');
+                //   setState(() {
+                //     _currentIndex = 1;
+                //   });
+                // }
+                // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
+                //   print('c');
+                //   setState(() {
+                //     _currentIndex = 0;
+                //   });
+                // }
+              },
+              //if the menu opens and tap on the side->close menu
+              onTapDown: (details) {
+                if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
+                  setMenuOpenState(false);
+                }
+              },
+              child: Container(
+                color: Colors.white,
+                width: mediaQuery.width,
+                child: Stack(
+                  children: <Widget>[
+                    AnimatedContainer(
+                      transform: Matrix4.translationValues(xOffset, yOffset, 20)
+                        ..scale(scaleFactor),
+                      duration: Duration(microseconds: 250),
+                      child: Scaffold(
+                        backgroundColor: riceColor,
+                        // appBar: buildAppBar(),
+                        body: _currentIndex == 0
+                            ? CourseMainMenu()
+                            : _currentIndex == 1
+                                ? ChatRoom(
+                                    myName: userdata.userName,
+                                    myEmail: userdata.email,
+                                  )
+                                : MyAccount(
+                                    key: globalKey,
+                                    getSize: getSize,
                                   ),
-                                ),
+                        bottomNavigationBar: buildBottomNavigationBar(),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 1500),
+                      left: isMenuOpen ? 0 : -sidebarSize + 0,
+                      top: 0,
+                      curve: Curves.elasticOut,
+                      child: SizedBox(
+                        width: sidebarSize,
+                        child: GestureDetector(
+                          onPanUpdate: (details) {
+                            if (details.localPosition.dx <= sidebarSize) {
+                              setState(() {
+                                _offset = details.localPosition;
+                              });
+                            }
+
+                            if (details.localPosition.dx > sidebarSize - 25 &&
+                                details.delta.distanceSquared > 2) {
+                              setMenuOpenState(true);
+                            }
+
+                            if (details.localPosition.dx < sidebarSize + 25 &&
+                                details.delta.distanceSquared < 2) {
+                              setMenuOpenState(false);
+                            }
+                          },
+                          onPanEnd: (details) {
+                            setState(() {
+                              _offset = Offset(0, 0);
+                            });
+                          },
+                          child: Stack(
+                            children: <Widget>[
+                              CustomPaint(
+                                size: Size(sidebarSize, mediaQuery.height),
+                                painter: DrawerPainter(offset: _offset),
                               ),
-                              Divider(
-                                thickness: 1,
-                              ),
-                              Container(
-                                key: globalKey,
-                                width: double.infinity,
-                                height: menuContainerHeight,
-                                child: Column(
-                                  children: <Widget>[
-                                    MyButton(
-                                      text: "Profile",
-                                      iconData: Icons.person,
-                                      textSize: getSize(0),
-                                      height: (menuContainerHeight) / 6,
-                                    ),
-                                    MyButton(
-                                      text: "Friends",
-                                      iconData: Icons.contacts,
-                                      textSize: getSize(1),
-                                      height: (menuContainerHeight) / 6,
-                                    ),
-                                    MyButton(
-                                      text: "Notifications",
-                                      iconData: Icons.notifications,
-                                      textSize: getSize(2),
-                                      height: (mediaQuery.height / 2) / 6,
-                                    ),
-                                    MyButton(
-                                      text: "Settings",
-                                      iconData: Icons.settings,
-                                      textSize: getSize(3),
-                                      height: (menuContainerHeight) / 6,
-                                    ),
-                                    MyButton(
-                                      onTap: () {
-                                        authMethods.signOut().then((value) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Wrapper()),
-                                          );
-                                        });
-                                      },
-                                      text: "Log Out",
-                                      iconData: Icons.offline_bolt,
-                                      textSize: getSize(3),
-                                      height: (menuContainerHeight) / 6,
-                                    ),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         ),
-                        AnimatedPositioned(
-                          duration: Duration(milliseconds: 400),
-                          right: (isMenuOpen) ? 10 : sidebarSize,
-                          bottom: 35,
-                          child: IconButton(
-                            enableFeedback: true,
-                            icon: Icon(
-                              Icons.keyboard_backspace,
-                              color: orengeColor,
-                              size: 40,
-                            ),
-                            onPressed: () {
-                              setMenuOpenState(false);
-                            },
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 300),
+                      left: (isMenuOpen) ? 10 : sidebarSize - 20,
+                      // left: (isMenuOpen) ? 10 : 100,
+                      top: 5,
+                      child: IconButton(
+                        enableFeedback: true,
+                        icon: Icon(
+                          Icons.chevron_left,
+                          color: Colors.black,
+                          size: 40,
+                        ),
+                        onPressed: () {
+                          setMenuOpenState(false);
+                        },
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
+              ),
+            ))),
+          );
+  }
+
+  Padding userInfoDetailsBox(
+      Size mediaQuery, String topText, String bottomText) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 60),
+      child: Column(
+        children: [
+          Container(
+            height: 20,
+            child: Text(
+              topText,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: themeOrange,
+                  fontWeight: FontWeight.w800),
+            ),
           ),
-        ),
-      )));
-    }
+          Text(
+            bottomText,
+            style: TextStyle(
+                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
+          ),
+        ],
+      ),
+    );
   }
 
   void setMenuOpenState(bool state) {
@@ -393,44 +344,6 @@ class _MainMenuState extends State<MainMenu> {
   //     ],
   //   );
   // }
-}
-
-class MyButton extends StatelessWidget {
-  final String text;
-  final IconData iconData;
-  final double textSize;
-  final double height;
-  final GestureTapCallback onTap;
-
-  MyButton({this.text, this.iconData, this.textSize, this.height, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialButton(
-      height: height,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Icon(
-            iconData,
-            color: Colors.black45,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            text,
-            style: TextStyle(color: Colors.black45, fontSize: textSize),
-          ),
-        ],
-      ),
-      onPressed: () {
-        onTap();
-      },
-    );
-  }
 }
 
 class DrawerPainter extends CustomPainter {
