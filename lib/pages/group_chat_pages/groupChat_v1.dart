@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -496,7 +497,7 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffFFB811)),
-                              child: Text(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
@@ -550,7 +551,7 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: Text(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,

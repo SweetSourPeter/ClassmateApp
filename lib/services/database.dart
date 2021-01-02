@@ -330,25 +330,25 @@ class DatabaseMethods {
   }
 
   getChatMessages(String chatRoomId) async {
-    return await Firestore.instance
+    return FirebaseFirestore.instance
         .collection('chatroom')
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .collection('chats')
         .orderBy('time', descending: true)
         .snapshots();
   }
 
   getGroupChatMessages(String chatRoomId) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('courses')
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .collection('chats')
         .orderBy('time', descending: true)
         .snapshots();
   }
 
   getChatRooms(String userName) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('chatroom')
         .where('users', arrayContains: userName)
         .snapshots();
@@ -356,48 +356,48 @@ class DatabaseMethods {
 
   getFriendCourses(String userEmail) async {
     String friendID;
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: userEmail)
-        .getDocuments()
+        .get()
         .then((value) {
-      friendID = value.documents.first.documentID;
+      friendID = value.docs.first.id;
     });
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(friendID)
+        .doc(friendID)
         .collection('courses')
-        .getDocuments();
+        .get();
   }
 
   getCourseInfo(String courseId) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('courses')
         .where('courseID', isEqualTo: courseId)
-        .getDocuments();
+        .get();
   }
 
   getNumberOfMembersInCourse(String courseId) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('courses')
-        .document(courseId)
+        .doc(courseId)
         .collection('users')
-        .getDocuments();
+        .get();
   }
 
   getMembersInCourse(String courseId) async {
     List<String> members = List<String>();
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('courses')
-        .document(courseId)
+        .doc(courseId)
         .collection('users')
-        .getDocuments()
+        .get()
         .then((value) async {
-      for (var i = 0; i < value.documents.length; i++) {
-        final tmpUserId = value.documents[i].data()['userID'];
-        await Firestore.instance
+      for (var i = 0; i < value.docs.length; i++) {
+        final tmpUserId = value.docs[i].data()['userID'];
+        await FirebaseFirestore.instance
             .collection('users')
-            .document(tmpUserId)
+            .doc(tmpUserId)
             .get()
             .then((value) {
           final userName = value.data()['userName'];
@@ -412,7 +412,7 @@ class DatabaseMethods {
 
   setLastestMessage(
       String chatRoomId, String latestMessage, int lastMessageTime) async {
-    Firestore.instance.collection('chatroom').document(chatRoomId).updateData({
+    FirebaseFirestore.instance.collection('chatroom').doc(chatRoomId).update({
       'latestMessage': latestMessage,
       'lastMessageTime': lastMessageTime
     }).catchError((e) {

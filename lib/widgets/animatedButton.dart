@@ -245,7 +245,7 @@ class _ShrinkButtonState extends State<ShrinkButton>
   }
 
   dialogContent(BuildContext context) {
-    print(widget.userTag.college.toString());
+    print(widget.userTag.toString());
     return Stack(
       children: [
         Container(
@@ -292,8 +292,10 @@ class _ShrinkButtonState extends State<ShrinkButton>
                               style: simpleTextStyleBlack(),
                             ),
                           ),
-                          subtitle: buildTags(
-                              widget.userTag.college, tagStateKeyList[0]),
+                          subtitle: widget.userTag.college == null
+                              ? null
+                              : buildTags(
+                                  widget.userTag.college, tagStateKeyList[0]),
                         ),
                         ListTile(
                           title: Padding(
@@ -303,8 +305,10 @@ class _ShrinkButtonState extends State<ShrinkButton>
                               style: simpleTextStyleBlack(),
                             ),
                           ),
-                          subtitle: buildTags(
-                              widget.userTag.language, tagStateKeyList[1]),
+                          subtitle: widget.userTag.language == null
+                              ? null
+                              : buildTags(
+                                  widget.userTag.language, tagStateKeyList[1]),
                         ),
                         ListTile(
                           title: Padding(
@@ -314,8 +318,10 @@ class _ShrinkButtonState extends State<ShrinkButton>
                               style: simpleTextStyleBlack(),
                             ),
                           ),
-                          subtitle:
-                              buildTags(widget.userTag.gpa, tagStateKeyList[2]),
+                          subtitle: widget.userTag.gpa == null
+                              ? null
+                              : buildTags(
+                                  widget.userTag.gpa, tagStateKeyList[2]),
                         ),
                         ListTile(
                           title: Padding(
@@ -325,8 +331,10 @@ class _ShrinkButtonState extends State<ShrinkButton>
                               style: simpleTextStyleBlack(),
                             ),
                           ),
-                          subtitle: buildTags(
-                              widget.userTag.strudyHabits, tagStateKeyList[3]),
+                          subtitle: widget.userTag.strudyHabits == null
+                              ? null
+                              : buildTags(widget.userTag.strudyHabits,
+                                  tagStateKeyList[3]),
                         ),
                       ],
                     ).toList(),
@@ -369,7 +377,7 @@ class _ShrinkButtonState extends State<ShrinkButton>
       //     });
       //   },
       // ),
-      itemCount: tagLists.length, // required
+      itemCount: tagLists.length == null ? 0 : tagLists.length, // required
       itemBuilder: (int index) {
         final item = tagLists[index];
         return ItemTags(

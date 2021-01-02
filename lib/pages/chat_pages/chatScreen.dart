@@ -1,8 +1,10 @@
 // import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -306,13 +308,26 @@ class _ChatScreenState extends State<ChatScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 10.0),
-                              child: Container(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(32),
-                                  child: Image.network(
-                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                                    height: 45,
-                                    width: 45,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FriendProfile(
+                                        userID: currentUser
+                                            .userID, // to be modified to friend's ID
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(32),
+                                    child: Image.network(
+                                      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                                      height: 45,
+                                      width: 45,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -649,7 +664,7 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffFFB811)),
-                              child: Text(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
@@ -688,7 +703,7 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: Text(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
