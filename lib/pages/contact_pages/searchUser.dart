@@ -205,8 +205,6 @@ class _SearchUsersState extends State<SearchUsers> {
       String chatRoomId = getChatRoomId(userEmail, myEmail);
 
       List<String> users = [userName, userEmail, myName, myEmail];
-      print('users map is:   ');
-      print(users);
       Map<String, dynamic> chatRoomMap = {
         'users': users,
         'chatRoomId': chatRoomId,

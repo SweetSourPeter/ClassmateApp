@@ -151,14 +151,6 @@ class _CourseDetailState extends State<CourseDetail> {
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold),
                           ),
-                          Text(
-                              numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
-                                  : numberOfMembers.toString() + ' ' + 'person',
-                              style: GoogleFonts.montserrat(
-                                color: Colors.black38,
-                                fontSize: 15,
-                                fontWeight: FontWeight.normal,
-                              )),
                         ],
                       ),
                       Container(width: 48)
