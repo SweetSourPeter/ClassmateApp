@@ -39,6 +39,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 itemBuilder: (context, index) {
                   final userList =
                       snapshot.data.documents[index].data()['users'];
+
                   if (userList[1] == widget.myEmail) {
                     friendName = userList[2];
                     friendEmail = userList[3];

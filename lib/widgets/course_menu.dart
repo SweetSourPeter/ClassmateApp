@@ -9,6 +9,7 @@ import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
+import 'package:flutter/services.dart';
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({
@@ -272,13 +273,40 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         },
                         menuItems: <FocusedMenuItem>[
                           FocusedMenuItem(
-                              title: Text('Open'),
-                              trailingIcon: Icon(Icons.open_in_new),
-                              onPressed: () {}),
-                          FocusedMenuItem(
                               title: Text('Share'),
                               trailingIcon: Icon(Icons.share),
-                              onPressed: () {}),
+                              onPressed: () {
+                                Clipboard.setData(new ClipboardData(
+                                        text:
+                                            'https://na-cc.com/${courses.myCourseName + courses.section}/${courses.courseID}'))
+                                    .then((result) {
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                  'The Course Card URL is copied.'),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('Approve'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                });
+                              }),
                           FocusedMenuItem(
                               title: Text(
                                 'Delete',

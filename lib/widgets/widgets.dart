@@ -8,7 +8,7 @@ InputDecoration buildInputDecorationPinky(
     bool isIcon, Icon prefixIcon, String hintText, double boarderRadius) {
   return InputDecoration(
     prefixIcon: isIcon ? prefixIcon : null,
-    fillColor: builtyPinkColor,
+    fillColor: Colors.white,
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
     hintText: hintText,

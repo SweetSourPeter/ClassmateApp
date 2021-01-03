@@ -83,6 +83,17 @@ class DatabaseMethods {
     });
   }
 
+  getUsersById(String userId) async {
+    print('$userId');
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .get()
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
   //---------search Course----------
   getCourse(String term, String courseName, String section) async {
     print('term is ' + term);

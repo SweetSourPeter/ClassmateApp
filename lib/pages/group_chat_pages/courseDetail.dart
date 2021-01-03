@@ -37,9 +37,9 @@ class _CourseDetailState extends State<CourseDetail> {
   void initState() {
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data['myCourseName'];
-        courseSection = value.documents[0].data['section'];
-        courseTerm = value.documents[0].data['term'];
+        courseName = value.documents[0].data()['myCourseName'];
+        courseSection = value.documents[0].data()['section'];
+        courseTerm = value.documents[0].data()['term'];
       });
     });
 
@@ -166,31 +166,27 @@ class _CourseDetailState extends State<CourseDetail> {
                               )),
                         ],
                       ),
-                      Container(width: 48)
-                      // Padding(
-                      //   padding: const EdgeInsets.only(right: 8.0),
-                      //   child: IconButton(
-                      //     icon: Image.asset(
-                      //         'assets/images/group_more.png',
-                      //         height: 26,
-                      //         width: 50
-                      //     ),
-                      //     // iconSize: 10.0,
-                      //     onPressed: () {
-                      //       Navigator.push(context,
-                      //           MaterialPageRoute(builder: (context) {
-                      //             return MultiProvider(
-                      //               providers: [
-                      //                 Provider<UserData>.value(
-                      //                   value: currentUser,
-                      //                 )
-                      //               ],
-                      //               child: CourseDetailPage(),
-                      //             );
-                      //           }));
-                      //     },
-                      //   ),
-                      // ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: IconButton(
+                          icon: Image.asset('assets/images/group_more.png',
+                              height: 26, width: 50),
+                          // iconSize: 10.0,
+                          onPressed: () {
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //       return MultiProvider(
+                            //         providers: [
+                            //           Provider<UserData>.value(
+                            //             value: currentUser,
+                            //           )
+                            //         ],
+                            //         child: CourseDetailPage(),
+                            //       );
+                            //     }));
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
