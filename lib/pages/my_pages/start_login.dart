@@ -85,7 +85,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
               children: <Widget>[
                 FirstPageLogin(
                   pageController: _pageController,
-                  buttonColor: listColors[_currentIndexColor].colors[1],
+                  buttonColor: listColors[_currentIndexColor].colors[0],
                 ),
                 SignUpPage(
                   pageController: _pageController,
@@ -96,7 +96,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
             ),
           ),
           TweenAnimationBuilder(
-            duration: Duration(milliseconds: 300),
+            duration: Duration(milliseconds: 250),
             curve: _currentIndex == null ? Curves.elasticOut : Curves.easeInOut,
             tween: postionLogo,
             builder: (BuildContext context, animation, Widget child) {
@@ -156,10 +156,10 @@ class _StartLoginPageState extends State<StartLoginPage> {
           //   ),
           // ),
           AnimatedPositioned(
-            top: _height * 0.946,
-            right: _currentIndex == null || _currentIndex == 0
-                ? -40
-                : _width / 2 - 27,
+            top: _currentIndex == null || _currentIndex == 0
+                ? _height * 1.3
+                : _height * 0.946,
+            right: _width / 2 - 27,
             height: 40,
             duration: Duration(milliseconds: 400),
             curve: Curves.easeOutCubic,

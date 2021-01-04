@@ -99,14 +99,21 @@ class _SignUpPageState extends State<SignUpPage> {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     _getBackBtn() {
-      return GestureDetector(
-        onTap: () {
-          widget.pageController.animateToPage(0,
-              duration: Duration(milliseconds: 800), curve: Curves.easeInCubic);
-        },
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: Color(0xFFFFFFB3),
+      return Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
+          child: GestureDetector(
+            onTap: () {
+              widget.pageController.animateToPage(0,
+                  duration: Duration(milliseconds: 800),
+                  curve: Curves.easeInCubic);
+            },
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Color(0xFFFFFFB3),
+            ),
+          ),
         ),
       );
     }
@@ -194,14 +201,19 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15,
                     ),
                     DropdownButtonFormField<String>(
-                      icon: Icon(Icons.keyboard_arrow_down),
+                      dropdownColor: Color(0xDA6D39).withOpacity(1),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Color(0xF7D5C5).withOpacity(0.7),
+                      ),
                       iconEnabledColor: Colors.white,
                       value: _selectedSchool,
                       items: _schools.map<DropdownMenuItem<String>>((value) {
                         return DropdownMenuItem(
                           child: Text(
                             value,
-                            style: simpleTextStyle(Colors.white, 16),
+                            style: simpleTextStyle(
+                                Color(0xF7D5C5).withOpacity(0.7), 16),
                           ),
                           value: value,
                         );
@@ -303,28 +315,31 @@ class _SignUpPageState extends State<SignUpPage> {
               : Scaffold(
                   resizeToAvoidBottomPadding: false,
                   backgroundColor: themeOrange,
-                  body: Column(
-                    children: <Widget>[
-                      _getBackBtn(),
-                      _getHeader(),
-                      _getTextFields(),
-                      _getSignIn(),
-                      SizedBox(
-                        height: _height * 0.105,
-                      )
-                      // Container(
-                      //   height: _height * (1 - 0.14),
-                      //   width: _width,
-                      //   child: Column(
-                      //     mainAxisSize:
-                      //         MainAxisSize.min, // Use children total size
-                      //     children: <Widget>[
+                  body: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _getBackBtn(),
+                        _getHeader(),
+                        _getTextFields(),
+                        _getSignIn(),
+                        SizedBox(
+                          height: _height * 0.105,
+                        )
+                        // Container(
+                        //   height: _height * (1 - 0.14),
+                        //   width: _width,
+                        //   child: Column(
+                        //     mainAxisSize:
+                        //         MainAxisSize.min, // Use children total size
+                        //     children: <Widget>[
 
-                      //       // _getBottomRow(context),
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
+                        //       // _getBottomRow(context),
+                        //     ],
+                        //   ),
+                        // ),
+                      ],
+                    ),
                   ),
                 ),
         ),

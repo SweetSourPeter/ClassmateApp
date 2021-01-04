@@ -46,6 +46,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     return Container(
+      color: themeOrange,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
