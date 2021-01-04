@@ -147,18 +147,21 @@ class _MyAccountState extends State<MyAccount> {
                     textSize: widget.getSize(3),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
-                      // Navigator.pushReplacement(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => Wrapper(true)));
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return MultiProvider(providers: [
-                          Provider<UserData>.value(
-                            value: userdata,
-                          )
-                        ], child: EditHomePage(getSize: widget.getSize));
-                      }));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Wrapper(true)));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) {
+                      //   return MultiProvider(
+                      //       providers: [
+                      //         Provider<UserData>.value(
+                      //           value: userdata,
+                      //         )
+                      //       ],
+                      //       child: EditHomePage(
+                      //           getSize: widget.getSize));
+                      // }));
                     },
                   ),
                   Divider(

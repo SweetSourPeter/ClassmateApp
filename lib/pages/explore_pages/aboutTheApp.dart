@@ -22,7 +22,7 @@ class AboutTheAPP extends StatelessWidget {
                   },
                   child: Icon(
                     Icons.arrow_back_ios,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
@@ -38,19 +38,16 @@ class AboutTheAPP extends StatelessWidget {
               children: [
                 SizedBox(height: mediaQuery.height / 8),
                 LogoWidget(),
-                SizedBox(
-                  height: 20,
-                ),
                 Text(
                   'Meechu',
-                  style: largeTitleTextStyle(themeOrange, 26),
+                  style: largeTitleTextStyle(Colors.white, 26),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
                   'Version 1.0.00',
-                  style: simpleTextStyle(Colors.white, 1),
+                  style: simpleTextStyle(Colors.white, 18),
                 ),
                 SizedBox(
                   height: 50,
@@ -59,10 +56,7 @@ class AboutTheAPP extends StatelessWidget {
                   onTap: () {
                     _launchURL('https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y');
                   },
-                  child: Text(
-                    'Term of Use',
-                    style: simpleTextSansStyleBold(Colors.white, 14),
-                  ),
+                  child: buildContainer('Term of Use'),
                 ),
                 SizedBox(
                   height: 10,
@@ -71,13 +65,27 @@ class AboutTheAPP extends StatelessWidget {
                   onTap: () {
                     _launchURL('https://docs.qq.com/doc/DUEhxcUl3cmtKWk5Q');
                   },
-                  child: Text(
-                    'Privacy Policy',
-                    style: simpleTextSansStyleBold(Colors.white, 14),
-                  ),
+                  child: buildContainer('Privacy Policy'),
                 ),
               ],
             ))),
+      ),
+    );
+  }
+
+  Container buildContainer(String text) {
+    return Container(
+      height: 35,
+      width: 150,
+      decoration: BoxDecoration(
+        color: Color(0xff9b6b).withOpacity(1),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: simpleTextSansStyleBold(Colors.white, 14),
+        ),
       ),
     );
   }
