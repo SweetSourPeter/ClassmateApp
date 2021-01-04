@@ -78,8 +78,8 @@ TextStyle biggerTextStyle() {
 
 TextStyle largeTitleTextStyle(Color color, double fontsize) {
   return GoogleFonts.montserrat(
-    textStyle:
-        TextStyle(color: color, fontSize: 26, fontWeight: FontWeight.bold),
+    textStyle: TextStyle(
+        color: color, fontSize: fontsize, fontWeight: FontWeight.bold),
   );
 }
 

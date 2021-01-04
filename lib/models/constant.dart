@@ -96,7 +96,7 @@ const List<LinearGradient> listColors = [
       end: Alignment.bottomCenter,
       colors: [
         themeOrange,
-        Colors.orange,
+        Color(0xFFFF7E49),
       ]),
   LinearGradient(
       begin: Alignment.topCenter,

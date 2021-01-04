@@ -90,7 +90,9 @@ class _StartLoginPageState extends State<StartLoginPage> {
                 SignUpPage(
                   pageController: _pageController,
                 ),
-                SignIn(),
+                SignIn(
+                  pageController: _pageController,
+                ),
                 Forgetpassword(),
               ],
             ),

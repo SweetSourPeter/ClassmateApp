@@ -91,181 +91,178 @@ class _TagSelectingState extends State<TagSelecting> {
     // ];
 
     return Scaffold(
+        backgroundColor: themeOrange,
         body: SafeArea(
-      child: Column(
-        children: [
-          Container(
-            // decoration: BoxDecoration(
-            //   boxShadow: <BoxShadow>[
-            //     BoxShadow(
-            //         color: Colors.white,
-            //         blurRadius: 15.0,
-            //         offset: Offset(0.0, 0.75))
-            //   ],
-            //   color: orengeColor,
-            // ),
-            height: mediaQuery.height * 0.54,
-            color: riceColor,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: mediaQuery.height * 0.13,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: mediaQuery.width * 0.10, top: 0, bottom: 0),
-                      child: Container(
-                        // color: orengeColor,
-                        child: Text(
-                          'Choose your tags',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
+          child: Column(
+            children: [
+              Container(
+                // decoration: BoxDecoration(
+                //   boxShadow: <BoxShadow>[
+                //     BoxShadow(
+                //         color: Colors.white,
+                //         blurRadius: 15.0,
+                //         offset: Offset(0.0, 0.75))
+                //   ],
+                //   color: orengeColor,
+                // ),
+                height: mediaQuery.height * 0.54,
+                color: riceColor,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: mediaQuery.height * 0.13,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: mediaQuery.width * 0.10, top: 0, bottom: 0),
+                          child: Container(
+                            child: Text(
+                              'Choose your tags',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left: mediaQuery.width * 0.10,
+                                top: 0,
+                                bottom: 0,
+                                right: mediaQuery.width * 0.20),
+                            child: Text(
+                              'Tags help us to match you with who have similar background and study habits.',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black26),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: mediaQuery.width * 0.10, bottom: 30),
+                          child: buildTopTags(
+                            widget.buttonColor,
+                            allTags,
+                            tagStateKeyList[4],
+                          )),
+                    ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                        padding: EdgeInsets.only(
-                            left: mediaQuery.width * 0.10,
-                            top: 0,
-                            bottom: 0,
-                            right: mediaQuery.width * 0.20),
-                        child: Text(
-                          'Tags help us to match you with who have similar background and study habits.',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black26),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                          left: mediaQuery.width * 0.10, bottom: 30),
-                      child: buildTopTags(
-                        widget.buttonColor,
-                        allTags,
-                        tagStateKeyList[4],
-                      )),
-                ],
-              ),
-            ),
-          ),
-          categorySelector(widget.buttonColor, mediaQuery, userTagProvider),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: buildBottomTags(widget.buttonColor, _items,
-                          tagStateKeyList[selectedIndex], userTagProvider),
-                    ),
-                  ],
                 ),
               ),
-            ),
-          ),
-
-          // RaisedGradientButton(
-          //   width: 200,
-          //   height: 40,
-          //   gradient: LinearGradient(
-          //     colors: <Color>[orengeColor, orengeColor],
-          //   ),
-          //   onPressed: () {
-          //     //TODO send data to database
-          //     userTagProvider.addTagsToContact(context);
-          //   },
-          //   //之后需要根据friendsProvider改这部分display
-          //   //TODO
-          //   child: Text(
-          //     'Complete',
-          //     style: TextStyle(
-          //         fontSize: 20,
-          //         color: Colors.white,
-          //         fontWeight: FontWeight.w600),
-          //   ),
-          // ),
-
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40),
-              // boxShadow: [
-              //   BoxShadow(
-              //       color: Colors.black38,
-              //       offset: Offset(0, 10),
-              //       blurRadius: 15),
-              // ],
-            ),
-            height: mediaQuery.height * 0.06,
-            width: mediaQuery.width * 0.3,
-            child: RaisedButton(
-              onHighlightChanged: (press) {
-                setState(() {
-                  if (press) {
-                    _scaleHolder = 0.1;
-                  } else {
-                    _scaleHolder = 0.0;
-                  }
-                });
-              },
-              hoverColor: submitButtonColor,
-              hoverElevation: 0,
-              highlightColor: submitButtonColor,
-              highlightElevation: 0,
-              elevation: 1,
-              color: submitButtonColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: BorderSide(color: widget.buttonColor)),
-              onPressed: () {
-                if (selectedIndex >= 3) {
-                  userTagProvider.addTagsToContact(context);
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Wrapper(false),
+              categorySelector(widget.buttonColor, mediaQuery, userTagProvider),
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: buildBottomTags(widget.buttonColor, _items,
+                              tagStateKeyList[selectedIndex], userTagProvider),
+                        ),
+                      ],
                     ),
-                  );
-                } else {
-                  selectedIndex++;
-                  changeCategory(selectedIndex);
-                }
-              },
-              child: AutoSizeText(
-                selectedIndex == 3
-                    ? 'Complete'
-                    : '${(selectedIndex + 1).toString()} / 4',
-                style: simpleTextStyle(Colors.white, 16),
+                  ),
+                ),
               ),
-            ),
+
+              // RaisedGradientButton(
+              //   width: 200,
+              //   height: 40,
+              //   gradient: LinearGradient(
+              //     colors: <Color>[orengeColor, orengeColor],
+              //   ),
+              //   onPressed: () {
+              //     //TODO send data to database
+              //     userTagProvider.addTagsToContact(context);
+              //   },
+              //   //之后需要根据friendsProvider改这部分display
+              //   //TODO
+              //   child: Text(
+              //     'Complete',
+              //     style: TextStyle(
+              //         fontSize: 20,
+              //         color: Colors.white,
+              //         fontWeight: FontWeight.w600),
+              //   ),
+              // ),
+
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //       color: Colors.black38,
+                  //       offset: Offset(0, 10),
+                  //       blurRadius: 15),
+                  // ],
+                ),
+                height: mediaQuery.height * 0.06,
+                width: mediaQuery.width * 0.3,
+                child: RaisedButton(
+                  onHighlightChanged: (press) {
+                    setState(() {
+                      if (press) {
+                        _scaleHolder = 0.1;
+                      } else {
+                        _scaleHolder = 0.0;
+                      }
+                    });
+                  },
+                  hoverColor: submitButtonColor,
+                  hoverElevation: 0,
+                  highlightColor: submitButtonColor,
+                  highlightElevation: 0,
+                  elevation: 1,
+                  color: submitButtonColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: widget.buttonColor)),
+                  onPressed: () {
+                    if (selectedIndex >= 3) {
+                      userTagProvider.addTagsToContact(context);
+
+                      widget.pageController.animateToPage(3,
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.easeInCubic);
+                    } else {
+                      selectedIndex++;
+                      changeCategory(selectedIndex);
+                    }
+                  },
+                  child: AutoSizeText(
+                    selectedIndex == 3
+                        ? 'Complete'
+                        : '${(selectedIndex + 1).toString()} / 4',
+                    style: simpleTextStyle(Colors.white, 16),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 6,
+              ),
+            ],
           ),
-          SizedBox(
-            height: 6,
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 
   void changeCategory(int index) {
