@@ -66,12 +66,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
           SizedBox(
             height: _height,
             width: _height,
-            child:
-                // FirstPageLogin(
-                //     pageController: _pageController,
-                //     buttonColor: listColors[_currentIndexColor].colors[1],
-                //   ),
-                PageView(
+            child: PageView(
               physics: NeverScrollableScrollPhysics(parent: null),
               controller: _pageController,
               onPageChanged: (index) {
@@ -86,14 +81,16 @@ class _StartLoginPageState extends State<StartLoginPage> {
                   }
                 });
               },
-              scrollDirection: Axis.vertical,
+              scrollDirection: Axis.horizontal,
               children: <Widget>[
                 FirstPageLogin(
                   pageController: _pageController,
                   buttonColor: listColors[_currentIndexColor].colors[1],
                 ),
+                SignUpPage(
+                  pageController: _pageController,
+                ),
                 SignIn(),
-                SignUpPage(),
                 Forgetpassword(),
               ],
             ),
@@ -106,11 +103,9 @@ class _StartLoginPageState extends State<StartLoginPage> {
               return AnimatedPositioned(
                 duration: Duration(milliseconds: 300),
                 top: _currentIndex == null || _currentIndex == 0
-                    ? _height * 0.08
+                    ? _height * 0.12
                     : _height * 0.02,
-                left: _currentIndex == null || _currentIndex == 0
-                    ? _width / 2 - (100 / 2)
-                    : _width / 2 + 100,
+                left: _width / 2 - (156 / 2), //logo widget width/2
                 child: TweenAnimationBuilder(
                   child: LogoWidget(),
                   duration: Duration(milliseconds: 300),
@@ -124,76 +119,78 @@ class _StartLoginPageState extends State<StartLoginPage> {
               );
             },
           ),
+          // AnimatedPositioned(
+          //   top: _height * 0.85,
+          //   right: _currentIndex == null || _currentIndex == 0 ? -40 : 10,
+          //   width: 40,
+          //   duration: Duration(milliseconds: 400),
+          //   curve: Curves.easeOutCubic,
+          //   child: Column(
+          //     children: <Widget>[
+          //       IconButton(
+          //         icon: Icon(
+          //           Icons.expand_less,
+          //           color: Colors.white54,
+          //         ),
+          //         onPressed: () {
+          //           _pageController.animateToPage(_currentIndex - 1,
+          //               duration: Duration(milliseconds: 800),
+          //               curve: Curves.easeInCubic);
+          //         },
+          //       ),
+          //       SizedBox(
+          //         height: 0,
+          //       ),
+          //       IconButton(
+          //         icon: Icon(
+          //           Icons.expand_more,
+          //           color: Colors.white,
+          //         ),
+          //         onPressed: () {
+          //           _pageController.animateToPage(_currentIndex + 1,
+          //               duration: Duration(milliseconds: 800),
+          //               curve: Curves.easeInCubic);
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // ),
           AnimatedPositioned(
-            top: _height * 0.85,
-            right: _currentIndex == null || _currentIndex == 0 ? -40 : 10,
-            width: 40,
+            top: _height * 0.946,
+            right: _currentIndex == null || _currentIndex == 0
+                ? -40
+                : _width / 2 - 27,
+            height: 40,
             duration: Duration(milliseconds: 400),
             curve: Curves.easeOutCubic,
-            child: Column(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.expand_less,
-                    color: Colors.white54,
-                  ),
-                  onPressed: () {
-                    _pageController.animateToPage(_currentIndex - 1,
-                        duration: Duration(milliseconds: 800),
-                        curve: Curves.easeInCubic);
-                  },
-                ),
-                SizedBox(
-                  height: 0,
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.expand_more,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    _pageController.animateToPage(_currentIndex + 1,
-                        duration: Duration(milliseconds: 800),
-                        curve: Curves.easeInCubic);
-                  },
-                ),
-              ],
-            ),
-          ),
-          AnimatedPositioned(
-            top: _height * 0.15,
-            right: _currentIndex == null || _currentIndex == 0 ? -40 : 10,
-            width: 40,
-            duration: Duration(milliseconds: 400),
-            curve: Curves.easeOutCubic,
-            child: Column(
+            child: Row(
               children: <Widget>[
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
-                  height: 8,
-                  width: 8,
+                  height: 10,
+                  width: 10,
                   decoration: BoxDecoration(
                       color: _currentIndex == 1 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),
                 ),
                 SizedBox(
-                  height: 12,
+                  width: 12,
                 ),
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
-                  height: 8,
-                  width: 68,
+                  height: 70,
+                  width: 10,
                   decoration: BoxDecoration(
                       color: _currentIndex == 2 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),
                 ),
                 SizedBox(
-                  height: 12,
+                  width: 12,
                 ),
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
-                  height: 8,
-                  width: 8,
+                  height: 10,
+                  width: 10,
                   decoration: BoxDecoration(
                       color: _currentIndex == 3 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),

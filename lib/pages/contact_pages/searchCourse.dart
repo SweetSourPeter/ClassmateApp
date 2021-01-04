@@ -80,7 +80,7 @@ class _SearchCourseState extends State<SearchCourse> {
                   child: Text(
                     'Search Course',
                     textAlign: TextAlign.left,
-                    style: largeTitleTextStyle(Colors.black),
+                    style: largeTitleTextStyle(Colors.black, 26),
                   ),
                 ),
               ),

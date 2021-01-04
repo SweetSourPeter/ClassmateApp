@@ -129,7 +129,6 @@ class _SearchUsersState extends State<SearchUsers> {
                           borderRadius: BorderRadius.circular(20),
                           // borderSide: BorderSide.none
                         ),
-
                         contentPadding: EdgeInsets.all(10),
                         hintStyle: TextStyle(color: Colors.grey), // KEY PROP
                       ),

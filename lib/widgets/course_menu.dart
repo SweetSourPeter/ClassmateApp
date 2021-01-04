@@ -204,13 +204,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 Text(
                                   'My Courses',
                                   textAlign: TextAlign.left,
-                                  style: largeTitleTextStyle(Colors.black),
+                                  style: largeTitleTextStyle(Colors.black, 26),
                                 ),
                                 Expanded(
                                   child: Container(),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 5, right: 25),
+                                  padding: EdgeInsets.only(top: 5, right: 30),
                                   //TODO replace Icon
                                   child: GestureDetector(
                                     onTap: () {
@@ -239,10 +239,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       //     builder: (context) => SearchGroup()));
                                     },
                                     child: Text(
-                                      'Add',
+                                      'add course',
                                       textAlign: TextAlign.left,
-                                      style:
-                                          simpleTextStyle(gradientYellow, 24),
+                                      style: simpleTextStyle(themeOrange, 16),
                                     ),
                                   ),
                                 ),

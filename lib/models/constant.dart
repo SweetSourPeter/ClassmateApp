@@ -9,6 +9,7 @@ const lightBlueColor = Color(0xFF00A8CC);
 
 const themeOrange = Color(0xFFFF7E40);
 const gradientYellow = Color(0xFFFFAE18);
+const closeWhite = Color(0xFFFFFFB3);
 
 const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
@@ -94,8 +95,8 @@ const List<LinearGradient> listColors = [
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.orange,
         themeOrange,
+        Colors.orange,
       ]),
   LinearGradient(
       begin: Alignment.topCenter,

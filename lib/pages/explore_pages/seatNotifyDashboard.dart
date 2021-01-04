@@ -56,7 +56,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                         Text(
                           'Your notify list',
                           textAlign: TextAlign.left,
-                          style: largeTitleTextStyle(Colors.black),
+                          style: largeTitleTextStyle(Colors.black, 26),
                         ),
                         SizedBox(
                           width: 10,

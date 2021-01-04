@@ -1,4 +1,5 @@
 import 'package:app_test/MainMenu.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/logo_widget.dart';
@@ -31,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: themeOrange,
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[

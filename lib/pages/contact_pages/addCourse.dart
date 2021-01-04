@@ -69,7 +69,7 @@ class _addCourseState extends State<addCourse> {
                     child: Text(
                       'Create Course',
                       textAlign: TextAlign.left,
-                      style: largeTitleTextStyle(Colors.black),
+                      style: largeTitleTextStyle(Colors.black, 26),
                     ),
                   ),
                 ),
@@ -216,7 +216,8 @@ class _addCourseState extends State<addCourse> {
                   //TODO create class in database
                   if (formKey.currentState.validate()) {
                     courseProvider.saveNewCourse(context);
-                    createGroupChatAndStartConversation(courseProvider.courseID, courseProvider.myCourseName, currentUser.email);
+                    createGroupChatAndStartConversation(courseProvider.courseID,
+                        courseProvider.myCourseName, currentUser.email);
                     // Navigator.push(context, MaterialPageRoute(
                     //     builder: (context){
                     //       return MultiProvider(
@@ -266,15 +267,16 @@ class _addCourseState extends State<addCourse> {
     );
   }
 
-  createGroupChatAndStartConversation(String courseID, String courseName, String userEmail){
+  createGroupChatAndStartConversation(
+      String courseID, String courseName, String userEmail) {
     // if(userName != myName) {
 
     List<String> users = [userEmail];
     Map<String, dynamic> chatRoomMap = {
-      'users' : users,
-      'chatRoomId' : courseID,
-      'latestMessage' : '',
-      'lastMessageTime' : 0
+      'users': users,
+      'chatRoomId': courseID,
+      'latestMessage': '',
+      'lastMessageTime': 0
     };
 
     databaseMethods.createChatRoom(courseID, chatRoomMap);
@@ -283,5 +285,3 @@ class _addCourseState extends State<addCourse> {
     // }
   }
 }
-
-

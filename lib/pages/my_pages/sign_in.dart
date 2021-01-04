@@ -222,51 +222,49 @@ class _SignInState extends State<SignIn> {
 
   _getTextFields() {
     return Expanded(
-      flex: 4,
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Form(
-          key: formKey,
-          child: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 15,
-                  ),
-                  TextFormField(
-                    controller: emailTextEditingController,
-                    validator: (val) {
-                      return RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(val)
-                          ? null
-                          : "Please enter correct email";
-                    },
-                    decoration: InputDecoration(labelText: 'Email'),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  TextFormField(
-                    controller: passwordTextEditingController,
-                    obscureText: true,
-                    validator: (val) {
-                      return val.length > 6
-                          ? null
-                          : "Please provoid valid password format";
-                    },
-                    decoration: InputDecoration(labelText: 'Password'),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                ],
-              ),
+      flex: 3,
+      child: Form(
+        key: formKey,
+        child: Container(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  controller: emailTextEditingController,
+                  validator: (val) {
+                    return RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(val)
+                        ? null
+                        : "Please enter correct email";
+                  },
+                  decoration: InputDecoration(labelText: 'Email'),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  controller: passwordTextEditingController,
+                  obscureText: true,
+                  validator: (val) {
+                    return val.length > 6
+                        ? null
+                        : "Please provoid valid password format";
+                  },
+                  decoration: InputDecoration(labelText: 'Password'),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+              ],
             ),
           ),
-        )
-      ]),
+        ),
+      ),
     );
   }
 

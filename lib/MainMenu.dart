@@ -241,9 +241,9 @@ class _MainMenuState extends State<MainMenu> {
   CurvedNavigationBar buildBottomNavigationBar() {
     return CurvedNavigationBar(
       color: orengeColor,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // background!!!
       buttonBackgroundColor: Colors.white,
-      height: 50,
+      height: 58,
       index: _currentIndex,
       items: <Widget>[
         Icon(

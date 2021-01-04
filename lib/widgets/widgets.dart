@@ -28,25 +28,45 @@ InputDecoration buildInputDecorationPinky(
   );
 }
 
-InputDecoration textFieldInputDecoration(String hintText) {
+InputDecoration textFieldInputDecoration(
+    String hintText, double boarderRadius) {
   return InputDecoration(
-      hintText: hintText,
-      hintStyle: TextStyle(color: Colors.white54),
-      focusedBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-      enabledBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)));
+    fillColor: Color(0xDA6D39).withOpacity(1),
+    filled: true,
+    // prefixIcon: Icon(Icons.search, color: Colors.grey),
+    hintText: hintText,
+    border: OutlineInputBorder(
+      borderSide: BorderSide.none,
+      borderRadius: BorderRadius.circular(boarderRadius),
+      // borderSide: BorderSide.none
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide.none,
+      borderRadius: BorderRadius.circular(boarderRadius),
+      // borderSide: BorderSide.none
+    ),
+
+    contentPadding: EdgeInsets.all(30), //height of the iput fie
+    hintStyle: TextStyle(color: Color(0xF7D5C5).withOpacity(0.7)), // KEY PROP
+  );
 }
 
 TextStyle simpleTextStyle(Color color, double fontsize) {
-  return GoogleFonts.montserrat(
+  return GoogleFonts.openSans(
     textStyle: TextStyle(color: color, fontSize: fontsize),
   );
 }
 
 TextStyle simpleTextStyleBlack() {
-  return GoogleFonts.montserrat(
+  return GoogleFonts.openSans(
     textStyle: TextStyle(color: Colors.black, fontSize: 16),
+  );
+}
+
+TextStyle simpleTextSansStyleBold(Color color, double fontsize) {
+  return GoogleFonts.openSans(
+    textStyle: TextStyle(
+        color: color, fontSize: fontsize, fontWeight: FontWeight.bold),
   );
 }
 
@@ -56,10 +76,10 @@ TextStyle biggerTextStyle() {
   );
 }
 
-TextStyle largeTitleTextStyle(Color color) {
+TextStyle largeTitleTextStyle(Color color, double fontsize) {
   return GoogleFonts.montserrat(
     textStyle:
-        TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700),
+        TextStyle(color: color, fontSize: 26, fontWeight: FontWeight.bold),
   );
 }
 

@@ -40,7 +40,7 @@ dependencies:
   flutter_svg: ^0.17.4 #Help us to use SVG in our app
   animations: ^1.1.0 #Help us to use animation easily also develop by flutter team
   provider: ^4.3.1 #Help keeping user status
-  curved_navigation_bar: ^0.3.3 #navigation curved bottom bar
+  curved_navigation_bar: ^0.3.7 #navigation curved bottom bar
   uuid: ^2.2.0 #generate a unique ID for firestore storage
   flutter_typeahead: ^1.8.7 #auto complete the text Field
   focused_menu: ^1.0.2 #long hold on the tab to desplay stuf

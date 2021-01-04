@@ -1,5 +1,7 @@
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/utils/animation_item.dart';
 import 'package:app_test/widgets/logo_widget.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class FirstPageLogin extends StatefulWidget {
@@ -62,26 +64,20 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                         duration: Duration(milliseconds: 700),
                         child: Text(
                           'Hi there,',
-                          style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                          style: largeTitleTextStyle(Colors.white, 26),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 5),
                       child: AnimatedOpacity(
                         opacity: value == 20 ? 0 : 1,
                         duration: Duration(milliseconds: 800),
                         child: Text(
-                          'nice to Meechu',
-                          style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                          'Nice to MEECHU !',
+                          style: largeTitleTextStyle(Colors.white, 26),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -98,17 +94,10 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                             child: Padding(
                               padding: EdgeInsets.only(
                                   left: 30, right: 30, top: 15 + paddingvalue),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: 'A place to meet your \n',
-                                  children: [
-                                    TextSpan(
-                                      text: 'classmates',
-                                    )
-                                  ],
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white70),
-                                ),
+                              child: Text(
+                                'Place to find fellow classmates and \n make meaningful connections',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white70),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -172,8 +161,9 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                         curve: Curves.easeInCubic);
                                   },
                                   child: Text(
-                                    'Hi, Meechu',
-                                    style: TextStyle(color: widget.buttonColor),
+                                    'LETS FIND MY CLASSMATES!',
+                                    style: simpleTextSansStyleBold(
+                                        themeOrange, 16),
                                   ),
                                 ),
                               ),
@@ -200,7 +190,8 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                           },
                           child: Text(
                             'I ALREADY HAVE AN ACCOUNT',
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                simpleTextSansStyleBold(Color(0xFFFFFFB3), 16),
                           ),
                         ),
                       );

@@ -75,7 +75,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
                           child: Text(
                             'Add notify list',
                             textAlign: TextAlign.left,
-                            style: largeTitleTextStyle(Colors.black),
+                            style: largeTitleTextStyle(Colors.black, 26),
                           ),
                         ),
                       ),

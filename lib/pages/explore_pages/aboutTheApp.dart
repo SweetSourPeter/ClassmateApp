@@ -41,7 +41,7 @@ class AboutTheAPP extends StatelessWidget {
               ),
               Text(
                 'Meechu',
-                style: largeTitleTextStyle(themeOrange),
+                style: largeTitleTextStyle(themeOrange, 26),
               ),
               SizedBox(
                 height: 10,
