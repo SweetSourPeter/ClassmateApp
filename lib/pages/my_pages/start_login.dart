@@ -29,9 +29,11 @@ class _StartLoginPageState extends State<StartLoginPage> {
           tween: Tween<double>(begin: 0.0, end: 0.8),
         ),
         Duration(milliseconds: 800), (animation) {
-      setState(() {
-        animationlist.add(animation);
-      });
+      if (mounted) {
+        setState(() {
+          animationlist.add(animation);
+        });
+      }
     });
     _pageController = PageController(initialPage: 0);
     postionLogo = Tween(begin: 0.0, end: 0.0);

@@ -26,9 +26,11 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
           tween: Tween<double>(begin: 0.0, end: 1),
         ),
         Duration(milliseconds: 800), (animation) {
-      setState(() {
-        animationlist.add(animation);
-      });
+      if (mounted) {
+        setState(() {
+          animationlist.add(animation);
+        });
+      }
     });
     delayAnimatiom(
         AnimationItem(
@@ -36,9 +38,11 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
           tween: Tween<double>(begin: 0.0, end: 0.9),
         ),
         Duration(milliseconds: 1200), (animation) {
-      setState(() {
-        animationlist.add(animation);
-      });
+      if (mounted) {
+        setState(() {
+          animationlist.add(animation);
+        });
+      }
     });
   }
 
