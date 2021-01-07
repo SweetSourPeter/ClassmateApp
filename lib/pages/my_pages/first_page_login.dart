@@ -69,7 +69,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                         duration: Duration(milliseconds: 700),
                         child: Text(
                           'Hi there,',
-                          style: largeTitleTextStyle(Colors.white, 26),
+                          style: largeTitleTextStyleBold(Colors.white, 26),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -82,7 +82,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                         duration: Duration(milliseconds: 800),
                         child: Text(
                           'Nice to MEECHU !',
-                          style: largeTitleTextStyle(Colors.white, 26),
+                          style: largeTitleTextStyleBold(Colors.white, 26),
                           textAlign: TextAlign.center,
                         ),
                       ),

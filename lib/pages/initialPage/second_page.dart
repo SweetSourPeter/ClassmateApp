@@ -33,7 +33,7 @@ class _SecondPageState extends State<SecondPage>
               ),
               Text(
                 'What should your classmates call you?',
-                style: largeTitleTextStyle(Colors.white, 16),
+                style: largeTitleTextStyleBold(Colors.white, 16),
                 textAlign: TextAlign.center,
               ),
               SizedBox(

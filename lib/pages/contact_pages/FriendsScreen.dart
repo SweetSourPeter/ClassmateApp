@@ -46,7 +46,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 child: Text(
                   'Chats',
                   textAlign: TextAlign.left,
-                  style: largeTitleTextStyle(Colors.black, 26),
+                  style: largeTitleTextStyleBold(Colors.black, 26),
                 ),
               ),
             ),

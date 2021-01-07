@@ -69,7 +69,7 @@ class _addCourseState extends State<addCourse> {
                     child: Text(
                       'Create Course',
                       textAlign: TextAlign.left,
-                      style: largeTitleTextStyle(Colors.black, 26),
+                      style: largeTitleTextStyleBold(Colors.black, 26),
                     ),
                   ),
                 ),

@@ -12,18 +12,29 @@ InputDecoration buildInputDecorationPinky(
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
     hintText: hintText,
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: themeOrange, width: 1.0),
+      borderRadius: BorderRadius.circular(
+        boarderRadius,
+      ),
+    ),
     border: OutlineInputBorder(
-      borderSide: BorderSide.none,
+      borderSide: BorderSide(color: themeOrange, width: 1.0),
       borderRadius: BorderRadius.circular(boarderRadius),
       // borderSide: BorderSide.none
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide.none,
+      borderSide: BorderSide(color: themeOrange, width: 1.0),
+      borderRadius: BorderRadius.circular(boarderRadius),
+      // borderSide: BorderSide.none
+    ),
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.red[400], width: 1.0),
       borderRadius: BorderRadius.circular(boarderRadius),
       // borderSide: BorderSide.none
     ),
 
-    contentPadding: EdgeInsets.all(10),
+    contentPadding: EdgeInsets.all(32), //height of the iput fie
     hintStyle: TextStyle(color: Colors.grey), // KEY PROP
   );
 }
@@ -70,13 +81,13 @@ TextStyle simpleTextSansStyleBold(Color color, double fontsize) {
   );
 }
 
-TextStyle biggerTextStyle() {
+TextStyle largeTitleTextStyle(Color color, double fontsize) {
   return GoogleFonts.montserrat(
-    textStyle: TextStyle(color: Colors.white, fontSize: 17),
+    textStyle: TextStyle(color: color, fontSize: fontsize),
   );
 }
 
-TextStyle largeTitleTextStyle(Color color, double fontsize) {
+TextStyle largeTitleTextStyleBold(Color color, double fontsize) {
   return GoogleFonts.montserrat(
     textStyle: TextStyle(
         color: color, fontSize: fontsize, fontWeight: FontWeight.bold),
@@ -174,10 +185,10 @@ Padding topLineBar() {
           bottomRight: Radius.circular(30.0),
         ),
         child: SizedBox(
-          width: 55.0,
-          height: 5.0,
+          width: 87.0,
+          height: 6.0,
           child: const DecoratedBox(
-            decoration: const BoxDecoration(color: lightOrangeColor),
+            decoration: const BoxDecoration(color: themeOrange),
           ),
         ),
       )
@@ -431,7 +442,10 @@ Padding userInfoDetailsBox(Size mediaQuery, String topText, String bottomText) {
 void showBottomPopSheet(BuildContext context, Widget widget) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-          side: BorderSide(width: 15, color: Colors.transparent),
+          side: BorderSide(
+            width: 10,
+            color: Colors.transparent,
+          ),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30.0),
             topRight: Radius.circular(30.0),

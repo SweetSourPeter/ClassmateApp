@@ -85,6 +85,7 @@ class _FriendProfileState extends State<FriendProfile> {
                         );
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
+                          print('connecting');
                           return CircularProgressIndicator();
                         default:
                           return !snapshot.hasData

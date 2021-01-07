@@ -8,9 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 class TopBar extends StatelessWidget {
   final String userID;
   final String userName;
+  final String profileUserEmail;
   const TopBar({
     @required this.userID,
     @required this.userName,
+    @required this.profileUserEmail,
     Key key,
   }) : super(key: key);
 
@@ -92,7 +94,12 @@ class TopBar extends StatelessWidget {
                               onTap: () {
                                 print("reported");
                                 Navigator.of(context).pop();
-                                showBottomPopSheet(context, ReportUser());
+                                showBottomPopSheet(
+                                    context,
+                                    ReportUser(
+                                      badUserEmail: profileUserEmail,
+                                      profileID: userID,
+                                    ));
                               },
                               child: Center(
                                 child: Material(

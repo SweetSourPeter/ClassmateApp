@@ -40,7 +40,7 @@ class AboutTheAPP extends StatelessWidget {
                 LogoWidget(),
                 Text(
                   'Meechu',
-                  style: largeTitleTextStyle(Colors.white, 26),
+                  style: largeTitleTextStyleBold(Colors.white, 26),
                 ),
                 SizedBox(
                   height: 10,

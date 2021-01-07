@@ -207,7 +207,8 @@ class _MyAccountState extends State<MyAccount> {
                     textSize: widget.getSize(2),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
-                      showBottomPopSheet(context, HelpFeedback());
+                      showBottomPopSheet(
+                          context, HelpFeedback(userEmail: userdata.email));
                     },
                   ),
                   Divider(

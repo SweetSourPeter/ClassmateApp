@@ -1,4 +1,3 @@
-// import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,6 @@ import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-// import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';

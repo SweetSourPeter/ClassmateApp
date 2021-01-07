@@ -205,6 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       icon: Icon(
                         Icons.keyboard_arrow_down,
                         color: Color(0xF7D5C5).withOpacity(0.7),
+                        size: 30,
                       ),
                       iconEnabledColor: Colors.white,
                       value: _selectedSchool,
@@ -223,8 +224,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           _selectedSchool = value;
                         });
                       },
-                      decoration:
-                          textFieldInputDecoration('Choose your School', 11),
+                      decoration: textFieldInputDecoration(
+                        'Choose your School',
+                        11,
+                      ),
                       validator: (String value) {
                         if (value.isEmpty) {
                           return "School is required";
@@ -287,11 +290,11 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             Text(
               'Awesome, let\'s get your',
-              style: largeTitleTextStyle(Colors.white, 22),
+              style: largeTitleTextStyleBold(Colors.white, 22),
             ),
             Text(
               'account set up!',
-              style: largeTitleTextStyle(Colors.white, 22),
+              style: largeTitleTextStyleBold(Colors.white, 22),
             ),
           ],
         ),

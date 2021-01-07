@@ -30,19 +30,20 @@ const kDefaultShadow = BoxShadow(
   color: Colors.black26,
 );
 
-List gpa = [
-  '#dean\'s list',
-  '#gpa4.0',
-  '#gpa3.9',
-  '#gpa3.8',
-  '#gpa3.7',
-  '#gpa3.6',
-  '#gpa3.5',
-  '#gpa3.4',
-  '#gpa3.3',
-  '#gpa3.2',
-  '#gpa3.1',
-  '#gpa3.0',
+List interest = [
+  '#Cat person',
+  '#Dog person',
+  '#Computer Games',
+  '#PSP',
+  '#Nintendo Switch',
+  '#Xbox',
+  '#Make up',
+  '#Master chefs ',
+  '#Instruments',
+  '#Sports',
+  '#Gym',
+  '#TV Series',
+  '#Book worm ',
 ];
 
 List college = [

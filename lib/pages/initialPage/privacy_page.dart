@@ -48,7 +48,7 @@ class _PrivacyPageState extends State<PrivacyPage>
               ),
               Text(
                 'Your privacy is very important\n and nothing ever happens \n without your approval!',
-                style: largeTitleTextStyle(Colors.white, 16),
+                style: largeTitleTextStyleBold(Colors.white, 16),
                 textAlign: TextAlign.center,
               ),
               SizedBox(

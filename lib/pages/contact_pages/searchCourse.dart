@@ -8,9 +8,9 @@ import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
+import 'package:string_validator/string_validator.dart';
 
 class SearchCourse extends StatefulWidget {
   @override
@@ -19,6 +19,8 @@ class SearchCourse extends StatefulWidget {
 
 class _SearchCourseState extends State<SearchCourse> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController courseIDTextEditingController =
+      new TextEditingController();
   TextEditingController courseNameTextEditingController =
       new TextEditingController();
   TextEditingController sectionTextEditingController =
@@ -31,29 +33,36 @@ class _SearchCourseState extends State<SearchCourse> {
   Widget build(BuildContext context) {
     final course = Provider.of<List<CourseInfo>>(context);
 
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        elevation: 0.0,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        leading: Container(
-          padding: EdgeInsets.only(left: kDefaultPadding),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            color: Colors.black,
-            onPressed: () {
-              //return to previous page;
-              Navigator.pop(context);
-            },
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.white,
+          leading: Container(
+            padding: EdgeInsets.only(left: kDefaultPadding),
+            child: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              color: themeOrange,
+              onPressed: () {
+                //return to previous page;
+                Navigator.pop(context);
+              },
+            ),
           ),
         ),
+        body: _stateBody(context, searchSnapshot, course),
       ),
-      body: _stateBody(context, searchSnapshot, course),
     );
   }
 
   Widget _stateBody(BuildContext context, QuerySnapshot searchSnapshot,
       List<CourseInfo> course) {
+    print('aaaaa');
+    print(RegExp(
+            r'^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
+        .hasMatch('9d1bca5c-0df4-4bef-814a-d26fbab9d1ad'.toUpperCase()));
     final userdata = Provider.of<UserData>(context);
 
     List<String> _semesters = [
@@ -63,30 +72,99 @@ class _SearchCourseState extends State<SearchCourse> {
       "Summer1",
       "Summer2"
     ];
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+    _getHeader() {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 37),
+        child: Container(
+          alignment: Alignment.center,
+          child: Text(
+            'Search for the course group',
+            style: largeTitleTextStyleBold(Colors.black, 20),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    _addButton() {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+        ),
+        height: 59,
+        width: _width * 0.7,
+        child: RaisedButton(
+          hoverElevation: 0,
+          highlightColor: Color(0xDA6D39),
+          highlightElevation: 0,
+          elevation: 0,
+          color: themeOrange,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          onPressed: () async {
+            if (!_formKey.currentState.validate()) {
+              return;
+            } else {
+              print('valid');
+              await initiateSearch(_selectedSemester);
+              print(searchBegain);
+            }
+            _formKey.currentState.save();
+            searchBegain
+                ? showBottomPopSheet(context, searchList(context, course))
+                : CircularProgressIndicator();
+          },
+          child: Text(
+            'Add to List',
+            style: largeTitleTextStyleBold(Colors.white, 15),
+          ),
+        ),
+      );
+    }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 5),
       child: Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
-            //Title
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 0, top: 0, bottom: 0),
-                child: Container(
-                  // color: orengeColor,
-                  child: Text(
-                    'Search Course',
-                    textAlign: TextAlign.left,
-                    style: largeTitleTextStyle(Colors.black, 26),
+            _getHeader(),
+            Flexible(
+              child: TextFormField(
+                maxLines: 4,
+                controller: courseNameTextEditingController,
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
                   ),
+                  'Course Group ID',
+                  11,
                 ),
+                validator: (String value) {
+                  if (!RegExp(
+                          r'^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
+                      .hasMatch(value.toUpperCase())) {
+                    return "Group ID is not Valid";
+                  }
+                  return null;
+                },
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 17,
+            ),
+            Text(
+              'OR',
+              style: largeTitleTextStyleBold(themeOrange, 20),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 17,
             ),
             Flexible(
               child: DropdownButtonFormField<String>(
@@ -102,8 +180,14 @@ class _SearchCourseState extends State<SearchCourse> {
                     _selectedSemester = value;
                   });
                 },
-                decoration: InputDecoration(
-                  labelText: 'Semester',
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
+                  ),
+                  'Term',
+                  11,
                 ),
                 validator: (String value) {
                   if (value == "") {
@@ -114,18 +198,19 @@ class _SearchCourseState extends State<SearchCourse> {
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 31,
             ),
             Flexible(
               child: TextFormField(
-                controller: courseNameTextEditingController,
-                decoration: InputDecoration(
-                  labelText: 'Course Name',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  border: UnderlineInputBorder(borderSide: BorderSide()),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: orengeColor),
+                controller: courseIDTextEditingController,
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
                   ),
+                  'Course Name, e.g. 111',
+                  11,
                 ),
                 validator: (String value) {
                   if (value.isEmpty) {
@@ -136,18 +221,19 @@ class _SearchCourseState extends State<SearchCourse> {
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 31,
             ),
             Flexible(
               child: TextFormField(
                 controller: sectionTextEditingController,
-                decoration: InputDecoration(
-                  labelText: 'Section',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  border: UnderlineInputBorder(borderSide: BorderSide()),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: orengeColor),
+                decoration: buildInputDecorationPinky(
+                  false,
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.black,
                   ),
+                  'Section, e.g. A1',
+                  11,
                 ),
                 validator: (String value) {
                   if (value.isEmpty) {
@@ -231,36 +317,7 @@ class _SearchCourseState extends State<SearchCourse> {
             SizedBox(
               height: 30,
             ),
-            SizedBox(
-              width: double.infinity,
-              child: RaisedGradientButton(
-                width: 100,
-                height: 40,
-                gradient: LinearGradient(
-                  colors: <Color>[Colors.red, orengeColor],
-                ),
-                onPressed: () async {
-                  if (!_formKey.currentState.validate()) {
-                    return;
-                  } else {
-                    print('valid');
-                    await initiateSearch(_selectedSemester);
-                    print(searchBegain);
-                  }
-                  _formKey.currentState.save();
-                  searchBegain
-                      ? showBottomPopSheet(context, searchList(context, course))
-                      : CircularProgressIndicator();
-                },
-                child: Text(
-                  'Search',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            _addButton(),
           ],
         ),
       ),
@@ -272,7 +329,6 @@ class _SearchCourseState extends State<SearchCourse> {
 
   initiateSearch(var _selectedSemester) async {
     var a = _selectedSemester;
-    print('aaaa' + '$a');
     var temp = await databaseMethods.getCourse(
       _selectedSemester.toUpperCase(),
       courseNameTextEditingController.text.toUpperCase(),

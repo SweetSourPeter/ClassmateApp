@@ -10,6 +10,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 
@@ -37,7 +38,7 @@ class _SearchUsersState extends State<SearchUsers> {
   @override
   void initState() {
     // TODO: implement initState
-    initiateSearch();
+    // initiateSearch();
     super.initState();
   }
 
@@ -93,7 +94,9 @@ class _SearchUsersState extends State<SearchUsers> {
                     child: TextField(
                       textInputAction: TextInputAction.go,
                       onSubmitted: (value) {
-                        initiateSearch();
+                        if (searchTextEditingController.text.isNotEmpty) {
+                          initiateSearch();
+                        }
                       },
                       // focusNode: _focus,
                       controller: searchTextEditingController,
@@ -105,7 +108,7 @@ class _SearchUsersState extends State<SearchUsers> {
                               searchTextEditingController.text.isEmpty
                                   ? null
                                   : Icons.cancel,
-                              color: Colors.grey[700],
+                              color: themeOrange,
                             ),
                             onPressed: () {
                               // initiateSearch();
@@ -113,7 +116,7 @@ class _SearchUsersState extends State<SearchUsers> {
                             }),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.black,
+                          color: Color(0xFFFFCDB6),
                         ),
                         fillColor: Colors.white,
                         filled: true,
@@ -158,38 +161,38 @@ class _SearchUsersState extends State<SearchUsers> {
             SizedBox(
               height: 10,
             ),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                children: <TextSpan>[
-                  TextSpan(text: 'I have User Profile '),
-                  TextSpan(
-                      text: 'URL',
-                      style: TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () async {
-                          FlutterClipboard.paste().then((value) async {
-                            setState(() {
-                              field.text = value;
-                              pasteValue = value;
-                            });
-                            print('Clipboard Text: $pasteValue');
-                            if (pasteValue.startsWith('https://na-cc.com/')) {
-                              searchBegain = true;
-                              var splitTemp = pasteValue.split('/');
-                              print(splitTemp[4]);
-                              await initiateURLSearch(splitTemp[4]);
-                            }
+            // RichText(
+            //   text: TextSpan(
+            //     style: TextStyle(color: Colors.grey, fontSize: 15.0),
+            //     children: <TextSpan>[
+            //       TextSpan(text: 'I have User Profile '),
+            //       TextSpan(
+            //           text: 'URL',
+            //           style: TextStyle(color: Colors.blue),
+            //           recognizer: TapGestureRecognizer()
+            //             ..onTap = () async {
+            //               FlutterClipboard.paste().then((value) async {
+            //                 setState(() {
+            //                   field.text = value;
+            //                   pasteValue = value;
+            //                 });
+            //                 print('Clipboard Text: $pasteValue');
+            //                 if (pasteValue.startsWith('https://na-cc.com/')) {
+            //                   searchBegain = true;
+            //                   var splitTemp = pasteValue.split('/');
+            //                   print(splitTemp[4]);
+            //                   await initiateURLSearch(splitTemp[4]);
+            //                 }
 
-                            // searchBegain
-                            //     ? showBottomPopSheet(
-                            //         context, searchList(context, course))
-                            //     : CircularProgressIndicator();
-                          });
-                        }),
-                ],
-              ),
-            ),
+            //                 // searchBegain
+            //                 //     ? showBottomPopSheet(
+            //                 //         context, searchList(context, course))
+            //                 //     : CircularProgressIndicator();
+            //               });
+            //             }),
+            //     ],
+            //   ),
+            // ),
             searchList(),
           ],
         ),
@@ -469,17 +472,16 @@ class SearchTile extends StatelessWidget {
                 children: <Widget>[
                   AutoSizeText(
                     userName ?? '',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 3,
+                    style: GoogleFonts.openSans(
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                   AutoSizeText(
                     userEmail ?? '',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                    style: simpleTextStyle(Colors.grey, 14),
                   ),
                 ],
               ),
@@ -487,13 +489,20 @@ class SearchTile extends StatelessWidget {
             // SizedBox(
             //   width: 10,
             // ),
-            Expanded(
-              child: RaisedGradientButton(
-                width: 100,
-                height: 40,
-                gradient: LinearGradient(
-                  colors: <Color>[Colors.red, orengeColor],
-                ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+              ),
+              width: 100,
+              height: 40,
+              child: RaisedButton(
+                hoverElevation: 0,
+                highlightColor: Color(0xDA6D39),
+                highlightElevation: 0,
+                elevation: 0,
+                color: themeOrange,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
                 onPressed: () {
                   //TODO
                   contactProvider.changeSchool(school);
@@ -505,8 +514,9 @@ class SearchTile extends StatelessWidget {
                 },
                 //之后需要根据friendsProvider改这部分display
                 //TODO
+
                 child: AutoSizeText(
-                  'ADD',
+                  'MESSAGE',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white,
@@ -514,7 +524,33 @@ class SearchTile extends StatelessWidget {
                 ),
               ),
             ),
-            // Spacer(),
+            // Expanded(
+            //   child: RaisedGradientButton(
+            //     width: 100,
+            //     height: 40,
+            //     gradient: LinearGradient(
+            //       colors: <Color>[Colors.red, orengeColor],
+            //     ),
+            //     onPressed: () {
+            //       //TODO
+            //       contactProvider.changeSchool(school);
+            //       contactProvider.changeUserID(userID);
+            //       contactProvider.changeEmail(userEmail);
+            //       contactProvider.changeUserName(userName);
+            //       contactProvider.changeUserImageUrl(imageURL);
+            //       contactProvider.addUserToContact(context);
+            //     },
+            //     //之后需要根据friendsProvider改这部分display
+            //     //TODO
+            //     child: AutoSizeText(
+            //       'MESSAGE',
+            //       style: TextStyle(
+            //         fontSize: 14,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

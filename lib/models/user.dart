@@ -20,6 +20,7 @@ class UserData {
   final String email;
   final String school;
   final String userImageUrl;
+  final double profileColor;
   // final List<String> friendsList;
   // final List<String> courseList;
   UserData({
@@ -28,6 +29,7 @@ class UserData {
     this.email,
     this.school,
     this.userImageUrl,
+    this.profileColor,
   });
   Map<String, dynamic> toCourseJson() => {
         'userID': userID,
@@ -42,6 +44,7 @@ class UserData {
       'email': email,
       'school': school,
       'userImageUrl': userImageUrl,
+      'profileColor': profileColor,
     };
   }
 
@@ -50,13 +53,16 @@ class UserData {
       : userImageUrl = firestore['imgUrl'],
         school = firestore['school'],
         email = firestore['email'],
+        profileColor = firestore['profileColor'],
         userName = firestore['userName'];
+
   //get data for contacts of current user
   UserData.fromFirestoreContacts(Map<String, dynamic> firestore)
       : userImageUrl = firestore['imgUrl'],
         userID = firestore['userID'],
         school = firestore['school'],
         email = firestore['email'],
+        profileColor = firestore['profileColor'],
         userName = firestore['userName'];
   //     CourseInfo.fromFirestore(Map<String, dynamic> firestore)
   // : school = firestore['school'],

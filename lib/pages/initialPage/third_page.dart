@@ -60,7 +60,7 @@ class _ThirdPageState extends State<ThirdPage>
               ),
               Text(
                 'Choose your theme color',
-                style: largeTitleTextStyle(Colors.white, 16),
+                style: largeTitleTextStyleBold(Colors.white, 16),
                 textAlign: TextAlign.center,
               ),
               SizedBox(

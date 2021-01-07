@@ -202,7 +202,10 @@ class _SignInState extends State<SignIn> {
                           ? null
                           : "Please provoid valid password format";
                     },
-                    decoration: textFieldInputDecoration('Password', 11),
+                    decoration: textFieldInputDecoration(
+                      'Password',
+                      11,
+                    ),
                   ),
                   SizedBox(
                     height: 20,
@@ -245,11 +248,11 @@ class _SignInState extends State<SignIn> {
             ),
             Text(
               'Welcome',
-              style: largeTitleTextStyle(Colors.white, 22),
+              style: largeTitleTextStyleBold(Colors.white, 22),
             ),
             Text(
               'Back !',
-              style: largeTitleTextStyle(Colors.white, 22),
+              style: largeTitleTextStyleBold(Colors.white, 22),
             ),
           ],
         ),

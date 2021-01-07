@@ -122,7 +122,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
         //   onReorder: _onReorder,
         // );
         (course == null)
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : Container(
                 color: riceColor,
                 child: CustomScrollView(
@@ -204,7 +204,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 Text(
                                   'My Courses',
                                   textAlign: TextAlign.left,
-                                  style: largeTitleTextStyle(Colors.black, 26),
+                                  style:
+                                      largeTitleTextStyleBold(Colors.black, 26),
                                 ),
                                 Expanded(
                                   child: Container(),
@@ -277,7 +278,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                               onPressed: () {
                                 Clipboard.setData(new ClipboardData(
                                         text:
-                                            'https://na-cc.com/${courses.myCourseName + courses.section}/${courses.courseID}'))
+                                            'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${courses.courseID}\nCourse Name: ${courses.myCourseName + courses.section}'))
                                     .then((result) {
                                   showDialog<void>(
                                     context: context,
@@ -289,13 +290,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                           child: ListBody(
                                             children: <Widget>[
                                               Text(
-                                                  'The Course Card URL is copied.'),
+                                                  'The invite Link is copied.'),
                                             ],
                                           ),
                                         ),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: Text('Approve'),
+                                            child: Text('OK'),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },

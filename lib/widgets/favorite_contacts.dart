@@ -85,7 +85,8 @@ class FavoriteContacts extends StatelessWidget {
                               Text(
                                 'Classmates',
                                 textAlign: TextAlign.left,
-                                style: largeTitleTextStyle(Colors.black, 26),
+                                style:
+                                    largeTitleTextStyleBold(Colors.black, 26),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 2, top: 10),

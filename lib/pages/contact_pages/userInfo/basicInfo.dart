@@ -78,6 +78,7 @@ class _BasicInfoState extends State<BasicInfo> {
                           height: 4.0,
                         ),
                         ShrinkButton(
+                          profileColor: snapshot.data[0].profileColor,
                           userTag: snapshot.data[1],
                           userName: snapshot.data[0].userName,
                           width: 90.0,
@@ -141,6 +142,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   TopBar(
                     userID: userID,
                     userName: snapshot.data[0].userName,
+                    profileUserEmail: snapshot.data[0].email,
                   ),
                 ],
               ),
