@@ -287,7 +287,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                                 !widget.isSimple ? Colors.black87 : orengeColor,
                             fontSize: widget.textSize),
                       ),
-                      widget.isEdit
+                      widget.isEdit && widget.editText.length > 0
                           ? Text(
                               widget.editText,
                               style: GoogleFonts.montserrat(

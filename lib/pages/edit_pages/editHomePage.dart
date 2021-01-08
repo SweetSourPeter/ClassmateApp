@@ -1,20 +1,11 @@
 import 'package:app_test/models/user.dart';
-import 'package:app_test/services/auth.dart';
-import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/services/wrapper.dart';
-import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/edit_pages/EditNameModal.dart';
-import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
-import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
-import 'package:app_test/widgets/course_menu.dart';
-import 'package:app_test/widgets/favorite_contacts.dart';
+import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../models/constant.dart';
 
 class EditHomePage extends StatefulWidget {
@@ -94,14 +85,27 @@ class _EditHomePageState extends State<EditHomePage> {
                           showBottomPopSheet(
                               context,
                               EditNameModal(
-                                  userName: nickName,
-                                  id: userdata.userID));
+                                  userName: nickName, id: userdata.userID));
                         },
                       ),
                       Divider(
                         height: 0,
                         thickness: 1,
-                      )
+                      ),
+                      ButtonLink(
+                        text: "TAGS",
+                        editText: 'College, GPA...',
+                        iconData: Icons.edit,
+                        textSize: widget.getSize(3),
+                        height: (menuContainerHeight) / 8,
+                        isEdit: true,
+                        onTap: () {
+                          showBottomPopSheet(
+                              context,
+                              TagSelecting(
+                                  buttonColor: Colors.amber, pageController:PageController(initialPage: 0), isEdit: true));
+                        },
+                      ),
                     ],
                   ),
                 )

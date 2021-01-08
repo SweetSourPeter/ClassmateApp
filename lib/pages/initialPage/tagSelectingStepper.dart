@@ -9,7 +9,10 @@ import 'package:provider/provider.dart';
 class TagSelecting extends StatefulWidget {
   final PageController pageController;
   final Color buttonColor;
-  const TagSelecting({Key key, this.pageController, this.buttonColor})
+  @required
+  final bool isEdit;
+  const TagSelecting(
+      {Key key, this.pageController, this.buttonColor, this.isEdit = false})
       : super(key: key);
   // TagSelecting({Key key}) : super(key: key);
 
@@ -71,7 +74,11 @@ class _TagSelectingState extends State<TagSelecting> {
     Color submitButtonTextColor = widget.buttonColor;
     String submitButtonString = 'Next';
 
-    if (selectedIndex >= 3) {
+    if (widget.isEdit) {
+      submitButtonColor = widget.buttonColor;
+      submitButtonTextColor = Colors.white;
+      submitButtonString = 'Save';
+    } else if (selectedIndex >= 3) {
       submitButtonColor = widget.buttonColor;
       submitButtonTextColor = Colors.white;
       submitButtonString = 'Complete';
@@ -239,7 +246,10 @@ class _TagSelectingState extends State<TagSelecting> {
                   borderRadius: BorderRadius.circular(30),
                   side: BorderSide(color: widget.buttonColor)),
               onPressed: () {
-                if (selectedIndex >= 3) {
+                if (widget.isEdit) {
+                  userTagProvider.addTagsToContact(context);
+                  Navigator.pop(context);
+                } else if (selectedIndex >= 3) {
                   userTagProvider.addTagsToContact(context);
 
                   Navigator.pushReplacement(

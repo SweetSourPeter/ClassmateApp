@@ -27,7 +27,7 @@ class _EditNameModalState extends State<EditNameModal> {
   final databaseMehods = DatabaseMethods();
   @override
   Widget build(BuildContext context) {
-    double modal_height = MediaQuery.of(context).size.height - 50;
+    double modal_height = MediaQuery.of(context).size.height * 0.9;
     final TextEditingController _controller = TextEditingController();
     _controller.text = widget.userName;
     _controller.selection = TextSelection.fromPosition(
@@ -80,7 +80,10 @@ class _EditNameModalState extends State<EditNameModal> {
 
                           if (nicknam.length > 0 &&
                               nicknam != widget.userName) {
-                            databaseMehods.updateUserName(widget.id, nicknam);
+                            databaseMehods
+                                .updateUserName(widget.id, nicknam)
+                                .then((r) => {Navigator.pop(context)});
+                          } else {
                             Navigator.pop(context);
                           }
                         },
