@@ -21,6 +21,7 @@ class ChatScreen extends StatefulWidget {
   final String chatRoomId;
   final String friendName;
   final String friendEmail;
+  final String friendID;
   final double initialChat;
   final String myEmail;
 
@@ -28,6 +29,7 @@ class ChatScreen extends StatefulWidget {
       {this.chatRoomId,
       this.friendName,
       this.friendEmail,
+      this.friendID,
       this.initialChat,
       this.myEmail});
 
@@ -312,8 +314,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => FriendProfile(
-                                        userID: currentUser
-                                            .userID, // to be modified to friend's ID
+                                        userID: widget
+                                            .friendID, // to be modified to friend's ID
                                       ),
                                     ),
                                   );

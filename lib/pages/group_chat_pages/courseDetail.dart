@@ -50,9 +50,12 @@ class _CourseDetailState extends State<CourseDetail> {
     });
 
     databaseMethods.getMembersInCourse(widget.courseId).then((value) {
-      setState(() {
-        members = value;
-      });
+      if (this.mounted) {
+        // check whether the state object is in tree
+        setState(() {
+          members = value;
+        });
+      }
     });
 
     super.initState();

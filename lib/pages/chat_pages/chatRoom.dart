@@ -23,6 +23,7 @@ class _ChatRoomState extends State<ChatRoom> {
   Stream chatRooms;
   String friendName;
   String friendEmail;
+  String friendID;
   String latestMessage;
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -41,11 +42,13 @@ class _ChatRoomState extends State<ChatRoom> {
                       snapshot.data.documents[index].data()['users'];
 
                   if (userList[1] == widget.myEmail) {
-                    friendName = userList[2];
-                    friendEmail = userList[3];
+                    friendName = userList[3];
+                    friendEmail = userList[4];
+                    friendID = userList[5];
                   } else {
                     friendName = userList[0];
                     friendEmail = userList[1];
+                    friendID = userList[2];
                   }
 
                   latestMessage =
@@ -56,6 +59,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       .toString();
 
                   return ChatRoomsTile(
+                    friendID: friendID,
                     userName: snapshot.data.documents[index]
                         .data()['chatRoomId']
                         .toString()
@@ -156,6 +160,7 @@ class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
   final String friendName;
+  final String friendID;
   final String latestMessage;
   final String lastMessageTime;
   final String friendEmail;
@@ -166,6 +171,7 @@ class ChatRoomsTile extends StatelessWidget {
       @required this.chatRoomId,
       this.friendName,
       this.latestMessage,
+      this.friendID,
       this.lastMessageTime,
       this.friendEmail,
       this.unreadNumber});
@@ -188,6 +194,7 @@ class ChatRoomsTile extends StatelessWidget {
               friendEmail: friendEmail,
               initialChat: 0,
               myEmail: currentUser.email,
+              friendID: friendID,
             ),
           );
         }));

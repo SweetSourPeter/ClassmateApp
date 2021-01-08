@@ -176,7 +176,7 @@ class PlainGradientButton extends StatelessWidget {
 //used on top of dragble sheet and showModalBottomSheet
 Padding topLineBar() {
   return Padding(
-      padding: EdgeInsets.fromLTRB(10, 10, 8, 5),
+      padding: EdgeInsets.fromLTRB(10, 0, 8, 5),
       child: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30.0),
