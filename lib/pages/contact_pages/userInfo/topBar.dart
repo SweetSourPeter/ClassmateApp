@@ -18,6 +18,8 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     // void showBottomSheet() {
     //   showModalBottomSheet(
     //       shape: RoundedRectangleBorder(
@@ -65,31 +67,31 @@ class TopBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      SizedBox(
-                        height: 400,
+                      Expanded(
+                        child: Container(),
                       ),
                       Container(
                         height: 200,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                print("blocked");
-                              },
-                              child: Center(
-                                child: Material(
-                                  child: Text(
-                                    "Block",
-                                    style: GoogleFonts.openSans(
-                                        fontSize: 20.0, color: themeOrange),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Divider(
-                              height: 0.0,
-                            ),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     print("blocked");
+                            //   },
+                            //   child: Center(
+                            //     child: Material(
+                            //       child: Text(
+                            //         "Block",
+                            //         style: GoogleFonts.openSans(
+                            //             fontSize: 20.0, color: themeOrange),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            // Divider(
+                            //   height: 0.0,
+                            // ),
                             GestureDetector(
                               onTap: () {
                                 print("reported");
@@ -106,7 +108,7 @@ class TopBar extends StatelessWidget {
                                   child: Text(
                                     "Report",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 20.0, color: themeOrange),
+                                        fontSize: 18.0, color: themeOrange),
                                   ),
                                 ),
                               ),
@@ -116,10 +118,9 @@ class TopBar extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Clipboard.setData(new ClipboardData(
-                                        text:
-                                            'https://na-cc.com/${userName}/${userID}'))
-                                    .then((result) {
+                                Clipboard.setData(
+                                  new ClipboardData(text: '$profileUserEmail'),
+                                ).then((result) {
                                   showDialog<void>(
                                     context: context,
                                     barrierDismissible:
@@ -130,13 +131,13 @@ class TopBar extends StatelessWidget {
                                           child: ListBody(
                                             children: <Widget>[
                                               Text(
-                                                  'The user Profile URL is copied.'),
+                                                  'The user Profile Email is copied.'),
                                             ],
                                           ),
                                         ),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: Text('Approve'),
+                                            child: Text('OK'),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
@@ -150,9 +151,9 @@ class TopBar extends StatelessWidget {
                               child: Center(
                                 child: Material(
                                   child: Text(
-                                    "Copy Profile URL",
+                                    "Copy Profile Email",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 20.0, color: Colors.black),
+                                        fontSize: 18.0, color: Colors.black),
                                   ),
                                 ),
                               ),
@@ -162,14 +163,43 @@ class TopBar extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                print("shared");
+                                Clipboard.setData(new ClipboardData(
+                                        text:
+                                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: $profileUserEmail'))
+                                    .then((result) {
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                  'You can PASTE to Share this profile with others.'),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                });
                               },
                               child: Center(
                                 child: Material(
                                   child: Text(
                                     "Share This Profile",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 20.0, color: Colors.black),
+                                        fontSize: 18.0, color: Colors.black),
                                   ),
                                 ),
                               ),
@@ -193,7 +223,7 @@ class TopBar extends StatelessWidget {
                               child: Text(
                                 "Cancel",
                                 style: GoogleFonts.openSans(
-                                    fontSize: 20.0, color: Colors.black),
+                                    fontSize: 18.0, color: Colors.black),
                               ),
                             ),
                           ),
@@ -203,6 +233,9 @@ class TopBar extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15.0)),
+                      ),
+                      SizedBox(
+                        height: 8,
                       ),
                     ],
                   );

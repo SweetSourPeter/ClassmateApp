@@ -166,7 +166,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                         curve: Curves.easeInCubic);
                                   },
                                   child: Text(
-                                    'LETS FIND MY CLASSMATES!',
+                                    'Lets Find My Classmates!',
                                     style: simpleTextSansStyleBold(
                                         themeOrange, 16),
                                   ),
@@ -194,7 +194,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                 curve: Curves.easeInCubic);
                           },
                           child: Text(
-                            'I ALREADY HAVE AN ACCOUNT',
+                            'I already have an account',
                             style:
                                 simpleTextSansStyleBold(Color(0xFFFFFFB3), 16),
                           ),

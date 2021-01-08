@@ -59,17 +59,12 @@ class _ThirdPageState extends State<ThirdPage>
                 height: 36,
               ),
               Text(
-                'Choose your theme color',
+                'Choose your theme color!',
                 style: largeTitleTextStyleBold(Colors.white, 16),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: 13,
-              ),
-              Text(
-                'CAN BE CHANGED LATER IN SETTINGS',
-                style: simpleTextStyle(Colors.white, 14),
-                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -170,7 +165,7 @@ class _ThirdPageState extends State<ThirdPage>
                       curve: Curves.easeInCubic);
                 },
                 child: Text(
-                  'COMPLETE',
+                  'Continue',
                   style: simpleTextSansStyleBold(
                       listColors[_currentindex.toInt()].colors[1], 16),
                 ),

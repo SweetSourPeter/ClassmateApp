@@ -10,7 +10,12 @@ class UserCourseInfo extends StatelessWidget {
   final int index;
   final List<CourseInfo> courseData;
   UserCourseInfo(this.index, this.courseData);
-
+  List<String> fileLocation = [
+    'assets/icon/courseIcon1.png',
+    'assets/icon/courseIcon2.png',
+    'assets/icon/courseIcon3.png',
+    'assets/icon/courseIcon4.png',
+  ];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +23,9 @@ class UserCourseInfo extends StatelessWidget {
       width: 200,
       margin: EdgeInsets.fromLTRB(10.0, 0, 10.0, 15.0),
       decoration: BoxDecoration(
-          color: Colors.brown[50], borderRadius: BorderRadius.circular(15.0)),
+        color: riceColor,
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       child: Container(
         child: Stack(children: <Widget>[
           Row(
@@ -31,7 +38,7 @@ class UserCourseInfo extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     SizedBox(
-                      height: 25.0,
+                      height: 45.0,
                     ),
                     Text(
                         ' ' + courseData[index].myCourseName ??
@@ -40,25 +47,18 @@ class UserCourseInfo extends StatelessWidget {
                         style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.w600,
                             fontSize: 14.0,
-                            color: themeOrange)),
+                            color: Colors.black)),
                     SizedBox(
-                      height: 26.0,
+                      height: 12.0,
                     ),
                     ExpandedButton(
-                      width: 40,
-                      height: 20,
+                      width: 48,
+                      height: 24,
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [themeOrange, gradientYellow],
+                        colors: [themeOrange, themeOrange],
                       ),
-                      //                        child: Text(
-                      ////                          "ADD",
-                      ////                          style: TextStyle(
-                      ////                            letterSpacing: 1.0,
-                      ////                            color: Colors.white,
-                      ////                          ),
-                      ////                        ),
                       initialText: "ADD",
                       initialStyle: GoogleFonts.openSans(
                           fontSize: 10.0, color: Colors.brown[50]),
@@ -81,11 +81,21 @@ class UserCourseInfo extends StatelessWidget {
           Row(
             children: [
               SizedBox(
-                width: 100,
+                width: 110,
               ),
-              Center(
-                child: Text("Placeholder"),
-              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 78,
+                    width: 63,
+                    child: FittedBox(
+                      child: Image.asset(fileLocation[index % 4]),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ]),

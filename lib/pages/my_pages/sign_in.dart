@@ -155,7 +155,7 @@ class _SignInState extends State<SignIn> {
             signMeIn();
           },
           child: AutoSizeText(
-            'CONTINUE',
+            'Continue',
             style: simpleTextSansStyleBold(
                 (emailTextEditingController.text.isNotEmpty &&
                         passwordTextEditingController.text.isNotEmpty)

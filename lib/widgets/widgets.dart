@@ -124,7 +124,7 @@ class RaisedGradientButton extends StatelessWidget {
               blurRadius: 1.5,
             ),
           ],
-          borderRadius: BorderRadius.all(Radius.circular(24))),
+          borderRadius: BorderRadius.all(Radius.circular(30))),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -200,22 +200,43 @@ Padding topLineBar() {
 }
 
 // used to create user image
-CircleAvatar createUserImage(double radius, UserData userdata) {
-  return CircleAvatar(
-    backgroundColor: orengeColor,
-    radius: radius,
-    child: Container(
-      child: (userdata.userImageUrl == null)
-          ? Text(
-              userdata.userName[0].toUpperCase(),
-              style: TextStyle(fontSize: 35, color: Colors.white),
-            )
-          : null,
+Container createUserImage(double radius, UserData userdata) {
+  // return CircleAvatar(
+  //   backgroundColor: orengeColor,
+  //   radius: radius,
+  //   child: Container(
+  //     child: (userdata.userImageUrl == null)
+  //         ? Text(
+  //             userdata.userName[0].toUpperCase(),
+  //             style: TextStyle(fontSize: 35, color: Colors.white),
+  //           )
+  //         : null,
+  //   ),
+  //   backgroundImage: (userdata.userImageUrl == null)
+  //       ? null
+  //       : NetworkImage(
+  //           'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
+  // );
+  return Container(
+    decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: listColors[userdata.profileColor.toInt()]),
+    child: CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: radius,
+      child: Container(
+        child: (userdata.userImageUrl == null)
+            ? Text(
+                userdata.userName[0].toUpperCase(),
+                style: TextStyle(fontSize: 35, color: Colors.white),
+              )
+            : null,
+      ),
+      backgroundImage: (userdata.userImageUrl == null)
+          ? null
+          : NetworkImage(
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
     ),
-    backgroundImage: (userdata.userImageUrl == null)
-        ? null
-        : NetworkImage(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
 }
 

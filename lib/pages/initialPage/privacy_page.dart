@@ -55,7 +55,7 @@ class _PrivacyPageState extends State<PrivacyPage>
                 height: 13,
               ),
               Text(
-                'CHECK THE BOXES TO ACCEPT',
+                'Check the boxes to accept',
                 style: simpleTextSansStyleBold(Color(0XFFF7D5C5), 14),
                 textAlign: TextAlign.center,
               ),
@@ -193,7 +193,7 @@ class _PrivacyPageState extends State<PrivacyPage>
                         }
                       },
                       child: Text(
-                        'COMPLETE',
+                        'CREATE ACCOUNT',
                         style: simpleTextSansStyleBold(
                             (checkedToSvalue && checkedPPvalue)
                                 ? themeOrange

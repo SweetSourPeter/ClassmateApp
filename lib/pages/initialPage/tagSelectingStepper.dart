@@ -127,7 +127,7 @@ class _TagSelectingState extends State<TagSelecting> {
                           padding: EdgeInsets.only(
                               left: 35, top: 0, bottom: 0, right: 35),
                           child: Text(
-                            'WE MATCH YOU WITH OTHERS WHO HAVE SIMILAR TAGS',
+                            'We match you with others who have similar tags',
                             textAlign: TextAlign.center,
                             style:
                                 simpleTextSansStyleBold(Color(0xFFF7D5C5), 14),

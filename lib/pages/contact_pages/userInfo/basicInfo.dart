@@ -36,6 +36,8 @@ class _BasicInfoState extends State<BasicInfo> {
 
   @override
   Widget build(BuildContext context) {
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 0.65;
     int matchingPercentage = 80;
@@ -44,38 +46,62 @@ class _BasicInfoState extends State<BasicInfo> {
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
             return Container(
-              height: 400,
+              height: _height * 0.45,
               child: Stack(
                 children: <Widget>[
-                  Container(
-                    height: 200.0,
-                    color: Colors.orange[50],
-//            add background image here
-//            decoration: BoxDecoration(
-//              image: DecorationImage(
-//                image: NetworkImage("https://picsum.photos/200"),
-//                fit: BoxFit.cover,
-//              )
-//            ),
-                  ),
                   Align(
-                    alignment: Alignment(0, 0.5),
+                    alignment: Alignment(0, 0.2),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 60.0,
-                          child: createUserImage(
-                              sidebarSize / 5, snapshot.data[0]),
-                          // creatUserImage(sidebarSize / 5, userData),
-                          //     CircleAvatar(
-                          //   backgroundImage: AssetImage('assets/images/olivia.jpg'),
-                          //   radius: 60.0,
-                          // ),
+                        Container(
+                          color: Colors.transparent,
+                          height: 130,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                bottom: 0,
+                                left: (_width / 2) - (119 / 2),
+                                child: CircleAvatar(
+                                  backgroundColor: themeOrange,
+                                  radius: 119 / 2,
+                                ),
+                              ),
+                              Positioned(
+                                left: (_width / 2) - (119 / 2) + 4,
+                                bottom: 4,
+                                child:
+                                    createUserImage(111 / 2, snapshot.data[0]),
+                              ),
+                              Positioned(
+                                left: (_width / 2) - (119 / 2),
+                                bottom: 0,
+                                child: Container(
+                                    height: 130,
+                                    width: 119,
+                                    child: FittedBox(
+                                      child: Image.asset(
+                                          'assets/icon/earCircle.png'),
+                                      fit: BoxFit.fill,
+                                    )),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
-                          height: 4.0,
+                          height: _height * 0.028,
+                        ),
+                        Text(
+                          snapshot.data[0].userName,
+                          style: largeTitleTextStyleBold(themeOrange, 18),
+                        ),
+                        Text(snapshot.data[0].email,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16.0,
+                              color: Color(0xFF636363),
+                            )),
+                        SizedBox(
+                          height: _height * 0.028,
                         ),
                         ShrinkButton(
                           profileColor: snapshot.data[0].profileColor,
@@ -83,11 +109,18 @@ class _BasicInfoState extends State<BasicInfo> {
                           userName: snapshot.data[0].userName,
                           width: 90.0,
                           height: 30.0,
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [themeOrange, gradientYellow],
-                          ),
+                          // gradient: LinearGradient(
+                          //   begin: Alignment.topCenter,
+                          //   end: Alignment.bottomCenter,
+                          //   colors: [
+                          //     listProfileColor[
+                          //         snapshot.data[0].profileColor.toInt()],
+                          //     listProfileColor[
+                          //         snapshot.data[0].profileColor.toInt()],
+                          //   ],
+                          // ),
+                          gradient:
+                              listColors[snapshot.data[0].profileColor.toInt()],
                           duration: Duration(milliseconds: 100),
                           initialText: matchingPercentage.toString() + "%",
                           finalText: " match",
@@ -97,45 +130,10 @@ class _BasicInfoState extends State<BasicInfo> {
                               color: Colors.white),
                           finalStyle: GoogleFonts.openSans(
                               fontSize: 10.0, color: Colors.white),
-//                  child: Row(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: [
-//                      Text(
-//                        matchingCapacity.toString() + "% ",
-//                        style: GoogleFonts.montserrat(
-//                          fontSize: 12.0,
-//                          fontWeight: FontWeight.bold,
-//                          color: Colors.white
-//                        )
-//                      ),
-//                      Text(
-//                        "match",
-//                        style: GoogleFonts.openSans(
-//                          fontSize: 10.0,
-//                          color: Colors.white
-//                        ),
-//                      )
-//                    ],
-//                  ),
                           onPressed: () {
                             //TODO
                           },
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Text(snapshot.data[0].userName,
-                            style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                              color: themeOrange,
-                            )),
-                        SizedBox(
-                          height: 4.0,
-                        ),
-                        Text(snapshot.data[0].email,
-                            style: GoogleFonts.openSans(
-                                fontSize: 10.0, color: Colors.black))
                       ],
                     ),
                   ),
@@ -148,7 +146,7 @@ class _BasicInfoState extends State<BasicInfo> {
               ),
             );
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         });
   }

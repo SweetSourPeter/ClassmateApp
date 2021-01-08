@@ -40,7 +40,7 @@ class _SecondPageState extends State<SecondPage>
                 height: 13,
               ),
               Text(
-                'YOUR PROFILE PIC DISPLAYS THE FIRST AND THE LAST LETTERS OF YOUR NICKNAME',
+                'Your profile picture dispalys the first letters of your nick name',
                 style: simpleTextStyle(Colors.white, 14),
                 textAlign: TextAlign.center,
               ),
@@ -103,7 +103,7 @@ class _SecondPageState extends State<SecondPage>
                         }
                       },
                       child: Text(
-                        'COMPLETE',
+                        'Continue',
                         style: simpleTextSansStyleBold(
                             (_nikname.isNotEmpty) ? themeOrange : Colors.white,
                             16),
