@@ -6,7 +6,7 @@ import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
-import 'package:app_test/widgets/course_menu.dart';
+import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';

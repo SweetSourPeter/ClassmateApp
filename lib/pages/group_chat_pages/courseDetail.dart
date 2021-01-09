@@ -29,16 +29,16 @@ class _CourseDetailState extends State<CourseDetail> {
   String courseName;
   String courseSection;
   String courseTerm;
-  List<String> members;
+  List<List<String>> members;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
   @override
   void initState() {
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data['myCourseName'];
-        courseSection = value.documents[0].data['section'];
-        courseTerm = value.documents[0].data['term'];
+        courseName = value.documents[0].data()['myCourseName'];
+        courseSection = value.documents[0].data()['section'];
+        courseTerm = value.documents[0].data()['term'];
       });
     });
 
@@ -48,7 +48,7 @@ class _CourseDetailState extends State<CourseDetail> {
       });
     });
 
-    databaseMethods.getMembersInCourse(widget.courseId).then((value) {
+    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
       setState(() {
         members = value;
       });
@@ -78,19 +78,27 @@ class _CourseDetailState extends State<CourseDetail> {
       return Container(
         child: Column(
           children: <Widget>[
-            Container(
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: radius,
-                backgroundImage: NetworkImage(
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'
-                )
+            CircleAvatar(
+              backgroundColor: index%4 == 0 ? Color(0xffFF7E40)
+              : index%4 == 1 ? Color(0xffFFB811)
+              : index%4 == 2 ? Color(0xff497ABB)
+              : Color(0xff775CBE),
+              radius: radius,
+              child: Container(
+                child: Text(
+                  members != null ? members[index][0][0].toUpperCase() : '',
+                  style: GoogleFonts.montserrat(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
               ),
             ),
             Container(
               margin: EdgeInsets.only(top: 0),
               child: Text(
-                members != null ? members[index] : '',
+                members != null ? members[index][0] : '',
                 overflow: TextOverflow.ellipsis,
                 style:
                     GoogleFonts.montserrat(color: Colors.black, fontSize: 15),
@@ -119,65 +127,35 @@ class _CourseDetailState extends State<CourseDetail> {
                 Container(
                   color: Colors.white,
                   height: 73,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Stack(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          child: IconButton(
-                            icon: Image.asset(
-                                'assets/images/back_arrow.pic',
-                            ),
-                            // iconSize: 30.0,
-                            color: const Color(0xFFFFB811),
-                            onPressed: () {
-                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                              Navigator.of(context).pop();
-                            },
+                      Container(
+                        padding: const EdgeInsets.only(top: 13.7, left: 8),
+                        child: IconButton(
+                          icon: Image.asset(
+                            'assets/images/arrow-back.png',
+                            height: 17.96,
+                            width: 10.26,
                           ),
+                          // iconSize: 30.0,
+                          color: const Color(0xFFFF7E40),
+                          onPressed: () {
+                            // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                            Navigator.of(context).pop();
+                          },
                         ),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            (courseName ?? '') + ' ' + (courseSection ?? '') + ' ' + (courseTerm ?? ''),
-                            style: GoogleFonts.montserrat(
-                                color: Colors.black,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      Center(
+                        child: Text(
+                          (courseName ?? '') + (courseSection ?? ''),
+                          style: GoogleFonts.montserrat(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      Container(width: 48)
-                      // Padding(
-                      //   padding: const EdgeInsets.only(right: 8.0),
-                      //   child: IconButton(
-                      //     icon: Image.asset(
-                      //         'assets/images/group_more.png',
-                      //         height: 26,
-                      //         width: 50
-                      //     ),
-                      //     // iconSize: 10.0,
-                      //     onPressed: () {
-                      //       Navigator.push(context,
-                      //           MaterialPageRoute(builder: (context) {
-                      //             return MultiProvider(
-                      //               providers: [
-                      //                 Provider<UserData>.value(
-                      //                   value: currentUser,
-                      //                 )
-                      //               ],
-                      //               child: CourseDetailPage(),
-                      //             );
-                      //           }));
-                      //     },
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -198,8 +176,9 @@ class _CourseDetailState extends State<CourseDetail> {
                               Positioned(
                                 child: Text('Group Members',
                                     style: GoogleFonts.montserrat(
-                                        fontWeight: FontWeight.w400, fontSize: 18)),
+                                        fontWeight: FontWeight.w400, fontSize: 14)),
                                 top: 0,
+                                left: 0,
                               ),
                               Positioned(
                                   child: GestureDetector(
@@ -209,9 +188,9 @@ class _CourseDetailState extends State<CourseDetail> {
                                         Text(
                                           numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
                                               : numberOfMembers.toString() + ' ' + 'person',
-                                          style: GoogleFonts.montserrat(
+                                          style: GoogleFonts.openSans(
                                             color: Colors.black38,
-                                            fontSize: 15,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.normal,
                                           )),
                                         // Container(
@@ -241,7 +220,7 @@ class _CourseDetailState extends State<CourseDetail> {
                               mainAxisSpacing: 10,
                               crossAxisCount: 5,
                               childAspectRatio: gridRatio,
-                              children: _renderMemberInfo(gridWidth),
+                              children: _renderMemberInfo(gridWidth - 5),
                             ),
                           )
                         ]),
@@ -251,25 +230,46 @@ class _CourseDetailState extends State<CourseDetail> {
                         width: double.infinity,
                         child: Column(
                           children: [
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                            ),
+                            // Divider(
+                            //   height: 0,
+                            //   thickness: 1,
+                            // ),
                             // ButtonLink(
                             //   text: "Media, Links, and Docs",
                             //   iconData: Icons.folder,
                             //   textSize: 18,
                             //   height: 50,
                             // ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                            ),
-                            ButtonLink(
-                              text: "Chat Search",
-                              iconData: Icons.search,
-                              textSize: 18,
-                              height: 50,
+                            GestureDetector(
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                height: 50,
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.white,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 21.0),
+                                      child: Text(
+                                        "Chat Search",
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 21.0),
+                                      child: Image.asset(
+                                        'assets/images/arrow-forward.png',
+                                        height: 9.02,
+                                        width: 4.86,
+                                        color: const Color(0xFF949494)
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
@@ -288,20 +288,16 @@ class _CourseDetailState extends State<CourseDetail> {
                                     }));
                               },
                             ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                            ),
                             // ButtonLink(
                             //     text: "Mute",
                             //     iconData: Icons.notifications_off,
                             //     textSize: 18,
                             //     height: 50,
                             //     isSwitch: true),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                            )
+                            // Divider(
+                            //                             //   height: 0,
+                            //                             //   thickness: 1,
+                            //                             // )
                           ],
                         ),
                       ),
@@ -329,20 +325,49 @@ class _CourseDetailState extends State<CourseDetail> {
                         margin: EdgeInsets.only(top: 25),
                         child: Column(
                           children: [
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                            ),
-                            ButtonLink(
-                                text: "Exit Group",
-                                iconData: Icons.cleaning_services,
-                                textSize: 18,
+                            // Divider(
+                            //   height: 0,
+                            //   thickness: 1,
+                            // ),
+                            GestureDetector(
+                              child: Container(
+                                alignment: Alignment.centerLeft,
                                 height: 50,
-                                isSimple: true),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                            )
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 21.0),
+                                  child: Text(
+                                    "Exit Group",
+                                    style: GoogleFonts.montserrat(
+                                      fontSize: 14,
+                                      color: Color(0xffFF7E40)
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                      return MultiProvider(
+                                        providers: [
+                                          Provider<UserData>.value(
+                                            value: currentUser,
+                                          )
+                                        ],
+                                        child: SearchGroupChat(
+                                          courseId: widget.courseId,
+                                          myEmail: widget.myEmail,
+                                          myName: widget.myName,
+                                        ),
+                                      );
+                                    }));
+                              },
+                            ),
+                            // Divider(
+                            //   height: 0,
+                            //   thickness: 1,
+                            // )
                           ],
                         ),
                       ),

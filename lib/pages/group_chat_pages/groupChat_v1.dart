@@ -222,7 +222,7 @@ class _GroupChatState extends State<GroupChat> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: IconButton(
-                            icon: Image.asset('assets/images/back_arrow.pic',
+                            icon: Image.asset('assets/images/arrow-back.png',
                                 height: 23, width: 23),
                             // iconSize: 30.0,
                             color: const Color(0xFFFFB811),
@@ -328,7 +328,7 @@ class _GroupChatState extends State<GroupChat> {
                         Padding(
                           padding: const EdgeInsets.only(left: 25.0),
                           child: GestureDetector(
-                              child: Image.asset('assets/images/smile.png',
+                              child: Image.asset('assets/images/emoji.png',
                                   width: 25.36, height: 25.36),
                               onTap: () {
                                 showTextKeyboard

@@ -4,10 +4,10 @@ import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
-import 'package:app_test/pages/edit_pages/EditNameModal.dart';
+import 'package:app_test/pages/edit_pages/editNameModel.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
-import 'package:app_test/widgets/course_menu.dart';
+import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -92,9 +92,8 @@ class _EditHomePageState extends State<EditHomePage> {
                         onTap: () {
                           showBottomPopSheet(
                               context,
-                              EditNameModal(
-                                  userName: userData_.userName,
-                                  id: userdata.userID));
+                              EditNameModel(userName: userData_.userName, userId: userData_.userID)
+                          );
                         },
                       ),
                       Divider(

@@ -1,4 +1,5 @@
 // import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
@@ -257,9 +258,12 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    Size mediaQuery = MediaQuery.of(context).size;
+    double sidebarSize = mediaQuery.width * 1.0;
+
     return SafeArea(
       child: Scaffold(
-          backgroundColor: const Color(0xffF3F3F3),
+          backgroundColor: Color(0xffF9F6F1),
           body: GestureDetector(
             onTap: () {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -289,7 +293,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           width: 40,
                           child: IconButton(
                             icon: Image.asset(
-                              'assets/images/back_arrow.pic',
+                              'assets/images/arrow-back.png',
                             ),
                             // iconSize: 30.0,
                             color: const Color(0xFFFFB811),
@@ -302,7 +306,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       Container(
-                        // height: 30.0,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -320,16 +323,21 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ),
                                   );
                                 },
-                                child: Container(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(32),
-                                    child: Image.network(
-                                      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                                      height: 45,
-                                      width: 45,
+                                child: CircleAvatar(
+                                  backgroundColor: Color(0xffFF7E40),
+                                  radius: sidebarSize / 20,
+                                  child: Container(
+                                    child: Text(
+                                      widget.friendName[0].toUpperCase(),
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold
+                                      ),
                                     ),
                                   ),
                                 ),
+                                // createUserImage(sidebarSize / 20, currentUser),
                               ),
                             ),
                             Column(
@@ -338,11 +346,12 @@ class _ChatScreenState extends State<ChatScreen> {
                               children: [
                                 Text(widget.friendName,
                                     style: GoogleFonts.montserrat(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold)),
                                 Container(
-                                  width: 195,
+                                  width: 120,
+                                  alignment: Alignment.centerLeft,
                                   child: Text(
                                     friendCourse.isNotEmpty
                                         ? friendCourse.toString().substring(1,
@@ -350,7 +359,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         : 'No courses yet',
                                     style: GoogleFonts.openSans(
                                       fontSize: 14,
-                                      color: Colors.black,
+                                      color: Color(0xff949494),
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -363,8 +372,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: IconButton(
-                          icon: Image.asset('assets/images/find.png',
-                              height: 23, width: 23),
+                          icon: Image.asset('assets/images/search.png',
+                              height: 23, width: 23, color: Color(0xffFF7E40),),
                           // iconSize: 10.0,
                           onPressed: () {
                             Navigator.push(context,
@@ -406,7 +415,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   alignment: Alignment.center,
                   height: 74.0,
                   width: MediaQuery.of(context).size.width,
-                  color: const Color(0xffF9F6F1),
+                  color: Colors.white,
                   child: Row(
                     children: [
                       SizedBox(
@@ -418,7 +427,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: Container(
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Color(0xffF9F6F1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: TextField(
@@ -459,10 +468,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       )),
                       Padding(
-                        padding: const EdgeInsets.only(left: 25.0),
+                        padding: const EdgeInsets.only(left: 14.0),
                         child: GestureDetector(
-                            child: Image.asset('assets/images/smile.png',
-                                width: 25.36, height: 25.36),
+                            child: showStickerKeyboard ? Image.asset(
+                                'assets/images/emoji_on_click.png',
+                                width: 29, height: 27.83
+                            ) : Image.asset('assets/images/emoji.png',
+                                width: 29, height: 27.83),
                             onTap: () {
                               if (showTextKeyboard) {
                                 setState(() {
@@ -490,7 +502,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             }),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                        padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                           onTap: () {
                             if (showTextKeyboard) {
@@ -517,11 +529,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 () => _controller.jumpTo(
                                     _controller.position.minScrollExtent));
                           },
-                          child: Image.asset(
-                            'assets/images/plus.png',
-                            width: 25.36,
-                            height: 25.36,
-                          ),
+                          child: showFunctions ? Image.asset(
+                              'assets/images/plus_on_click.png',
+                              width: 28, height: 28
+                          ) : Image.asset('assets/images/plus.png',
+                              width: 28, height: 28)
                         ),
                       )
                     ],
@@ -530,7 +542,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 showStickerKeyboard
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: 300,
+                        height: mediaQuery.height/2 - 50,
                         // showStickerKeyboard ? 400 : 0,
                         child: EmojiPicker(
                           rows: 4,
@@ -549,21 +561,37 @@ class _ChatScreenState extends State<ChatScreen> {
                 showFunctions
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: 100,
+                        height: 80,
+                        width: mediaQuery.width,
+                        color: Colors.white,
                         child: Container(
-                          color: const Color(0xffF9F6F1),
+                          padding: EdgeInsets.only(left: 50, right: 50),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconButton(
-                                  icon: Image.asset('assets/images/camera.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.camera, currentUser.email)),
-                              IconButton(
-                                  icon: Image.asset(
-                                      'assets/images/photo_library.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.gallery, currentUser.email)),
+                              Container(
+                                height: 64,
+                                width: 65,
+                                child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/camera.png',
+                                    ),
+                                    onPressed: () => _pickImage(
+                                        ImageSource.camera, currentUser.email)),
+                              ),
+                              Container(
+                                height: 64,
+                                width: 65,
+                                child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/photo_library.png',
+                                    ),
+                                    onPressed: () => _pickImage(
+                                        ImageSource.gallery, currentUser.email)),
+                              ),
+                              Container(height: 64,width: 55,color: Colors.white,),
+                              Container(height: 64,width: 55,color: Colors.white,)
                             ],
                           ),
                         ),
@@ -663,7 +691,7 @@ class MessageTile extends StatelessWidget {
                                       bottomRight: Radius.circular(12),
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
-                                  color: const Color(0xffFFB811)),
+                                  color: const Color(0xffF7D5C5)),
                               child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
@@ -810,19 +838,31 @@ class ImageTile extends StatelessWidget {
                             ),
                           ),
                           Flexible(
-                            child: Container(
-                                margin: EdgeInsets.only(left: 10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: message,
-                                    placeholder: (context, url) =>
-                                        new CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        new Icon(Icons.error),
-                                    height: 180.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
                                   ),
-                                )),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: message,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                      height: 180.0,
+                                    ),
+                                  )),
+                            ),
                           ),
                         ],
                       ),
@@ -845,19 +885,31 @@ class ImageTile extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Flexible(
-                            child: Container(
-                                margin: EdgeInsets.only(right: 10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: message,
-                                    placeholder: (context, url) =>
-                                        new CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        new Icon(Icons.error),
-                                    height: 180.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
                                   ),
-                                )),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(right: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: message,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                      height: 180.0,
+                                    ),
+                                  )),
+                            ),
                           ),
                           Text(
                             currentTime.substring(11, currentTime.length - 7),
