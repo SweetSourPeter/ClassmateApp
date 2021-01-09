@@ -13,28 +13,29 @@ import 'package:focused_menu/modals.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/constant.dart';
 
-class EditNameModal extends StatefulWidget {
+class EditNameModel extends StatefulWidget {
+  final String userId;
   final String userName;
-  final String id;
-  EditNameModal({this.userName, this.id});
+
+  EditNameModel({this.userName, this.userId});
 
   @override
-  _EditNameModalState createState() => _EditNameModalState();
+  _EditNameModelState createState() => _EditNameModelState();
 }
 
-class _EditNameModalState extends State<EditNameModal> {
+class _EditNameModelState extends State<EditNameModel> {
   String subtitle;
-  final databaseMehods = DatabaseMethods();
+  final databaseMethods = DatabaseMethods();
   @override
   Widget build(BuildContext context) {
-    double modal_height = MediaQuery.of(context).size.height - 50;
+    double modelHeight = MediaQuery.of(context).size.height - 50;
     final TextEditingController _controller = TextEditingController();
     _controller.text = widget.userName;
     _controller.selection = TextSelection.fromPosition(
         TextPosition(offset: _controller.text.length));
 
     return Container(
-        height: modal_height,
+        height: modelHeight,
         child: Container(
           child:
               // RefreshIndicator(
@@ -76,11 +77,11 @@ class _EditNameModalState extends State<EditNameModal> {
                               color: themeOrange, fontSize: 20),
                         ),
                         onTap: () {
-                          String nicknam = _controller.text;
+                          String nickname = _controller.text;
 
-                          if (nicknam.length > 0 &&
-                              nicknam != widget.userName) {
-                            databaseMehods.updateUserName(widget.id, nicknam);
+                          if (nickname.length > 0 &&
+                              nickname != widget.userName) {
+                            databaseMethods.updateUserName(widget.userId, nickname);
                             Navigator.pop(context);
                           }
                         },

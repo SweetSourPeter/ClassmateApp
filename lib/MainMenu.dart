@@ -1,10 +1,11 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/chat_pages/chatRoom.dart';
-import 'package:app_test/widgets/course_menu.dart';
+import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
+import 'models/courseInfo.dart';
 import 'widgets/my_account.dart';
 
 class MainMenu extends StatefulWidget {
@@ -62,6 +63,7 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
+    final course = Provider.of<List<CourseInfo>>(context);
 
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
@@ -115,7 +117,10 @@ class _MainMenuState extends State<MainMenu> {
                         backgroundColor: riceColor,
                         // appBar: buildAppBar(),
                         body: _currentIndex == 0
-                            ? CourseMainMenu()
+                            ? CourseMainMenu(
+                          course: course,
+                          userData: userdata,
+                        )
                             : _currentIndex == 1
                                 ? ChatRoom(
                                     myName: userdata.userName,

@@ -67,7 +67,7 @@ class DatabaseMethods {
   }
 
   getUsersByEmail(String email) async {
-    print('$email');
+    // print('$email');
     return await FirebaseFirestore.instance
         .collection("users")
         // .where("email", isEqualTo: email)
@@ -232,19 +232,19 @@ class DatabaseMethods {
   //--------The Chat Room Database Methods---------//
   // create a new chat room
   createChatRoom(String chatRoomId, chatRoomMap) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('chatroom')
-        .document(chatRoomId)
-        .setData(chatRoomMap)
+        .doc(chatRoomId)
+        .set(chatRoomMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
   addChatMessages(String chatRoomId, messageMap) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('chatroom')
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .collection('chats')
         .add(messageMap)
         .catchError((e) {
@@ -253,9 +253,9 @@ class DatabaseMethods {
   }
 
   addGroupChatMessages(String courseID, messageMap) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('courses')
-        .document(courseID)
+        .doc(courseID)
         .collection('chats')
         .add(messageMap)
         .catchError((e) {
@@ -265,7 +265,7 @@ class DatabaseMethods {
   }
 
   setUnreadNumber(String chatRoomId, String userEmail, int unreadNumber) {
-    Firestore.instance.collection('chatroom').document(chatRoomId).updateData({
+    FirebaseFirestore.instance.collection('chatroom').document(chatRoomId).updateData({
       (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): unreadNumber
     }).catchError((e) {
       print(e.toString());
@@ -273,7 +273,7 @@ class DatabaseMethods {
   }
 
   getUnreadNumber(String chatRoomId, String userEmail) async {
-    return Firestore.instance.collection('chatroom').document(chatRoomId).get();
+    return FirebaseFirestore.instance.collection('chatroom').document(chatRoomId).get();
   }
 
   //-------User report save to satabase---------
@@ -396,8 +396,20 @@ class DatabaseMethods {
         .get();
   }
 
-  getMembersInCourse(String courseId) async {
-    List<String> members = List<String>();
+  getListOfNumberOfMembersInCourses(course) async {
+    List<int> listOfNumber = [];
+    if (course != null && course.length > 0) {
+      for (var i = 0; i < course.length; i++) {
+        await getNumberOfMembersInCourse(course[i].courseID).then((value) {
+          listOfNumber.add(value.docs.length);
+        });
+      }
+    }
+    return listOfNumber;
+  }
+
+  getInfoOfMembersInCourse(String courseId) async {
+    List<List<String>> members = [];
     await FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
@@ -412,13 +424,92 @@ class DatabaseMethods {
             .get()
             .then((value) {
           final userName = value.data()['userName'];
-          // List<String> userInfo = [userName];
-          members.add(userName);
+          final profileColor = value.data()['profileColor'].toString();
+          List<String> userInfo = [userName, tmpUserId, profileColor];
+          members.add(userInfo);
         });
       }
     });
 
     return members;
+  }
+
+  getUnreadGroupChatNumber(String courseId, String userId) async {
+    int unread = 0;
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('users')
+        .doc(userId)
+        .get()
+        .then((value) {
+          unread = value.data()['unread'];
+    });
+
+    return unread;
+  }
+
+  getListOfUnreadInCourses(course, String userId) async {
+    List<int> listOfUnread = [];
+    if (course != null && course.length > 0) {
+      for (var i = 0; i < course.length; i++) {
+        await getUnreadGroupChatNumber(course[i].courseID, userId).then((
+            value) {
+          listOfUnread.add(value);
+        });
+      }
+    }
+    return listOfUnread;
+  }
+
+  getUserIdOfOtherMembersInCourse(String courseId) async {
+    List<String> listOfUserId = [];
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('users')
+        .get().then((value) {
+          value.docs.forEach((element) {
+            listOfUserId.add(element.data()['userID']);
+          });
+    });
+
+    return listOfUserId;
+  }
+
+  addOneToUnreadGroupChatNumber(String courseId, String userId) async {
+    int unread = 0;
+    await getUnreadGroupChatNumber(courseId, userId).then((value) {
+      unread = value;
+    });
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('users')
+        .doc(userId)
+        .update({
+        'unread': (unread + 1)
+        });
+  }
+
+  addOneToUnreadGroupChatNumberForAllMembers(String courseId) async {
+    List<String> listOfUserId = [];
+    await getUserIdOfOtherMembersInCourse(courseId).then((value) {
+      listOfUserId = value;
+    });
+
+    for(var i=0; i < listOfUserId.length; i++) {
+      await addOneToUnreadGroupChatNumber(courseId, listOfUserId[i]);
+    }
+  }
+
+  setUnreadGroupChatNumberToZero(String courseId, String userId) async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('users')
+        .doc(userId)
+        .update({'unread' : 0});
   }
 
   setLastestMessage(

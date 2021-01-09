@@ -2,7 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
-import 'package:app_test/widgets/course_menu.dart';
+import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 

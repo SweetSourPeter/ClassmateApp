@@ -38,108 +38,105 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
 
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          child: Column(
-            children: [
-              SizedBox(
-                height: 25,
-              ),
-              Container(
-                color: const Color(0xfff9f6f1),
-                height: 73,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8),
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/back_arrow.pic',
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Column(
+              children: [
+                Container(
+                  color: const Color(0xffFF712D),
+                  height: 73,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 25),
+                          height: 50,
+                          child: TextField(
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Color(0xffFF813C),
+                            ),
+                            textInputAction: TextInputAction.search,
+                            onSubmitted: (value) {
+                              setState(() {
+                                isSearching = true;
+                              });
+                            },
+                            controller: searchTextEditingController,
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              prefixIcon: IconButton(
+                                icon: Image.asset(
+                                  'assets/images/search.png',
+                                  color: Color(0xffFFCDB6),
+                                  height: 20,
+                                  width: 20,
+                                ),
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () => searchTextEditingController.clear(),
+                                icon: Image.asset(
+                                  'assets/images/cross.png',
+                                  // color: Color(0xffFF7E40),
+                                  height: 19,
+                                  width: 19,
+                                ),
+                              ),
+                              hintText: 'Search Chat',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
+                              ),
+                              contentPadding: EdgeInsets.only(left: 0),
+                              hintStyle: GoogleFonts.openSans(
+                                fontSize: 16,
+                                color: Color(0xffFF813C),
+                              ),
+                            ),
                           ),
-                          // iconSize: 30.0,
-                          color: const Color(0xFFFFB811),
-                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        child: TextField(
-                          style: GoogleFonts.openSans(
-                            fontSize: 20,
-                            color: const Color(0xFFffb811),
-                          ),
-                          textInputAction: TextInputAction.search,
-                          onSubmitted: (value) {
-                            setState(() {
-                              isSearching = true;
-                            });
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25, right: 25.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            clearSearchTextInput(currentFocus);
                           },
-                          controller: searchTextEditingController,
-                          textAlign: TextAlign.left,
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            filled: true,
-                            prefixIcon: Image.asset(
-                              'assets/images/magnifier.pic',
-                              height: 18,
-                              width: 18,
-                            ),
-                            hintText: 'Search Chat',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            contentPadding: EdgeInsets.only(left: 0),
-                            hintStyle: GoogleFonts.openSans(
-                              fontSize: 20,
-                              color: Colors.grey,
-                            ),
+                          child: Text(
+                            'Cancel',
+                            style: GoogleFonts.openSans(
+                                fontSize: 16,
+                                color: Colors.white,),
                           ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          FocusScopeNode currentFocus = FocusScope.of(context);
-                          clearSearchTextInput(currentFocus);
-                        },
-                        child: Text(
-                          'Cancel',
-                          style: GoogleFonts.openSans(
-                              fontSize: 20,
-                              color: const Color(0xffffb811),
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: SearchList(currentUser),
-              ),
-            ],
-          )),
+                SizedBox(height: 25,),
+                Expanded(
+                  child: SearchList(currentUser),
+                ),
+              ],
+            )),
+      ),
     );
   }
 
@@ -180,13 +177,15 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                           .data()['message']
                           .contains(searchTextEditingController.text)) {
                     children.add(searchTile(
-                        userName: snapshot.data.documents[i].data()['sendBy'],
+                        userName: snapshot.data.documents[i].data()['senderName'],
                         message: snapshot.data.documents[i].data()['message'],
                         imageURL:
                             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
                         userData: currentUser,
                         searchWord: searchTextEditingController.text,
-                        messageIndex: i));
+                        messageIndex: i,
+                        messageTime: DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i].data()['time']).toString(),
+                    ));
                   }
                 }
                 return ListView.builder(
@@ -202,13 +201,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
         : Container();
   }
 
-  Widget searchTile(
-      {String userName,
-      String message,
-      String imageURL,
-      userData,
-      String searchWord,
-      int messageIndex}) {
+  Widget searchTile({String userName, String message, String imageURL, userData, String searchWord, int messageIndex, String messageTime}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -238,11 +231,69 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
-                    children:
-                        highlightSearchWord(message, searchWord, userName)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Color(0xffFF7E40),
+                        radius: 19.5,
+                        child: Container(
+                          child: Text(
+                            userName[0].toUpperCase(),
+                            style: GoogleFonts.montserrat(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width-94,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 8),
+                                  child: Text(
+                                    (userName != null ? userName : '') + ': ',
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                    messageTime.substring(5,7) + '/' + messageTime.substring(8, 10) + '/' + messageTime.substring(0, 4),
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 14,
+                                      color: Color(0xff949494),
+                                    )
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width - 100,
+                              padding: EdgeInsets.only(left: 8),
+                              child: RichText(
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                    children: highlightSearchWord(message, searchWord, userName)
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               Divider(
                 height: 16,
@@ -292,7 +343,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
         text: searchResult.substring(match.start, match.end),
         style: GoogleFonts.openSans(
           fontSize: 16,
-          color: const Color(0xffffb811),
+          color: const Color(0xffFF7E40),
         ),
       ));
 

@@ -1,9 +1,6 @@
-import 'package:app_test/models/message_model.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
-import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -80,16 +77,16 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
-    getUserInfogetChats(widget.myEmail);
+    getUserInfoGetChats(widget.myEmail);
     super.initState();
   }
 
-  getUserInfogetChats(myEmail) async {
+  getUserInfoGetChats(myEmail) async {
     databaseMethods.getChatRooms(myEmail).then((snapshots) {
       setState(() {
         chatRooms = snapshots;
         print(
-            "we got the data + ${chatRooms.toString()} this is name  ${myEmail}");
+            "we got the data + ${chatRooms.toString()} this is name  $myEmail");
       });
     });
   }
@@ -104,6 +101,7 @@ class _ChatRoomState extends State<ChatRoom> {
           children: [
             Container(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(top: 40, left: 40, bottom: 20),
@@ -111,9 +109,10 @@ class _ChatRoomState extends State<ChatRoom> {
                       child: Text(
                         'Chats',
                         textAlign: TextAlign.left,
-                        style: largeTitleTextStyle(
-                          Colors.black,
-                        ),
+                        style: GoogleFonts.montserrat(
+                            color: Colors.black,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -140,7 +139,14 @@ class _ChatRoomState extends State<ChatRoom> {
                           );
                         }));
                       },
-                      child: Icon(Icons.add_circle_outline))
+                      child: Container(
+                        padding: EdgeInsets.only(top: 20, right: 40),
+                        child: Image.asset(
+                          'assets/images/search.png',
+                          color: Color(0xffFF7E40),
+                        ),
+                      )
+                  )
                 ],
               ),
             ),
@@ -175,6 +181,9 @@ class ChatRoomsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    Size mediaQuery = MediaQuery.of(context).size;
+    double sidebarSize = mediaQuery.width * 1.0;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -195,6 +204,7 @@ class ChatRoomsTile extends StatelessWidget {
         }));
       },
       child: Container(
+        height: 83,
         margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
         padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         decoration: BoxDecoration(
@@ -213,28 +223,35 @@ class ChatRoomsTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    height: 50,
-                    width: 50,
+                    height: 65,
+                    width: 65,
                     child: Stack(
                       children: [
-                        Container(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(32),
-                            child: Image.network(
-                              'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                        CircleAvatar(
+                          backgroundColor: Color(0xffFF7E40),
+                          radius: sidebarSize / 10,
+                          child: Container(
+                            child: Text(
+                              // 单个字22，双子18
+                              friendName[0].toUpperCase(),
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 22,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold
+                              ),
                             ),
                           ),
                         ),
                         unreadNumber > 0
                             ? Positioned(
-                                left: 32.0,
-                                top: 32.0,
+                                right: 0,
+                                top: 0,
                                 child: new Container(
                                   alignment: Alignment.topCenter,
                                   width: 18,
                                   height: 18,
                                   decoration: new BoxDecoration(
-                                    color: const Color(0xffffb811),
+                                    color: const Color(0xffFF1717),
                                     borderRadius: BorderRadius.circular(32),
                                   ),
                                   child: new Text(
@@ -257,15 +274,15 @@ class ChatRoomsTile extends StatelessWidget {
                         Text(
                           friendName,
                           style: GoogleFonts.montserrat(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
                               color: const Color(0xffFF7E40)),
                         ),
                         SizedBox(
-                          height: 4,
+                          height: 10,
                         ),
                         Container(
-                          width: 240,
+                          width: mediaQuery.width - 200,
                           child: Text(latestMessage,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.openSans(
@@ -277,12 +294,12 @@ class ChatRoomsTile extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10.0),
+                padding: const EdgeInsets.only(top: 4.0),
                 child: Container(
                   child: Text(
                     lastMessageTime.substring(11, lastMessageTime.length - 7),
                     style: GoogleFonts.openSans(
-                      fontSize: 10,
+                      fontSize: 14,
                       color: const Color(0xff949494),
                     ),
                   ),
