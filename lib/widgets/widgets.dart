@@ -171,7 +171,7 @@ Padding topLineBar() {
 // used to create user image
 CircleAvatar createUserImage(double radius, UserData userdata) {
   return CircleAvatar(
-    backgroundColor: orengeColor,
+    backgroundColor: themeOrange,
     radius: radius,
     child: Container(
       child: (userdata.userImageUrl == null)
@@ -200,7 +200,7 @@ CircleAvatar creatUserImageWithString(
     double radius, String userImageUrl, String userName) {
   print("my user image url is $userImageUrl");
   return CircleAvatar(
-    backgroundColor: orengeColor,
+    backgroundColor: themeOrange,
     radius: radius,
     child: Container(
       child: (userImageUrl == '')
@@ -271,11 +271,11 @@ class _ButtonLinkState extends State<ButtonLink> {
                       ? Container()
                       : Icon(
                           widget.iconData,
-                          color:
-                              !widget.isSimple ? Colors.black45 : orengeColor,
+                          color: themeOrange,
+                          size: widget.textSize * 1.5,
                         ),
                   SizedBox(
-                    width: widget.isEdit ? 10 : 20,
+                    width: 10,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,7 +284,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                         widget.text,
                         style: GoogleFonts.montserrat(
                             color:
-                                !widget.isSimple ? Colors.black87 : orengeColor,
+                                !widget.isSimple ? Colors.black87 : themeOrange,
                             fontSize: widget.textSize),
                       ),
                       widget.isEdit && widget.editText.length > 0
@@ -297,6 +297,11 @@ class _ButtonLinkState extends State<ButtonLink> {
                           : Container(),
                     ],
                   ),
+                  widget.isSimple ? Icon(
+                    widget.iconData,
+                    color: themeOrange,
+                    size: widget.textSize * 1.5,
+                  ) : Container(),
                   new Spacer(),
                   !widget.isSimple
                       ? Container(
@@ -314,7 +319,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                                       print(isSwitched);
                                     });
                                   },
-                                  activeTrackColor: orengeColor,
+                                  activeTrackColor: themeOrange,
                                   activeColor: Colors.white,
                                 ))
                       : Container()

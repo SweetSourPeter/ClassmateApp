@@ -43,7 +43,7 @@ class _EditHomePageState extends State<EditHomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Edit Profile'),
-          backgroundColor: orengeColor,
+          backgroundColor: themeOrange,
           leading: GestureDetector(
               onTap: () {
                 Navigator.pop(context);
@@ -56,7 +56,7 @@ class _EditHomePageState extends State<EditHomePage> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            color: riceColor,
+            color: Colors.white,
             height: mediaQuery.height,
             width: sidebarSize,
             child: Column(
@@ -70,10 +70,6 @@ class _EditHomePageState extends State<EditHomePage> {
                   height: menuContainerHeight,
                   child: Column(
                     children: <Widget>[
-                      Divider(
-                        height: 0,
-                        thickness: 1,
-                      ),
                       ButtonLink(
                         text: "NAME",
                         editText: nickName,
@@ -103,8 +99,15 @@ class _EditHomePageState extends State<EditHomePage> {
                           showBottomPopSheet(
                               context,
                               TagSelecting(
-                                  buttonColor: Colors.amber, pageController:PageController(initialPage: 0), isEdit: true));
+                                  buttonColor: Colors.amber,
+                                  pageController:
+                                      PageController(initialPage: 0),
+                                  isEdit: true));
                         },
+                      ),
+                      Divider(
+                        height: 0,
+                        thickness: 1,
                       ),
                     ],
                   ),

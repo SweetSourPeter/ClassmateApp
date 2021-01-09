@@ -1,20 +1,16 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
-import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/pages/edit_pages/editHomePage.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
-import 'package:app_test/widgets/course_menu.dart';
-import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../models/constant.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyAccount extends StatefulWidget {
   final GlobalKey key;
@@ -43,7 +39,26 @@ class _MyAccountState extends State<MyAccount> {
 
     // TODO: implement build
     return Scaffold(
-      backgroundColor: riceColor,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        toolbarHeight: 40,
+        elevation: 0,
+        actions: [
+          GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: EdgeInsets.only(right: 19, top: 11),
+                child: Text(
+                  'Share',
+                  style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                      color: themeOrange),
+                ),
+              )),
+        ],
+      ),
       body: Container(
         height: mediaQuery.height,
         width: sidebarSize,
@@ -52,122 +67,90 @@ class _MyAccountState extends State<MyAccount> {
           // mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Container(
-              //color: Colors.white,
-              height: mediaQuery.height * 0.25,
-
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(45, 45, 0, 0),
-                    child:
-                        // Container(
-                        //   height: 10,
-                        //   width: 10,
-                        //   color: Colors.black,
-                        // )
-
-                        createUserImage(sidebarSize / 10, userdata),
-                  ),
-                  // Image.asset(
-                  //   "assets/images/olivia.jpg",
-                  //   width: sidebarSize / 2,
-                  // ),
-
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(sidebarSize / 20,
-                        mediaQuery.height * 0.15 - 10, 15, 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(userdata.userName ?? '',
-                            style: GoogleFonts.lato(
-                              textStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w900),
-                            )),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(userdata.email ?? '',
-                            style: GoogleFonts.lato(
-                              textStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400),
-                            )),
-                      ],
+                margin: EdgeInsets.only(bottom: 24, top: 35),
+                child:
+                    // Container(
+                    //   height: 10,
+                    //   width: 10,
+                    //   color: Colors.black,
+                    // )
+                    Stack(
+                  children: [
+                    SvgPicture.asset(
+                      './assets/images/cat_ears.svg',
+                      color: themeOrange,
+                      width: sidebarSize / 3.8,
                     ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(sidebarSize / 20,
-                          mediaQuery.height * 0.15 - 25, 15, 30),
-                      child: QrImage(
-                        data: userdata.userID,
-                        version: QrVersions.auto,
-                        size: mediaQuery.width / 8.43,
-                        gapless: false,
-                        // embeddedImage: AssetImage(
-                        //     'assets/images/my_embedded_image.png'),
-                        // embeddedImageStyle:
-                        //     QrEmbeddedImageStyle(
-                        //   size: Size(80, 80),
-                        // ),
-                      ))
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 40),
-              child: Row(
-                children: [
-                  userInfoDetailsBox(mediaQuery, '8', 'My tags'),
-                  userInfoDetailsBox(mediaQuery, '26', 'My posts'),
-                  userInfoDetailsBox(mediaQuery, '4', 'My classes'),
-                ],
-              ),
-            ),
+                    Positioned(
+                        child: createUserImage(sidebarSize / 8, userdata),
+                        top: 13,
+                        left: 3)
+                  ],
+                )),
+            // Image.asset(
+            //   "assets/images/olivia.jpg",
+            //   width: sidebarSize / 2,
+            // ),
 
+            Container(
+              child: Column(
+                children: [
+                  Text(userdata.userName ?? '',
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900),
+                      )),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(userdata.email ?? '',
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      )),
+                ],
+              ),
+            ),
             // Divider(
             //   thickness: 1,
             // ),
             Container(
+              margin: EdgeInsets.only(top: 20),
+              padding: EdgeInsets.only(left: 10, right: 10),
               //key: widget.key,
               width: double.infinity,
               height: menuContainerHeight,
               child: Column(
                 children: <Widget>[
-                  Divider(
-                    height: 0,
-                    thickness: 1,
-                  ),
                   ButtonLink(
                     text: "Edit Profile",
-                    iconData: Icons.edit,
+                    iconData: Icons.settings_outlined,
                     textSize: widget.getSize(3),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return MultiProvider(
-                            providers: [
-                              Provider<UserData>.value(
-                                value: userdata,
-                              )
-                            ],
-                            child: EditHomePage(
-                                getSize: widget.getSize));
+                        return MultiProvider(providers: [
+                          Provider<UserData>.value(
+                            value: userdata,
+                          )
+                        ], child: EditHomePage(getSize: widget.getSize));
                       }));
                     },
                   ),
                   Divider(
-                    height: 0,
-                    thickness: 1,
-                    indent: 45,
-                  ),
+                      height: 0,
+                      thickness: 1,
+                      indent: 60,
+                      endIndent: 30,
+                      color: dividerColor),
                   ButtonLink(
                     text: "Seats Notification",
-                    iconData: Icons.event_seat,
+                    iconData: Icons.notifications_outlined,
                     textSize: widget.getSize(1),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
@@ -193,13 +176,14 @@ class _MyAccountState extends State<MyAccount> {
                     },
                   ),
                   Divider(
-                    height: 0,
-                    thickness: 1,
-                    indent: 45,
-                  ),
+                      height: 0,
+                      thickness: 1,
+                      indent: 60,
+                      endIndent: 30,
+                      color: dividerColor),
                   ButtonLink(
                     text: "Help & Feedback",
-                    iconData: Icons.help,
+                    iconData: Icons.help_outline,
                     textSize: widget.getSize(2),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
@@ -207,13 +191,14 @@ class _MyAccountState extends State<MyAccount> {
                     },
                   ),
                   Divider(
-                    height: 0,
-                    thickness: 1,
-                    indent: 45,
-                  ),
+                      height: 0,
+                      thickness: 1,
+                      indent: 60,
+                      endIndent: 30,
+                      color: dividerColor),
                   ButtonLink(
                     text: "About the app",
-                    iconData: Icons.info,
+                    iconData: Icons.info_outline,
                     textSize: widget.getSize(0),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
@@ -224,15 +209,20 @@ class _MyAccountState extends State<MyAccount> {
                     },
                   ),
                   Divider(
-                    height: 0,
-                    thickness: 1,
-                  ),
+                      height: 0,
+                      indent: 60,
+                      endIndent: 30,
+                      thickness: 1,
+                      color: dividerColor),
                   SizedBox(
                     height: 20,
                   ),
                   Divider(
                     height: 0,
                     thickness: 1,
+                    color: dividerColor,
+                    indent: 30,
+                    endIndent: 30,
                   ),
                   ButtonLink(
                     onTap: () {
@@ -253,6 +243,9 @@ class _MyAccountState extends State<MyAccount> {
                   Divider(
                     height: 0,
                     thickness: 1,
+                    color: dividerColor,
+                    indent: 30,
+                    endIndent: 30,
                   ),
                 ],
               ),

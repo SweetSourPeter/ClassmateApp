@@ -78,7 +78,7 @@ class _MainMenuState extends State<MainMenu> {
         : Scaffold(
             backgroundColor: orengeColor,
             appBar: AppBar(
-              backgroundColor: riceColor,
+              backgroundColor: Colors.white,
               toolbarHeight: 0,
               elevation: 0,
             ),
