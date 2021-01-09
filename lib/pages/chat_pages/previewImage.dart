@@ -32,7 +32,7 @@ class _PreviewImageState extends State<PreviewImage> {
     String savePath = appDocDir.path + "/temp.png";
     await Dio().download(source, savePath);
 
-    print(await ImageGallerySaver.saveFile(savePath));
+    await ImageGallerySaver.saveFile(savePath);
 
     _toastInfo('The image has been downloaded to your gallery!');
   }
