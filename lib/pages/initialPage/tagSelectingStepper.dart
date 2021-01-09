@@ -75,7 +75,7 @@ class _TagSelectingState extends State<TagSelecting> {
     Color submitButtonTextColor = Colors.white;
     String submitButtonString = 'Next';
 
-    if (allTags.length >= 8) {
+    if (allTags.length >= 5) {
       submitButtonColor = widget.buttonColor;
       submitButtonTextColor = Colors.white;
       submitButtonString = 'Complete';
@@ -100,7 +100,7 @@ class _TagSelectingState extends State<TagSelecting> {
             children: [
               Container(
                 alignment: Alignment.topCenter,
-                height: mediaQuery.height * 0.54,
+                height: mediaQuery.height * 0.56,
                 color: themeOrange,
                 child: SingleChildScrollView(
                   child: Column(
@@ -195,6 +195,10 @@ class _TagSelectingState extends State<TagSelecting> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Container(
+                        //   height: 10,
+                        //   color: Color(0xDA6D39).withOpacity(1),
+                        // ),
                         Padding(
                           padding: EdgeInsets.only(left: 21, top: 15),
                           child: Text(
@@ -234,13 +238,13 @@ class _TagSelectingState extends State<TagSelecting> {
                     highlightColor: Colors.white,
                     highlightElevation: 0,
                     elevation: 0,
-                    color: (allTags.length >= 8)
+                    color: (allTags.length >= 5)
                         ? Colors.white
                         : Color(0xDA6D39).withOpacity(1),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     onPressed: () {
-                      if (allTags.length >= 8) {
+                      if (allTags.length >= 5) {
                         userTagProvider.addTagsToContact(context);
 
                         widget.pageController.animateToPage(3,
@@ -252,11 +256,11 @@ class _TagSelectingState extends State<TagSelecting> {
                       }
                     },
                     child: AutoSizeText(
-                      allTags.length >= 8
+                      allTags.length >= 5
                           ? 'Complete'
-                          : '${allTags.length.toString()} / 8',
+                          : '${allTags.length.toString()} / 5',
                       style: simpleTextSansStyleBold(
-                          (allTags.length >= 8) ? themeOrange : Colors.white,
+                          (allTags.length >= 5) ? themeOrange : Colors.white,
                           16),
                     ),
                   ),

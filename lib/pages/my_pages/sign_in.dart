@@ -1,7 +1,4 @@
-import 'package:app_test/MainMenu.dart';
 import 'package:app_test/models/constant.dart';
-import 'package:app_test/pages/contact_pages/searchUser.dart';
-import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -47,8 +44,8 @@ class _SignInState extends State<SignIn> {
         print('object');
         // print(val.error.toString());
         isLoading = false;
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Wrapper(false)));
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => Wrapper(false)));
       }).catchError((error) {
         //TODO
         setState(() {
@@ -97,13 +94,13 @@ class _SignInState extends State<SignIn> {
           padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
           child: GestureDetector(
             onTap: () {
-              widget.pageController.animateToPage(0,
+              widget.pageController.animateToPage(1,
                   duration: Duration(milliseconds: 800),
                   curve: Curves.easeInCubic);
             },
             child: Icon(
               Icons.arrow_back_ios,
-              color: Color(0xFFFFFFB3),
+              color: Colors.white,
             ),
           ),
         ),
@@ -169,7 +166,12 @@ class _SignInState extends State<SignIn> {
 
     _getTextFields() {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 45, vertical: 70),
+        padding: EdgeInsets.only(
+          left: _width * 0.12,
+          right: _width * 0.12,
+          top: _height * 0.12,
+          bottom: _height * 0.20,
+        ),
         child: Form(
           key: formKey,
           child: Container(
@@ -181,6 +183,7 @@ class _SignInState extends State<SignIn> {
                     height: 15,
                   ),
                   TextFormField(
+                    style: simpleTextStyle(Colors.white, 16),
                     controller: emailTextEditingController,
                     validator: (val) {
                       return RegExp(
@@ -195,6 +198,7 @@ class _SignInState extends State<SignIn> {
                     height: 15,
                   ),
                   TextFormField(
+                    style: simpleTextStyle(Colors.white, 16),
                     controller: passwordTextEditingController,
                     obscureText: true,
                     validator: (val) {
@@ -286,9 +290,6 @@ class _SignInState extends State<SignIn> {
                         _getHeader(),
                         _getTextFields(),
                         _getSignIn(),
-                        SizedBox(
-                          height: _height * 0.105,
-                        )
                         // Container(
                         //   height: _height * (1 - 0.14),
                         //   width: _width,

@@ -42,7 +42,7 @@ class _AddCourseState extends State<AddCourse> {
           alignment: Alignment.center,
           child: Text(
             'Create Course',
-            style: largeTitleTextStyleBold(Colors.black, 20),
+            style: largeTitleTextStyleBold(Colors.black, 25),
             textAlign: TextAlign.center,
           ),
         ),
@@ -102,6 +102,7 @@ class _AddCourseState extends State<AddCourse> {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           leading: Container(
             padding: EdgeInsets.only(left: kDefaultPadding),

@@ -109,18 +109,18 @@ class _BasicInfoState extends State<BasicInfo> {
                           userName: snapshot.data[0].userName,
                           width: 90.0,
                           height: 30.0,
-                          // gradient: LinearGradient(
-                          //   begin: Alignment.topCenter,
-                          //   end: Alignment.bottomCenter,
-                          //   colors: [
-                          //     listProfileColor[
-                          //         snapshot.data[0].profileColor.toInt()],
-                          //     listProfileColor[
-                          //         snapshot.data[0].profileColor.toInt()],
-                          //   ],
-                          // ),
-                          gradient:
-                              listColors[snapshot.data[0].profileColor.toInt()],
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              listProfileColor[
+                                  snapshot.data[0].profileColor.toInt()],
+                              listProfileColor[
+                                  snapshot.data[0].profileColor.toInt()],
+                            ],
+                          ),
+                          // gradient:
+                          //     listColors[snapshot.data[0].profileColor.toInt()],
                           duration: Duration(milliseconds: 100),
                           initialText: matchingPercentage.toString() + "%",
                           finalText: " match",

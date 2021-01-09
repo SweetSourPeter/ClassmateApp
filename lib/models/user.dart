@@ -50,11 +50,11 @@ class UserData {
 
   //get the data for current user
   UserData.fromFirestore(Map<String, dynamic> firestore, this.userID)
-      : userImageUrl = firestore['imgUrl'],
-        school = firestore['school'],
-        email = firestore['email'],
-        profileColor = firestore['profileColor'],
-        userName = firestore['userName'];
+      : userImageUrl = firestore['imgUrl'] ?? '',
+        school = firestore['school'] ?? '',
+        email = firestore['email'] ?? '',
+        profileColor = firestore['profileColor'] ?? '',
+        userName = firestore['userName'] ?? '';
 
   //get data for contacts of current user
   UserData.fromFirestoreContacts(Map<String, dynamic> firestore)

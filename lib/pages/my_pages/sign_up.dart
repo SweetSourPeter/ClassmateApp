@@ -4,6 +4,7 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -54,12 +55,19 @@ class _SignUpPageState extends State<SignUpPage> {
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => StartPage()));
         print('auth method finish');
         isLoading = false;
-        Navigator.pop(context);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Wrapper(true)));
+        // Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Wrapper(true)),
+        );
       }).catchError((error) {
+        if (!mounted) {
+          return; // Just do nothing if the widget is disposed.
+        }
         setState(() {
           isLoading = false;
         });
@@ -105,13 +113,13 @@ class _SignUpPageState extends State<SignUpPage> {
           padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
           child: GestureDetector(
             onTap: () {
-              widget.pageController.animateToPage(0,
+              widget.pageController.animateToPage(1,
                   duration: Duration(milliseconds: 800),
                   curve: Curves.easeInCubic);
             },
             child: Icon(
               Icons.arrow_back_ios,
-              color: Color(0xFFFFFFB3),
+              color: Colors.white,
             ),
           ),
         ),
@@ -188,7 +196,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
     _getTextFields() {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 45, vertical: 70),
+        padding: EdgeInsets.only(
+          left: _width * 0.12,
+          right: _width * 0.12,
+          top: _height * 0.09,
+          bottom: _height * 0.146,
+        ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           Form(
             key: formKey,
@@ -201,10 +214,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15,
                     ),
                     DropdownButtonFormField<String>(
-                      dropdownColor: Color(0xDA6D39).withOpacity(1),
+                      dropdownColor: Color(0xF7D5C5).withOpacity(0.7),
                       icon: Icon(
                         Icons.keyboard_arrow_down,
-                        color: Color(0xF7D5C5).withOpacity(0.7),
+                        color: Colors.white,
                         size: 30,
                       ),
                       iconEnabledColor: Colors.white,
@@ -213,8 +226,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         return DropdownMenuItem(
                           child: Text(
                             value,
-                            style: simpleTextStyle(
-                                Color(0xF7D5C5).withOpacity(0.7), 16),
+                            style: simpleTextStyle(Colors.white, 16),
                           ),
                           value: value,
                         );
@@ -286,7 +298,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: _height * 0.049,
             ),
             Text(
               'Awesome, let\'s get your',
@@ -301,50 +313,49 @@ class _SignUpPageState extends State<SignUpPage> {
       );
     }
 
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
 
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-      child: SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomPadding: false,
-          key: _scaffoldKey,
-          body: isLoading
-              ? Container(child: Center(child: CircularProgressIndicator()))
-              : Scaffold(
-                  resizeToAvoidBottomPadding: false,
-                  backgroundColor: themeOrange,
-                  body: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        _getBackBtn(),
-                        _getHeader(),
-                        _getTextFields(),
-                        _getSignIn(),
-                        SizedBox(
-                          height: _height * 0.105,
-                        )
-                        // Container(
-                        //   height: _height * (1 - 0.14),
-                        //   width: _width,
-                        //   child: Column(
-                        //     mainAxisSize:
-                        //         MainAxisSize.min, // Use children total size
-                        //     children: <Widget>[
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomPadding: false,
+            key: _scaffoldKey,
+            body: isLoading
+                ? Container(child: Center(child: CircularProgressIndicator()))
+                : Scaffold(
+                    resizeToAvoidBottomPadding: false,
+                    backgroundColor: themeOrange,
+                    body: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          _getBackBtn(),
+                          _getHeader(),
+                          _getTextFields(),
+                          _getSignIn(),
+                          // Container(
+                          //   height: _height * (1 - 0.14),
+                          //   width: _width,
+                          //   child: Column(
+                          //     mainAxisSize:
+                          //         MainAxisSize.min, // Use children total size
+                          //     children: <Widget>[
 
-                        //       // _getBottomRow(context),
-                        //     ],
-                        //   ),
-                        // ),
-                      ],
+                          //       // _getBottomRow(context),
+                          //     ],
+                          //   ),
+                          // ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+          ),
         ),
       ),
     );

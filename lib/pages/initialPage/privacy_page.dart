@@ -47,7 +47,7 @@ class _PrivacyPageState extends State<PrivacyPage>
                 height: 36,
               ),
               Text(
-                'Your privacy is very important\n and nothing ever happens \n without your approval!',
+                'Check the boxes to accept',
                 style: largeTitleTextStyleBold(Colors.white, 16),
                 textAlign: TextAlign.center,
               ),
@@ -55,7 +55,7 @@ class _PrivacyPageState extends State<PrivacyPage>
                 height: 13,
               ),
               Text(
-                'Check the boxes to accept',
+                'Your privacy is very important and nothing\n ever happens without your approval!',
                 style: simpleTextSansStyleBold(Color(0XFFF7D5C5), 14),
                 textAlign: TextAlign.center,
               ),

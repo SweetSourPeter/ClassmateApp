@@ -27,8 +27,8 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
   final databaseMehods = CourseReminderDatabase();
   List<String> fileLocation = [
     'assets/icon/catPaw1.png',
-    'assets/icon/catPaw2.png',
     'assets/icon/catPaw3.png',
+    'assets/icon/catPaw2.png',
     'assets/icon/catPaw4.png',
   ];
   @override
@@ -241,7 +241,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                 ),
                 Container(
                     child: Align(
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment.bottomRight,
                   child: Image.asset(
                     imageLocation,
                     width: 100.0,

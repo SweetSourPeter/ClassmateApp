@@ -7,7 +7,12 @@ import 'package:provider/provider.dart';
 
 class SecondPage extends StatefulWidget {
   final PageController pageController;
-  const SecondPage({Key key, this.pageController}) : super(key: key);
+  final ValueChanged<String> valueChanged;
+  const SecondPage({
+    Key key,
+    this.pageController,
+    this.valueChanged,
+  }) : super(key: key);
   @override
   _SecondPageState createState() => _SecondPageState();
 }
@@ -99,6 +104,7 @@ class _SecondPageState extends State<SecondPage>
                               duration: Duration(milliseconds: 800),
                               curve: Curves.easeInCubic);
                           databaseMethods.updateUserName(user.userID, _nikname);
+                          widget.valueChanged(_nikname);
                           print('username saved');
                         }
                       },

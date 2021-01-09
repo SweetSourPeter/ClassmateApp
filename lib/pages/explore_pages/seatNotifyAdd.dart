@@ -122,6 +122,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           leading: Container(
             padding: EdgeInsets.only(left: kDefaultPadding),

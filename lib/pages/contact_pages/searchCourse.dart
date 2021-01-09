@@ -101,6 +101,7 @@ class _SearchCourseState extends State<SearchCourse> {
           onPressed: () async {
             if (!_formKey.currentState.validate() &&
                 !_formKeyGroupID.currentState.validate()) {
+              print('both unvalid');
               return;
             } else if (_formKeyGroupID.currentState.validate()) {
               await initiateURLSearch(courseIDTextEditingController.text);
@@ -113,7 +114,7 @@ class _SearchCourseState extends State<SearchCourse> {
             _formKey.currentState.save();
             searchBegain
                 ? showBottomPopSheet(context, searchList(context, course))
-                : CircularProgressIndicator();
+                : Center(child: CircularProgressIndicator());
           },
           child: Text(
             'Add to List',
@@ -359,13 +360,18 @@ class _SearchCourseState extends State<SearchCourse> {
     // if (temp == null) return;
     setState(() {
       searchSnapshot = temp;
-      if (searchSnapshot.docs != null) {
-        if ((searchSnapshot.docs.length >= 1) &&
-            (courseNameTextEditingController.text.isNotEmpty) &&
-            (sectionTextEditingController.text.isNotEmpty)) {
-          print('reached search');
-          searchBegain = true;
-        }
+      // if (searchSnapshot.docs != null) {
+      //   if ((searchSnapshot.docs.length >= 1) &&
+      //       (courseNameTextEditingController.text.isNotEmpty) &&
+      //       (sectionTextEditingController.text.isNotEmpty)) {
+      //     print('reached search');
+      //     searchBegain = true;
+      //   }
+      // }
+      if ((courseNameTextEditingController.text.isNotEmpty) &&
+          (sectionTextEditingController.text.isNotEmpty)) {
+        print('reached search');
+        searchBegain = true;
       }
     });
   }
