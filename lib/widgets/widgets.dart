@@ -260,12 +260,16 @@ class _ButtonLinkState extends State<ButtonLink> {
               ? EdgeInsets.fromLTRB(20, 10, 20, 10)
               : EdgeInsets.fromLTRB(20, 0, 20, 0),
           height: widget.height,
+          minWidth: MediaQuery.of(context).size.width,
           color: Colors.white,
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: widget.isSimple
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+                mainAxisSize:
+                    widget.isSimple ? MainAxisSize.min : MainAxisSize.max,
                 children: <Widget>[
                   (widget.isSimple || widget.isEdit)
                       ? Container()
@@ -275,7 +279,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                           size: widget.textSize * 1.5,
                         ),
                   SizedBox(
-                    width: 10,
+                    width: widget.isSimple ? 0 : 10,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,26 +287,18 @@ class _ButtonLinkState extends State<ButtonLink> {
                       Text(
                         widget.text,
                         style: GoogleFonts.montserrat(
-                            color:
-                                !widget.isSimple ? Colors.black87 : themeOrange,
-                            fontSize: widget.textSize),
+                            color: Colors.black87, fontSize: widget.textSize),
                       ),
-                      widget.isEdit && widget.editText.length > 0
-                          ? Text(
-                              widget.editText,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.black45,
-                                  fontSize: widget.textSize),
-                            )
-                          : Container(),
                     ],
                   ),
-                  widget.isSimple ? Icon(
-                    widget.iconData,
-                    color: themeOrange,
-                    size: widget.textSize * 1.5,
-                  ) : Container(),
-                  new Spacer(),
+                  widget.isSimple ? Container() : new Spacer(),
+                  widget.isEdit && widget.editText.length > 0
+                      ? Text(
+                          widget.editText,
+                          style: GoogleFonts.montserrat(
+                              color: Colors.black45, fontSize: widget.textSize),
+                        )
+                      : Container(),
                   !widget.isSimple
                       ? Container(
                           child: !widget.isSwitch

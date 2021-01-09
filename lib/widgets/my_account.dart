@@ -1,7 +1,6 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/edit_pages/editHomePage.dart';
-import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
@@ -127,7 +126,7 @@ class _MyAccountState extends State<MyAccount> {
               child: Column(
                 children: <Widget>[
                   ButtonLink(
-                    text: "Edit Profile",
+                    text: "Setting",
                     iconData: Icons.settings_outlined,
                     textSize: widget.getSize(3),
                     height: (menuContainerHeight) / 6,
@@ -216,36 +215,6 @@ class _MyAccountState extends State<MyAccount> {
                       color: dividerColor),
                   SizedBox(
                     height: 20,
-                  ),
-                  Divider(
-                    height: 0,
-                    thickness: 1,
-                    color: dividerColor,
-                    indent: 30,
-                    endIndent: 30,
-                  ),
-                  ButtonLink(
-                    onTap: () {
-                      authMethods.signOut().then((value) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Wrapper(false)),
-                        );
-                      });
-                    },
-                    text: "Log Out",
-                    iconData: Icons.login,
-                    textSize: widget.getSize(3),
-                    height: (menuContainerHeight) / 6,
-                    isSimple: true,
-                  ),
-                  Divider(
-                    height: 0,
-                    thickness: 1,
-                    color: dividerColor,
-                    indent: 30,
-                    endIndent: 30,
                   ),
                 ],
               ),
