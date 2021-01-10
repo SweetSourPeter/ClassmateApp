@@ -177,7 +177,7 @@ CircleAvatar createUserImage(double radius, UserData userdata) {
       child: (userdata.userImageUrl == null)
           ? Text(
               userdata.userName[0].toUpperCase(),
-              style: TextStyle(fontSize: 35, color: Colors.white),
+              style: TextStyle(fontSize: radius, color: Colors.white),
             )
           : null,
     ),
@@ -230,7 +230,11 @@ class ButtonLink extends StatefulWidget {
   @required
   final bool isEdit;
   @required
-  String editText;
+  final String editText;
+  @required
+  final UserData user;
+  @required
+  final bool isAvatar;
 
   ButtonLink(
       {this.text,
@@ -241,7 +245,9 @@ class ButtonLink extends StatefulWidget {
       this.isSimple = false,
       this.isSwitch = false,
       this.isEdit = false,
-      this.editText = ''});
+      this.editText = '',
+      this.user = null,
+      this.isAvatar = false});
 
   @override
   _ButtonLinkState createState() => _ButtonLinkState();
@@ -292,6 +298,9 @@ class _ButtonLinkState extends State<ButtonLink> {
                     ],
                   ),
                   widget.isSimple ? Container() : new Spacer(),
+                   widget.isAvatar
+                      ? createUserImage(widget.height / 3.5, widget.user)
+                      : Container(),
                   widget.isEdit && widget.editText.length > 0
                       ? Text(
                           widget.editText,
@@ -318,7 +327,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                                   activeTrackColor: themeOrange,
                                   activeColor: Colors.white,
                                 ))
-                      : Container()
+                      : Container(),
                 ],
               ),
             ],

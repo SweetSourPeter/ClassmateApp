@@ -127,6 +127,8 @@ class _EditHomePageState extends State<EditHomePage> {
                         iconData: Icons.edit,
                         textSize: widget.getSize(3),
                         height: (menuContainerHeight) / 8,
+                        isAvatar: true,
+                        user: userdata,
                         isEdit: true,
                         onTap: () {
                           showBottomPopSheet(
@@ -136,6 +138,7 @@ class _EditHomePageState extends State<EditHomePage> {
                                 userName: userdata.userName,
                                 initialIndex: 0,
                                 pageController: PageController(initialPage: 3),
+                                isEdit: true,
                                 valueChanged: (index) => {}),
                           );
                         },
