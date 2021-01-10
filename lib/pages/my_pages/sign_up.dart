@@ -214,7 +214,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15,
                     ),
                     DropdownButtonFormField<String>(
-                      dropdownColor: Color(0xF7D5C5).withOpacity(0.7),
+                      dropdownColor: Color(0xFFFF9B6B),
                       icon: Icon(
                         Icons.keyboard_arrow_down,
                         color: Colors.white,

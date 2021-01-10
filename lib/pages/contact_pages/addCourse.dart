@@ -125,7 +125,12 @@ class _AddCourseState extends State<AddCourse> {
         body: Form(
           key: formKey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+            padding: EdgeInsets.only(
+              left: _width * 0.12,
+              right: _width * 0.12,
+              top: 5,
+              bottom: 5,
+            ),
             child: ListView(
               children: <Widget>[
                 //Hint TextW

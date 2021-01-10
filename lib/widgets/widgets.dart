@@ -216,12 +216,15 @@ Container createUserImage(double radius, UserData userdata) {
                 userdata.userName[0].toUpperCase(),
                 style: TextStyle(fontSize: 35, color: Colors.white),
               )
-            : null,
+            : Text(
+                ' ',
+                style: TextStyle(fontSize: 35, color: Colors.white),
+              ),
       ),
-      backgroundImage: (userdata.userImageUrl == null)
-          ? null
-          : NetworkImage(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
+      // backgroundImage: (userdata.userImageUrl == null)
+      //     ? null
+      //     : NetworkImage(
+      //         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
     ),
   );
 }

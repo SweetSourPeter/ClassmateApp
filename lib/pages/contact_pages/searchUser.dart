@@ -92,7 +92,7 @@ class _SearchUsersState extends State<SearchUsers> {
                       child: Focus(
                     // onFocusChange: (focus) => showCanclChange(),
                     child: TextField(
-                      textInputAction: TextInputAction.go,
+                      textInputAction: TextInputAction.search,
                       onSubmitted: (value) {
                         if (searchTextEditingController.text.isNotEmpty) {
                           initiateSearch();
@@ -103,17 +103,19 @@ class _SearchUsersState extends State<SearchUsers> {
                       textAlign: TextAlign.left,
                       autofocus: true,
                       decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            icon: Icon(
-                              searchTextEditingController.text.isEmpty
-                                  ? null
-                                  : Icons.cancel,
-                              color: themeOrange,
-                            ),
-                            onPressed: () {
-                              // initiateSearch();
-                              clearSearchTextInput(currentFocus);
-                            }),
+                        suffixIcon: searchTextEditingController.text.isEmpty
+                            ? null
+                            : IconButton(
+                                icon: Image.asset(
+                                  'assets/images/cross.png',
+                                  // color: Color(0xffFF7E40),
+                                  height: 19,
+                                  width: 19,
+                                ),
+                                onPressed: () {
+                                  // initiateSearch();
+                                  clearSearchTextInput(currentFocus);
+                                }),
                         prefixIcon: Icon(
                           Icons.search,
                           color: Color(0xFFFFCDB6),
@@ -629,6 +631,7 @@ class SearchTile extends StatelessWidget {
             // SizedBox(
             //   width: 10,
             // ),
+            Spacer(),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),

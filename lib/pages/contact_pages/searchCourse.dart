@@ -88,7 +88,7 @@ class _SearchCourseState extends State<SearchCourse> {
           borderRadius: BorderRadius.circular(40),
         ),
         height: 59,
-        width: _width * 0.7,
+        width: _width * 1,
         child: RaisedButton(
           hoverElevation: 0,
           highlightColor: Color(0xDA6D39),
@@ -154,7 +154,12 @@ class _SearchCourseState extends State<SearchCourse> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 5),
+      padding: EdgeInsets.only(
+        left: _width * 0.12,
+        right: _width * 0.12,
+        top: 5,
+        bottom: 5,
+      ),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -493,72 +498,74 @@ class _SearchCourseState extends State<SearchCourse> {
               //     topRight: Radius.circular(30.0),
               //   ),
               // ),
-              child: Column(
-                children: [
-                  topLineBar(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Stack(alignment: Alignment.center, children: <Widget>[
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    topLineBar(),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Stack(alignment: Alignment.center, children: <Widget>[
+                      Container(
+                          height: 140,
+                          width: _width - 40,
+                          child: FittedBox(
+                            child: Image.asset('assets/icon/sorryBox.png'),
+                            fit: BoxFit.fill,
+                          )),
+                      Text(
+                        "Sorry,\nwe didn\'t find the course",
+                        style: largeTitleTextStyle(Colors.black, 26),
+                      ),
+                    ]),
                     Container(
                         height: 140,
-                        width: _width - 40,
+                        width: 140,
                         child: FittedBox(
-                          child: Image.asset('assets/icon/sorryBox.png'),
+                          child: Image.asset('assets/icon/failToFind.png'),
                           fit: BoxFit.fill,
                         )),
-                    Text(
-                      "Sorry,\nwe didn\'t find the course",
-                      style: largeTitleTextStyle(Colors.black, 26),
-                    ),
-                  ]),
-                  Container(
-                      height: 140,
-                      width: 140,
-                      child: FittedBox(
-                        child: Image.asset('assets/icon/failToFind.png'),
-                        fit: BoxFit.fill,
-                      )),
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Check the info. you entered, or\n',
-                          style: GoogleFonts.openSans(
-                            textStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        TextSpan(
-                            text: 'Create a course group ',
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Check the info. you entered, or\n',
                             style: GoogleFonts.openSans(
                               textStyle: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: themeOrange,
+                                  color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500),
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return Provider<UserData>.value(
-                                        value: userdata,
-                                        child: AddCourse(),
-                                      );
-                                    },
-                                  ),
-                                );
-                              }),
-                      ],
+                          ),
+                          TextSpan(
+                              text: 'Create a course group ',
+                              style: GoogleFonts.openSans(
+                                textStyle: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: themeOrange,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return Provider<UserData>.value(
+                                          value: userdata,
+                                          child: AddCourse(),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -626,8 +633,6 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
           ),
           Spacer(),
           Container(
-            width: 87,
-            height: 41,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
             ),
@@ -680,7 +685,6 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
                         add = true;
                         print('set add is $add');
                       });
-
                       courseProvider.changeTerm(widget.term);
                       courseProvider.changeCourseCollege(widget.college);
                       courseProvider.changeCourseDepartment(widget.department);

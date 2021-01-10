@@ -85,22 +85,29 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                                   width: 20,
                                 ),
                               ),
-                              suffixIcon: IconButton(
-                                onPressed: () => searchTextEditingController.clear(),
-                                icon: Image.asset(
-                                  'assets/images/cross.png',
-                                  // color: Color(0xffFF7E40),
-                                  height: 19,
-                                  width: 19,
-                                ),
-                              ),
+                              suffixIcon:
+                                  searchTextEditingController.text.isEmpty
+                                      ? null
+                                      : IconButton(
+                                          icon: Image.asset(
+                                            'assets/images/cross.png',
+                                            // color: Color(0xffFF7E40),
+                                            height: 19,
+                                            width: 19,
+                                          ),
+                                          onPressed: () {
+                                            // initiateSearch();
+                                            searchTextEditingController.clear();
+                                          }),
                               hintText: 'Search Chat',
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
                                 borderRadius: BorderRadius.circular(35),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
                                 borderRadius: BorderRadius.circular(35),
                               ),
                               contentPadding: EdgeInsets.only(left: 0),
@@ -116,21 +123,23 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         padding: const EdgeInsets.only(left: 25, right: 25.0),
                         child: GestureDetector(
                           onTap: () {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            clearSearchTextInput(currentFocus);
+                            Navigator.pop(context);
                           },
                           child: Text(
                             'Cancel',
                             style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Colors.white,),
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       )
                     ],
                   ),
                 ),
-                SizedBox(height: 25,),
+                SizedBox(
+                  height: 25,
+                ),
                 Expanded(
                   child: SearchList(currentUser),
                 ),
@@ -177,14 +186,16 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                           .data()['message']
                           .contains(searchTextEditingController.text)) {
                     children.add(searchTile(
-                        userName: snapshot.data.documents[i].data()['senderName'],
-                        message: snapshot.data.documents[i].data()['message'],
-                        imageURL:
-                            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                        userData: currentUser,
-                        searchWord: searchTextEditingController.text,
-                        messageIndex: i,
-                        messageTime: DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i].data()['time']).toString(),
+                      userName: snapshot.data.documents[i].data()['senderName'],
+                      message: snapshot.data.documents[i].data()['message'],
+                      imageURL:
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                      userData: currentUser,
+                      searchWord: searchTextEditingController.text,
+                      messageIndex: i,
+                      messageTime: DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[i].data()['time'])
+                          .toString(),
                     ));
                   }
                 }
@@ -201,7 +212,14 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
         : Container();
   }
 
-  Widget searchTile({String userName, String message, String imageURL, userData, String searchWord, int messageIndex, String messageTime}) {
+  Widget searchTile(
+      {String userName,
+      String message,
+      String imageURL,
+      userData,
+      String searchWord,
+      int messageIndex,
+      String messageTime}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -245,13 +263,12 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                             style: GoogleFonts.montserrat(
                                 fontSize: 12,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width-94,
+                        width: MediaQuery.of(context).size.width - 94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -265,17 +282,19 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                                     style: GoogleFonts.openSans(
                                         fontSize: 16,
                                         color: Colors.black,
-                                        fontWeight: FontWeight.w600
-                                    ),
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                                 Text(
-                                    messageTime.substring(5,7) + '/' + messageTime.substring(8, 10) + '/' + messageTime.substring(0, 4),
+                                    messageTime.substring(5, 7) +
+                                        '/' +
+                                        messageTime.substring(8, 10) +
+                                        '/' +
+                                        messageTime.substring(0, 4),
                                     style: GoogleFonts.openSans(
                                       fontSize: 14,
                                       color: Color(0xff949494),
-                                    )
-                                ),
+                                    )),
                               ],
                             ),
                             Container(
@@ -284,8 +303,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,
                                 text: TextSpan(
-                                    children: highlightSearchWord(message, searchWord, userName)
-                                ),
+                                    children: highlightSearchWord(
+                                        message, searchWord, userName)),
                               ),
                             ),
                           ],
