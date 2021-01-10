@@ -1,13 +1,18 @@
-import 'package:app_test/MainMenu.dart';
-import 'package:app_test/pages/contact_pages/searchUser.dart';
-import 'package:app_test/services/database.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/wrapper.dart';
+import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 
 class SignIn extends StatefulWidget {
+  final PageController pageController;
+  const SignIn({
+    Key key,
+    this.pageController,
+  }) : super(key: key);
   @override
   _SignInState createState() => _SignInState();
 }
@@ -39,8 +44,8 @@ class _SignInState extends State<SignIn> {
         print('object');
         // print(val.error.toString());
         isLoading = false;
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Wrapper(false)));
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => Wrapper(false)));
       }).catchError((error) {
         //TODO
         setState(() {
@@ -79,74 +84,31 @@ class _SignInState extends State<SignIn> {
   //below for the wiget
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      //gesturedetector used for hiding the keyboard after click anywhere else
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
 
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-
-      child: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        key: _scaffoldKey,
-        body: isLoading
-            ? Container(child: Center(child: CircularProgressIndicator()))
-            : CustomPaint(
-                painter: BackgroundSignIn(),
-                child: Stack(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 35),
-                      child: Column(
-                        children: <Widget>[
-                          _getHeader(),
-                          _getTextFields(),
-                          _getSignIn(),
-                          _getBottomRow(context),
-                        ],
-                      ),
-                    ),
-                    _getBackBtn(),
-                  ],
-                ),
-              ),
-      ),
-    );
-  }
-
-// _getBackBtn() {
-//   return Positioned(
-//     top: 35,
-//     left: 25,
-//     child: Icon(
-//       Icons.arrow_back_ios,
-//       color: Colors.white,
-//     ),
-//   );
-// }
-  _getBackBtn() {
-    return Positioned(
-      top: 35,
-      left: 25,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
+    _getBackBtn() {
+      return Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
+          child: GestureDetector(
+            onTap: () {
+              widget.pageController.animateToPage(1,
+                  duration: Duration(milliseconds: 800),
+                  curve: Curves.easeInCubic);
+            },
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  _getBottomRow(context) {
-    return Expanded(
-      flex: 1,
-      child: Row(
+    _getBottomRow(context) {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           GestureDetector(
@@ -163,68 +125,54 @@ class _SignInState extends State<SignIn> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Forgetpassword()));
-            },
-            child: Text(
-              'Forgot Password',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
         ],
-      ),
-    );
-  }
+      );
+    }
 
-  _getSignIn() {
-    return Expanded(
-      flex: 1,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              authMethods.signInWithGoogle(context);
-            },
-            child: CircleAvatar(
-                backgroundColor: Colors.grey.shade800,
-                radius: 40,
-                child: Text("G",
-                    style: TextStyle(color: Colors.white, fontSize: 30))),
+    _getSignIn() {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+        ),
+        height: _height * 0.06,
+        width: _width * 0.75,
+        child: RaisedButton(
+          hoverElevation: 0,
+          highlightColor: Color(0xDA6D39),
+          highlightElevation: 0,
+          elevation: 0,
+          color: (emailTextEditingController.text.isNotEmpty &&
+                  passwordTextEditingController.text.isNotEmpty)
+              ? Colors.white
+              : Color(0xDA6D39).withOpacity(1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
           ),
-          // Text(
-          //   'Sign in',
-          //   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-          // ),
-          GestureDetector(
-            onTap: () {
-              signMeIn();
-            },
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade800,
-              radius: 40,
-              child: Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+          onPressed: () {
+            signMeIn();
+          },
+          child: AutoSizeText(
+            'Continue',
+            style: simpleTextSansStyleBold(
+                (emailTextEditingController.text.isNotEmpty &&
+                        passwordTextEditingController.text.isNotEmpty)
+                    ? themeOrange
+                    : Colors.white,
+                16),
+          ),
+        ),
+      );
+    }
 
-  _getTextFields() {
-    return Expanded(
-      flex: 4,
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Form(
+    _getTextFields() {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: _width * 0.12,
+          right: _width * 0.12,
+          top: _height * 0.12,
+          bottom: _height * 0.20,
+        ),
+        child: Form(
           key: formKey,
           child: Container(
             alignment: Alignment.center,
@@ -235,6 +183,7 @@ class _SignInState extends State<SignIn> {
                     height: 15,
                   ),
                   TextFormField(
+                    style: simpleTextStyle(Colors.white, 16),
                     controller: emailTextEditingController,
                     validator: (val) {
                       return RegExp(
@@ -243,12 +192,13 @@ class _SignInState extends State<SignIn> {
                           ? null
                           : "Please enter correct email";
                     },
-                    decoration: InputDecoration(labelText: 'Email'),
+                    decoration: textFieldInputDecoration('School Email', 11),
                   ),
                   SizedBox(
                     height: 15,
                   ),
                   TextFormField(
+                    style: simpleTextStyle(Colors.white, 16),
                     controller: passwordTextEditingController,
                     obscureText: true,
                     validator: (val) {
@@ -256,7 +206,30 @@ class _SignInState extends State<SignIn> {
                           ? null
                           : "Please provoid valid password format";
                     },
-                    decoration: InputDecoration(labelText: 'Password'),
+                    decoration: textFieldInputDecoration(
+                      'Password',
+                      11,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Forgetpassword()));
+                    },
+                    child: Text(
+                      'Forgot Password',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 25,
@@ -265,95 +238,88 @@ class _SignInState extends State<SignIn> {
               ),
             ),
           ),
-        )
-      ]),
-    );
-  }
+        ),
+      );
+    }
 
-// _getTextFields() {
-//   return Expanded(
-//     flex: 4,
-//     child: Column(
-//       mainAxisAlignment: MainAxisAlignment.end,
-//       children: <Widget>[
-//         SizedBox(
-//           height: 15,
-//         ),
-//         TextField(
-//           controller: emailTextEditingController,
-//           decoration: InputDecoration(labelText: 'Email'),
-//         ),
-//         SizedBox(
-//           height: 15,
-//         ),
-//         TextField(
-//           controller: passwordTextEditingController,
-//           decoration: InputDecoration(labelText: 'Password'),
-//         ),
-//         SizedBox(
-//           height: 25,
-//         ),
-//       ],
-//     ),
-//   );
-// }
+    _getHeader() {
+      return Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Welcome',
+              style: largeTitleTextStyleBold(Colors.white, 22),
+            ),
+            Text(
+              'Back !',
+              style: largeTitleTextStyleBold(Colors.white, 22),
+            ),
+          ],
+        ),
+      );
+    }
 
-  _getHeader() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        alignment: Alignment.bottomLeft,
-        child: Text(
-          'Welcome\nBack',
-          style: TextStyle(color: Colors.white, fontSize: 40),
+    return GestureDetector(
+      //gesturedetector used for hiding the keyboard after click anywhere else
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomPadding: false,
+          key: _scaffoldKey,
+          body: isLoading
+              ? Container(child: Center(child: CircularProgressIndicator()))
+              : Scaffold(
+                  resizeToAvoidBottomPadding: false,
+                  backgroundColor: themeOrange,
+                  body: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _getBackBtn(),
+                        _getHeader(),
+                        _getTextFields(),
+                        _getSignIn(),
+                        // Container(
+                        //   height: _height * (1 - 0.14),
+                        //   width: _width,
+                        //   child: Column(
+                        //     mainAxisSize:
+                        //         MainAxisSize.min, // Use children total size
+                        //     children: <Widget>[
+
+                        //       // _getBottomRow(context),
+                        //     ],
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                ),
         ),
       ),
     );
   }
-}
 
-class BackgroundSignIn extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var sw = size.width;
-    var sh = size.height;
-    var paint = Paint();
+// _getBackBtn() {
+//   return Positioned(
+//     top: 35,
+//     left: 25,
+//     child: Icon(
+//       Icons.arrow_back_ios,
+//       color: Colors.white,
+//     ),
+//   );
+// }
 
-    Path mainBackground = Path();
-    mainBackground.addRect(Rect.fromLTRB(0, 0, sw, sh));
-    paint.color = Colors.grey.shade100;
-    canvas.drawPath(mainBackground, paint);
-
-    Path blueWave = Path();
-    blueWave.lineTo(sw, 0);
-    blueWave.lineTo(sw, sh * 0.5);
-    blueWave.quadraticBezierTo(sw * 0.5, sh * 0.45, sw * 0.2, 0);
-    blueWave.close();
-    paint.color = Colors.lightBlue.shade300;
-    canvas.drawPath(blueWave, paint);
-
-    Path greyWave = Path();
-    greyWave.lineTo(sw, 0);
-    greyWave.lineTo(sw, sh * 0.1);
-    greyWave.cubicTo(
-        sw * 0.95, sh * 0.15, sw * 0.65, sh * 0.15, sw * 0.6, sh * 0.38);
-    greyWave.cubicTo(sw * 0.52, sh * 0.52, sw * 0.05, sh * 0.45, 0, sh * 0.4);
-    greyWave.close();
-    paint.color = Colors.grey.shade800;
-    canvas.drawPath(greyWave, paint);
-
-    Path yellowWave = Path();
-    yellowWave.lineTo(sw * 0.7, 0);
-    yellowWave.cubicTo(
-        sw * 0.6, sh * 0.05, sw * 0.27, sh * 0.01, sw * 0.18, sh * 0.12);
-    yellowWave.quadraticBezierTo(sw * 0.12, sh * 0.2, 0, sh * 0.2);
-    yellowWave.close();
-    paint.color = Colors.orange.shade300;
-    canvas.drawPath(yellowWave, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return oldDelegate != this;
-  }
 }

@@ -1,15 +1,24 @@
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
+import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
+  final PageController pageController;
+  const SignUpPage({
+    Key key,
+    this.pageController,
+  }) : super(key: key);
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  var _selectedSchool;
+  String _selectedSchool;
   List<String> _schools = [
     "Boston University",
     "pennsylvania state university",
@@ -46,12 +55,19 @@ class _SignUpPageState extends State<SignUpPage> {
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => StartPage()));
         print('auth method finish');
         isLoading = false;
-        Navigator.pop(context);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Wrapper(true)));
+        // Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Wrapper(true)),
+        );
       }).catchError((error) {
+        if (!mounted) {
+          return; // Just do nothing if the widget is disposed.
+        }
         setState(() {
           isLoading = false;
         });
@@ -88,64 +104,30 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-      child: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        key: _scaffoldKey,
-        body: isLoading
-            ? Container(child: Center(child: CircularProgressIndicator()))
-            : CustomPaint(
-                painter: BackgroundSignUp(),
-                child: Stack(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 35),
-                      // child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          _getHeader(),
-                          _getTextFields(),
-                          _getSignIn(),
-                          _getBottomRow(context),
-                        ],
-                      ),
-                      // ),
-                    ),
-                    _getBackBtn()
-                  ],
-                ),
-              ),
-      ),
-    );
-  }
-
-  _getBackBtn() {
-    return Positioned(
-      top: 35,
-      left: 25,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
+    _getBackBtn() {
+      return Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
+          child: GestureDetector(
+            onTap: () {
+              widget.pageController.animateToPage(1,
+                  duration: Duration(milliseconds: 800),
+                  curve: Curves.easeInCubic);
+            },
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  _getBottomRow(context) {
-    return Expanded(
-      flex: 1,
-      child: Row(
+    _getBottomRow(context) {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           GestureDetector(
@@ -171,199 +153,211 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
+      );
+    }
 
-  _getSignIn() {
-    return Expanded(
-      flex: 1,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'Sign up',
-            style: TextStyle(
-                color: Colors.white, fontSize: 25, fontWeight: FontWeight.w500),
+    _getSignIn() {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+        ),
+        height: _height * 0.06,
+        width: _width * 0.75,
+        child: RaisedButton(
+          hoverElevation: 0,
+          highlightColor: Color(0xDA6D39),
+          highlightElevation: 0,
+          elevation: 0,
+          color: (emailTextEditingController.text.isNotEmpty &&
+                  passwordTextEditingController.text.isNotEmpty &&
+                  _selectedSchool.isNotEmpty)
+              ? Colors.white
+              : Color(0xDA6D39).withOpacity(1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
           ),
-          GestureDetector(
-            onTap: () {
-              //sign up revoked
-              emailExist = false;
-              signMeUp();
-            },
-            child: CircleAvatar(
-              backgroundColor: Colors.grey.shade800,
-              radius: 40,
-              child: Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
+          onPressed: () {
+            emailExist = false;
+            signMeUp();
+          },
+          child: AutoSizeText(
+            'CONTINUE',
+            style: simpleTextSansStyleBold(
+                (emailTextEditingController.text.isNotEmpty &&
+                        passwordTextEditingController.text.isNotEmpty &&
+                        _selectedSchool.isNotEmpty)
+                    ? themeOrange
+                    : Colors.white,
+                16),
+          ),
+        ),
+      );
+    }
+
+    _getTextFields() {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: _width * 0.12,
+          right: _width * 0.12,
+          top: _height * 0.09,
+          bottom: _height * 0.146,
+        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Form(
+            key: formKey,
+            child: Container(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 15,
+                    ),
+                    DropdownButtonFormField<String>(
+                      dropdownColor: Color(0xF7D5C5).withOpacity(0.7),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      iconEnabledColor: Colors.white,
+                      value: _selectedSchool,
+                      items: _schools.map<DropdownMenuItem<String>>((value) {
+                        return DropdownMenuItem(
+                          child: Text(
+                            value,
+                            style: simpleTextStyle(Colors.white, 16),
+                          ),
+                          value: value,
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedSchool = value;
+                        });
+                      },
+                      decoration: textFieldInputDecoration(
+                        'Choose your School',
+                        11,
+                      ),
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "School is required";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    TextFormField(
+                      style: simpleTextStyle(Colors.white, 16),
+                      controller: emailTextEditingController,
+                      validator: (val) {
+                        if (emailExist) {
+                          return "Email already Exist";
+                        } else {
+                          return RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(val)
+                              ? null
+                              : "Please enter correct email";
+                        }
+                      },
+                      decoration: textFieldInputDecoration('School Email', 11),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    TextFormField(
+                      style: simpleTextStyle(Colors.white, 16),
+                      controller: passwordTextEditingController,
+                      obscureText: true,
+                      validator: (val) {
+                        return val.length > 6
+                            ? null
+                            : "Please provoid password with at least 6 words";
+                      },
+                      decoration: textFieldInputDecoration('Password', 11),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                  ],
+                ),
               ),
             ),
           )
-        ],
-      ),
-    );
-  }
+        ]),
+      );
+    }
 
-  _getTextFields() {
-    return Expanded(
-      flex: 4,
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Form(
-          key: formKey,
-          child: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 15,
-                  ),
-                  DropdownButtonFormField<String>(
-                    iconEnabledColor: Colors.white,
-                    value: _selectedSchool,
-                    items: _schools.map<DropdownMenuItem<String>>((value) {
-                      return DropdownMenuItem(
-                        child: Text(value),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSchool = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'School',
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      labelStyle: TextStyle(color: Colors.white),
-                    ),
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "School is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  // SizedBox(
-                  //   height: 15,
-                  // ),
-                  // TextFormField(
-                  //   validator: (val) {
-                  //     if (val.isEmpty)
-                  //       return "The name can't be empty";
-                  //     else if (val.length < 4)
-                  //       return "The name length must be greater than 4";
-                  //     else
-                  //       return null;
-                  //   },
-                  //   controller: usernameTextEditingController,
-                  //   decoration: InputDecoration(
-                  //       enabledBorder: UnderlineInputBorder(
-                  //           borderSide: BorderSide(color: Colors.white)),
-                  //       labelText: 'UserName',
-                  //       labelStyle: TextStyle(color: Colors.white)),
-                  // ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  TextFormField(
-                    controller: emailTextEditingController,
-                    validator: (val) {
-                      if (emailExist) {
-                        return "Email already Exist";
-                      } else {
-                        return RegExp(
-                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                .hasMatch(val)
-                            ? null
-                            : "Please enter correct email";
-                      }
-                    },
-                    decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.white)),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  TextFormField(
-                    controller: passwordTextEditingController,
-                    obscureText: true,
-                    validator: (val) {
-                      return val.length > 6
-                          ? null
-                          : "Please provoid password with at least 6 words";
-                    },
-                    decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.white)),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                ],
-              ),
+    _getHeader() {
+      return Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            SizedBox(
+              height: _height * 0.049,
             ),
-          ),
-        )
-      ]),
-    );
-  }
+            Text(
+              'Awesome, let\'s get your',
+              style: largeTitleTextStyleBold(Colors.white, 22),
+            ),
+            Text(
+              'account set up!',
+              style: largeTitleTextStyleBold(Colors.white, 22),
+            ),
+          ],
+        ),
+      );
+    }
 
-  _getHeader() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        alignment: Alignment.bottomLeft,
-        child: Text(
-          'Create\nAccount',
-          style: TextStyle(color: Colors.white, fontSize: 40),
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomPadding: false,
+            key: _scaffoldKey,
+            body: isLoading
+                ? Container(child: Center(child: CircularProgressIndicator()))
+                : Scaffold(
+                    resizeToAvoidBottomPadding: false,
+                    backgroundColor: themeOrange,
+                    body: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          _getBackBtn(),
+                          _getHeader(),
+                          _getTextFields(),
+                          _getSignIn(),
+                          // Container(
+                          //   height: _height * (1 - 0.14),
+                          //   width: _width,
+                          //   child: Column(
+                          //     mainAxisSize:
+                          //         MainAxisSize.min, // Use children total size
+                          //     children: <Widget>[
+
+                          //       // _getBottomRow(context),
+                          //     ],
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
         ),
       ),
     );
-  }
-}
-
-//used for both SignUp & ForgetPassword page
-class BackgroundSignUp extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var sw = size.width;
-    var sh = size.height;
-    var paint = Paint();
-
-    Path mainBackground = Path();
-    mainBackground.addRect(Rect.fromLTRB(0, 0, sw, sh));
-    paint.color = Colors.grey.shade100;
-    canvas.drawPath(mainBackground, paint);
-
-    Path blueWave = Path();
-    blueWave.lineTo(sw, 0);
-    blueWave.lineTo(sw, sh * 0.65);
-    blueWave.cubicTo(sw * 0.8, sh * 0.8, sw * 0.55, sh * 0.8, sw * 0.45, sh);
-    blueWave.lineTo(0, sh);
-    blueWave.close();
-    paint.color = Colors.lightBlue.shade300;
-    canvas.drawPath(blueWave, paint);
-
-    Path greyWave = Path();
-    greyWave.lineTo(sw, 0);
-    greyWave.lineTo(sw, sh * 0.3);
-    greyWave.cubicTo(sw * 0.65, sh * 0.45, sw * 0.25, sh * 0.35, 0, sh * 0.5);
-    greyWave.close();
-    paint.color = Colors.grey.shade800;
-    canvas.drawPath(greyWave, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return oldDelegate != this;
   }
 }

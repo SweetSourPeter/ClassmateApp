@@ -42,6 +42,7 @@ class DatabaseMethods {
       userID: doc.data()[userID],
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
+      profileColor: doc.data()['profileColor'],
     );
     return userData;
   }
@@ -277,8 +278,8 @@ class DatabaseMethods {
   }
 
   //-------User report save to satabase---------
-  Future<void> saveReports(
-      String reports, String badUserID, String goodUserID) {
+  Future<void> saveReports(String reports, String badUserID,
+      String badUserEmail, String goodUserID) {
     print('saveReports');
     //First update in the user level
 
@@ -286,28 +287,33 @@ class DatabaseMethods {
       'reportMessage': reports,
       'isSolved': false,
       'reportedBadUserID': badUserID,
+      'reportedBadUserEmail': badUserEmail,
       'reportGoodUser': goodUserID,
     }).catchError((e) {
       print(e.toString());
     });
-    //    .document(badUserID)
-    //     .setData({
-    //   'reportMessage': reports,
-    //   'isSolved': false,
-    //   'reportedBadUserID': badUserID,
-    //   'reportGoodUser': goodUserID,
-    // }).catchError((e) {
-    //   print(e.toString());
-    // });
-    //also update in the course level
   }
 
+  Future<void> saveReportsFAQ(
+      String reports, String userEmail, String goodUserID) {
+    print('saveReports');
+    //First update in the user level
+
+    return FirebaseFirestore.instance.collection('reports').add({
+      'reportMessage': reports,
+      'isSolved': false,
+      'report userEmail': userEmail,
+      'userID': goodUserID,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
   //---------UserTags---------
 
   Future<void> removeSingleTag(
       String userID, String removeTag, String tagCategory) async {
     //used to remove a single Tag from the user
-    //tag category includes: major, gpa, language, studyHabits, other
+    //tag category includes: major, interest, language, studyHabits, other
 
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
@@ -331,7 +337,7 @@ class DatabaseMethods {
     docRef.update({
       'tags': {
         'college': userTags.college,
-        'gpa': userTags.gpa,
+        'interest': userTags.interest,
         'language': userTags.language,
         'strudyHabits': userTags.strudyHabits,
       }

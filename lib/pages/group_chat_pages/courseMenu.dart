@@ -1,24 +1,18 @@
-import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
-import 'package:app_test/models/message_model.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 
 class CourseMainMenu extends StatefulWidget {
-  const CourseMainMenu({
-    Key key,
-    this.course,
-    this.userData
-  }) : super(key: key);
+  const CourseMainMenu({Key key, this.course, this.userData}) : super(key: key);
 
   final course;
   final userData;
@@ -34,13 +28,17 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
 
   @override
   void initState() {
-    databaseMethods.getListOfNumberOfMembersInCourses(widget.course).then((value) {
+    databaseMethods
+        .getListOfNumberOfMembersInCourses(widget.course)
+        .then((value) {
       setState(() {
         listOfNumberOfMembers = value;
       });
     });
 
-    databaseMethods.getListOfUnreadInCourses(widget.course, widget.userData.userID).then((value) {
+    databaseMethods
+        .getListOfUnreadInCourses(widget.course, widget.userData.userID)
+        .then((value) {
       setState(() {
         listOfUnread = value;
       });
@@ -280,8 +278,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       'add courses',
                                       textAlign: TextAlign.left,
                                       style: GoogleFonts.openSans(
-                                          color: Color(0xffFF7E40),
-                                          fontSize: 16,),
+                                        color: Color(0xffFF7E40),
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -298,248 +297,317 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                     ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          databaseMethods.getListOfNumberOfMembersInCourses(widget.course).then((value) {
-                            setState(() {
-                              listOfNumberOfMembers = value;
-                            });
+                          (BuildContext context, int index) {
+                        databaseMethods
+                            .getListOfNumberOfMembersInCourses(widget.course)
+                            .then((value) {
+                          if (!mounted) {
+                            return; // Just do nothing if the widget is disposed.
+                          }
+                          setState(() {
+                            listOfNumberOfMembers = value;
                           });
+                        });
 
-                          databaseMethods.getListOfUnreadInCourses(widget.course, widget.userData.userID).then((value) {
-                            setState(() {
-                              listOfUnread = value;
-                            });
+                        databaseMethods
+                            .getListOfUnreadInCourses(
+                                widget.course, widget.userData.userID)
+                            .then((value) {
+                          if (!mounted) {
+                            return; // Just do nothing if the widget is disposed.
+                          }
+                          setState(() {
+                            listOfUnread = value;
                           });
-                          return FocusedMenuHolder(
-                            blurSize: 4,
-                            // blurBackgroundColor: Colors.white60,
-                            menuWidth: MediaQuery.of(context).size.width * 0.60,
-                            menuBoxDecoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15.0))),
-                            onPressed: () {
-                              //press on the item
-                            },
-                            menuItems: <FocusedMenuItem>[
-                              FocusedMenuItem(
-                                  title: Text('Open'),
-                                  trailingIcon: Icon(Icons.open_in_new),
-                                  onPressed: () {}),
-                              FocusedMenuItem(
-                                  title: Text('Share'),
-                                  trailingIcon: Icon(Icons.share),
-                                  onPressed: () {}),
-                              FocusedMenuItem(
-                                  title: Text(
-                                    'Delete',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  trailingIcon: Icon(Icons.delete),
-                                  backgroundColor: Colors.redAccent,
-                                  onPressed: () {
-                                    var a = course[index].courseID;
-                                    print('$a');
-                                    courseProvider.removeCourse(
-                                        context, course[index].courseID);
-                                  }),
-                            ],
-                            child: GestureDetector(
-                              onTap: () {
-                                //TODO navigate into course fourm
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: userdata,
-                                      ),
-                                      // 这个需要的话直接uncomment
-                                      // Provider<List<CourseInfo>>.value(
-                                      //   value: course,
-                                      // ),
-                                      // final courseProvider = Provider.of<CourseProvider>(context);
-                                      // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                      // 不需要pass到push里面，直接复制上面这行即可
-                                    ],
-                                    child: GroupChat(
-                                      courseId: course[index].courseID,
-                                      myEmail: userdata.email,
-                                      myName: userdata.userName,
-                                      initialChat: 0,
+                        });
+                        return FocusedMenuHolder(
+                          blurSize: 4,
+                          // blurBackgroundColor: Colors.white60,
+                          menuWidth: MediaQuery.of(context).size.width * 0.60,
+                          menuBoxDecoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0))),
+                          onPressed: () {
+                            //press on the item
+                          },
+                          menuItems: <FocusedMenuItem>[
+                            FocusedMenuItem(
+                                title: Text('Share'),
+                                trailingIcon: Icon(Icons.share),
+                                onPressed: () {
+                                  Clipboard.setData(new ClipboardData(
+                                          text:
+                                              'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${course[index].courseID}\nCourse Name: ${course[index].myCourseName + course[index].section}'))
+                                      .then((result) {
+                                    showDialog<void>(
+                                      context: context,
+                                      barrierDismissible:
+                                          false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                Text(
+                                                    'The invite Link is copied.'),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  });
+                                }),
+                            FocusedMenuItem(
+                                title: Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                trailingIcon: Icon(Icons.delete),
+                                backgroundColor: Colors.redAccent,
+                                onPressed: () {
+                                  var a = course[index].courseID;
+                                  print('$a');
+                                  courseProvider.removeCourse(
+                                      context, course[index].courseID);
+                                }),
+                          ],
+                          child: GestureDetector(
+                            onTap: () {
+                              //TODO navigate into course fourm
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MultiProvider(
+                                  providers: [
+                                    Provider<UserData>.value(
+                                      value: userdata,
                                     ),
-                                  );
-                                }));
-                              },
-                              child: Container(
-                                  margin: const EdgeInsets.only(
-                                      bottom: 16, top: 16, left: 38, right: 38),
-                                  width: 297,
-                                  height: 114.32,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
-                                            blurRadius: 8,
-                                            spreadRadius: 2,
-                                            offset: Offset(4, 4))
-                                      ],
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(24))),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(
-                                            height: 43.32,
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              SizedBox(
-                                                width: 9,
-                                              ),
-                                              Text(course[index].myCourseName ?? '',
-                                                  style: GoogleFonts.montserrat(
-                                                      color: Color(0xffFF7E40),
-                                                      fontSize: 22,
-                                                      fontWeight: FontWeight.bold)),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Text(course[index].section ?? '',
-                                                  style: GoogleFonts.montserrat(
-                                                      color: Color(0xffFF7E40),
-                                                      fontSize: 22,
-                                                      fontWeight: FontWeight.bold)),
-                                              SizedBox(
-                                                width: 6,
-                                              ),
-                                              Container(
-                                                alignment: Alignment.center,
-                                                width: 18,
-                                                height: 18,
-                                                decoration: new BoxDecoration(
-                                                  color: const Color(0xffFF1717),
-                                                  borderRadius: BorderRadius.circular(32),
-                                                ),
-                                                child: Text(
-                                                  listOfUnread.isNotEmpty && index <= listOfUnread.length-1 ? ('+' + listOfUnread[index].toString())
-                                                        : '+0',
-                                                  style: GoogleFonts.openSans(
-                                                    fontSize: 8,
-                                                    color: Colors.white
-                                                  ),
-                                                ),
-                                              )
-                                              // Text('+' + courses.userNumbers.toString() + '',
-                                              //     style: TextStyle(
-                                              //         color: orengeColor, fontSize: 18)),
-                                            ],
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 10),
-                                            child: Text(
-                                                listOfNumberOfMembers.isNotEmpty && index <= listOfUnread.length-1 ? (listOfNumberOfMembers[index] > 1
-                                                    ? listOfNumberOfMembers[index].toString() +
-                                                        ' ' +
-                                                        'people'
-                                                    : listOfNumberOfMembers[index].toString() +
-                                                        ' ' +
-                                                        'person') : '0 people',
-                                                style: GoogleFonts.openSans(
-                                                  color: Color(0xffFF7E40),
-                                                  fontSize: 12,
-                                                )),
-                                          ),
-                                        ],
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(right: index%2 == 0 ? 40 : 15),
-                                        child: index%4 == 0 ? Image.asset('assets/images/icons-01.png')
-                                        : index%4 == 1 ? Image.asset('assets/images/icons-02.png')
-                                        : index%4 == 2 ? Image.asset('assets/images/icons-03.png')
-                                        : Image.asset('assets/images/icons-04.png'),
-                                      )
+                                    // 这个需要的话直接uncomment
+                                    // Provider<List<CourseInfo>>.value(
+                                    //   value: course,
+                                    // ),
+                                    // final courseProvider = Provider.of<CourseProvider>(context);
+                                    // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                    // 不需要pass到push里面，直接复制上面这行即可
+                                  ],
+                                  child: GroupChat(
+                                    courseId: course[index].courseID,
+                                    myEmail: userdata.email,
+                                    myName: userdata.userName,
+                                    initialChat: 0,
+                                  ),
+                                );
+                              }));
+                            },
+                            child: Container(
+                                margin: const EdgeInsets.only(
+                                    bottom: 16, top: 16, left: 38, right: 38),
+                                width: 297,
+                                height: 114.32,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 8,
+                                          spreadRadius: 2,
+                                          offset: Offset(4, 4))
                                     ],
-                                  )),
-                            ),
-                          );
-                        },
-                        childCount: course.length
-                      ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(24))),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          height: 43.32,
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            SizedBox(
+                                              width: 9,
+                                            ),
+                                            Text(
+                                                course[index].myCourseName ??
+                                                    '',
+                                                style: GoogleFonts.montserrat(
+                                                    color: Color(0xffFF7E40),
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
+                                            Text(course[index].section ?? '',
+                                                style: GoogleFonts.montserrat(
+                                                    color: Color(0xffFF7E40),
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                              width: 6,
+                                            ),
+                                            Container(
+                                              alignment: Alignment.center,
+                                              width: 18,
+                                              height: 18,
+                                              decoration: new BoxDecoration(
+                                                color: const Color(0xffFF1717),
+                                                borderRadius:
+                                                    BorderRadius.circular(32),
+                                              ),
+                                              child: Text(
+                                                listOfUnread.isNotEmpty &&
+                                                        index <=
+                                                            listOfUnread
+                                                                    .length -
+                                                                1
+                                                    ? ('+' +
+                                                        listOfUnread[index]
+                                                            .toString())
+                                                    : '+0',
+                                                style: GoogleFonts.openSans(
+                                                    fontSize: 8,
+                                                    color: Colors.white),
+                                              ),
+                                            )
+                                            // Text('+' + courses.userNumbers.toString() + '',
+                                            //     style: TextStyle(
+                                            //         color: orengeColor, fontSize: 18)),
+                                          ],
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: Text(
+                                              listOfNumberOfMembers
+                                                          .isNotEmpty &&
+                                                      index <=
+                                                          listOfUnread.length -
+                                                              1
+                                                  ? (listOfNumberOfMembers[
+                                                              index] >
+                                                          1
+                                                      ? listOfNumberOfMembers[
+                                                                  index]
+                                                              .toString() +
+                                                          ' ' +
+                                                          'people'
+                                                      : listOfNumberOfMembers[
+                                                                  index]
+                                                              .toString() +
+                                                          ' ' +
+                                                          'person')
+                                                  : '0 people',
+                                              style: GoogleFonts.openSans(
+                                                color: Color(0xffFF7E40),
+                                                fontSize: 12,
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          right: index % 2 == 0 ? 40 : 15),
+                                      child: index % 4 == 0
+                                          ? Image.asset(
+                                              'assets/images/icons-01.png')
+                                          : index % 4 == 1
+                                              ? Image.asset(
+                                                  'assets/images/icons-02.png')
+                                              : index % 4 == 2
+                                                  ? Image.asset(
+                                                      'assets/images/icons-03.png')
+                                                  : Image.asset(
+                                                      'assets/images/icons-04.png'),
+                                    )
+                                  ],
+                                )),
+                          ),
+                        );
+                      }, childCount: course.length),
                     )
-              //           .followedBy([
-              //         GestureDetector(
-              //           onTap: () {
-              //             print(userdata.school);
-              //             //TODO add course
-              //             Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                 builder: (context) {
-              //                   return MultiProvider(
-              //                     providers: [
-              //                       Provider<UserData>.value(
-              //                         value: userdata,
-              //                       ),
-              //                       Provider<List<CourseInfo>>.value(
-              //                           value: course)
-              //                     ],
-              //                     child: SearchCourse(),
-              //                   );
-              //                 },
-              //               ),
-              //             );
-              //
-              //             // MaterialPageRoute(
-              //             //     builder: (context) => SearchGroup()));
-              //           },
-              //           child: Container(
-              //             // color: Colors.red,
-              //             margin: const EdgeInsets.only(
-              //                 bottom: 16, top: 16, left: 38, right: 38),
-              //             height: 90,
-              //             width: 50,
-              //             // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              //             decoration: BoxDecoration(
-              //                 gradient: LinearGradient(
-              //                   colors: [lightYellowColor, builtyPinkColor],
-              //                   begin: Alignment.centerLeft,
-              //                   end: Alignment.centerRight,
-              //                 ),
-              //                 boxShadow: [
-              //                   BoxShadow(
-              //                       color: Colors.black.withOpacity(0.2),
-              //                       blurRadius: 8,
-              //                       spreadRadius: 2,
-              //                       offset: Offset(4, 4))
-              //                 ],
-              //                 borderRadius:
-              //                     BorderRadius.all(Radius.circular(24))),
-              //             child: Column(
-              //               children: <Widget>[
-              //                 Padding(
-              //                     padding: const EdgeInsets.only(
-              //                         top: 10, bottom: 10)),
-              //                 Image.asset(
-              //                   'assets/images/add_course.png',
-              //                   scale: 5,
-              //                 ),
-              //                 SizedBox(
-              //                   height: 2,
-              //                 ),
-              //                 Text('Add Course',
-              //                     style: simpleTextStyle(Colors.black, 20))
-              //               ],
-              //             ),
-              //           ),
-              //         ),
-              //       ]).toList()
+                    //           .followedBy([
+                    //         GestureDetector(
+                    //           onTap: () {
+                    //             print(userdata.school);
+                    //             //TODO add course
+                    //             Navigator.push(
+                    //               context,
+                    //               MaterialPageRoute(
+                    //                 builder: (context) {
+                    //                   return MultiProvider(
+                    //                     providers: [
+                    //                       Provider<UserData>.value(
+                    //                         value: userdata,
+                    //                       ),
+                    //                       Provider<List<CourseInfo>>.value(
+                    //                           value: course)
+                    //                     ],
+                    //                     child: SearchCourse(),
+                    //                   );
+                    //                 },
+                    //               ),
+                    //             );
+                    //
+                    //             // MaterialPageRoute(
+                    //             //     builder: (context) => SearchGroup()));
+                    //           },
+                    //           child: Container(
+                    //             // color: Colors.red,
+                    //             margin: const EdgeInsets.only(
+                    //                 bottom: 16, top: 16, left: 38, right: 38),
+                    //             height: 90,
+                    //             width: 50,
+                    //             // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    //             decoration: BoxDecoration(
+                    //                 gradient: LinearGradient(
+                    //                   colors: [lightYellowColor, builtyPinkColor],
+                    //                   begin: Alignment.centerLeft,
+                    //                   end: Alignment.centerRight,
+                    //                 ),
+                    //                 boxShadow: [
+                    //                   BoxShadow(
+                    //                       color: Colors.black.withOpacity(0.2),
+                    //                       blurRadius: 8,
+                    //                       spreadRadius: 2,
+                    //                       offset: Offset(4, 4))
+                    //                 ],
+                    //                 borderRadius:
+                    //                     BorderRadius.all(Radius.circular(24))),
+                    //             child: Column(
+                    //               children: <Widget>[
+                    //                 Padding(
+                    //                     padding: const EdgeInsets.only(
+                    //                         top: 10, bottom: 10)),
+                    //                 Image.asset(
+                    //                   'assets/images/add_course.png',
+                    //                   scale: 5,
+                    //                 ),
+                    //                 SizedBox(
+                    //                   height: 2,
+                    //                 ),
+                    //                 Text('Add Course',
+                    //                     style: simpleTextStyle(Colors.black, 20))
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ]).toList()
                   ],
                 ),
               );

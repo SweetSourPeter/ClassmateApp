@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HelpFeedback extends StatefulWidget {
-  const HelpFeedback({Key key}) : super(key: key);
+  final String userEmail;
+  const HelpFeedback({
+    Key key,
+    this.userEmail,
+  }) : super(key: key);
 
   @override
   _HelpFeedbackState createState() => _HelpFeedbackState();
@@ -63,9 +67,9 @@ class _HelpFeedbackState extends State<HelpFeedback> {
     print((pageIndex / 10 % 10).toInt() * 10);
   }
 
-  void saveReportData(String reports, String badUserID, String goodUserID) {
+  void saveReportData(String reports, String userEmail, String userID) {
     //TODO change bad user ID
-    databaseMehods.saveReports(reports, badUserID, goodUserID);
+    databaseMehods.saveReportsFAQ(reports, userEmail, userID);
   }
 
   TextEditingController reportTextEditingController =
@@ -78,7 +82,7 @@ class _HelpFeedbackState extends State<HelpFeedback> {
       case 0:
         return reportSelectingPage(user.userID);
       case 50:
-        return userTypeTheProblem(context, user.userID);
+        return userTypeTheProblem(context, user.userID, widget.userEmail);
       case 100:
         return fqaPage(user.userID);
       case 10:
@@ -138,7 +142,8 @@ class _HelpFeedbackState extends State<HelpFeedback> {
   }
 
   SingleChildScrollView userTypeTheProblem(
-      BuildContext context, String userID) {
+      BuildContext context, String userID, String userEmail) {
+    print(userEmail);
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -197,8 +202,11 @@ class _HelpFeedbackState extends State<HelpFeedback> {
         ),
         GestureDetector(
           onTap: () {
-            setIndex(2);
-            // saveReportData(reportTextEditingController.text, '1111111', userID);
+            if (reportTextEditingController.text.isNotEmpty) {
+              setIndex(100);
+              saveReportData(
+                  reportTextEditingController.text, userEmail, userID);
+            }
           },
           child: SizedBox(
             height: 40,
@@ -312,7 +320,7 @@ class _HelpFeedbackState extends State<HelpFeedback> {
             Divider(),
             ListTile(
               title: Text(
-                'Here are the FQA about our service.',
+                'Here are the FAQ about our service.',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
@@ -422,7 +430,7 @@ class _HelpFeedbackState extends State<HelpFeedback> {
             Divider(),
             ListTile(
               title: Text(
-                'Here are the FQA about our service.',
+                'Here are the FAQ about our service.',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,

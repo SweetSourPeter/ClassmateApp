@@ -12,6 +12,40 @@ InputDecoration buildInputDecorationPinky(
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
     hintText: hintText,
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: themeOrange, width: 1.0),
+      borderRadius: BorderRadius.circular(
+        boarderRadius,
+      ),
+    ),
+    border: OutlineInputBorder(
+      borderSide: BorderSide(color: themeOrange, width: 1.0),
+      borderRadius: BorderRadius.circular(boarderRadius),
+      // borderSide: BorderSide.none
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: themeOrange, width: 1.0),
+      borderRadius: BorderRadius.circular(boarderRadius),
+      // borderSide: BorderSide.none
+    ),
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.red[400], width: 1.0),
+      borderRadius: BorderRadius.circular(boarderRadius),
+      // borderSide: BorderSide.none
+    ),
+
+    contentPadding: EdgeInsets.all(32), //height of the iput fie
+    hintStyle: TextStyle(color: Colors.grey), // KEY PROP
+  );
+}
+
+InputDecoration textFieldInputDecoration(
+    String hintText, double boarderRadius) {
+  return InputDecoration(
+    fillColor: Color(0xDA6D39).withOpacity(1),
+    filled: true,
+    // prefixIcon: Icon(Icons.search, color: Colors.grey),
+    hintText: hintText,
     border: OutlineInputBorder(
       borderSide: BorderSide.none,
       borderRadius: BorderRadius.circular(boarderRadius),
@@ -23,43 +57,40 @@ InputDecoration buildInputDecorationPinky(
       // borderSide: BorderSide.none
     ),
 
-    contentPadding: EdgeInsets.all(10),
-    hintStyle: TextStyle(color: Colors.grey), // KEY PROP
+    contentPadding: EdgeInsets.all(30), //height of the iput fie
+    hintStyle: TextStyle(color: Color(0xF7D5C5).withOpacity(0.7)), // KEY PROP
   );
 }
 
-InputDecoration textFieldInputDecoration(String hintText) {
-  return InputDecoration(
-      hintText: hintText,
-      hintStyle: TextStyle(color: Colors.white54),
-      focusedBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-      enabledBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)));
-}
-
 TextStyle simpleTextStyle(Color color, double fontsize) {
-  return GoogleFonts.montserrat(
+  return GoogleFonts.openSans(
     textStyle: TextStyle(color: color, fontSize: fontsize),
   );
 }
 
 TextStyle simpleTextStyleBlack() {
-  return GoogleFonts.montserrat(
+  return GoogleFonts.openSans(
     textStyle: TextStyle(color: Colors.black, fontSize: 16),
   );
 }
 
-TextStyle biggerTextStyle() {
-  return GoogleFonts.montserrat(
-    textStyle: TextStyle(color: Colors.white, fontSize: 17),
+TextStyle simpleTextSansStyleBold(Color color, double fontsize) {
+  return GoogleFonts.openSans(
+    textStyle: TextStyle(
+        color: color, fontSize: fontsize, fontWeight: FontWeight.bold),
   );
 }
 
-TextStyle largeTitleTextStyle(Color color) {
+TextStyle largeTitleTextStyle(Color color, double fontsize) {
   return GoogleFonts.montserrat(
-    textStyle:
-        TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.w700),
+    textStyle: TextStyle(color: color, fontSize: fontsize),
+  );
+}
+
+TextStyle largeTitleTextStyleBold(Color color, double fontsize) {
+  return GoogleFonts.montserrat(
+    textStyle: TextStyle(
+        color: color, fontSize: fontsize, fontWeight: FontWeight.bold),
   );
 }
 
@@ -93,7 +124,7 @@ class RaisedGradientButton extends StatelessWidget {
               blurRadius: 1.5,
             ),
           ],
-          borderRadius: BorderRadius.all(Radius.circular(24))),
+          borderRadius: BorderRadius.all(Radius.circular(30))),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -145,7 +176,7 @@ class PlainGradientButton extends StatelessWidget {
 //used on top of dragble sheet and showModalBottomSheet
 Padding topLineBar() {
   return Padding(
-      padding: EdgeInsets.fromLTRB(10, 10, 8, 5),
+      padding: EdgeInsets.fromLTRB(10, 0, 8, 5),
       child: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30.0),
@@ -154,10 +185,10 @@ Padding topLineBar() {
           bottomRight: Radius.circular(30.0),
         ),
         child: SizedBox(
-          width: 55.0,
-          height: 5.0,
+          width: 87.0,
+          height: 6.0,
           child: const DecoratedBox(
-            decoration: const BoxDecoration(color: lightOrangeColor),
+            decoration: const BoxDecoration(color: themeOrange),
           ),
         ),
       )
@@ -169,22 +200,29 @@ Padding topLineBar() {
 }
 
 // used to create user image
-CircleAvatar createUserImage(double radius, UserData userdata) {
-  return CircleAvatar(
-    backgroundColor: orengeColor,
-    radius: radius,
-    child: Container(
-      child: (userdata.userImageUrl == null)
-          ? Text(
-              userdata.userName[0].toUpperCase(),
-              style: TextStyle(fontSize: 35, color: Colors.white),
-            )
-          : null,
+Container createUserImage(double radius, UserData userdata) {
+  return Container(
+    decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: userdata.profileColor == null
+            ? listColors[1]
+            : listColors[userdata.profileColor.toInt()]),
+    child: CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: radius,
+      child: Container(
+        child: (userdata.userImageUrl == null)
+            ? Text(
+                userdata.userName[0].toUpperCase(),
+                style: TextStyle(fontSize: 35, color: Colors.white),
+              )
+            : null,
+      ),
+      backgroundImage: (userdata.userImageUrl == null)
+          ? null
+          : NetworkImage(
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
     ),
-    backgroundImage: (userdata.userImageUrl == null)
-        ? null
-        : NetworkImage(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
 }
 
@@ -411,7 +449,10 @@ Padding userInfoDetailsBox(Size mediaQuery, String topText, String bottomText) {
 void showBottomPopSheet(BuildContext context, Widget widget) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-          side: BorderSide(width: 15, color: Colors.transparent),
+          side: BorderSide(
+            width: 10,
+            color: Colors.transparent,
+          ),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30.0),
             topRight: Radius.circular(30.0),

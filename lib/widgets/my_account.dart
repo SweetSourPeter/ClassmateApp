@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/contact_pages/FriendsScreen.dart';
 import 'package:app_test/pages/edit_pages/editHomePage.dart';
@@ -147,10 +148,8 @@ class _MyAccountState extends State<MyAccount> {
                     textSize: widget.getSize(3),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Wrapper(true)));
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => StartPage()));
                       // Navigator.push(context,
                       //     MaterialPageRoute(builder: (context) {
                       //   return MultiProvider(
@@ -207,7 +206,8 @@ class _MyAccountState extends State<MyAccount> {
                     textSize: widget.getSize(2),
                     height: (menuContainerHeight) / 6,
                     onTap: () {
-                      showBottomPopSheet(context, HelpFeedback());
+                      showBottomPopSheet(
+                          context, HelpFeedback(userEmail: userdata.email));
                     },
                   ),
                   Divider(

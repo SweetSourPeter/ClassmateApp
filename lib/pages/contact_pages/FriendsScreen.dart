@@ -46,7 +46,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 child: Text(
                   'Chats',
                   textAlign: TextAlign.left,
-                  style: largeTitleTextStyle(Colors.black),
+                  style: largeTitleTextStyleBold(Colors.black, 26),
                 ),
               ),
             ),
@@ -54,21 +54,21 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+            (BuildContext context, int index) {
               final Message chat = chats[index];
               return GestureDetector(
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => ChatScreen(
-                      // user: chat.sender,
-                    ),
+                        // user: chat.sender,
+                        ),
                   ),
                 ),
                 child: Container(
                   margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
                   padding:
-                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -88,19 +88,19 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                 alignment: Alignment.bottomRight,
                                 child: chat.unread
                                     ? CircleAvatar(
-                                    backgroundColor: themeOrange,
-                                    radius: 10.0,
-                                    child: Text(
-                                      chat.unreadNumber <= 99
-                                          ? chat.unreadNumber.toString()
-                                          : '...',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ))
+                                        backgroundColor: themeOrange,
+                                        radius: 10.0,
+                                        child: Text(
+                                          chat.unreadNumber <= 99
+                                              ? chat.unreadNumber.toString()
+                                              : '...',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ))
                                     : null),
                           ),
                           SizedBox(width: 15.0),
@@ -111,7 +111,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                 chat.sender.name,
                                 style: TextStyle(
                                   color:
-                                  chat.unread ? themeOrange : Colors.black,
+                                      chat.unread ? themeOrange : Colors.black,
                                   fontSize: 17.0,
                                   fontWeight: FontWeight.w900,
                                 ),

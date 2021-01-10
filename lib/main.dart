@@ -1,5 +1,6 @@
 // import 'package:app_test/views/sign_in.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
@@ -78,6 +79,9 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          highlightColor: themeOrange, // color for scroll bar
+        ),
         home: SplashScreen(),
       ),
     );
