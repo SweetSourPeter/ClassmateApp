@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -46,49 +47,48 @@ class _GroupChatState extends State<GroupChat> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-            padding: EdgeInsets.all(0),
-            reverse: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                  snapshot.data.documents[index].data['time']);
-              if (index == 0) {
-                displayTime = true;
-              } else {
-                DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                    snapshot.data.documents[index - 1].data['time']);
-                final difference = current.difference(prev).inDays;
-                if (difference >= 1) {
-                  displayTime = true;
-                } else {
-                  displayTime = false;
-                }
-              }
+                padding: EdgeInsets.all(0),
+                reverse: true,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  DateTime current = DateTime.fromMillisecondsSinceEpoch(
+                      snapshot.data.documents[index].data['time']);
+                  if (index == 0) {
+                    displayTime = true;
+                  } else {
+                    DateTime prev = DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.documents[index - 1].data['time']);
+                    final difference = current.difference(prev).inDays;
+                    if (difference >= 1) {
+                      displayTime = true;
+                    } else {
+                      displayTime = false;
+                    }
+                  }
 
-              if (DateTime.now().difference(current).inDays <= 7) {
-                displayWeek = true;
-              } else {
-                displayWeek = false;
-              }
+                  if (DateTime.now().difference(current).inDays <= 7) {
+                    displayWeek = true;
+                  } else {
+                    displayWeek = false;
+                  }
 
-              return snapshot.data.documents[index].data['messageType'] ==
-                  'text'
-                  ? MessageTile(
-                  snapshot.data.documents[index].data['message'],
-                  snapshot.data.documents[index].data['sendBy'] ==
-                      myName,
-                  DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data['time'])
-                      .toString(),
-                  displayTime,
-                  displayWeek,
-                  snapshot.data.documents[index].data['sendBy']
-              )
-                  : ImageTile(
-                  snapshot.data.documents[index].data['message'],
-                  snapshot.data.documents[index].data['sendBy'] ==
-                      myName);
-            })
+                  return snapshot.data.documents[index].data['messageType'] ==
+                          'text'
+                      ? MessageTile(
+                          snapshot.data.documents[index].data['message'],
+                          snapshot.data.documents[index].data['sendBy'] ==
+                              myName,
+                          DateTime.fromMillisecondsSinceEpoch(
+                                  snapshot.data.documents[index].data['time'])
+                              .toString(),
+                          displayTime,
+                          displayWeek,
+                          snapshot.data.documents[index].data['sendBy'])
+                      : ImageTile(
+                          snapshot.data.documents[index].data['message'],
+                          snapshot.data.documents[index].data['sendBy'] ==
+                              myName);
+                })
             : Container();
       },
     );
@@ -143,10 +143,11 @@ class _GroupChatState extends State<GroupChat> {
 
   Future _uploadFile(myName) async {
     String fileName = basename(_imageFile.path);
-    StorageReference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    firebase_storage.Reference firebaseStorageRef =
+        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask =
+        firebaseStorageRef.putFile(_imageFile);
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
         _uploadedFileURL = downloadUrl;
@@ -221,11 +222,8 @@ class _GroupChatState extends State<GroupChat> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: IconButton(
-                            icon: Image.asset(
-                                'assets/images/back_arrow.pic',
-                                height: 23,
-                                width: 23
-                            ),
+                            icon: Image.asset('assets/images/arrow-back.png',
+                                height: 23, width: 23),
                             // iconSize: 30.0,
                             color: const Color(0xFFFFB811),
                             onPressed: () => Navigator.of(context).pop(),
@@ -234,7 +232,7 @@ class _GroupChatState extends State<GroupChat> {
                         Container(
                           // height: 30.0,
                           child: Text(
-                            // currentUser.email,
+                              // currentUser.email,
                               widget.courseName,
                               style: GoogleFonts.montserrat(
                                   fontSize: 22,
@@ -244,44 +242,39 @@ class _GroupChatState extends State<GroupChat> {
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: IconButton(
-                            icon: Image.asset(
-                                'assets/images/group_more.png',
-                                height: 26,
-                                width: 50
-                            ),
+                            icon: Image.asset('assets/images/group_more.png',
+                                height: 26, width: 50),
                             // iconSize: 10.0,
                             onPressed: () {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                    return MultiProvider(
-                                      providers: [
-                                        Provider<UserData>.value(
-                                          value: currentUser,
-                                        )
-                                      ],
-                                      child: CourseDetail(),
-                                    );
-                                  }));
+                                return MultiProvider(
+                                  providers: [
+                                    Provider<UserData>.value(
+                                      value: currentUser,
+                                    )
+                                  ],
+                                  child: CourseDetail(),
+                                );
+                              }));
                             },
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Expanded(
-                      child: chatMessageList(currentUser.userName)
-                  ),
+                  Expanded(child: chatMessageList(currentUser.userName)),
                   Container(
                       decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: Offset(0, 3), // changes position of shadow
-                          ),
-                        ],
-                      )),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  )),
                   Container(
                     alignment: Alignment.center,
                     height: 74.0,
@@ -302,64 +295,66 @@ class _GroupChatState extends State<GroupChat> {
                         ),
                         Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: TextField(
-                                  onTap: () {
-                                    setState(() {
-                                      showStickerKeyboard = false;
-                                      showTextKeyboard = true;
-                                    });
-                                  },
-                                  controller: messageController,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                  ),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding:
-                                      EdgeInsets.only(left: 10.0, bottom: 7.0)),
-                                  textInputAction: TextInputAction.send,
-                                  onSubmitted: (value) {
-                                    sendMessage(currentUser.userName);
-                                  },
-                                ),
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: TextField(
+                              onTap: () {
+                                setState(() {
+                                  showStickerKeyboard = false;
+                                  showTextKeyboard = true;
+                                });
+                              },
+                              controller: messageController,
+                              style: GoogleFonts.openSans(
+                                fontSize: 12,
+                                color: Colors.black,
                               ),
-                            )),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding:
+                                      EdgeInsets.only(left: 10.0, bottom: 7.0)),
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (value) {
+                                sendMessage(currentUser.userName);
+                              },
+                            ),
+                          ),
+                        )),
                         Padding(
                           padding: const EdgeInsets.only(left: 25.0),
                           child: GestureDetector(
-                              child: Image.asset('assets/images/smile.png',
+                              child: Image.asset('assets/images/emoji.png',
                                   width: 25.36, height: 25.36),
                               onTap: () {
                                 showTextKeyboard
                                     ? setState(() {
-                                  FocusScopeNode currentFocus =
-                                  FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
-                                  showStickerKeyboard =
-                                  !showStickerKeyboard;
-                                })
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                          showTextKeyboard = false;
+                                        }
+                                        showStickerKeyboard =
+                                            !showStickerKeyboard;
+                                      })
                                     : setState(() {
-                                  showStickerKeyboard =
-                                  !showStickerKeyboard;
-                                });
+                                        showStickerKeyboard =
+                                            !showStickerKeyboard;
+                                      });
                               }),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                          padding:
+                              const EdgeInsets.only(left: 25.0, right: 25.0),
                           child: GestureDetector(
                             onTap: () {
-                              print('showFunctions value: ' + showFunctions.toString());
+                              print('showFunctions value: ' +
+                                  showFunctions.toString());
                               setState(() {
                                 showFunctions = !showFunctions;
                               });
@@ -414,167 +409,169 @@ class MessageTile extends StatelessWidget {
     return Column(
       children: [
         // Date Box
-        displayWeek ? displayTime ?
-          Padding(
-            padding: const EdgeInsets.only(top: 35),
-            child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                DateFormat('EEEE')
-                    .format(DateTime.parse(currentTime))
-                    .substring(0, 3) +
-                    ', ' +
-                    DateFormat('MMMM')
-                        .format(DateTime.parse(currentTime))
-                        .substring(0, 3) +
-                    ' ' +
-                    DateFormat('d').format(DateTime.parse(currentTime)),
-                style: GoogleFonts.openSans(
-                  fontSize: 14,
-                  color: const Color(0xff949494),
-                ),
-              ),
-            ),
-          ) : Container() : displayTime ?
-          Padding(
-            padding: const EdgeInsets.only(top: 35),
-            child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                currentTime.substring(0, currentTime.length - 13),
-                style: GoogleFonts.openSans(
-                  fontSize: 14,
-                  color: const Color(0xff949494),
-                ),
-              ),
-            ),
-          ) : Container(),
+        displayWeek
+            ? displayTime
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
+            : displayTime
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
-        isSendByMe ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Sender's name
-              Container(
+        isSendByMe
+            ? Container(
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    senderName,
-                    style: GoogleFonts.openSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xffFFB811),
-                    ),
-                  ),
-                ),
-              ),
-              // Message and Time
-              Container(
-                width: 350,
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(
-                        margin: EdgeInsets.only(left: 10),
-                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(12),
-                                topLeft: Radius.circular(12),
-                                bottomLeft: Radius.circular(12)),
-                            color: const Color(0xffFFB811)),
+                    // Sender's name
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
-                            message,
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.black,
-                            )),
+                          senderName,
+                          style: GoogleFonts.openSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xffFFB811),
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )
-            : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Sender's name
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    senderName,
-                    style: GoogleFonts.openSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xffFFB811),
-                    ),
-                  ),
-                ),
-              ),
-              // Message and Time
-              Container(
-                width: 350,
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              topRight: Radius.circular(12),
-                              bottomRight: Radius.circular(12)
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
                             ),
-                            color: Colors.white
-                        ),
-                        child: Text(
-                            message,
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.black,
-                            )
-                        ),
-                      ),
-                    ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                          ),
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(12),
+                                      topLeft: Radius.circular(12),
+                                      bottomLeft: Radius.circular(12)),
+                                  color: const Color(0xffFFB811)),
+                              child: LinkWell(message,
+                                  textAlign: TextAlign.start,
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
+            : Container(
+                padding: EdgeInsets.only(top: 20, left: 25),
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Sender's name
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          senderName,
+                          style: GoogleFonts.openSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xffFFB811),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 10),
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(12),
+                                      topRight: Radius.circular(12),
+                                      bottomRight: Radius.circular(12)),
+                                  color: Colors.white),
+                              child: LinkWell(message,
+                                  textAlign: TextAlign.start,
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
       ],
     );
   }
@@ -597,18 +594,18 @@ class ImageTile extends StatelessWidget {
       alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin:
-        isSendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
+            isSendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
         padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
         decoration: BoxDecoration(
             borderRadius: isSendByMe
                 ? BorderRadius.only(
-                topLeft: Radius.circular(23),
-                topRight: Radius.circular(23),
-                bottomLeft: Radius.circular(23))
+                    topLeft: Radius.circular(23),
+                    topRight: Radius.circular(23),
+                    bottomLeft: Radius.circular(23))
                 : BorderRadius.only(
-                topLeft: Radius.circular(23),
-                topRight: Radius.circular(23),
-                bottomRight: Radius.circular(23)),
+                    topLeft: Radius.circular(23),
+                    topRight: Radius.circular(23),
+                    bottomRight: Radius.circular(23)),
             // gradient: LinearGradient(
             //   colors: isSendByMe ? [
             //     const Color(0xff007EF4),

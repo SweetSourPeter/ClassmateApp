@@ -4,12 +4,13 @@ import 'package:app_test/pages/contact_pages/addCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
-// import 'dart:developer' as dev;
 
 class SearchCourse extends StatefulWidget {
   @override
@@ -22,6 +23,8 @@ class _SearchCourseState extends State<SearchCourse> {
       new TextEditingController();
   TextEditingController sectionTextEditingController =
       new TextEditingController();
+  TextEditingController field = TextEditingController();
+  String pasteValue = '';
   QuerySnapshot searchSnapshot;
   var _selectedSemester;
   @override
@@ -161,6 +164,44 @@ class _SearchCourseState extends State<SearchCourse> {
               text: TextSpan(
                 style: TextStyle(color: Colors.grey, fontSize: 15.0),
                 children: <TextSpan>[
+                  TextSpan(text: 'I Have Course Card '),
+                  TextSpan(
+                      text: 'URL',
+                      style: TextStyle(color: Colors.blue),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          FlutterClipboard.paste().then((value) async {
+                            setState(() {
+                              field.text = value;
+                              pasteValue = value;
+                            });
+                            print('Clipboard Text: $pasteValue');
+                            bool urlValid = false;
+                            if (pasteValue.startsWith('https://na-cc.com/')) {
+                              searchBegain = true;
+                              print('start correct');
+                              var splitTemp = pasteValue.split('/');
+                              print(splitTemp[4]);
+                              urlValid = true;
+                              await initiateURLSearch(splitTemp[4]);
+                            }
+
+                            searchBegain
+                                ? showBottomPopSheet(
+                                    context, searchList(context, course))
+                                : CircularProgressIndicator();
+                          });
+                        }),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            RichText(
+              text: TextSpan(
+                style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                children: <TextSpan>[
                   TextSpan(text: 'Can\'t find your course? '),
                   TextSpan(
                       text: 'Tap here',
@@ -219,19 +260,6 @@ class _SearchCourseState extends State<SearchCourse> {
                   ),
                 ),
               ),
-
-              // RaisedButton(
-              //   color: orengeColor,
-              //   child: Text("Search"),
-              //   onPressed: () {
-              //     if (!_formKey.currentState.validate()) {
-              //       return;
-              //     } else {
-              //       initiateSearch(_selectedSemester);
-              //     }
-              //     _formKey.currentState.save();
-              //   },
-              // ),
             ),
           ],
         ),
@@ -254,28 +282,38 @@ class _SearchCourseState extends State<SearchCourse> {
     // if (temp == null) return;
     setState(() {
       searchSnapshot = temp;
-      if (searchSnapshot.documents != null) {
-        if ((searchSnapshot.documents.length >= 1) &&
+      if (searchSnapshot.docs != null) {
+        if ((searchSnapshot.docs.length >= 1) &&
             (courseNameTextEditingController.text.isNotEmpty) &&
             (sectionTextEditingController.text.isNotEmpty)) {
           print('reached search');
           searchBegain = true;
         }
       }
+    });
+  }
 
-      //   searchSnapshot = temp;
-      //   print('aaaa');
-      //   // print(searchSnapshot.toString() + 'aaaaaaaaaaa');
-      // print(searchSnapshot.documents.length);
-      //   // print(searchTextEditingController.text);
+  initiateURLSearch(String courseId) async {
+    var temp = await databaseMethods.getCourseInfo(
+      courseId,
+    );
+    setState(() {
+      searchSnapshot = temp;
+      if (searchSnapshot.docs != null) {
+        if ((searchSnapshot.docs.length >= 1) &&
+            (courseNameTextEditingController.text.isNotEmpty) &&
+            (sectionTextEditingController.text.isNotEmpty)) {
+          print('reached search');
+          searchBegain = true;
+        }
+      }
     });
   }
 
   Widget searchList(context, List<CourseInfo> course) {
     print(searchBegain);
-    // var count = searchSnapshot.documents.length;
-    // print('index length is ' + '$count');
-    return searchBegain
+
+    return searchBegain && true
         ? Container(
             height: MediaQuery.of(context).size.height * 0.6,
             // decoration: BoxDecoration(
@@ -296,27 +334,32 @@ class _SearchCourseState extends State<SearchCourse> {
                       separatorBuilder: (context, index) {
                         return Divider();
                       },
-                      itemCount: searchSnapshot.documents.length,
+                      itemCount: searchSnapshot.docs.length,
                       shrinkWrap: true, //when you have listview in column
                       itemBuilder: (context, index) {
                         var id =
-                            searchSnapshot.documents[index].data['courseID'];
+                            searchSnapshot.docs[index].data()['courseID'] ?? '';
                         return Provider<List<CourseInfo>>.value(
                           value: course,
                           child: CourseSearchTile(
                             courseName:
                                 // "peter",
-                                searchSnapshot
-                                    .documents[index].data['myCourseName'],
+                                searchSnapshot.docs[index]
+                                        .data()['myCourseName'] ??
+                                    '',
                             section:
                                 // "731957665@qq.com",
-                                searchSnapshot.documents[index].data['section'],
+                                searchSnapshot.docs[index].data()['section'] ??
+                                    '',
                             college:
                                 // "731957665@qq.com",
-                                searchSnapshot.documents[index].data['college'],
-                            term: searchSnapshot.documents[index].data['term'],
-                            department: searchSnapshot
-                                .documents[index].data['department'],
+                                searchSnapshot.docs[index].data()['college'] ??
+                                    '',
+                            term:
+                                searchSnapshot.docs[index].data()['term'] ?? '',
+                            department: searchSnapshot.docs[index]
+                                    .data()['department'] ??
+                                '',
                             courseID: id,
                             isAdd: course
                                 .where((element) => element.courseID == id)

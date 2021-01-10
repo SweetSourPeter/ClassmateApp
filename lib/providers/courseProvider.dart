@@ -76,10 +76,11 @@ class CourseProvider with ChangeNotifier {
     //     myCourseCollege.toUpperCase() +
     //     myCourseName.toUpperCase() +
     //     courseSection.toUpperCase();
-    //save to Users Document
+    // save to Users Document
     String courseId = uuid.v4();
     var newCourseToUser = CourseInfo(
       myCourseName: myCourseName.toUpperCase(),
+      section: courseSection.toUpperCase(),
       courseID: courseId,
     );
     databaseMethods.saveCourseToUser(newCourseToUser, userId);

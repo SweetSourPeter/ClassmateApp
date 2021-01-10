@@ -5,12 +5,14 @@ class User {
   String email;
   String userName;
   bool admin;
+  int unread;
 
-  User({this.userID, bool admin});
+  User({this.userID, bool admin, this.unread});
 
   Map<String, dynamic> toJson() => {
         'userID': userID,
         'admin': admin,
+        'unread': 0
       };
 }
 

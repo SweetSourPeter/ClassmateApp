@@ -9,6 +9,7 @@ import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
+import 'package:flutter/services.dart';
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({
@@ -198,20 +199,53 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           child: Container(
                             // color: orengeColor,
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'My Courses',
                                   textAlign: TextAlign.left,
                                   style: largeTitleTextStyle(Colors.black),
                                 ),
+                                Expanded(
+                                  child: Container(),
+                                ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 2, top: 10),
+                                  padding: EdgeInsets.only(top: 5, right: 25),
                                   //TODO replace Icon
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    size: 28,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(userdata.school);
+                                      //TODO add course
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiProvider(
+                                              providers: [
+                                                Provider<UserData>.value(
+                                                  value: userdata,
+                                                ),
+                                                Provider<
+                                                        List<CourseInfo>>.value(
+                                                    value: course)
+                                              ],
+                                              child: SearchCourse(),
+                                            );
+                                          },
+                                        ),
+                                      );
+
+                                      // MaterialPageRoute(
+                                      //     builder: (context) => SearchGroup()));
+                                    },
+                                    child: Text(
+                                      'Add',
+                                      textAlign: TextAlign.left,
+                                      style:
+                                          simpleTextStyle(gradientYellow, 24),
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -239,13 +273,40 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         },
                         menuItems: <FocusedMenuItem>[
                           FocusedMenuItem(
-                              title: Text('Open'),
-                              trailingIcon: Icon(Icons.open_in_new),
-                              onPressed: () {}),
-                          FocusedMenuItem(
                               title: Text('Share'),
                               trailingIcon: Icon(Icons.share),
-                              onPressed: () {}),
+                              onPressed: () {
+                                Clipboard.setData(new ClipboardData(
+                                        text:
+                                            'https://na-cc.com/${courses.myCourseName + courses.section}/${courses.courseID}'))
+                                    .then((result) {
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                  'The Course Card URL is copied.'),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('Approve'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                });
+                              }),
                           FocusedMenuItem(
                               title: Text(
                                 'Delete',
@@ -375,7 +436,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           // color: Colors.red,
                           margin: const EdgeInsets.only(
                               bottom: 16, top: 16, left: 38, right: 38),
-                          height: 150,
+                          height: 90,
+                          width: 50,
                           // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -399,14 +461,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       top: 10, bottom: 10)),
                               Image.asset(
                                 'assets/images/add_course.png',
-                                scale: 2,
+                                scale: 5,
                               ),
                               SizedBox(
-                                height: 0,
+                                height: 2,
                               ),
                               Text('Add Course',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 28))
+                                  style: simpleTextStyle(Colors.black, 20))
                             ],
                           ),
                         ),

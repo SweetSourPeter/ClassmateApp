@@ -58,9 +58,13 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                           textAlign: TextAlign.left,
                           style: largeTitleTextStyle(Colors.black),
                         ),
+                        SizedBox(
+                          width: 10,
+                        ),
                         GestureDetector(
                           child: Icon(
-                            Icons.add,
+                            Icons.add_circle_outline,
+                            size: 28,
                           ),
                           onTap: () {
                             Navigator.push(

@@ -1,12 +1,14 @@
 import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -67,12 +69,12 @@ class _GroupChatState extends State<GroupChat> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data['time']);
+                      snapshot.data.documents[index].data()['time']);
                   if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index + 1].data['time']);
+                        snapshot.data.documents[index + 1].data()['time']);
                     final difference = current.difference(prev).inDays;
                     if (difference >= 1) {
                       displayTime = true;
@@ -93,47 +95,50 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
-                  return snapshot.data.documents[index].data['messageType'] ==
+                  return snapshot.data.documents[index].data()['messageType'] ==
                           'text'
                       ? MessageTile(
-                          snapshot.data.documents[index].data['message'],
-                          snapshot.data.documents[index].data['sendBy'] ==
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
                               myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data['time'])
+                                  snapshot.data.documents[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data['sendBy'])
+                          snapshot.data.documents[index].data()['senderName'])
                       : ImageTile(
-                          snapshot.data.documents[index].data['message'],
-                          snapshot.data.documents[index].data['sendBy'] ==
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
                               myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data['time'])
+                                  snapshot.data.documents[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data['sendBy']);
+                          snapshot.data.documents[index].data()['senderName']);
                 })
             : Container();
       },
     );
   }
 
-  sendMessage(myEmail) {
+  sendMessage(myEmail, myName) {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
         'messageType': 'text',
         'sendBy': myEmail,
+        'senderName': myName,
         'time': lastMessageTime,
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      databaseMethods
+          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
       // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
       // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -145,17 +150,20 @@ class _GroupChatState extends State<GroupChat> {
     }
   }
 
-  sendImage(myEmail) {
+  sendImage(myEmail, myName) {
     if (_uploadedFileURL.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': _uploadedFileURL,
         'messageType': 'image',
         'sendBy': myEmail,
+        'senderName': myName,
         'time': lastMessageTime,
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      databaseMethods
+          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
       // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
       // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -167,7 +175,7 @@ class _GroupChatState extends State<GroupChat> {
     }
   }
 
-  Future _pickImage(ImageSource source, myEmail) async {
+  Future _pickImage(ImageSource source, myEmail, myName) async {
     PickedFile selected = await _picker.getImage(source: source);
 
     setState(() {
@@ -175,7 +183,7 @@ class _GroupChatState extends State<GroupChat> {
     });
 
     if (selected != null) {
-      _uploadFile(myEmail);
+      _uploadFile(myEmail, myName);
       print('Image Path $_imageFile');
     }
 
@@ -184,18 +192,19 @@ class _GroupChatState extends State<GroupChat> {
 //    ));
   }
 
-  Future _uploadFile(myEmail) async {
+  Future _uploadFile(myEmail, myName) async {
     String fileName = basename(_imageFile.path);
-    StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    firebase_storage.Reference firebaseStorageRef =
+        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask =
+        firebaseStorageRef.putFile(_imageFile);
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
         _uploadedFileURL = downloadUrl;
         print('picture uploaded');
         print(_uploadedFileURL);
-        sendImage(myEmail);
+        sendImage(myEmail, myName);
       });
     });
   }
@@ -226,9 +235,9 @@ class _GroupChatState extends State<GroupChat> {
     // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data['myCourseName'];
-        courseSection = value.documents[0].data['section'];
-        courseTerm = value.documents[0].data['term'];
+        courseName = value.documents[0].data()['myCourseName'];
+        courseSection = value.documents[0].data()['section'];
+        courseTerm = value.documents[0].data()['term'];
       });
     });
 
@@ -252,7 +261,7 @@ class _GroupChatState extends State<GroupChat> {
 
     return SafeArea(
       child: Scaffold(
-          backgroundColor: const Color(0xffF3F3F3),
+          backgroundColor: const Color(0xffF9F6F1),
           body: GestureDetector(
             onTap: () {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -270,7 +279,7 @@ class _GroupChatState extends State<GroupChat> {
               children: [
                 Container(
                   color: Colors.white,
-                  height: 73,
+                  height: 73.68,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -278,35 +287,34 @@ class _GroupChatState extends State<GroupChat> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Container(
-                          height: 40,
-                          width: 40,
+                          // height: 17.96,
+                          // width: 10.26,
                           child: IconButton(
                             icon: Image.asset(
-                              'assets/images/back_arrow.pic',
+                              'assets/images/arrow-back.png',
+                              height: 17.96,
+                              width: 10.26,
                             ),
                             // iconSize: 30.0,
-                            color: const Color(0xFFFFB811),
+                            color: const Color(0xFFFF7E40),
                             onPressed: () {
                               // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                              databaseMethods.setUnreadGroupChatNumberToZero(
+                                  widget.courseId, currentUser.userID);
                               Navigator.of(context).pop();
                             },
                           ),
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: 34),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              (courseName ?? '') +
-                                  ' ' +
-                                  (courseSection ?? '') +
-                                  ' ' +
-                                  (courseTerm ?? ''),
+                              (courseName ?? '') + (courseSection ?? ''),
                               style: GoogleFonts.montserrat(
                                   color: Colors.black,
-                                  fontSize: 22,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -317,22 +325,21 @@ class _GroupChatState extends State<GroupChat> {
                                     : numberOfMembers.toString() +
                                         ' ' +
                                         'person',
-                                style: GoogleFonts.montserrat(
-                                  color: Colors.black38,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.normal,
+                                style: GoogleFonts.openSans(
+                                  color: Color(0xff949494),
+                                  fontSize: 14,
                                 )),
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
+                        padding: const EdgeInsets.only(right: 16.0),
                         child: Container(
-                          height: 37,
-                          width: 74,
                           child: IconButton(
                             icon: Image.asset(
                               'assets/images/group_more.png',
+                              height: 32.44,
+                              width: 41.46,
                             ),
                             // iconSize: 10.0,
                             onPressed: () {
@@ -374,7 +381,7 @@ class _GroupChatState extends State<GroupChat> {
                   alignment: Alignment.center,
                   height: 74.0,
                   width: MediaQuery.of(context).size.width,
-                  color: const Color(0xffF9F6F1),
+                  color: Colors.white,
                   child: Row(
                     children: [
                       SizedBox(
@@ -386,7 +393,7 @@ class _GroupChatState extends State<GroupChat> {
                         child: Container(
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Color(0xffF9F6F1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: TextField(
@@ -421,16 +428,22 @@ class _GroupChatState extends State<GroupChat> {
                             ),
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
-                              sendMessage(currentUser.email);
+                              sendMessage(
+                                  currentUser.email, currentUser.userName);
                             },
                           ),
                         ),
                       )),
                       Padding(
-                        padding: const EdgeInsets.only(left: 25.0),
+                        padding: const EdgeInsets.only(left: 14.0),
                         child: GestureDetector(
-                            child: Image.asset('assets/images/smile.png',
-                                width: 25.36, height: 25.36),
+                            child: showStickerKeyboard
+                                ? Image.asset(
+                                    'assets/images/emoji_on_click.png',
+                                    width: 29,
+                                    height: 27.83)
+                                : Image.asset('assets/images/emoji.png',
+                                    width: 29, height: 27.83),
                             onTap: () {
                               if (showTextKeyboard) {
                                 setState(() {
@@ -458,7 +471,7 @@ class _GroupChatState extends State<GroupChat> {
                             }),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                        padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                           onTap: () {
                             if (showTextKeyboard) {
@@ -485,11 +498,11 @@ class _GroupChatState extends State<GroupChat> {
                                 () => _controller.jumpTo(
                                     _controller.position.minScrollExtent));
                           },
-                          child: Image.asset(
-                            'assets/images/plus.png',
-                            width: 25.36,
-                            height: 25.36,
-                          ),
+                          child: showFunctions ? Image.asset(
+                              'assets/images/plus_on_click.png',
+                              width: 28, height: 28
+                          ) : Image.asset('assets/images/plus.png',
+                              width: 28, height: 28)
                         ),
                       )
                     ],
@@ -498,7 +511,7 @@ class _GroupChatState extends State<GroupChat> {
                 showStickerKeyboard
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: 300,
+                        height: MediaQuery.of(context).size.height / 2 - 50,
                         // showStickerKeyboard ? 400 : 0,
                         child: EmojiPicker(
                           rows: 4,
@@ -517,21 +530,47 @@ class _GroupChatState extends State<GroupChat> {
                 showFunctions
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: 100,
+                        height: 80,
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.white,
                         child: Container(
-                          color: const Color(0xffF9F6F1),
+                          padding: EdgeInsets.only(left: 50, right: 50),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconButton(
-                                  icon: Image.asset('assets/images/camera.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.camera, currentUser.email)),
-                              IconButton(
-                                  icon: Image.asset(
-                                      'assets/images/photo_library.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.gallery, currentUser.email)),
+                              Container(
+                                height: 64,
+                                width: 65,
+                                child: IconButton(
+                                    icon:
+                                        Image.asset('assets/images/camera.png'),
+                                    onPressed: () => _pickImage(
+                                        ImageSource.camera,
+                                        currentUser.email,
+                                        currentUser.userName)),
+                              ),
+                              Container(
+                                height: 64,
+                                width: 65,
+                                child: IconButton(
+                                    icon: Image.asset(
+                                        'assets/images/photo_library.png'),
+                                    onPressed: () => _pickImage(
+                                        ImageSource.gallery,
+                                        currentUser.email,
+                                        currentUser.userName)),
+                              ),
+                              Container(
+                                height: 64,
+                                width: 55,
+                                color: Colors.white,
+                              ),
+                              Container(
+                                height: 64,
+                                width: 55,
+                                color: Colors.white,
+                              )
                             ],
                           ),
                         ),
@@ -607,21 +646,6 @@ class MessageTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // Sender's name
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          senderName,
-                          style: GoogleFonts.openSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xffFFB811),
-                          ),
-                        ),
-                      ),
-                    ),
                     // Message and Time
                     Container(
                       width: MediaQuery.of(context).size.width - 60,
@@ -647,8 +671,8 @@ class MessageTile extends StatelessWidget {
                                       bottomRight: Radius.circular(12),
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
-                                  color: const Color(0xffFFB811)),
-                              child: Text(message,
+                                  color: const Color(0xffF7D5C5)),
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
@@ -674,7 +698,7 @@ class MessageTile extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
-                          senderName,
+                          senderName ?? '',
                           style: GoogleFonts.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -702,7 +726,7 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: Text(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
@@ -825,19 +849,31 @@ class ImageTile extends StatelessWidget {
                             ),
                           ),
                           Flexible(
-                            child: Container(
-                                margin: EdgeInsets.only(left: 10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: message,
-                                    placeholder: (context, url) =>
-                                        new CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        new Icon(Icons.error),
-                                    height: 180.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
                                   ),
-                                )),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: message,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                      height: 180.0,
+                                    ),
+                                  )),
+                            ),
                           ),
                         ],
                       ),
@@ -875,19 +911,31 @@ class ImageTile extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Flexible(
-                            child: Container(
-                                margin: EdgeInsets.only(right: 10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: message,
-                                    placeholder: (context, url) =>
-                                        new CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        new Icon(Icons.error),
-                                    height: 180.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
                                   ),
-                                )),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(right: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: message,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                      height: 180.0,
+                                    ),
+                                  )),
+                            ),
                           ),
                           Text(
                             currentTime.substring(11, currentTime.length - 7),

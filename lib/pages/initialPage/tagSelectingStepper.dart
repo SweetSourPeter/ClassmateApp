@@ -5,6 +5,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class TagSelecting extends StatefulWidget {
   final PageController pageController;
@@ -70,8 +71,8 @@ class _TagSelectingState extends State<TagSelecting> {
   Widget build(BuildContext context) {
     // final userTags = Provider.of<UserTags>(context);
     final userTagProvider = Provider.of<UserTagsProvider>(context);
-    Color submitButtonColor = Colors.white;
-    Color submitButtonTextColor = widget.buttonColor;
+    Color submitButtonColor = widget.buttonColor;
+    Color submitButtonTextColor = Colors.white;
     String submitButtonString = 'Next';
 
     if (widget.isEdit) {
@@ -110,13 +111,13 @@ class _TagSelectingState extends State<TagSelecting> {
             //   ],
             //   color: orengeColor,
             // ),
-            height: mediaQuery.height * 0.55,
+            height: mediaQuery.height * 0.54,
             color: riceColor,
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(
-                    height: mediaQuery.height * 0.16,
+                    height: mediaQuery.height * 0.13,
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
@@ -190,9 +191,7 @@ class _TagSelectingState extends State<TagSelecting> {
               ),
             ),
           ),
-          SizedBox(
-            height: 6,
-          ),
+
           // RaisedGradientButton(
           //   width: 200,
           //   height: 40,
@@ -263,11 +262,16 @@ class _TagSelectingState extends State<TagSelecting> {
                   changeCategory(selectedIndex);
                 }
               },
-              child: Text(
-                submitButtonString,
-                style: simpleTextStyle(submitButtonTextColor),
+              child: AutoSizeText(
+                selectedIndex == 3
+                    ? 'Complete'
+                    : '${(selectedIndex + 1).toString()} / 4',
+                style: simpleTextStyle(Colors.white, 16),
               ),
             ),
+          ),
+          SizedBox(
+            height: 6,
           ),
         ],
       ),

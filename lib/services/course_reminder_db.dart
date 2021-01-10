@@ -27,12 +27,12 @@ class CourseReminderDatabase {
   ) {
     print('save Daily Reports to user');
     //First update in the user level
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(userID)
+        .doc(userID)
         .collection('userCourseReminder')
-        .document(reminderID)
-        .setData({
+        .doc(reminderID)
+        .set({
       'submitTime': submitTime,
       'school': school,
       'semester': semester,
@@ -51,11 +51,11 @@ class CourseReminderDatabase {
   //delete course reminder for user
   Future<void> deleteCourseReminder(String reminderID, String userID) {
     print('remove course reminder called....');
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(userID)
+        .doc(userID)
         .collection('userCourseReminder')
-        .document(reminderID)
+        .doc(reminderID)
         .delete()
         .catchError((e) {
       print(e.toString());
@@ -65,13 +65,13 @@ class CourseReminderDatabase {
 // get all reminders
   Stream<List<Map<String, dynamic>>> getUserReminderLists(String userID) {
     print('called user reminder lister getter stream');
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(userID)
+        .doc(userID)
         .collection('userCourseReminder')
         .snapshots()
         .map((snapshot) =>
-            snapshot.documents.map((document) => document.data).toList());
+            snapshot.docs.map((document) => document.data()).toList());
   }
 
   Future<http.Response> createReminder(

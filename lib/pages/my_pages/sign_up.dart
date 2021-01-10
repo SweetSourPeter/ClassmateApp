@@ -41,18 +41,21 @@ class _SignUpPageState extends State<SignUpPage> {
       //   "email": emailTextEditingController.text,
       //   "school": _selectedSchool,
       // };
-
+      print('valid');
       authMethods
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text, _selectedSchool)
           .then((val) {
+        print('auth method finish');
         isLoading = false;
         Navigator.pop(context);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Wrapper(true)));
       }).catchError((error) {
-        isLoading = false;
-        String tempError;
+        setState(() {
+          isLoading = false;
+        });
+        // String tempError;
         // switch (error.code) {
         //   case "ERROR_OPERATION_NOT_ALLOWED":
         //     tempError = "Anonymous accounts are not enabled";
@@ -72,11 +75,11 @@ class _SignUpPageState extends State<SignUpPage> {
         //   default:
         //     tempError = "An undefined Error happened.";
         // }
-        setState(() {
-          errorMessage = tempError;
-        });
+        // setState(() {
+        //   errorMessage = error.code;
+        // });
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(tempError),
+          content: Text(error.code ?? ''),
           duration: Duration(seconds: 3),
         ));
       });

@@ -66,8 +66,8 @@ class _BasicInfoState extends State<BasicInfo> {
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 60.0,
-                          child:
-                              createUserImage(sidebarSize / 5, snapshot.data[0]),
+                          child: createUserImage(
+                              sidebarSize / 5, snapshot.data[0]),
                           // creatUserImage(sidebarSize / 5, userData),
                           //     CircleAvatar(
                           //   backgroundImage: AssetImage('assets/images/olivia.jpg'),
@@ -138,7 +138,10 @@ class _BasicInfoState extends State<BasicInfo> {
                       ],
                     ),
                   ),
-                  TopBar(),
+                  TopBar(
+                    userID: userID,
+                    userName: snapshot.data[0].userName,
+                  ),
                 ],
               ),
             );

@@ -8,7 +8,7 @@ InputDecoration buildInputDecorationPinky(
     bool isIcon, Icon prefixIcon, String hintText, double boarderRadius) {
   return InputDecoration(
     prefixIcon: isIcon ? prefixIcon : null,
-    fillColor: builtyPinkColor,
+    fillColor: Colors.white,
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
     hintText: hintText,
@@ -38,9 +38,9 @@ InputDecoration textFieldInputDecoration(String hintText) {
           UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)));
 }
 
-TextStyle simpleTextStyle(Color color) {
+TextStyle simpleTextStyle(Color color, double fontsize) {
   return GoogleFonts.montserrat(
-    textStyle: TextStyle(color: color, fontSize: 16),
+    textStyle: TextStyle(color: color, fontSize: fontsize),
   );
 }
 

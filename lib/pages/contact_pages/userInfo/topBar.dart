@@ -1,11 +1,16 @@
 import 'package:app_test/models/constant.dart';
+import 'package:flutter/services.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TopBar extends StatelessWidget {
+  final String userID;
+  final String userName;
   const TopBar({
+    @required this.userID,
+    @required this.userName,
     Key key,
   }) : super(key: key);
 
@@ -104,7 +109,36 @@ class TopBar extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                print("copied");
+                                Clipboard.setData(new ClipboardData(
+                                        text:
+                                            'https://na-cc.com/${userName}/${userID}'))
+                                    .then((result) {
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                  'The user Profile URL is copied.'),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('Approve'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                });
                               },
                               child: Center(
                                 child: Material(
