@@ -13,7 +13,7 @@ class TagSelecting extends StatefulWidget {
   final Color buttonColor;
   final bool isEdit;
   const TagSelecting(
-      {Key key, this.pageController, this.buttonColor, this.isEdit})
+      {Key key, this.pageController, this.buttonColor, this.isEdit = false})
       : super(key: key);
   // TagSelecting({Key key}) : super(key: key);
 

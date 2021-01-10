@@ -69,7 +69,7 @@ class _MyAccountState extends State<MyAccount> {
                                   child: ListBody(
                                     children: <Widget>[
                                       Text(
-                                          'You can PASTE to Share this profile with others.'),
+                                          'Your profile invitation has been copied.'),
                                     ],
                                   ),
                                 ),

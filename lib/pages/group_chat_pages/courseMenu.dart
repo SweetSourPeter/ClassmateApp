@@ -34,6 +34,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     'assets/icon/courseIcon5.png',
     'assets/icon/courseIcon6.png',
   ];
+
   @override
   void initState() {
     databaseMethods
@@ -166,7 +167,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
         //   onReorder: _onReorder,
         // );
         (course == null)
-            ? Center(child: CircularProgressIndicator())
+            ? Center(
+                child: CircularProgressIndicator(
+                backgroundColor: themeOrange,
+              ))
             : Container(
                 color: Colors.white,
                 child: CustomScrollView(
@@ -346,6 +350,13 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                             //press on the item
                           },
                           menuItems: <FocusedMenuItem>[
+                            FocusedMenuItem(
+                                title: Text('Mark as unread'),
+                                trailingIcon: Icon(Icons.mark_chat_unread),
+                                onPressed: () {
+                                  databaseMethods.setUnreadGroupChatNumberToOne(
+                                      course[index].courseID, userdata.userID);
+                                }),
                             FocusedMenuItem(
                                 title: Text('Share'),
                                 trailingIcon: Icon(Icons.share),
