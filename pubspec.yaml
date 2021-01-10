@@ -27,6 +27,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  string_validator: ^0.1.4
   cupertino_icons: ^0.1.3
   firebase_auth: ^0.18.4+1
   cloud_firestore: ^0.14.4
@@ -40,7 +41,7 @@ dependencies:
   flutter_svg: ^0.18.0 #Help us to use SVG in our app
   animations: ^1.1.0 #Help us to use animation easily also develop by flutter team
   provider: ^4.3.1 #Help keeping user status
-  curved_navigation_bar: ^0.3.3 #navigation curved bottom bar
+  curved_navigation_bar: ^0.3.7 #navigation curved bottom bar
   uuid: ^2.2.0 #generate a unique ID for firestore storage
   flutter_typeahead: ^1.8.7 #auto complete the text Field
   focused_menu: ^1.0.2 #long hold on the tab to desplay stuf
@@ -87,6 +88,7 @@ flutter:
     - assets/images/
     - assets/courseimage/
     - assets/icon/
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

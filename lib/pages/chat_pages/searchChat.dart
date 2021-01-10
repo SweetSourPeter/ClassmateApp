@@ -15,7 +15,12 @@ class SearchChat extends StatefulWidget {
   final String myEmail;
   final String myName;
 
-  SearchChat({this.chatRoomId, this.friendName, this.friendEmail, this.myEmail, this.myName});
+  SearchChat(
+      {this.chatRoomId,
+      this.friendName,
+      this.friendEmail,
+      this.myEmail,
+      this.myName});
 
   @override
   _SearchChatState createState() => _SearchChatState();
@@ -104,22 +109,29 @@ class _SearchChatState extends State<SearchChat> {
                                   width: 20,
                                 ),
                               ),
-                              suffixIcon: IconButton(
-                                onPressed: () => searchTextEditingController.clear(),
-                                icon: Image.asset(
-                                  'assets/images/cross.png',
-                                  // color: Color(0xffFF7E40),
-                                  height: 19,
-                                  width: 19,
-                                ),
-                              ),
+                              suffixIcon:
+                                  searchTextEditingController.text.isEmpty
+                                      ? null
+                                      : IconButton(
+                                          icon: Image.asset(
+                                            'assets/images/cross.png',
+                                            // color: Color(0xffFF7E40),
+                                            height: 19,
+                                            width: 19,
+                                          ),
+                                          onPressed: () {
+                                            // initiateSearch();
+                                            searchTextEditingController.clear();
+                                          }),
                               hintText: 'Search Chat',
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
                                 borderRadius: BorderRadius.circular(35),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
                                 borderRadius: BorderRadius.circular(35),
                               ),
                               contentPadding: EdgeInsets.only(left: 0),
@@ -135,14 +147,13 @@ class _SearchChatState extends State<SearchChat> {
                         padding: const EdgeInsets.only(left: 25, right: 25.0),
                         child: GestureDetector(
                           onTap: () {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            clearSearchTextInput(currentFocus);
+                            Navigator.pop(context);
                           },
                           child: Text(
                             'Cancel',
                             style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Colors.white,
+                              fontSize: 16,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -150,13 +161,14 @@ class _SearchChatState extends State<SearchChat> {
                     ],
                   ),
                 ),
-                SizedBox(height: 25,),
+                SizedBox(
+                  height: 25,
+                ),
                 Expanded(
                   child: SearchList(currentUser),
                 ),
               ],
-            )
-        ),
+            )),
       ),
     );
   }
@@ -164,66 +176,72 @@ class _SearchChatState extends State<SearchChat> {
   Widget SearchList(currentUser) {
     return isSearching && searchTextEditingController.text.isNotEmpty
         ? StreamBuilder(
-        stream: chatMessageStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final children = <Widget>[];
-            children.add(
-                Container(
-                    padding: const EdgeInsets.only(left: 25, right: 25, bottom: 10),
-                    child: Row(
-                        children: [
-                          Text(
-                            'Messages with word: ',
-                            style: GoogleFonts.montserrat(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              searchTextEditingController.text,
-                              style: GoogleFonts.montserrat(
-                                  fontSize: 16,
-                                  color: Color(0xFFFF7E40),
-                                  fontWeight: FontWeight.w600
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
-                        ]
-                    )
-                ));
-            for (var i = 0; i < snapshot.data.documents.length; i++) {
-              if(snapshot.data.documents[i].get('messageType') == 'text' && snapshot.data.documents[i].get('message').contains(searchTextEditingController.text)) {
-                children.add(
-                    searchTile(
-                        userEmail: snapshot.data.documents[i].get('sendBy'),
-                        message: snapshot.data.documents[i].get('message'),
-                        imageURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                        userData: currentUser,
-                        searchWord: searchTextEditingController.text,
-                        messageIndex: i,
-                        messageTime: DateTime.fromMillisecondsSinceEpoch(snapshot.data.documents[i].data()['time']).toString(),
-                    )
-                );
-              }
-            }
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: children.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return children[index];
+            stream: chatMessageStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final children = <Widget>[];
+                children.add(Container(
+                    padding:
+                        const EdgeInsets.only(left: 25, right: 25, bottom: 10),
+                    child: Row(children: [
+                      Text(
+                        'Messages with word: ',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Expanded(
+                        child: Text(
+                          searchTextEditingController.text,
+                          style: GoogleFonts.montserrat(
+                              fontSize: 16,
+                              color: Color(0xFFFF7E40),
+                              fontWeight: FontWeight.w600),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ])));
+                for (var i = 0; i < snapshot.data.documents.length; i++) {
+                  if (snapshot.data.documents[i].get('messageType') == 'text' &&
+                      snapshot.data.documents[i]
+                          .get('message')
+                          .contains(searchTextEditingController.text)) {
+                    children.add(searchTile(
+                      userEmail: snapshot.data.documents[i].get('sendBy'),
+                      message: snapshot.data.documents[i].get('message'),
+                      imageURL:
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                      userData: currentUser,
+                      searchWord: searchTextEditingController.text,
+                      messageIndex: i,
+                      messageTime: DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[i].data()['time'])
+                          .toString(),
+                    ));
+                  }
                 }
-            );
-          }
-          return Container();
-        }) : Container();
+                return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: children.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return children[index];
+                    });
+              }
+              return Container();
+            })
+        : Container();
   }
 
-  Widget searchTile({String userEmail, String message, String imageURL, userData, String searchWord, int messageIndex, String messageTime}) {
+  Widget searchTile(
+      {String userEmail,
+      String message,
+      String imageURL,
+      userData,
+      String searchWord,
+      int messageIndex,
+      String messageTime}) {
     String userName = '';
     if (userEmail == widget.friendEmail) {
       userName = widget.friendName;
@@ -235,28 +253,30 @@ class _SearchChatState extends State<SearchChat> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context){
-              return MultiProvider(
-                providers: [
-                  Provider<UserData>.value(
-                    value: userData,
-                  )
-                ],
-                child: ChatScreen(
-                  chatRoomId: widget.chatRoomId,
-                  friendName: widget.friendName,
-                  friendEmail: widget.friendEmail,
-                  initialChat: messageIndex.toDouble(),
-                  myEmail: widget.myEmail,
-                ),
-              );
-            }
-        ));
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: userData,
+              )
+            ],
+            child: ChatScreen(
+              chatRoomId: widget.chatRoomId,
+              friendName: widget.friendName,
+              friendEmail: widget.friendEmail,
+              initialChat: messageIndex.toDouble(),
+              myEmail: widget.myEmail,
+            ),
+          );
+        }));
       },
       behavior: HitTestBehavior.opaque,
       child: Container(
-          padding: EdgeInsets.only(top: 10, left: 25, right: 25,),
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 25,
+            right: 25,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,13 +295,12 @@ class _SearchChatState extends State<SearchChat> {
                             style: GoogleFonts.montserrat(
                                 fontSize: 12,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                       Container(
-                        width: mediaQuery.width-94,
+                        width: mediaQuery.width - 94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -292,20 +311,22 @@ class _SearchChatState extends State<SearchChat> {
                                   padding: EdgeInsets.only(left: 8),
                                   child: Text(
                                     (userName != null ? userName : '') + ': ',
-                                      style: GoogleFonts.openSans(
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600
-                                      ),
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                                 Text(
-                                    messageTime.substring(5,7) + '/' + messageTime.substring(8, 10) + '/' + messageTime.substring(0, 4),
+                                    messageTime.substring(5, 7) +
+                                        '/' +
+                                        messageTime.substring(8, 10) +
+                                        '/' +
+                                        messageTime.substring(0, 4),
                                     style: GoogleFonts.openSans(
                                       fontSize: 14,
                                       color: Color(0xff949494),
-                                    )
-                                ),
+                                    )),
                               ],
                             ),
                             Container(
@@ -314,8 +335,8 @@ class _SearchChatState extends State<SearchChat> {
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,
                                 text: TextSpan(
-                                    children: highlightSearchWord(message, searchWord, userName)
-                                ),
+                                    children: highlightSearchWord(
+                                        message, searchWord, userName)),
                               ),
                             ),
                           ],
@@ -331,10 +352,10 @@ class _SearchChatState extends State<SearchChat> {
               ),
             ],
           )
-        // Row(
-        //   children: highlightSearchWord(message, searchWord, userName),
-        // )
-      ),
+          // Row(
+          //   children: highlightSearchWord(message, searchWord, userName),
+          // )
+          ),
     );
   }
 
@@ -344,45 +365,41 @@ class _SearchChatState extends State<SearchChat> {
     currentFocus.unfocus();
   }
 
-  List<TextSpan> highlightSearchWord(String searchResult, String searchWord, String userName) {
-    final matches = searchWord.toLowerCase().allMatches(searchResult.toLowerCase());
+  List<TextSpan> highlightSearchWord(
+      String searchResult, String searchWord, String userName) {
+    final matches =
+        searchWord.toLowerCase().allMatches(searchResult.toLowerCase());
     int lastMatchEnd = 0;
     final List<TextSpan> children = [];
 
     for (var i = 0; i < matches.length; i++) {
       final match = matches.elementAt(i);
       if (match.start != lastMatchEnd) {
-        children.add(
-            TextSpan(
-              text: searchResult.substring(lastMatchEnd, match.start),
-              style: GoogleFonts.openSans(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            )
-        );
+        children.add(TextSpan(
+          text: searchResult.substring(lastMatchEnd, match.start),
+          style: GoogleFonts.openSans(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ));
       }
 
-      children.add(
-          TextSpan(
-            text: searchResult.substring(match.start, match.end),
-            style: GoogleFonts.openSans(
-              fontSize: 16,
-              color: const Color(0xffFF7E40),
-            ),
-          )
-      );
+      children.add(TextSpan(
+        text: searchResult.substring(match.start, match.end),
+        style: GoogleFonts.openSans(
+          fontSize: 16,
+          color: const Color(0xffFF7E40),
+        ),
+      ));
 
       if (i == matches.length - 1 && match.end != searchResult.length) {
-        children.add(
-            TextSpan(
-              text: searchResult.substring(match.end, searchResult.length),
-              style: GoogleFonts.openSans(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            )
-        );
+        children.add(TextSpan(
+          text: searchResult.substring(match.end, searchResult.length),
+          style: GoogleFonts.openSans(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ));
       }
       lastMatchEnd = match.end;
     }

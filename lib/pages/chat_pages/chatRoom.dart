@@ -1,6 +1,7 @@
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ class _ChatRoomState extends State<ChatRoom> {
   Stream chatRooms;
   String friendName;
   String friendEmail;
+  String friendID;
   String latestMessage;
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -38,11 +40,13 @@ class _ChatRoomState extends State<ChatRoom> {
                       snapshot.data.documents[index].data()['users'];
 
                   if (userList[1] == widget.myEmail) {
-                    friendName = userList[2];
-                    friendEmail = userList[3];
+                    friendName = userList[3];
+                    friendEmail = userList[4];
+                    friendID = userList[5];
                   } else {
                     friendName = userList[0];
                     friendEmail = userList[1];
+                    friendID = userList[2];
                   }
 
                   latestMessage =
@@ -53,6 +57,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       .toString();
 
                   return ChatRoomsTile(
+                    friendID: friendID,
                     userName: snapshot.data.documents[index]
                         .data()['chatRoomId']
                         .toString()
@@ -109,10 +114,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       child: Text(
                         'Chats',
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.montserrat(
-                            color: Colors.black,
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold),
+                        style: largeTitleTextStyleBold(Colors.black, 26),
                       ),
                     ),
                   ),
@@ -145,8 +147,7 @@ class _ChatRoomState extends State<ChatRoom> {
                           'assets/images/search.png',
                           color: Color(0xffFF7E40),
                         ),
-                      )
-                  )
+                      ))
                 ],
               ),
             ),
@@ -164,6 +165,7 @@ class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
   final String friendName;
+  final String friendID;
   final String latestMessage;
   final String lastMessageTime;
   final String friendEmail;
@@ -174,6 +176,7 @@ class ChatRoomsTile extends StatelessWidget {
       @required this.chatRoomId,
       this.friendName,
       this.latestMessage,
+      this.friendID,
       this.lastMessageTime,
       this.friendEmail,
       this.unreadNumber});
@@ -199,6 +202,7 @@ class ChatRoomsTile extends StatelessWidget {
               friendEmail: friendEmail,
               initialChat: 0,
               myEmail: currentUser.email,
+              friendID: friendID,
             ),
           );
         }));
@@ -237,8 +241,7 @@ class ChatRoomsTile extends StatelessWidget {
                               style: GoogleFonts.montserrat(
                                   fontSize: 22,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold
-                              ),
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
