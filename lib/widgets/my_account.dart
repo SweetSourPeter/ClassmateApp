@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/constant.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 
 class MyAccount extends StatefulWidget {
   final GlobalKey key;
@@ -46,174 +47,208 @@ class _MyAccountState extends State<MyAccount> {
       body: Container(
         height: mediaQuery.height,
         width: sidebarSize,
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Spacer(),
-                GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: EdgeInsets.only(right: 19, top: 29),
-                      child: Text(
-                        'Share',
-                        style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                            color: themeOrange),
-                      ),
-                    )),
-              ],
-            ),
-            Container(
-                margin: EdgeInsets.only(
-                    bottom: 0.03 * _height, top: _height * 0.043),
-                child: Stack(
-                  children: [
-                    Image.asset(
-                      'assets/icon/earCircle.png',
-                      color: themeOrange,
-                      width: sidebarSize / 3.8,
-                    ),
-                    Positioned(
-                        child: createUserImage(
-                          sidebarSize / 8,
-                          userdata,
-                          largeTitleTextStyleBold(Colors.white, 25),
-                        ),
-                        top: 13,
-                        left: 3)
-                  ],
-                )),
-            // Image.asset(
-            //   "assets/images/olivia.jpg",
-            //   width: sidebarSize / 2,
-            // ),
-
-            Container(
-              child: Column(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Row(
                 children: [
-                  Text(
-                    userdata.userName ?? '',
-                    style: largeTitleTextStyleBold(Colors.black, 18),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    userdata.email ?? '',
-                    style: simpleTextStyle(Color(0xFF636363), 16),
-                  ),
+                  Spacer(),
+                  GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(
+                          new ClipboardData(
+                              text:
+                                  'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}'),
+                        ).then((result) {
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text(
+                                          'You can PASTE to Share this profile with others.'),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(right: 39, top: 29),
+                        child: Text(
+                          'Share',
+                          style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: themeOrange),
+                        ),
+                      )),
                 ],
               ),
-            ),
-            // Divider(
-            //   thickness: 1,
-            // ),
-            Container(
-              margin: EdgeInsets.only(top: _height * 0.05),
-              padding: EdgeInsets.symmetric(horizontal: _width * 0.02),
-              //key: widget.key,
-              width: double.infinity,
-              height: menuContainerHeight,
-              child: Column(
-                children: <Widget>[
-                  ButtonLink(
-                    text: "Setting",
-                    iconData: Icons.settings_outlined,
-                    textSize: 14,
-                    height: (menuContainerHeight) / 6,
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return MultiProvider(providers: [
-                          Provider<UserData>.value(
-                            value: userdata,
-                          )
-                        ], child: EditHomePage());
-                      }));
-                    },
-                  ),
-                  Divider(
-                      height: 0,
-                      thickness: 1,
-                      indent: 50,
-                      endIndent: 30,
-                      color: dividerColor),
-                  ButtonLink(
-                    text: "Seats Notification",
-                    iconData: Icons.notifications_outlined,
-                    textSize: 14,
-                    height: (menuContainerHeight) / 6,
-                    onTap: () {
-                      showBottomPopSheet(
+              Container(
+                  margin: EdgeInsets.only(
+                      bottom: 0.03 * _height, top: _height * 0.043),
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        'assets/icon/earCircle.png',
+                        color: themeOrange,
+                        width: sidebarSize / 3.8,
+                      ),
+                      Positioned(
+                          child: createUserImage(
+                            sidebarSize / 8,
+                            userdata,
+                            largeTitleTextStyleBold(Colors.white, 25),
+                          ),
+                          top: 13,
+                          left: 3)
+                    ],
+                  )),
+              // Image.asset(
+              //   "assets/images/olivia.jpg",
+              //   width: sidebarSize / 2,
+              // ),
+
+              Container(
+                child: Column(
+                  children: [
+                    Text(
+                      userdata.userName ?? '',
+                      style: largeTitleTextStyleBold(Colors.black, 18),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      userdata.email ?? '',
+                      style: simpleTextStyle(Color(0xFF636363), 16),
+                    ),
+                  ],
+                ),
+              ),
+              // Divider(
+              //   thickness: 1,
+              // ),
+              Container(
+                margin: EdgeInsets.only(top: _height * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: _width * 0.02),
+                //key: widget.key,
+                width: double.infinity,
+                height: menuContainerHeight,
+                child: Column(
+                  children: <Widget>[
+                    ButtonLink(
+                      text: "Setting",
+                      iconData: Icons.settings_outlined,
+                      textSize: 14,
+                      height: (menuContainerHeight) / 6,
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MultiProvider(providers: [
+                            Provider<UserData>.value(
+                              value: userdata,
+                            )
+                          ], child: EditHomePage());
+                        }));
+                      },
+                    ),
+                    Divider(
+                        height: 0,
+                        thickness: 1,
+                        indent: 50,
+                        endIndent: 30,
+                        color: dividerColor),
+                    ButtonLink(
+                      text: "Seats Notification",
+                      iconData: Icons.notifications_outlined,
+                      textSize: 14,
+                      height: (menuContainerHeight) / 6,
+                      onTap: () {
+                        showBottomPopSheet(
+                            context,
+                            SeatNotifyDashboard(
+                              userID: userdata.userID,
+                              userSchool: userdata.school,
+                              userEmail: userdata.email,
+                            ));
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           SeatNotifyDashboard(
+                        //             userID: userdata.userID,
+                        //             userSchool:
+                        //                 userdata.school,
+                        //             userEmail:
+                        //                 userdata.email,
+                        //           )),
+                        // );
+                      },
+                    ),
+                    Divider(
+                        height: 0,
+                        thickness: 1,
+                        indent: 50,
+                        endIndent: 30,
+                        color: dividerColor),
+                    ButtonLink(
+                      text: "Help & Feedback",
+                      iconData: Icons.help_outline,
+                      textSize: 14,
+                      height: (menuContainerHeight) / 6,
+                      onTap: () {
+                        showBottomPopSheet(
+                            context, HelpFeedback(userEmail: userdata.email));
+                      },
+                    ),
+                    Divider(
+                        height: 0,
+                        thickness: 1,
+                        indent: 50,
+                        endIndent: 30,
+                        color: dividerColor),
+                    ButtonLink(
+                      text: "About the app",
+                      iconData: Icons.info_outline,
+                      textSize: 14,
+                      height: (menuContainerHeight) / 6,
+                      onTap: () {
+                        Navigator.push(
                           context,
-                          SeatNotifyDashboard(
-                            userID: userdata.userID,
-                            userSchool: userdata.school,
-                            userEmail: userdata.email,
-                          ));
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) =>
-                      //           SeatNotifyDashboard(
-                      //             userID: userdata.userID,
-                      //             userSchool:
-                      //                 userdata.school,
-                      //             userEmail:
-                      //                 userdata.email,
-                      //           )),
-                      // );
-                    },
-                  ),
-                  Divider(
-                      height: 0,
-                      thickness: 1,
-                      indent: 50,
-                      endIndent: 30,
-                      color: dividerColor),
-                  ButtonLink(
-                    text: "Help & Feedback",
-                    iconData: Icons.help_outline,
-                    textSize: 14,
-                    height: (menuContainerHeight) / 6,
-                    onTap: () {
-                      showBottomPopSheet(
-                          context, HelpFeedback(userEmail: userdata.email));
-                    },
-                  ),
-                  Divider(
-                      height: 0,
-                      thickness: 1,
-                      indent: 50,
-                      endIndent: 30,
-                      color: dividerColor),
-                  ButtonLink(
-                    text: "About the app",
-                    iconData: Icons.info_outline,
-                    textSize: 14,
-                    height: (menuContainerHeight) / 6,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AboutTheAPP()),
-                      );
-                    },
-                  ),
-                  Divider(
-                      height: 0,
-                      indent: 50,
-                      endIndent: 30,
-                      thickness: 1,
-                      color: dividerColor),
-                  SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            )
-          ],
+                          MaterialPageRoute(
+                              builder: (context) => AboutTheAPP()),
+                        );
+                      },
+                    ),
+                    Divider(
+                        height: 0,
+                        indent: 50,
+                        endIndent: 30,
+                        thickness: 1,
+                        color: dividerColor),
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

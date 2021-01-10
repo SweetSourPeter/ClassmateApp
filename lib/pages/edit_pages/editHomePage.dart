@@ -141,8 +141,7 @@ class _EditHomePageState extends State<EditHomePage> {
                             showBottomPopSheet(
                               context,
                               ThirdPage(
-                                  //buttonColor: Colors.amber,
-
+                                  // buttonColor: Colors.amber,
                                   userName: userdata.userName,
                                   initialIndex: userdata.profileColor == null
                                       ? 0

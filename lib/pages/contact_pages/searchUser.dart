@@ -6,9 +6,7 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/services/userDatabase.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +78,6 @@ class _SearchUsersState extends State<SearchUsers> {
     return Container(
       color: Colors.white,
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
         child: Column(
           children: <Widget>[
             Container(
@@ -185,7 +182,6 @@ class _SearchUsersState extends State<SearchUsers> {
             //                   print(splitTemp[4]);
             //                   await initiateURLSearch(splitTemp[4]);
             //                 }
-
             //                 // searchBegain
             //                 //     ? showBottomPopSheet(
             //                 //         context, searchList(context, course))
@@ -196,6 +192,9 @@ class _SearchUsersState extends State<SearchUsers> {
             //   ),
             // ),
             searchList(),
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
@@ -378,9 +377,9 @@ class _SearchUsersState extends State<SearchUsers> {
               userEmail:
                   // "731957665@qq.com",
                   searchSnapshot.docs[index].data()['email'] ?? '',
-              imageURL:
+              userProfileColor:
                   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                  searchSnapshot.docs[index].data()['userImageUrl'] ?? '',
+                  searchSnapshot.docs[index].data()['profileColor'] ?? 0.0,
             );
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
@@ -393,9 +392,9 @@ class _SearchUsersState extends State<SearchUsers> {
         userEmail:
             // "731957665@qq.com",
             searchURLsnapshot.data()['email'] ?? '',
-        imageURL:
+        userProfileColor:
             // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-            searchURLsnapshot.data()['userImageUrl'] ?? '',
+            searchURLsnapshot.data()['profileColor'] ?? 0.0,
       );
     } else if (pasteValue.isNotEmpty &&
         !pasteValue.startsWith('https://na-cc.com/')) {
@@ -445,9 +444,13 @@ class SearchTile extends StatelessWidget {
   final String userID;
   final String userName;
   final String userEmail;
-  final String imageURL;
+  final double userProfileColor;
   SearchTile(
-      {this.school, this.userID, this.userName, this.userEmail, this.imageURL});
+      {this.school,
+      this.userID,
+      this.userName,
+      this.userEmail,
+      this.userProfileColor});
 
   createChatRoomAndStartConversation(
       String userName, String userEmail, String userID, context) {
@@ -597,7 +600,12 @@ class SearchTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Row(
           children: <Widget>[
-            creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
+            creatUserImageWithString(
+              30.0,
+              userName ?? '',
+              userProfileColor ?? 1.0,
+              simpleTextStyleBlack(),
+            ),
             // CircleAvatar(
             //   radius: 30.0,
             //   backgroundImage: NetworkImage("${imageURL}"),
@@ -652,7 +660,7 @@ class SearchTile extends StatelessWidget {
                   contactProvider.changeUserID(userID);
                   contactProvider.changeEmail(userEmail);
                   contactProvider.changeUserName(userName);
-                  contactProvider.changeUserImageUrl(imageURL);
+                  contactProvider.changeUserImageUrl('imageURL');
                   contactProvider.addUserToContact(context);
                   createChatRoomAndStartConversation(
                       userName, userEmail, userID);

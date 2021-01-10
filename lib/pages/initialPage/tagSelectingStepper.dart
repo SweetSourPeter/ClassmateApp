@@ -141,7 +141,7 @@ class _TagSelectingState extends State<TagSelecting> {
                           widget.buttonColor, mediaQuery, userTagProvider),
                       Container(
                         width: _width,
-                        color: Color(0xDA6D39).withOpacity(1),
+                        color: Color(0xFFFF9B6B).withOpacity(1),
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
@@ -242,7 +242,7 @@ class _TagSelectingState extends State<TagSelecting> {
                     elevation: 0,
                     color: (allTags.length >= 5)
                         ? Colors.white
-                        : Color(0xDA6D39).withOpacity(1),
+                        : Color(0xFFFF9B6B).withOpacity(1),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     onPressed: () {
@@ -303,7 +303,7 @@ class _TagSelectingState extends State<TagSelecting> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5.0),
-        color: Color(0xDA6D39).withOpacity(1),
+        color: Color(0xFFFF9B6B).withOpacity(1),
         /*boxShadow: [
           BoxShadow(
             color: Colors.grey[350],

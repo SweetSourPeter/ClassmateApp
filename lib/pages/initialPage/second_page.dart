@@ -95,7 +95,7 @@ class _SecondPageState extends State<SecondPage>
                       elevation: 0,
                       color: (_nikname.isNotEmpty)
                           ? Colors.white
-                          : Color(0xDA6D39).withOpacity(1),
+                          : Color(0xFFFF9B6B).withOpacity(1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () {

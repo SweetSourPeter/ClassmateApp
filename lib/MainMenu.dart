@@ -3,6 +3,7 @@ import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';
@@ -244,13 +245,15 @@ class _MainMenuState extends State<MainMenu> {
       height: 58,
       index: _currentIndex,
       items: <Widget>[
-        Image.asset('assets/icon/navigationBar1.png'),
-        Image.asset('assets/icon/navigationBar2.png'),
-        Icon(
-          Icons.contacts,
-          size: 19,
-          color: Colors.black,
-        ),
+        _currentIndex == 0
+            ? Image.asset('assets/icon/navigationBar1Open.png')
+            : Image.asset('assets/icon/navigationBar1Close.png'),
+        _currentIndex == 1
+            ? Image.asset('assets/icon/navigationBar2Open.png')
+            : Image.asset('assets/icon/navigationBar2Close.png'),
+        _currentIndex == 2
+            ? Image.asset('assets/icon/navigationBar3Open.png')
+            : Image.asset('assets/icon/navigationBar3Close.png'),
       ],
       onTap: (index) {
         setState(() {

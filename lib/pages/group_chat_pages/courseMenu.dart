@@ -1,3 +1,4 @@
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchCourse.dart';
@@ -38,6 +39,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     databaseMethods
         .getListOfNumberOfMembersInCourses(widget.course)
         .then((value) {
+      if (!mounted) {
+        return; // Just do nothing if the widget is disposed.
+      }
       setState(() {
         listOfNumberOfMembers = value;
       });
@@ -46,6 +50,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     databaseMethods
         .getListOfUnreadInCourses(widget.course, widget.userData.userID)
         .then((value) {
+      if (!mounted) {
+        return; // Just do nothing if the widget is disposed.
+      }
       setState(() {
         listOfUnread = value;
       });
@@ -161,6 +168,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
         (course == null)
             ? Center(child: CircularProgressIndicator())
             : Container(
+                color: Colors.white,
                 child: CustomScrollView(
                   slivers: <Widget>[
                     // SliverAppBar(
@@ -281,10 +289,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       //     builder: (context) => SearchGroup()));
                                     },
                                     child: Text(
-                                      'add courses',
+                                      'add course',
                                       textAlign: TextAlign.left,
                                       style: GoogleFonts.openSans(
-                                        color: Color(0xffFF7E40),
+                                        color: themeOrange,
                                         fontSize: 16,
                                       ),
                                     ),
@@ -425,9 +433,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 8,
-                                          spreadRadius: 2,
+                                          color: Colors.black.withOpacity(0.15),
+                                          blurRadius: 6,
+                                          spreadRadius: 3,
                                           offset: Offset(4, 4))
                                     ],
                                     borderRadius:
@@ -526,15 +534,12 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                         ),
                                       ],
                                     ),
-                                    Container(
-                                        padding: EdgeInsets.only(
-                                          right: 25,
-                                        ),
-                                        height: 100,
-                                        child: FittedBox(
-                                          child: Image.asset(
-                                              fileLocation[index % 6]),
-                                        ))
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 20.0),
+                                      child:
+                                          Image.asset(fileLocation[index % 6]),
+                                    ),
                                   ],
                                 )),
                           ),

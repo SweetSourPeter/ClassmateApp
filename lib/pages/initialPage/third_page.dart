@@ -20,7 +20,7 @@ class ThirdPage extends StatefulWidget {
       this.valueChanged,
       this.pageController,
       this.initialIndex,
-      this.isEdit})
+      this.isEdit = false})
       : super(key: key);
   @override
   _ThirdPageState createState() => _ThirdPageState();
@@ -74,169 +74,176 @@ class _ThirdPageState extends State<ThirdPage>
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.only(top: _height * 0.13),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _getHeader(),
-          Expanded(
-            child: SizedBox(
-              width: double.infinity,
-              child: PageView(
-                onPageChanged: (index) {
-                  widget.valueChanged(index);
-                },
-                physics: BouncingScrollPhysics(),
-                controller: _pageController,
-                pageSnapping: true,
-                children: <Widget>[
-                  ChangeColor(
-                    displayName: widget.userName[0],
-                    onTap: () {
-                      widget.valueChanged(_pageController.page.round());
+    return SafeArea(
+      child: Container(
+        color: themeOrange,
+        child: Padding(
+          padding: EdgeInsets.only(top: _height * 0.13),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _getHeader(),
+              Expanded(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: PageView(
+                    onPageChanged: (index) {
+                      widget.valueChanged(index);
                     },
-                    //_height * 0.20
-                    offset: _currentindex,
-                    index: 0,
-                    linearGradient: listColors[0],
+                    physics: BouncingScrollPhysics(),
+                    controller: _pageController,
+                    pageSnapping: true,
+                    children: <Widget>[
+                      ChangeColor(
+                        displayName: widget.userName[0],
+                        onTap: () {
+                          widget.valueChanged(_pageController.page.round());
+                        },
+                        //_height * 0.20
+                        offset: _currentindex,
+                        index: 0,
+                        linearGradient: listColors[0],
+                      ),
+                      ChangeColor(
+                        displayName: widget.userName[0],
+                        offset: _currentindex,
+                        index: 1,
+                        linearGradient: listColors[1],
+                        onTap: () {
+                          widget.valueChanged(_pageController.page.round());
+                        },
+                      ),
+                      ChangeColor(
+                        displayName: widget.userName[0],
+                        index: 2,
+                        offset: _currentindex,
+                        linearGradient: listColors[2],
+                        onTap: () {
+                          widget.valueChanged(_pageController.page.round());
+                        },
+                      ),
+                      ChangeColor(
+                        displayName: widget.userName[0],
+                        offset: _currentindex,
+                        index: 3,
+                        linearGradient: listColors[3],
+                        onTap: () {
+                          widget.valueChanged(_pageController.page.round());
+                        },
+                      ),
+                      ChangeColor(
+                        displayName: widget.userName[0],
+                        offset: _currentindex,
+                        index: 4,
+                        linearGradient: listColors[4],
+                        onTap: () {
+                          widget.valueChanged(_pageController.page.round());
+                        },
+                      ),
+                    ],
                   ),
-                  ChangeColor(
-                    displayName: widget.userName[0],
-                    offset: _currentindex,
-                    index: 1,
-                    linearGradient: listColors[1],
-                    onTap: () {
-                      widget.valueChanged(_pageController.page.round());
-                    },
-                  ),
-                  ChangeColor(
-                    displayName: widget.userName[0],
-                    index: 2,
-                    offset: _currentindex,
-                    linearGradient: listColors[2],
-                    onTap: () {
-                      widget.valueChanged(_pageController.page.round());
-                    },
-                  ),
-                  ChangeColor(
-                    displayName: widget.userName[0],
-                    offset: _currentindex,
-                    index: 3,
-                    linearGradient: listColors[3],
-                    onTap: () {
-                      widget.valueChanged(_pageController.page.round());
-                    },
-                  ),
-                  ChangeColor(
-                    displayName: widget.userName[0],
-                    offset: _currentindex,
-                    index: 4,
-                    linearGradient: listColors[4],
-                    onTap: () {
-                      widget.valueChanged(_pageController.page.round());
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                EdgeInsets.symmetric(vertical: 86.0, horizontal: _width * 0.15),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-              ),
-              height: _height * 0.06,
-              width: _width * 0.75,
-              child: RaisedButton(
-                hoverElevation: 0,
-                highlightColor: Colors.white,
-                highlightElevation: 0,
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                onPressed: () {
-                  databaseMethods.updateUserProfileColor(
-                      user.userID, _currentindex);
-                  print('color num saved');
-                  widget.isEdit
-                      ? Navigator.pop(context)
-                      : widget.pageController.animateToPage(2,
-                          duration: Duration(milliseconds: 800),
-                          curve: Curves.easeInCubic);
-                },
-                child: Text(
-                  'Continue',
-                  style: simpleTextSansStyleBold(
-                      listColors[_currentindex.toInt()].colors[1], 16),
                 ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: 86.0, horizontal: _width * 0.15),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  height: _height * 0.06,
+                  width: _width * 0.75,
+                  child: RaisedButton(
+                    hoverElevation: 0,
+                    highlightColor: Colors.white,
+                    highlightElevation: 0,
+                    elevation: 0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    onPressed: () {
+                      databaseMethods
+                          .updateUserProfileColor(user.userID, _currentindex)
+                          .then((value) {
+                        widget.isEdit
+                            ? Navigator.pop(context)
+                            : widget.pageController.animateToPage(2,
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.easeInCubic);
+                      });
+                      print('color num saved');
+                    },
+                    child: Text(
+                      'Continue',
+                      style: simpleTextSansStyleBold(
+                          listColors[_currentindex.toInt()].colors[1], 16),
+                    ),
+                  ),
+                ),
+              ),
+              // Padding(
+              //   padding: EdgeInsets.only(bottom: 20.0),
+              //   child: TweenAnimationBuilder(
+              //     tween: Tween(begin: 0.0, end: 0.8),
+              //     duration: Duration(milliseconds: 1000),
+              //     curve: Curves.elasticOut,
+              //     builder: (context, value, child) {
+              //       return Transform.scale(
+              //         scale: value,
+              //         child: Padding(
+              //           padding: const EdgeInsets.symmetric(
+              //               horizontal: 140, vertical: 15),
+              //           child: Row(
+              //             children: <Widget>[
+              //               Expanded(
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                     borderRadius: BorderRadius.circular(40),
+              //                     boxShadow: [
+              //                       BoxShadow(
+              //                           color: Colors.black38,
+              //                           offset: Offset(0, 10),
+              //                           blurRadius: 15),
+              //                     ],
+              //                   ),
+              //                   height: _height * 0.075,
+              //                   child: RaisedButton(
+              //                     hoverColor: Colors.white,
+              //                     hoverElevation: 0,
+              //                     highlightColor: Colors.white,
+              //                     highlightElevation: 0,
+              //                     elevation: 0,
+              //                     color: Colors.white,
+              //                     shape: RoundedRectangleBorder(
+              //                         borderRadius: BorderRadius.circular(40)),
+              //                     child: Text(
+              //                       'Next',
+              //                       style: TextStyle(
+              //                           color: listColors[_currentindex.round()]
+              //                               .colors[1],
+              //                           fontSize: 20),
+              //                     ),
+              //                     onPressed: () {
+              //                       databaseMethods.updateUserProfileColor(
+              //                           user.userID, _currentindex);
+              //                       print('color num saved');
+              //                       widget.pageController.animateToPage(3,
+              //                           duration: Duration(milliseconds: 800),
+              //                           curve: Curves.easeInCubic);
+              //                     },
+              //                   ),
+              //                 ),
+              //               )
+              //             ],
+              //           ),
+              //         ),
+              // );
+              // },
+              // ),
+              // ),
+            ],
           ),
-          // Padding(
-          //   padding: EdgeInsets.only(bottom: 20.0),
-          //   child: TweenAnimationBuilder(
-          //     tween: Tween(begin: 0.0, end: 0.8),
-          //     duration: Duration(milliseconds: 1000),
-          //     curve: Curves.elasticOut,
-          //     builder: (context, value, child) {
-          //       return Transform.scale(
-          //         scale: value,
-          //         child: Padding(
-          //           padding: const EdgeInsets.symmetric(
-          //               horizontal: 140, vertical: 15),
-          //           child: Row(
-          //             children: <Widget>[
-          //               Expanded(
-          //                 child: Container(
-          //                   decoration: BoxDecoration(
-          //                     borderRadius: BorderRadius.circular(40),
-          //                     boxShadow: [
-          //                       BoxShadow(
-          //                           color: Colors.black38,
-          //                           offset: Offset(0, 10),
-          //                           blurRadius: 15),
-          //                     ],
-          //                   ),
-          //                   height: _height * 0.075,
-          //                   child: RaisedButton(
-          //                     hoverColor: Colors.white,
-          //                     hoverElevation: 0,
-          //                     highlightColor: Colors.white,
-          //                     highlightElevation: 0,
-          //                     elevation: 0,
-          //                     color: Colors.white,
-          //                     shape: RoundedRectangleBorder(
-          //                         borderRadius: BorderRadius.circular(40)),
-          //                     child: Text(
-          //                       'Next',
-          //                       style: TextStyle(
-          //                           color: listColors[_currentindex.round()]
-          //                               .colors[1],
-          //                           fontSize: 20),
-          //                     ),
-          //                     onPressed: () {
-          //                       databaseMethods.updateUserProfileColor(
-          //                           user.userID, _currentindex);
-          //                       print('color num saved');
-          //                       widget.pageController.animateToPage(3,
-          //                           duration: Duration(milliseconds: 800),
-          //                           curve: Curves.easeInCubic);
-          //                     },
-          //                   ),
-          //                 ),
-          //               )
-          //             ],
-          //           ),
-          //         ),
-          // );
-          // },
-          // ),
-          // ),
-        ],
+        ),
       ),
     );
   }

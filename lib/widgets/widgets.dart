@@ -42,7 +42,7 @@ InputDecoration buildInputDecorationPinky(
 InputDecoration textFieldInputDecoration(
     String hintText, double boarderRadius) {
   return InputDecoration(
-    fillColor: Color(0xDA6D39).withOpacity(1),
+    fillColor: Color(0xFFFF9B6B).withOpacity(1),
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
     hintText: hintText,
@@ -238,24 +238,33 @@ CircleAvatar creatAddIconImage(double radius) {
   );
 }
 
-CircleAvatar creatUserImageWithString(
-    double radius, String userImageUrl, String userName) {
-  print("my user image url is $userImageUrl");
-  return CircleAvatar(
-    backgroundColor: themeOrange,
-    radius: radius,
-    child: Container(
-      child: (userImageUrl == '')
-          ? Text(
-              userName[0].toUpperCase(),
-              style: TextStyle(fontSize: 35, color: Colors.white),
-            )
-          : null,
+Container creatUserImageWithString(
+    double radius, String userName, double userProfileColor, TextStyle style) {
+  return Container(
+    decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: userProfileColor == null
+            ? listColors[0]
+            : listColors[userProfileColor.toInt()]),
+    child: CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: radius,
+      child: Container(
+        child: (userName != null)
+            ? Text(
+                userName[0].toUpperCase(),
+                style: style,
+              )
+            : Text(
+                ' ',
+                style: style,
+              ),
+      ),
+      // backgroundImage: (userdata.userImageUrl == null)
+      //     ? null
+      //     : NetworkImage(
+      //         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
     ),
-    backgroundImage: (userImageUrl == '')
-        ? null
-        : NetworkImage(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
 }
 
