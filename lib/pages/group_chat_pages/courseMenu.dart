@@ -25,7 +25,14 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   List<int> listOfNumberOfMembers = [];
   List<int> listOfUnread = [];
-
+  List<String> fileLocation = [
+    'assets/icon/courseIcon1.png',
+    'assets/icon/courseIcon2.png',
+    'assets/icon/courseIcon3.png',
+    'assets/icon/courseIcon4.png',
+    'assets/icon/courseIcon5.png',
+    'assets/icon/courseIcon6.png',
+  ];
   @override
   void initState() {
     databaseMethods
@@ -521,20 +528,14 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       ],
                                     ),
                                     Container(
-                                      padding: EdgeInsets.only(
-                                          right: index % 2 == 0 ? 40 : 15),
-                                      child: index % 4 == 0
-                                          ? Image.asset(
-                                              'assets/images/icons-01.png')
-                                          : index % 4 == 1
-                                              ? Image.asset(
-                                                  'assets/images/icons-02.png')
-                                              : index % 4 == 2
-                                                  ? Image.asset(
-                                                      'assets/images/icons-03.png')
-                                                  : Image.asset(
-                                                      'assets/images/icons-04.png'),
-                                    )
+                                        padding: EdgeInsets.only(
+                                          right: 25,
+                                        ),
+                                        height: 100,
+                                        child: FittedBox(
+                                          child: Image.asset(
+                                              fileLocation[index % 6]),
+                                        ))
                                   ],
                                 )),
                           ),

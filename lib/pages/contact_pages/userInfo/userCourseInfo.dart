@@ -15,6 +15,8 @@ class UserCourseInfo extends StatelessWidget {
     'assets/icon/courseIcon2.png',
     'assets/icon/courseIcon3.png',
     'assets/icon/courseIcon4.png',
+    'assets/icon/courseIcon5.png',
+    'assets/icon/courseIcon6.png',
   ];
   @override
   Widget build(BuildContext context) {
@@ -87,10 +89,8 @@ class UserCourseInfo extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    height: 78,
-                    width: 63,
                     child: FittedBox(
-                      child: Image.asset(fileLocation[index % 4]),
+                      child: Image.asset(fileLocation[index % 6]),
                       fit: BoxFit.fill,
                     ),
                   ),
