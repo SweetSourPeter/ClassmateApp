@@ -309,22 +309,14 @@ class _MainMenuState extends State<MainMenu> {
 
   CurvedNavigationBar buildBottomNavigationBar() {
     return CurvedNavigationBar(
-      color: themeOrange,
+      color: Color(0xFFF9F6F1),
       backgroundColor: Colors.white, // background!!!
       buttonBackgroundColor: Colors.white,
       height: 58,
       index: _currentIndex,
       items: <Widget>[
-        Icon(
-          Icons.class_,
-          size: 19,
-          color: Colors.black,
-        ),
-        Icon(
-          Icons.chat,
-          size: 19,
-          color: Colors.black,
-        ),
+        Image.asset('assets/icon/navigationBar1.png'),
+        Image.asset('assets/icon/navigationBar2.png'),
         Icon(
           Icons.contacts,
           size: 19,
