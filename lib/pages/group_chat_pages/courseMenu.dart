@@ -159,9 +159,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
         //   onReorder: _onReorder,
         // );
         (course == null)
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : Container(
-                color: Colors.white,
                 child: CustomScrollView(
                   slivers: <Widget>[
                     // SliverAppBar(

@@ -54,12 +54,6 @@ class _MainMenuState extends State<MainMenu> {
     }
   }
 
-  double getSize(int x) {
-    double size =
-        (_offset.dy > limits[x] && _offset.dy < limits[x + 1]) ? 25 : 20;
-    return size;
-  }
-
   @override
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
@@ -70,69 +64,6 @@ class _MainMenuState extends State<MainMenu> {
 
     return (userdata == null)
         ? CircularProgressIndicator()
-// <<<<<<< HEAD
-//         : Scaffold(
-//             backgroundColor: orengeColor,
-//             appBar: AppBar(
-//               backgroundColor: riceColor,
-//               toolbarHeight: 0,
-//               elevation: 0,
-//             ),
-//             body: SafeArea(
-//                 child: Scaffold(
-//                     body: GestureDetector(
-//               //if menu close and slide to right-> menu opens
-//               onPanUpdate: (details) {
-//                 if (details.delta.dx > 4 && !isMenuOpen && _currentIndex == 0) {
-//                   //setMenuOpenState(true); //remove this to enable side menu
-//                 }
-//                 // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
-//                 //   print('b');
-//                 //   setState(() {
-//                 //     _currentIndex = 1;
-//                 //   });
-//                 // }
-//                 // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
-//                 //   print('c');
-//                 //   setState(() {
-//                 //     _currentIndex = 0;
-//                 //   });
-//                 // }
-//               },
-//               //if the menu opens and tap on the side->close menu
-//               onTapDown: (details) {
-//                 if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
-//                   setMenuOpenState(false);
-//                 }
-//               },
-//               child: Container(
-//                 color: Colors.white,
-//                 width: mediaQuery.width,
-//                 child: Stack(
-//                   children: <Widget>[
-//                     AnimatedContainer(
-//                       transform: Matrix4.translationValues(xOffset, yOffset, 20)
-//                         ..scale(scaleFactor),
-//                       duration: Duration(microseconds: 250),
-//                       child: Scaffold(
-//                         backgroundColor: riceColor,
-//                         // appBar: buildAppBar(),
-//                         body: _currentIndex == 0
-//                             ? CourseMainMenu(
-//                           course: course,
-//                           userData: userdata,
-//                         )
-//                             : _currentIndex == 1
-//                                 ? ChatRoom(
-//                                     myName: userdata.userName,
-//                                     myEmail: userdata.email,
-//                                   )
-//                                 : MyAccount(
-//                                     key: globalKey,
-//                                     getSize: getSize,
-//                                   ),
-//                         bottomNavigationBar: buildBottomNavigationBar(),
-// =======
         : SafeArea(
             child: Scaffold(
               backgroundColor: themeOrange,
@@ -190,11 +121,9 @@ class _MainMenuState extends State<MainMenu> {
                                     )
                                   : MyAccount(
                                       key: globalKey,
-                                      getSize: getSize,
                                     ),
                           bottomNavigationBar: buildBottomNavigationBar(),
                         ),
-// >>>>>>> UI_Large_Update
                       ),
                       AnimatedPositioned(
                         duration: Duration(milliseconds: 1500),

@@ -21,6 +21,7 @@ const riceColor = Color(0xFFF9F6F1);
 const redCircleColor = Color(0xFF5F4E);
 const unselectedColor = Color(0xFFDFAF);
 
+const dividerColor = Color(0xFFD1D1D1);
 const whiteAndGray = Color(0xFFEEEEEE); //loading color
 const kDefaultPadding = 20.0;
 

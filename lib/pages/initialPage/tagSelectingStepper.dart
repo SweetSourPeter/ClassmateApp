@@ -11,7 +11,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 class TagSelecting extends StatefulWidget {
   final PageController pageController;
   final Color buttonColor;
-  const TagSelecting({Key key, this.pageController, this.buttonColor})
+  final bool isEdit;
+  const TagSelecting(
+      {Key key, this.pageController, this.buttonColor, this.isEdit})
       : super(key: key);
   // TagSelecting({Key key}) : super(key: key);
 
@@ -247,9 +249,11 @@ class _TagSelectingState extends State<TagSelecting> {
                       if (allTags.length >= 5) {
                         userTagProvider.addTagsToContact(context);
 
-                        widget.pageController.animateToPage(3,
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.easeInCubic);
+                        widget.isEdit
+                            ? Navigator.pop(context)
+                            : widget.pageController.animateToPage(3,
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.easeInCubic);
                       } else {
                         // selectedIndex++;
                         // changeCategory(selectedIndex);

@@ -156,7 +156,11 @@ class FavoriteContacts extends StatelessWidget {
                           child: Container(
                               child: Column(
                             children: <Widget>[
-                              createUserImage(30.0, contacts[index]),
+                              createUserImage(
+                                30.0,
+                                contacts[index],
+                                largeTitleTextStyleBold(Colors.white, 25),
+                              ),
                               // CircleAvatar(
                               //   radius: 30.0,
                               //   child: Container(

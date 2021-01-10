@@ -81,7 +81,10 @@ class _EditNameModelState extends State<EditNameModel> {
 
                           if (nickname.length > 0 &&
                               nickname != widget.userName) {
-                            databaseMethods.updateUserName(widget.userId, nickname);
+                            databaseMethods
+                                .updateUserName(widget.userId, nickname)
+                                .then((r) => {Navigator.pop(context)});
+                          } else {
                             Navigator.pop(context);
                           }
                         },

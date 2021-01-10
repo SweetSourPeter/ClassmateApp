@@ -70,8 +70,11 @@ class _BasicInfoState extends State<BasicInfo> {
                               Positioned(
                                 left: (_width / 2) - (119 / 2) + 4,
                                 bottom: 4,
-                                child:
-                                    createUserImage(111 / 2, snapshot.data[0]),
+                                child: createUserImage(
+                                  111 / 2,
+                                  snapshot.data[0],
+                                  largeTitleTextStyleBold(Colors.white, 25),
+                                ),
                               ),
                               Positioned(
                                 left: (_width / 2) - (119 / 2),

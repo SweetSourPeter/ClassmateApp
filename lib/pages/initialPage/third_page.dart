@@ -13,12 +13,14 @@ class ThirdPage extends StatefulWidget {
   final String userName;
   final ValueChanged<int> valueChanged;
   final int initialIndex;
+  final bool isEdit;
   ThirdPage(
       {Key key,
       this.userName,
       this.valueChanged,
       this.pageController,
-      this.initialIndex})
+      this.initialIndex,
+      this.isEdit})
       : super(key: key);
   @override
   _ThirdPageState createState() => _ThirdPageState();
@@ -160,9 +162,11 @@ class _ThirdPageState extends State<ThirdPage>
                   databaseMethods.updateUserProfileColor(
                       user.userID, _currentindex);
                   print('color num saved');
-                  widget.pageController.animateToPage(2,
-                      duration: Duration(milliseconds: 800),
-                      curve: Curves.easeInCubic);
+                  widget.isEdit
+                      ? Navigator.pop(context)
+                      : widget.pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.easeInCubic);
                 },
                 child: Text(
                   'Continue',
