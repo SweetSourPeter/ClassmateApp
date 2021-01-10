@@ -9,7 +9,6 @@ import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-// import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -24,6 +23,7 @@ class ChatScreen extends StatefulWidget {
   final String chatRoomId;
   final String friendName;
   final String friendEmail;
+  final String friendID;
   final double initialChat;
   final String myEmail;
 
@@ -31,6 +31,7 @@ class ChatScreen extends StatefulWidget {
       {this.chatRoomId,
       this.friendName,
       this.friendEmail,
+      this.friendID,
       this.initialChat,
       this.myEmail});
 
@@ -317,8 +318,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => FriendProfile(
-                                        userID: currentUser
-                                            .userID, // to be modified to friend's ID
+                                        userID: widget
+                                            .friendID, // to be modified to friend's ID
                                       ),
                                     ),
                                   );
@@ -332,8 +333,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       style: GoogleFonts.montserrat(
                                           fontSize: 12,
                                           color: Colors.white,
-                                          fontWeight: FontWeight.bold
-                                      ),
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
@@ -372,8 +372,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: IconButton(
-                          icon: Image.asset('assets/images/search.png',
-                              height: 23, width: 23, color: Color(0xffFF7E40),),
+                          icon: Image.asset(
+                            'assets/images/search.png',
+                            height: 23,
+                            width: 23,
+                            color: Color(0xffFF7E40),
+                          ),
                           // iconSize: 10.0,
                           onPressed: () {
                             Navigator.push(context,
@@ -470,11 +474,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 14.0),
                         child: GestureDetector(
-                            child: showStickerKeyboard ? Image.asset(
-                                'assets/images/emoji_on_click.png',
-                                width: 29, height: 27.83
-                            ) : Image.asset('assets/images/emoji.png',
-                                width: 29, height: 27.83),
+                            child: showStickerKeyboard
+                                ? Image.asset(
+                                    'assets/images/emoji_on_click.png',
+                                    width: 29,
+                                    height: 27.83)
+                                : Image.asset('assets/images/emoji.png',
+                                    width: 29, height: 27.83),
                             onTap: () {
                               if (showTextKeyboard) {
                                 setState(() {
@@ -504,37 +510,36 @@ class _ChatScreenState extends State<ChatScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
-                          onTap: () {
-                            if (showTextKeyboard) {
-                              setState(() {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();
-                                  showTextKeyboard = false;
-                                }
-                              });
-                            } else {
-                              if (showStickerKeyboard) {
+                            onTap: () {
+                              if (showTextKeyboard) {
                                 setState(() {
-                                  showStickerKeyboard = false;
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                    showTextKeyboard = false;
+                                  }
                                 });
-                              } else {}
-                            }
-                            setState(() {
-                              showFunctions = !showFunctions;
-                            });
-                            Timer(
-                                Duration(milliseconds: 30),
-                                () => _controller.jumpTo(
-                                    _controller.position.minScrollExtent));
-                          },
-                          child: showFunctions ? Image.asset(
-                              'assets/images/plus_on_click.png',
-                              width: 28, height: 28
-                          ) : Image.asset('assets/images/plus.png',
-                              width: 28, height: 28)
-                        ),
+                              } else {
+                                if (showStickerKeyboard) {
+                                  setState(() {
+                                    showStickerKeyboard = false;
+                                  });
+                                } else {}
+                              }
+                              setState(() {
+                                showFunctions = !showFunctions;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 30),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
+                            },
+                            child: showFunctions
+                                ? Image.asset('assets/images/plus_on_click.png',
+                                    width: 28, height: 28)
+                                : Image.asset('assets/images/plus.png',
+                                    width: 28, height: 28)),
                       )
                     ],
                   ),
@@ -542,7 +547,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 showStickerKeyboard
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: mediaQuery.height/2 - 50,
+                        height: mediaQuery.height / 2 - 50,
                         // showStickerKeyboard ? 400 : 0,
                         child: EmojiPicker(
                           rows: 4,
@@ -588,10 +593,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                       'assets/images/photo_library.png',
                                     ),
                                     onPressed: () => _pickImage(
-                                        ImageSource.gallery, currentUser.email)),
+                                        ImageSource.gallery,
+                                        currentUser.email)),
                               ),
-                              Container(height: 64,width: 55,color: Colors.white,),
-                              Container(height: 64,width: 55,color: Colors.white,)
+                              Container(
+                                height: 64,
+                                width: 55,
+                                color: Colors.white,
+                              ),
+                              Container(
+                                height: 64,
+                                width: 55,
+                                color: Colors.white,
+                              )
                             ],
                           ),
                         ),

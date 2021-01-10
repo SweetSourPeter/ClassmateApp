@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ReportUser extends StatefulWidget {
-  const ReportUser({Key key}) : super(key: key);
+  final String badUserEmail;
+  final String profileID;
+  const ReportUser({Key key, this.profileID, this.badUserEmail})
+      : super(key: key);
 
   @override
   _ReportUserState createState() => _ReportUserState();
@@ -23,9 +26,10 @@ class _ReportUserState extends State<ReportUser> {
     print(pageIndex);
   }
 
-  void saveReportData(String reports, String badUserID, String goodUserID) {
+  void saveReportData(String reports, String badUserID, String badUserEmail,
+      String goodUserID) {
     //TODO change bad user ID
-    databaseMehods.saveReports(reports, badUserID, goodUserID);
+    databaseMehods.saveReports(reports, badUserID, badUserEmail, goodUserID);
   }
 
   TextEditingController reportTextEditingController =
@@ -142,7 +146,8 @@ class _ReportUserState extends State<ReportUser> {
         GestureDetector(
           onTap: () {
             setIndex(2);
-            saveReportData(reportTextEditingController.text, '1111111', userID);
+            saveReportData(reportTextEditingController.text, widget.profileID,
+                widget.badUserEmail, userID);
           },
           child: SizedBox(
             height: 40,
@@ -198,8 +203,8 @@ class _ReportUserState extends State<ReportUser> {
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData(
-                    'Pretending to be a Real Person', '1111111', userID);
+                saveReportData('Pretending to be a Real Person',
+                    widget.profileID, widget.badUserEmail, userID);
               },
             ),
             Divider(),
@@ -211,8 +216,8 @@ class _ReportUserState extends State<ReportUser> {
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData(
-                    'Pretending to be Someone Fake', '1111111', userID);
+                saveReportData('Pretending to be Someone Fake',
+                    widget.profileID, widget.badUserEmail, userID);
               },
             ),
             Divider(),
@@ -224,8 +229,8 @@ class _ReportUserState extends State<ReportUser> {
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData(
-                    'Posting inappropriate Things', '1111111', userID);
+                saveReportData('Posting inappropriate Things', widget.profileID,
+                    widget.badUserEmail, userID);
               },
             ),
             Divider(),
@@ -237,7 +242,8 @@ class _ReportUserState extends State<ReportUser> {
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 setIndex(2);
-                saveReportData('Harassment or Bullying', '1111111', userID);
+                saveReportData('Harassment or Bullying', widget.profileID,
+                    widget.badUserEmail, userID);
               },
             ),
             Divider(),

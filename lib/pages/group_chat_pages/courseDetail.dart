@@ -49,6 +49,9 @@ class _CourseDetailState extends State<CourseDetail> {
     });
 
     databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+      if (this.mounted) {
+        return;
+      }
       setState(() {
         members = value;
       });
@@ -79,19 +82,21 @@ class _CourseDetailState extends State<CourseDetail> {
         child: Column(
           children: <Widget>[
             CircleAvatar(
-              backgroundColor: index%4 == 0 ? Color(0xffFF7E40)
-              : index%4 == 1 ? Color(0xffFFB811)
-              : index%4 == 2 ? Color(0xff497ABB)
-              : Color(0xff775CBE),
+              backgroundColor: index % 4 == 0
+                  ? Color(0xffFF7E40)
+                  : index % 4 == 1
+                      ? Color(0xffFFB811)
+                      : index % 4 == 2
+                          ? Color(0xff497ABB)
+                          : Color(0xff775CBE),
               radius: radius,
               child: Container(
                 child: Text(
                   members != null ? members[index][0][0].toUpperCase() : '',
                   style: GoogleFonts.montserrat(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold
-                  ),
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -164,8 +169,8 @@ class _CourseDetailState extends State<CourseDetail> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding:
-                            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 30),
+                        padding: EdgeInsets.only(
+                            right: 20, left: 20, top: 20, bottom: 30),
                         margin: EdgeInsets.only(top: 25),
                         color: Colors.white,
                         child: Column(children: <Widget>[
@@ -176,7 +181,8 @@ class _CourseDetailState extends State<CourseDetail> {
                               Positioned(
                                 child: Text('Group Members',
                                     style: GoogleFonts.montserrat(
-                                        fontWeight: FontWeight.w400, fontSize: 14)),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14)),
                                 top: 0,
                                 left: 0,
                               ),
@@ -186,13 +192,18 @@ class _CourseDetailState extends State<CourseDetail> {
                                       // Replace with a Row for horizontal icon + text
                                       children: <Widget>[
                                         Text(
-                                          numberOfMembers > 1 ? numberOfMembers.toString() + ' ' + 'people'
-                                              : numberOfMembers.toString() + ' ' + 'person',
-                                          style: GoogleFonts.openSans(
-                                            color: Colors.black38,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.normal,
-                                          )),
+                                            numberOfMembers > 1
+                                                ? numberOfMembers.toString() +
+                                                    ' ' +
+                                                    'people'
+                                                : numberOfMembers.toString() +
+                                                    ' ' +
+                                                    'person',
+                                            style: GoogleFonts.openSans(
+                                              color: Colors.black38,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.normal,
+                                            )),
                                         // Container(
                                         //   margin: EdgeInsets.only(top: 3),
                                         //   child: Icon(
@@ -209,9 +220,11 @@ class _CourseDetailState extends State<CourseDetail> {
                           ),
                           Container(
                             //color: Colors.green,
-                            height: numberOfMembers <= 5 ? (gridWidth * 2 / gridRatio) + 10 + 20
-                            : numberOfMembers <= 10 ? (gridWidth * 2 / gridRatio) * 2 + 10 + 30
-                            : (gridWidth * 2 / gridRatio) * 3 + 10 + 40,
+                            height: numberOfMembers <= 5
+                                ? (gridWidth * 2 / gridRatio) + 10 + 20
+                                : numberOfMembers <= 10
+                                    ? (gridWidth * 2 / gridRatio) * 2 + 10 + 30
+                                    : (gridWidth * 2 / gridRatio) * 3 + 10 + 40,
                             padding: EdgeInsets.only(top: 30),
                             child: GridView.count(
                               primary: false,
@@ -247,10 +260,12 @@ class _CourseDetailState extends State<CourseDetail> {
                                 width: MediaQuery.of(context).size.width,
                                 color: Colors.white,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 21.0),
+                                      padding:
+                                          const EdgeInsets.only(left: 21.0),
                                       child: Text(
                                         "Chat Search",
                                         style: GoogleFonts.montserrat(
@@ -259,13 +274,13 @@ class _CourseDetailState extends State<CourseDetail> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 21.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 21.0),
                                       child: Image.asset(
-                                        'assets/images/arrow-forward.png',
-                                        height: 9.02,
-                                        width: 4.86,
-                                        color: const Color(0xFF949494)
-                                      ),
+                                          'assets/images/arrow-forward.png',
+                                          height: 9.02,
+                                          width: 4.86,
+                                          color: const Color(0xFF949494)),
                                     ),
                                   ],
                                 ),
@@ -273,19 +288,19 @@ class _CourseDetailState extends State<CourseDetail> {
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                      return MultiProvider(
-                                        providers: [
-                                          Provider<UserData>.value(
-                                            value: currentUser,
-                                          )
-                                        ],
-                                        child: SearchGroupChat(
-                                          courseId: widget.courseId,
-                                          myEmail: widget.myEmail,
-                                          myName: widget.myName,
-                                        ),
-                                      );
-                                    }));
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: currentUser,
+                                      )
+                                    ],
+                                    child: SearchGroupChat(
+                                      courseId: widget.courseId,
+                                      myEmail: widget.myEmail,
+                                      myName: widget.myName,
+                                    ),
+                                  );
+                                }));
                               },
                             ),
                             // ButtonLink(
@@ -340,28 +355,26 @@ class _CourseDetailState extends State<CourseDetail> {
                                   child: Text(
                                     "Exit Group",
                                     style: GoogleFonts.montserrat(
-                                      fontSize: 14,
-                                      color: Color(0xffFF7E40)
-                                    ),
+                                        fontSize: 14, color: Color(0xffFF7E40)),
                                   ),
                                 ),
                               ),
                               onTap: () {
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                      return MultiProvider(
-                                        providers: [
-                                          Provider<UserData>.value(
-                                            value: currentUser,
-                                          )
-                                        ],
-                                        child: SearchGroupChat(
-                                          courseId: widget.courseId,
-                                          myEmail: widget.myEmail,
-                                          myName: widget.myName,
-                                        ),
-                                      );
-                                    }));
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: currentUser,
+                                      )
+                                    ],
+                                    child: SearchGroupChat(
+                                      courseId: widget.courseId,
+                                      myEmail: widget.myEmail,
+                                      myName: widget.myName,
+                                    ),
+                                  );
+                                }));
                               },
                             ),
                             // Divider(

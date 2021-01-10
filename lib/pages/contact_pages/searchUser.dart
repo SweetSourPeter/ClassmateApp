@@ -6,10 +6,9 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/services/userDatabase.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 
@@ -37,7 +36,7 @@ class _SearchUsersState extends State<SearchUsers> {
   @override
   void initState() {
     // TODO: implement initState
-    initiateSearch();
+    // initiateSearch();
     super.initState();
   }
 
@@ -79,7 +78,6 @@ class _SearchUsersState extends State<SearchUsers> {
     return Container(
       color: Colors.white,
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
         child: Column(
           children: <Widget>[
             Container(
@@ -91,29 +89,33 @@ class _SearchUsersState extends State<SearchUsers> {
                       child: Focus(
                     // onFocusChange: (focus) => showCanclChange(),
                     child: TextField(
-                      textInputAction: TextInputAction.go,
+                      textInputAction: TextInputAction.search,
                       onSubmitted: (value) {
-                        initiateSearch();
+                        if (searchTextEditingController.text.isNotEmpty) {
+                          initiateSearch();
+                        }
                       },
                       // focusNode: _focus,
                       controller: searchTextEditingController,
                       textAlign: TextAlign.left,
                       autofocus: true,
                       decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            icon: Icon(
-                              searchTextEditingController.text.isEmpty
-                                  ? null
-                                  : Icons.cancel,
-                              color: Colors.grey[700],
-                            ),
-                            onPressed: () {
-                              // initiateSearch();
-                              clearSearchTextInput(currentFocus);
-                            }),
+                        suffixIcon: searchTextEditingController.text.isEmpty
+                            ? null
+                            : IconButton(
+                                icon: Image.asset(
+                                  'assets/images/cross.png',
+                                  // color: Color(0xffFF7E40),
+                                  height: 19,
+                                  width: 19,
+                                ),
+                                onPressed: () {
+                                  // initiateSearch();
+                                  clearSearchTextInput(currentFocus);
+                                }),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.black,
+                          color: Color(0xFFFFCDB6),
                         ),
                         fillColor: Colors.white,
                         filled: true,
@@ -129,7 +131,6 @@ class _SearchUsersState extends State<SearchUsers> {
                           borderRadius: BorderRadius.circular(20),
                           // borderSide: BorderSide.none
                         ),
-
                         contentPadding: EdgeInsets.all(10),
                         hintStyle: TextStyle(color: Colors.grey), // KEY PROP
                       ),
@@ -159,39 +160,41 @@ class _SearchUsersState extends State<SearchUsers> {
             SizedBox(
               height: 10,
             ),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                children: <TextSpan>[
-                  TextSpan(text: 'I have User Profile '),
-                  TextSpan(
-                      text: 'URL',
-                      style: TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () async {
-                          FlutterClipboard.paste().then((value) async {
-                            setState(() {
-                              field.text = value;
-                              pasteValue = value;
-                            });
-                            print('Clipboard Text: $pasteValue');
-                            if (pasteValue.startsWith('https://na-cc.com/')) {
-                              searchBegain = true;
-                              var splitTemp = pasteValue.split('/');
-                              print(splitTemp[4]);
-                              await initiateURLSearch(splitTemp[4]);
-                            }
-
-                            // searchBegain
-                            //     ? showBottomPopSheet(
-                            //         context, searchList(context, course))
-                            //     : CircularProgressIndicator();
-                          });
-                        }),
-                ],
-              ),
-            ),
+            // RichText(
+            //   text: TextSpan(
+            //     style: TextStyle(color: Colors.grey, fontSize: 15.0),
+            //     children: <TextSpan>[
+            //       TextSpan(text: 'I have User Profile '),
+            //       TextSpan(
+            //           text: 'URL',
+            //           style: TextStyle(color: Colors.blue),
+            //           recognizer: TapGestureRecognizer()
+            //             ..onTap = () async {
+            //               FlutterClipboard.paste().then((value) async {
+            //                 setState(() {
+            //                   field.text = value;
+            //                   pasteValue = value;
+            //                 });
+            //                 print('Clipboard Text: $pasteValue');
+            //                 if (pasteValue.startsWith('https://na-cc.com/')) {
+            //                   searchBegain = true;
+            //                   var splitTemp = pasteValue.split('/');
+            //                   print(splitTemp[4]);
+            //                   await initiateURLSearch(splitTemp[4]);
+            //                 }
+            //                 // searchBegain
+            //                 //     ? showBottomPopSheet(
+            //                 //         context, searchList(context, course))
+            //                 //     : CircularProgressIndicator();
+            //               });
+            //             }),
+            //     ],
+            //   ),
+            // ),
             searchList(),
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
@@ -287,6 +290,7 @@ class _SearchUsersState extends State<SearchUsers> {
   // }
 
   // searchTile for searchList
+
   // Widget searchTile({String userName, String userEmail, String imageURL}) {
   //   return Container(
   //     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -357,7 +361,8 @@ class _SearchUsersState extends State<SearchUsers> {
   Widget searchList() {
     if (searchBegain &&
         searchTextEditingController.text.isNotEmpty &&
-        searchSnapshot.docs != null) {
+        searchSnapshot.docs != null &&
+        searchSnapshot.docs.length > 0) {
       return ListView.builder(
           scrollDirection: Axis.vertical,
           itemCount: searchSnapshot.docs.length,
@@ -365,31 +370,31 @@ class _SearchUsersState extends State<SearchUsers> {
           itemBuilder: (context, index) {
             return SearchTile(
               school: searchSnapshot.docs[index].data()['school'] ?? '',
-              userID: searchSnapshot.docs[index].id,
+              userID: searchSnapshot.docs[index].id ?? '',
               userName:
                   // "peter",
                   searchSnapshot.docs[index].data()['userName'] ?? '',
               userEmail:
                   // "731957665@qq.com",
                   searchSnapshot.docs[index].data()['email'] ?? '',
-              imageURL:
+              userProfileColor:
                   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                  searchSnapshot.docs[index].data()['userImageUrl'] ?? '',
+                  searchSnapshot.docs[index].data()['profileColor'] ?? 0.0,
             );
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
       return SearchTile(
         school: searchURLsnapshot.data()['school'] ?? '',
-        userID: searchURLsnapshot.id,
+        userID: searchURLsnapshot.id ?? '',
         userName:
             // "peter",
             searchURLsnapshot.data()['userName'] ?? '',
         userEmail:
             // "731957665@qq.com",
             searchURLsnapshot.data()['email'] ?? '',
-        imageURL:
+        userProfileColor:
             // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-            searchURLsnapshot.data()['userImageUrl'] ?? '',
+            searchURLsnapshot.data()['profileColor'] ?? 0.0,
       );
     } else if (pasteValue.isNotEmpty &&
         !pasteValue.startsWith('https://na-cc.com/')) {
@@ -439,19 +444,32 @@ class SearchTile extends StatelessWidget {
   final String userID;
   final String userName;
   final String userEmail;
-  final String imageURL;
+  final double userProfileColor;
   SearchTile(
-      {this.school, this.userID, this.userName, this.userEmail, this.imageURL});
+      {this.school,
+      this.userID,
+      this.userName,
+      this.userEmail,
+      this.userProfileColor});
 
-  createChatRoomAndStartConversation(String userName, String userEmail, context) {
+  createChatRoomAndStartConversation(
+      String userName, String userEmail, String userID, context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final myName = currentUser.userName;
     final myEmail = currentUser.email;
+    final myID = currentUser.userID;
     if (userEmail != myEmail) {
       String chatRoomId = getChatRoomId(userEmail, myEmail);
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
 
-      List<String> users = [userName, userEmail, myName, myEmail];
+      List<String> users = [
+        userName,
+        userEmail,
+        userID,
+        myName,
+        myEmail,
+        myID,
+      ];
       Map<String, dynamic> chatRoomMap = {
         'users': users,
         'chatRoomId': chatRoomId,
@@ -504,6 +522,68 @@ class SearchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final contactProvider = Provider.of<ContactProvider>(context);
+    DatabaseMethods databaseMethods = new DatabaseMethods();
+
+    // a helper function for createChatRoomAndStartConversation()
+    getChatRoomId(String a, String b) {
+      if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+        return '$b\_$a';
+      } else {
+        return '$a\_$b';
+      }
+    }
+
+    // a function to create chat room
+    createChatRoomAndStartConversation(
+        String userName, String userEmail, String userID) {
+      final currentUser = Provider.of<UserData>(context, listen: false);
+      final myName = currentUser.userName;
+      final myEmail = currentUser.email;
+      final myID = currentUser.userID;
+      if (userEmail != myEmail) {
+        String chatRoomId = getChatRoomId(userEmail, myEmail);
+
+        List<String> users = [
+          userName,
+          userEmail,
+          userID,
+          myName,
+          myEmail,
+          myID,
+        ];
+        print('users map is:   ');
+        print(users);
+        Map<String, dynamic> chatRoomMap = {
+          'users': users,
+          'chatRoomId': chatRoomId,
+          'latestMessage': ('Say hi to ' + myName + '!'),
+          'lastMessageTime': DateTime.now().millisecondsSinceEpoch,
+          (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
+          (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
+        };
+
+        databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: currentUser,
+              )
+            ],
+            child: ChatScreen(
+              friendID: userID,
+              chatRoomId: chatRoomId,
+              friendEmail: userEmail,
+              friendName: userName,
+              initialChat: 0,
+              myEmail: currentUser.email,
+            ),
+          );
+        }));
+      } else {
+        print('This is your account!');
+      }
+    }
 
     return GestureDetector(
       onTap: () {
@@ -520,7 +600,12 @@ class SearchTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Row(
           children: <Widget>[
-            creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
+            creatUserImageWithString(
+              30.0,
+              userName ?? '',
+              userProfileColor ?? 1.0,
+              simpleTextStyleBlack(),
+            ),
             // CircleAvatar(
             //   radius: 30.0,
             //   backgroundImage: NetworkImage("${imageURL}"),
@@ -537,17 +622,16 @@ class SearchTile extends StatelessWidget {
                 children: <Widget>[
                   AutoSizeText(
                     userName ?? '',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 3,
+                    style: GoogleFonts.openSans(
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                   AutoSizeText(
                     userEmail ?? '',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                    style: simpleTextStyle(Colors.grey, 14),
                   ),
                 ],
               ),
@@ -555,27 +639,34 @@ class SearchTile extends StatelessWidget {
             // SizedBox(
             //   width: 10,
             // ),
-            Expanded(
-              child: RaisedGradientButton(
-                width: 100,
-                height: 40,
-                gradient: LinearGradient(
-                  colors: <Color>[Colors.red, orengeColor],
-                ),
+            Spacer(),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+              ),
+              width: 100,
+              height: 40,
+              child: RaisedButton(
+                hoverElevation: 0,
+                highlightColor: Color(0xDA6D39),
+                highlightElevation: 0,
+                elevation: 0,
+                color: themeOrange,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
                 onPressed: () {
                   //TODO
                   contactProvider.changeSchool(school);
                   contactProvider.changeUserID(userID);
                   contactProvider.changeEmail(userEmail);
                   contactProvider.changeUserName(userName);
-                  contactProvider.changeUserImageUrl(imageURL);
+                  contactProvider.changeUserImageUrl('imageURL');
                   contactProvider.addUserToContact(context);
-                  createChatRoomAndStartConversation(userName, userEmail, context);
+                  createChatRoomAndStartConversation(
+                      userName, userEmail, userID);
                 },
-                //之后需要根据friendsProvider改这部分display
-                //TODO
                 child: AutoSizeText(
-                  'ADD',
+                  'Message',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white,
@@ -583,7 +674,6 @@ class SearchTile extends StatelessWidget {
                 ),
               ),
             ),
-            // Spacer(),
           ],
         ),
       ),

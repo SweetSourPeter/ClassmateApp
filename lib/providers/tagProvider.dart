@@ -6,18 +6,18 @@ import 'package:provider/provider.dart';
 
 class UserTagsProvider with ChangeNotifier {
   final databaseMehods = DatabaseMethods();
-  List _gpa;
+  List _interest;
   List _college;
   List _language;
   List _strudyHabits;
 
-  List get gpa => _gpa;
+  List get interest => _interest;
   List get college => _college;
   List get language => _language;
   List get strudyHabits => _strudyHabits;
 
-  changeTagGPA(List value) {
-    _gpa = value;
+  changeTagInterest(List value) {
+    _interest = value;
     notifyListeners();
   }
 
@@ -39,7 +39,7 @@ class UserTagsProvider with ChangeNotifier {
   addTagsToContact(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
     var tags = UserTags(
-      gpa: gpa,
+      interest: interest,
       college: college,
       language: language,
       strudyHabits: strudyHabits,

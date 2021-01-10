@@ -9,6 +9,7 @@ const lightBlueColor = Color(0xFF00A8CC);
 
 const themeOrange = Color(0xFFFF7E40);
 const gradientYellow = Color(0xFFFFAE18);
+const closeWhite = Color(0xFFFFFFB3);
 
 const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
@@ -30,19 +31,20 @@ const kDefaultShadow = BoxShadow(
   color: Colors.black26,
 );
 
-List gpa = [
-  '#dean\'s list',
-  '#gpa4.0',
-  '#gpa3.9',
-  '#gpa3.8',
-  '#gpa3.7',
-  '#gpa3.6',
-  '#gpa3.5',
-  '#gpa3.4',
-  '#gpa3.3',
-  '#gpa3.2',
-  '#gpa3.1',
-  '#gpa3.0',
+List interest = [
+  '#Cat person',
+  '#Dog person',
+  '#Computer Games',
+  '#PSP',
+  '#Nintendo Switch',
+  '#Xbox',
+  '#Make up',
+  '#Master chefs ',
+  '#Instruments',
+  '#Sports',
+  '#Gym',
+  '#TV Series',
+  '#Book worm ',
 ];
 
 List college = [
@@ -89,14 +91,20 @@ List strudyHabits = [
   '#listener',
   '#leader',
 ];
-
+const List<Color> listProfileColor = [
+  themeOrange,
+  Colors.indigoAccent,
+  Colors.purple,
+  Colors.green,
+  Colors.blue,
+];
 const List<LinearGradient> listColors = [
   LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.orange,
         themeOrange,
+        Color(0xFFFF7E49),
       ]),
   LinearGradient(
       begin: Alignment.topCenter,

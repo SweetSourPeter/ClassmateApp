@@ -2,6 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/message_model.dart';
 import 'package:app_test/models/userTags.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
@@ -119,6 +120,7 @@ class ShrinkButton extends StatefulWidget {
   final String userName;
   final TextStyle initialStyle, finalStyle;
   final UserTags userTag;
+  final double profileColor;
   ValueNotifier reset = ValueNotifier(false);
   ShrinkButton(
       {this.initialText,
@@ -131,7 +133,8 @@ class ShrinkButton extends StatefulWidget {
       this.initialStyle,
       this.onPressed,
       this.userName,
-      this.userTag});
+      this.userTag,
+      this.profileColor});
 
   _ShrinkButtonState createState() => _ShrinkButtonState();
 }
@@ -152,6 +155,9 @@ class _ShrinkButtonState extends State<ShrinkButton>
     super.initState();
     widget.reset.addListener(() {
       debugPrint("value notifier is true");
+      if (!mounted) {
+        return; // Just do nothing if the widget is disposed.
+      }
       toggleState();
     });
     _currentState = ButtonState.BEFORE_CLICK;
@@ -271,73 +277,84 @@ class _ShrinkButtonState extends State<ShrinkButton>
           child: Column(
             // mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              SizedBox(
+                height: 8,
+              ),
+              AutoSizeText(
                 'About ' + widget.userName,
                 // 'About Peter',
-                style: simpleTextStyleBlack(),
+                style: largeTitleTextStyleBold(themeOrange, 16),
+              ),
+              SizedBox(
+                height: 16,
               ),
               Expanded(
                 child: Container(
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: ListTile.divideTiles(
-                      context: context,
-                      tiles: [
-                        ListTile(
-                          title: Padding(
-                            padding: EdgeInsets.only(bottom: 6),
-                            child: Text(
-                              'College',
-                              style: simpleTextStyleBlack(),
+                  alignment: Alignment.centerLeft,
+                  child: Scrollbar(
+                    child: ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: ListTile.divideTiles(
+                        context: context,
+                        tiles: [
+                          ListTile(
+                            title: Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 7,
+                              ),
+                              child: Text(
+                                'College',
+                                style: largeTitleTextStyleBold(themeOrange, 16),
+                              ),
                             ),
+                            subtitle: widget.userTag.college == null
+                                ? null
+                                : buildTags(
+                                    widget.userTag.college, tagStateKeyList[0]),
                           ),
-                          subtitle: widget.userTag.college == null
-                              ? null
-                              : buildTags(
-                                  widget.userTag.college, tagStateKeyList[0]),
-                        ),
-                        ListTile(
-                          title: Padding(
-                            padding: EdgeInsets.only(bottom: 6),
-                            child: Text(
-                              'Language',
-                              style: simpleTextStyleBlack(),
+                          ListTile(
+                            title: Padding(
+                              padding: EdgeInsets.only(bottom: 7),
+                              child: Text(
+                                'Language',
+                                style: largeTitleTextStyleBold(themeOrange, 16),
+                              ),
                             ),
+                            subtitle: widget.userTag.language == null
+                                ? null
+                                : buildTags(widget.userTag.language,
+                                    tagStateKeyList[1]),
                           ),
-                          subtitle: widget.userTag.language == null
-                              ? null
-                              : buildTags(
-                                  widget.userTag.language, tagStateKeyList[1]),
-                        ),
-                        ListTile(
-                          title: Padding(
-                            padding: EdgeInsets.only(bottom: 6),
-                            child: Text(
-                              'GPA',
-                              style: simpleTextStyleBlack(),
+                          ListTile(
+                            title: Padding(
+                              padding: EdgeInsets.only(bottom: 7),
+                              child: Text(
+                                'Interest',
+                                style: largeTitleTextStyleBold(themeOrange, 16),
+                              ),
                             ),
+                            subtitle: widget.userTag.interest == null
+                                ? null
+                                : buildTags(widget.userTag.interest,
+                                    tagStateKeyList[2]),
                           ),
-                          subtitle: widget.userTag.gpa == null
-                              ? null
-                              : buildTags(
-                                  widget.userTag.gpa, tagStateKeyList[2]),
-                        ),
-                        ListTile(
-                          title: Padding(
-                            padding: EdgeInsets.only(bottom: 6),
-                            child: Text(
-                              'Study Habits',
-                              style: simpleTextStyleBlack(),
+                          ListTile(
+                            title: Padding(
+                              padding: EdgeInsets.only(bottom: 7),
+                              child: Text(
+                                'Study Habits',
+                                style: largeTitleTextStyleBold(themeOrange, 16),
+                              ),
                             ),
+                            subtitle: widget.userTag.strudyHabits == null
+                                ? null
+                                : buildTags(widget.userTag.strudyHabits,
+                                    tagStateKeyList[3]),
                           ),
-                          subtitle: widget.userTag.strudyHabits == null
-                              ? null
-                              : buildTags(widget.userTag.strudyHabits,
-                                  tagStateKeyList[3]),
-                        ),
-                      ],
-                    ).toList(),
+                        ],
+                      ).toList(),
+                    ),
                   ),
                 ),
               ),
@@ -361,8 +378,9 @@ class _ShrinkButtonState extends State<ShrinkButton>
     return Tags(
       alignment: WrapAlignment.start,
       key: tagStateKey,
-      spacing: 6,
-      runSpacing: 6,
+      spacing: 9,
+      runSpacing: 12, //vertical space
+
       // direction: Axis.horizontal,
       // symmetry: true,
       // textField: TagsTextField(
