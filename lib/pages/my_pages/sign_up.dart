@@ -165,14 +165,14 @@ class _SignUpPageState extends State<SignUpPage> {
         width: _width * 0.75,
         child: RaisedButton(
           hoverElevation: 0,
-          highlightColor: Color(0xDA6D39),
+          highlightColor: Color(0xFFFF9B6B),
           highlightElevation: 0,
           elevation: 0,
           color: (emailTextEditingController.text.isNotEmpty &&
                   passwordTextEditingController.text.isNotEmpty &&
                   _selectedSchool.isNotEmpty)
               ? Colors.white
-              : Color(0xDA6D39).withOpacity(1),
+              : Color(0xFFFF9B6B).withOpacity(1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
@@ -214,7 +214,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15,
                     ),
                     DropdownButtonFormField<String>(
-                      dropdownColor: Color(0xF7D5C5).withOpacity(0.7),
+                      dropdownColor: Color(0xFFFF9B6B),
                       icon: Icon(
                         Icons.keyboard_arrow_down,
                         color: Colors.white,

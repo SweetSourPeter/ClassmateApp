@@ -11,7 +11,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 class TagSelecting extends StatefulWidget {
   final PageController pageController;
   final Color buttonColor;
-  const TagSelecting({Key key, this.pageController, this.buttonColor})
+  final bool isEdit;
+  const TagSelecting(
+      {Key key, this.pageController, this.buttonColor, this.isEdit = false})
       : super(key: key);
   // TagSelecting({Key key}) : super(key: key);
 
@@ -139,7 +141,7 @@ class _TagSelectingState extends State<TagSelecting> {
                           widget.buttonColor, mediaQuery, userTagProvider),
                       Container(
                         width: _width,
-                        color: Color(0xDA6D39).withOpacity(1),
+                        color: Color(0xFFFF9B6B).withOpacity(1),
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
@@ -240,16 +242,18 @@ class _TagSelectingState extends State<TagSelecting> {
                     elevation: 0,
                     color: (allTags.length >= 5)
                         ? Colors.white
-                        : Color(0xDA6D39).withOpacity(1),
+                        : Color(0xFFFF9B6B).withOpacity(1),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     onPressed: () {
                       if (allTags.length >= 5) {
                         userTagProvider.addTagsToContact(context);
 
-                        widget.pageController.animateToPage(3,
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.easeInCubic);
+                        widget.isEdit
+                            ? Navigator.pop(context)
+                            : widget.pageController.animateToPage(3,
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.easeInCubic);
                       } else {
                         // selectedIndex++;
                         // changeCategory(selectedIndex);
@@ -299,7 +303,7 @@ class _TagSelectingState extends State<TagSelecting> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5.0),
-        color: Color(0xDA6D39).withOpacity(1),
+        color: Color(0xFFFF9B6B).withOpacity(1),
         /*boxShadow: [
           BoxShadow(
             color: Colors.grey[350],

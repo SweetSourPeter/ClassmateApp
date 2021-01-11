@@ -6,9 +6,7 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/services/userDatabase.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +78,6 @@ class _SearchUsersState extends State<SearchUsers> {
     return Container(
       color: Colors.white,
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
         child: Column(
           children: <Widget>[
             Container(
@@ -92,7 +89,7 @@ class _SearchUsersState extends State<SearchUsers> {
                       child: Focus(
                     // onFocusChange: (focus) => showCanclChange(),
                     child: TextField(
-                      textInputAction: TextInputAction.go,
+                      textInputAction: TextInputAction.search,
                       onSubmitted: (value) {
                         if (searchTextEditingController.text.isNotEmpty) {
                           initiateSearch();
@@ -103,17 +100,19 @@ class _SearchUsersState extends State<SearchUsers> {
                       textAlign: TextAlign.left,
                       autofocus: true,
                       decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            icon: Icon(
-                              searchTextEditingController.text.isEmpty
-                                  ? null
-                                  : Icons.cancel,
-                              color: themeOrange,
-                            ),
-                            onPressed: () {
-                              // initiateSearch();
-                              clearSearchTextInput(currentFocus);
-                            }),
+                        suffixIcon: searchTextEditingController.text.isEmpty
+                            ? null
+                            : IconButton(
+                                icon: Image.asset(
+                                  'assets/images/cross.png',
+                                  // color: Color(0xffFF7E40),
+                                  height: 19,
+                                  width: 19,
+                                ),
+                                onPressed: () {
+                                  // initiateSearch();
+                                  clearSearchTextInput(currentFocus);
+                                }),
                         prefixIcon: Icon(
                           Icons.search,
                           color: Color(0xFFFFCDB6),
@@ -183,7 +182,6 @@ class _SearchUsersState extends State<SearchUsers> {
             //                   print(splitTemp[4]);
             //                   await initiateURLSearch(splitTemp[4]);
             //                 }
-
             //                 // searchBegain
             //                 //     ? showBottomPopSheet(
             //                 //         context, searchList(context, course))
@@ -194,6 +192,9 @@ class _SearchUsersState extends State<SearchUsers> {
             //   ),
             // ),
             searchList(),
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
@@ -376,9 +377,9 @@ class _SearchUsersState extends State<SearchUsers> {
               userEmail:
                   // "731957665@qq.com",
                   searchSnapshot.docs[index].data()['email'] ?? '',
-              imageURL:
+              userProfileColor:
                   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                  searchSnapshot.docs[index].data()['userImageUrl'] ?? '',
+                  searchSnapshot.docs[index].data()['profileColor'] ?? 0.0,
             );
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
@@ -391,9 +392,9 @@ class _SearchUsersState extends State<SearchUsers> {
         userEmail:
             // "731957665@qq.com",
             searchURLsnapshot.data()['email'] ?? '',
-        imageURL:
+        userProfileColor:
             // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-            searchURLsnapshot.data()['userImageUrl'] ?? '',
+            searchURLsnapshot.data()['profileColor'] ?? 0.0,
       );
     } else if (pasteValue.isNotEmpty &&
         !pasteValue.startsWith('https://na-cc.com/')) {
@@ -443,9 +444,13 @@ class SearchTile extends StatelessWidget {
   final String userID;
   final String userName;
   final String userEmail;
-  final String imageURL;
+  final double userProfileColor;
   SearchTile(
-      {this.school, this.userID, this.userName, this.userEmail, this.imageURL});
+      {this.school,
+      this.userID,
+      this.userName,
+      this.userEmail,
+      this.userProfileColor});
 
   createChatRoomAndStartConversation(
       String userName, String userEmail, String userID, context) {
@@ -580,22 +585,39 @@ class SearchTile extends StatelessWidget {
       }
     }
 
+    final userdata = Provider.of<UserData>(context, listen: false);
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FriendProfile(
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: userdata,
+              ),
+              // 这个需要的话直接uncomment
+              // Provider<List<CourseInfo>>.value(
+              //   value: course,F
+              // ),
+              // final courseProvider = Provider.of<CourseProvider>(context);
+              // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+              // 不需要pass到push里面，直接复制上面这行即可
+            ],
+            child: FriendProfile(
               userID: userID, // to be modified to friend's ID
             ),
-          ),
-        );
+          );
+        }));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Row(
           children: <Widget>[
-            creatUserImageWithString(30.0, imageURL ?? '', userName ?? ''),
+            creatUserImageWithString(
+              30.0,
+              userName ?? '',
+              userProfileColor ?? 1.0,
+              simpleTextSansStyleBold(Colors.white, 18),
+            ),
             // CircleAvatar(
             //   radius: 30.0,
             //   backgroundImage: NetworkImage("${imageURL}"),
@@ -629,6 +651,7 @@ class SearchTile extends StatelessWidget {
             // SizedBox(
             //   width: 10,
             // ),
+            Spacer(),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
@@ -649,7 +672,7 @@ class SearchTile extends StatelessWidget {
                   contactProvider.changeUserID(userID);
                   contactProvider.changeEmail(userEmail);
                   contactProvider.changeUserName(userName);
-                  contactProvider.changeUserImageUrl(imageURL);
+                  contactProvider.changeUserImageUrl('imageURL');
                   contactProvider.addUserToContact(context);
                   createChatRoomAndStartConversation(
                       userName, userEmail, userID);

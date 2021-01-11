@@ -42,7 +42,7 @@ InputDecoration buildInputDecorationPinky(
 InputDecoration textFieldInputDecoration(
     String hintText, double boarderRadius) {
   return InputDecoration(
-    fillColor: Color(0xDA6D39).withOpacity(1),
+    fillColor: Color(0xFFFF9B6B).withOpacity(1),
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
     hintText: hintText,
@@ -200,28 +200,43 @@ Padding topLineBar() {
 }
 
 // used to create user image
-Container createUserImage(double radius, UserData userdata) {
+String calculateUserName(String name) {
+  var splitString = name.split(" ");
+  if (splitString.length >= 2) {
+    return (splitString[0][0] + splitString[1][0]);
+  } else {
+    return (splitString[0][0]);
+  }
+}
+
+Container createUserImage(double radius, UserData userdata, TextStyle style) {
+  print('name:=======');
+  var string = "Hello world!";
+  print(string.split(" "));
   return Container(
     decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: userdata.profileColor == null
-            ? listColors[1]
+            ? listColors[0]
             : listColors[userdata.profileColor.toInt()]),
     child: CircleAvatar(
       backgroundColor: Colors.transparent,
       radius: radius,
       child: Container(
-        child: (userdata.userImageUrl == null)
+        child: (userdata.userName != null)
             ? Text(
-                userdata.userName[0].toUpperCase(),
-                style: TextStyle(fontSize: 35, color: Colors.white),
+                calculateUserName(userdata.userName).toUpperCase(),
+                style: style,
               )
-            : null,
+            : Text(
+                ' ',
+                style: style,
+              ),
       ),
-      backgroundImage: (userdata.userImageUrl == null)
-          ? null
-          : NetworkImage(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
+      // backgroundImage: (userdata.userImageUrl == null)
+      //     ? null
+      //     : NetworkImage(
+      //         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
     ),
   );
 }
@@ -234,24 +249,33 @@ CircleAvatar creatAddIconImage(double radius) {
   );
 }
 
-CircleAvatar creatUserImageWithString(
-    double radius, String userImageUrl, String userName) {
-  print("my user image url is $userImageUrl");
-  return CircleAvatar(
-    backgroundColor: orengeColor,
-    radius: radius,
-    child: Container(
-      child: (userImageUrl == '')
-          ? Text(
-              userName[0].toUpperCase(),
-              style: TextStyle(fontSize: 35, color: Colors.white),
-            )
-          : null,
+Container creatUserImageWithString(
+    double radius, String userName, double userProfileColor, TextStyle style) {
+  return Container(
+    decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: userProfileColor == null
+            ? listColors[0]
+            : listColors[userProfileColor.toInt()]),
+    child: CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: radius,
+      child: Container(
+        child: (userName != null)
+            ? Text(
+                calculateUserName(userName).toUpperCase(),
+                style: style,
+              )
+            : Text(
+                ' ',
+                style: style,
+              ),
+      ),
+      // backgroundImage: (userdata.userImageUrl == null)
+      //     ? null
+      //     : NetworkImage(
+      //         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
     ),
-    backgroundImage: (userImageUrl == '')
-        ? null
-        : NetworkImage(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg'),
   );
 }
 
@@ -268,7 +292,11 @@ class ButtonLink extends StatefulWidget {
   @required
   final bool isEdit;
   @required
-  String editText;
+  final String editText;
+  @required
+  final UserData user;
+  @required
+  final bool isAvatar;
 
   ButtonLink(
       {this.text,
@@ -279,7 +307,9 @@ class ButtonLink extends StatefulWidget {
       this.isSimple = false,
       this.isSwitch = false,
       this.isEdit = false,
-      this.editText = ''});
+      this.editText = '',
+      this.user = null,
+      this.isAvatar = false});
 
   @override
   _ButtonLinkState createState() => _ButtonLinkState();
@@ -298,44 +328,53 @@ class _ButtonLinkState extends State<ButtonLink> {
               ? EdgeInsets.fromLTRB(20, 10, 20, 10)
               : EdgeInsets.fromLTRB(20, 0, 20, 0),
           height: widget.height,
+          minWidth: MediaQuery.of(context).size.width,
           color: Colors.white,
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: widget.isSimple
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+                mainAxisSize:
+                    widget.isSimple ? MainAxisSize.min : MainAxisSize.max,
                 children: <Widget>[
                   (widget.isSimple || widget.isEdit)
                       ? Container()
                       : Icon(
                           widget.iconData,
-                          color:
-                              !widget.isSimple ? Colors.black45 : orengeColor,
+                          color: themeOrange,
+                          size: widget.textSize * 1.5,
                         ),
                   SizedBox(
-                    width: widget.isEdit ? 10 : 20,
+                    width: widget.isSimple ? 0 : 10,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.text,
-                        style: GoogleFonts.montserrat(
-                            color:
-                                !widget.isSimple ? Colors.black87 : orengeColor,
-                            fontSize: widget.textSize),
-                      ),
-                      widget.isEdit
-                          ? Text(
-                              widget.editText,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.black45,
-                                  fontSize: widget.textSize),
-                            )
-                          : Container(),
+                      Text(widget.text,
+                          style: GoogleFonts.montserrat(
+                            color: Color(0xFF000000),
+                            fontSize: widget.textSize,
+                            fontWeight: FontWeight.w500,
+                          )),
                     ],
                   ),
-                  new Spacer(),
+                  widget.isSimple ? Container() : new Spacer(),
+                  widget.isAvatar
+                      ? createUserImage(
+                          widget.height / 3.5,
+                          widget.user,
+                          largeTitleTextStyle(Colors.white, 12),
+                        )
+                      : Container(),
+                  widget.isEdit && widget.editText.length > 0
+                      ? Text(
+                          widget.editText,
+                          style: GoogleFonts.montserrat(
+                              color: Colors.black45, fontSize: widget.textSize),
+                        )
+                      : Container(),
                   !widget.isSimple
                       ? Container(
                           child: !widget.isSwitch
@@ -352,10 +391,10 @@ class _ButtonLinkState extends State<ButtonLink> {
                                       print(isSwitched);
                                     });
                                   },
-                                  activeTrackColor: orengeColor,
+                                  activeTrackColor: themeOrange,
                                   activeColor: Colors.white,
                                 ))
-                      : Container()
+                      : Container(),
                 ],
               ),
             ],

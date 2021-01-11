@@ -314,15 +314,27 @@ class _ChatScreenState extends State<ChatScreen> {
                               padding: const EdgeInsets.only(right: 10.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FriendProfile(
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: currentUser,
+                                        ),
+                                        // 这个需要的话直接uncomment
+                                        // Provider<List<CourseInfo>>.value(
+                                        //   value: course,F
+                                        // ),
+                                        // final courseProvider = Provider.of<CourseProvider>(context);
+                                        // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                        // 不需要pass到push里面，直接复制上面这行即可
+                                      ],
+                                      child: FriendProfile(
                                         userID: widget
                                             .friendID, // to be modified to friend's ID
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }));
                                 },
                                 child: CircleAvatar(
                                   backgroundColor: Color(0xffFF7E40),

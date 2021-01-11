@@ -1,5 +1,6 @@
 import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
@@ -107,7 +108,9 @@ class _GroupChatState extends State<GroupChat> {
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data()['senderName'])
+                          snapshot.data.documents[index].data()['senderName'],
+                          snapshot.data.documents[index].data()['senderID'],
+                        )
                       : ImageTile(
                           snapshot.data.documents[index].data()['message'],
                           snapshot.data.documents[index].data()['sendBy'] ==
@@ -118,95 +121,13 @@ class _GroupChatState extends State<GroupChat> {
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data()['senderName']);
+                          snapshot.data.documents[index].data()['senderName'],
+                          snapshot.data.documents[index].data()['senderID'],
+                        );
                 })
             : Container();
       },
     );
-  }
-
-  sendMessage(myEmail, myName) {
-    if (messageController.text.isNotEmpty) {
-      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-      Map<String, dynamic> messageMap = {
-        'message': messageController.text,
-        'messageType': 'text',
-        'sendBy': myEmail,
-        'senderName': myName,
-        'time': lastMessageTime,
-      };
-
-      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
-      // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
-      // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
-      //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
-      //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
-      // });
-
-      _controller.jumpTo(_controller.position.minScrollExtent);
-      messageController.text = '';
-    }
-  }
-
-  sendImage(myEmail, myName) {
-    if (_uploadedFileURL.isNotEmpty) {
-      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-      Map<String, dynamic> messageMap = {
-        'message': _uploadedFileURL,
-        'messageType': 'image',
-        'sendBy': myEmail,
-        'senderName': myName,
-        'time': lastMessageTime,
-      };
-
-      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
-      // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
-      // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
-      //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
-      //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
-      // });
-
-      _controller.jumpTo(_controller.position.minScrollExtent);
-      _uploadedFileURL = '';
-    }
-  }
-
-  Future _pickImage(ImageSource source, myEmail, myName) async {
-    PickedFile selected = await _picker.getImage(source: source);
-
-    setState(() {
-      _imageFile = File(selected.path);
-    });
-
-    if (selected != null) {
-      _uploadFile(myEmail, myName);
-      print('Image Path $_imageFile');
-    }
-
-//    Navigator.push(context, MaterialPageRoute(
-//        builder: (context) => PictureDisplay(imageFile: File(selected.path))
-//    ));
-  }
-
-  Future _uploadFile(myEmail, myName) async {
-    String fileName = basename(_imageFile.path);
-    firebase_storage.Reference firebaseStorageRef =
-        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-    firebase_storage.UploadTask uploadTask =
-        firebaseStorageRef.putFile(_imageFile);
-    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
-    taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-      setState(() {
-        _uploadedFileURL = downloadUrl;
-        print('picture uploaded');
-        print(_uploadedFileURL);
-        sendImage(myEmail, myName);
-      });
-    });
   }
 
   // Future _cropImage() async {
@@ -258,6 +179,88 @@ class _GroupChatState extends State<GroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+
+    sendMessage(myEmail, myName) {
+      if (messageController.text.isNotEmpty) {
+        final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+        Map<String, dynamic> messageMap = {
+          'message': messageController.text,
+          'messageType': 'text',
+          'sendBy': myEmail,
+          'senderName': myName,
+          'time': lastMessageTime,
+          'senderID': currentUser.userID,
+        };
+
+        databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+        databaseMethods
+            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+        // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
+        // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
+        //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
+        //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
+        // });
+
+        _controller.jumpTo(_controller.position.minScrollExtent);
+        messageController.text = '';
+      }
+    }
+
+    sendImage(myEmail, myName) {
+      if (_uploadedFileURL.isNotEmpty) {
+        final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+        Map<String, dynamic> messageMap = {
+          'message': _uploadedFileURL,
+          'messageType': 'image',
+          'sendBy': myEmail,
+          'senderName': myName,
+          'time': lastMessageTime,
+          'senderID': currentUser.userID,
+        };
+
+        databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+        databaseMethods
+            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+        // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
+        // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
+        //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
+        //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
+        // });
+
+        _controller.jumpTo(_controller.position.minScrollExtent);
+        _uploadedFileURL = '';
+      }
+    }
+
+    Future _uploadFile(myEmail, myName) async {
+      String fileName = basename(_imageFile.path);
+      firebase_storage.Reference firebaseStorageRef =
+          firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+      firebase_storage.UploadTask uploadTask =
+          firebaseStorageRef.putFile(_imageFile);
+      firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+      taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+        setState(() {
+          _uploadedFileURL = downloadUrl;
+          print('picture uploaded');
+          print(_uploadedFileURL);
+          sendImage(myEmail, myName);
+        });
+      });
+    }
+
+    Future _pickImage(ImageSource source, myEmail, myName) async {
+      PickedFile selected = await _picker.getImage(source: source);
+
+      setState(() {
+        _imageFile = File(selected.path);
+      });
+
+      if (selected != null) {
+        _uploadFile(myEmail, myName);
+        print('Image Path $_imageFile');
+      }
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -473,37 +476,36 @@ class _GroupChatState extends State<GroupChat> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
-                          onTap: () {
-                            if (showTextKeyboard) {
-                              setState(() {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();
-                                  showTextKeyboard = false;
-                                }
-                              });
-                            } else {
-                              if (showStickerKeyboard) {
+                            onTap: () {
+                              if (showTextKeyboard) {
                                 setState(() {
-                                  showStickerKeyboard = false;
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                    showTextKeyboard = false;
+                                  }
                                 });
-                              } else {}
-                            }
-                            setState(() {
-                              showFunctions = !showFunctions;
-                            });
-                            Timer(
-                                Duration(milliseconds: 30),
-                                () => _controller.jumpTo(
-                                    _controller.position.minScrollExtent));
-                          },
-                          child: showFunctions ? Image.asset(
-                              'assets/images/plus_on_click.png',
-                              width: 28, height: 28
-                          ) : Image.asset('assets/images/plus.png',
-                              width: 28, height: 28)
-                        ),
+                              } else {
+                                if (showStickerKeyboard) {
+                                  setState(() {
+                                    showStickerKeyboard = false;
+                                  });
+                                } else {}
+                              }
+                              setState(() {
+                                showFunctions = !showFunctions;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 30),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
+                            },
+                            child: showFunctions
+                                ? Image.asset('assets/images/plus_on_click.png',
+                                    width: 28, height: 28)
+                                : Image.asset('assets/images/plus.png',
+                                    width: 28, height: 28)),
                       )
                     ],
                   ),
@@ -591,12 +593,14 @@ class MessageTile extends StatelessWidget {
   final bool displayWeek;
   final bool lastMessage;
   final String senderName;
+  final String senderID;
 
   MessageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage, this.senderName);
+      this.displayWeek, this.lastMessage, this.senderName, this.senderID);
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
     return Column(
       children: [
         displayWeek
@@ -697,12 +701,37 @@ class MessageTile extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          senderName ?? '',
-                          style: GoogleFonts.openSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xffFFB811),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,F
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: FriendProfile(
+                                  userID:
+                                      senderID, // to be modified to friend's ID
+                                ),
+                              );
+                            }));
+                          },
+                          child: Text(
+                            senderName ?? '',
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xffFFB811),
+                            ),
                           ),
                         ),
                       ),
@@ -763,12 +792,14 @@ class ImageTile extends StatelessWidget {
   final bool displayWeek;
   final bool lastMessage;
   final String senderName;
+  final String senderID;
 
   ImageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage, this.senderName);
+      this.displayWeek, this.lastMessage, this.senderName, this.senderID);
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
     return Column(
       children: [
         displayWeek
@@ -823,12 +854,37 @@ class ImageTile extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          senderName,
-                          style: GoogleFonts.openSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xffFFB811),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,F
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: FriendProfile(
+                                  userID:
+                                      senderID, // to be modified to friend's ID
+                                ),
+                              );
+                            }));
+                          },
+                          child: Text(
+                            senderName,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xffFFB811),
+                            ),
                           ),
                         ),
                       ),

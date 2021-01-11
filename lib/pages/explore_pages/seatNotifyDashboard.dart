@@ -91,6 +91,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                                   itemBuilder: (context, index) {
                                     return FocusedMenuHolder(
                                       blurSize: 4,
+                                      menuOffset: 8,
                                       menuItemExtent: 45,
                                       menuWidth:
                                           MediaQuery.of(context).size.width *
@@ -213,7 +214,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
       ),
       elevation: 3,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 32),
+        padding: EdgeInsets.only(left: 32),
         child: Column(
           children: <Widget>[
             Row(
@@ -239,16 +240,15 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                     ],
                   ),
                 ),
-                Container(
-                    child: Align(
-                  alignment: Alignment.bottomRight,
+                Align(
+                  alignment: Alignment.centerRight,
                   child: Image.asset(
                     imageLocation,
                     width: 100.0,
                     height: 100.0,
                     scale: 2,
                   ),
-                )),
+                ),
               ],
             ),
           ],

@@ -19,6 +19,7 @@ class SearchCourse extends StatefulWidget {
 class _SearchCourseState extends State<SearchCourse> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyGroupID = GlobalKey<FormState>();
+
   TextEditingController courseIDTextEditingController =
       new TextEditingController();
   TextEditingController courseNameTextEditingController =
@@ -68,6 +69,7 @@ class _SearchCourseState extends State<SearchCourse> {
     ];
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
+
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 37),
@@ -88,7 +90,7 @@ class _SearchCourseState extends State<SearchCourse> {
           borderRadius: BorderRadius.circular(40),
         ),
         height: 59,
-        width: _width * 0.7,
+        width: _width * 1,
         child: RaisedButton(
           hoverElevation: 0,
           highlightColor: Color(0xDA6D39),
@@ -104,11 +106,12 @@ class _SearchCourseState extends State<SearchCourse> {
               print('both unvalid');
               return;
             } else if (_formKeyGroupID.currentState.validate()) {
-              await initiateURLSearch(courseIDTextEditingController.text);
+              await initiateURLSearch(
+                  courseIDTextEditingController.text, context);
               print(searchBegain);
             } else {
               print('valid');
-              await initiateSearch(_selectedSemester);
+              await initiateSearch(_selectedSemester, context);
               print(searchBegain);
             }
             _formKey.currentState.save();
@@ -154,7 +157,12 @@ class _SearchCourseState extends State<SearchCourse> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 5),
+      padding: EdgeInsets.only(
+        left: _width * 0.12,
+        right: _width * 0.12,
+        top: 5,
+        bottom: 5,
+      ),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -222,7 +230,7 @@ class _SearchCourseState extends State<SearchCourse> {
                             Icons.access_time,
                             color: Colors.black,
                           ),
-                          'Course Name, e.g. 111',
+                          'Course Name, e.g. CS111',
                           11,
                         ),
                         validator: (String value) {
@@ -349,12 +357,14 @@ class _SearchCourseState extends State<SearchCourse> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   bool searchBegain = false;
 
-  initiateSearch(var _selectedSemester) async {
+  initiateSearch(var _selectedSemester, BuildContext context) async {
+    final userdata = Provider.of<UserData>(context, listen: false);
     var a = _selectedSemester;
     var temp = await databaseMethods.getCourse(
       _selectedSemester.toUpperCase(),
       courseNameTextEditingController.text.toUpperCase(),
       sectionTextEditingController.text.toUpperCase(),
+      userdata.school.toUpperCase(),
     );
     print('get temp');
     // if (temp == null) return;
@@ -376,11 +386,13 @@ class _SearchCourseState extends State<SearchCourse> {
     });
   }
 
-  initiateURLSearch(String courseId) async {
+  initiateURLSearch(String courseId, BuildContext context) async {
+    final userdata = Provider.of<UserData>(context, listen: false);
     print('URL SEARCH START');
     print(courseId);
-    var temp = await databaseMethods.getCourseInfo(
+    var temp = await databaseMethods.getCourseInfoByid(
       courseId,
+      userdata.school.toUpperCase(),
     );
     setState(() {
       searchSnapshot = temp;
@@ -628,8 +640,6 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
           ),
           Spacer(),
           Container(
-            width: 87,
-            height: 41,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
             ),
@@ -682,7 +692,6 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
                         add = true;
                         print('set add is $add');
                       });
-
                       courseProvider.changeTerm(widget.term);
                       courseProvider.changeCourseCollege(widget.college);
                       courseProvider.changeCourseDepartment(widget.department);

@@ -1,8 +1,10 @@
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -25,12 +27,23 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   List<int> listOfNumberOfMembers = [];
   List<int> listOfUnread = [];
+  List<String> fileLocation = [
+    'assets/icon/courseIcon1.png',
+    'assets/icon/courseIcon2.png',
+    'assets/icon/courseIcon3.png',
+    'assets/icon/courseIcon4.png',
+    'assets/icon/courseIcon5.png',
+    'assets/icon/courseIcon6.png',
+  ];
 
   @override
   void initState() {
     databaseMethods
         .getListOfNumberOfMembersInCourses(widget.course)
         .then((value) {
+      if (!mounted) {
+        return; // Just do nothing if the widget is disposed.
+      }
       setState(() {
         listOfNumberOfMembers = value;
       });
@@ -39,6 +52,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     databaseMethods
         .getListOfUnreadInCourses(widget.course, widget.userData.userID)
         .then((value) {
+      if (!mounted) {
+        return; // Just do nothing if the widget is disposed.
+      }
       setState(() {
         listOfUnread = value;
       });
@@ -152,7 +168,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
         //   onReorder: _onReorder,
         // );
         (course == null)
-            ? CircularProgressIndicator()
+            ? Center(
+                child: CircularProgressIndicator(
+                backgroundColor: themeOrange,
+              ))
             : Container(
                 color: Colors.white,
                 child: CustomScrollView(
@@ -275,10 +294,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       //     builder: (context) => SearchGroup()));
                                     },
                                     child: Text(
-                                      'add courses',
+                                      'add course',
                                       textAlign: TextAlign.left,
                                       style: GoogleFonts.openSans(
-                                        color: Color(0xffFF7E40),
+                                        color: themeOrange,
                                         fontSize: 16,
                                       ),
                                     ),
@@ -321,17 +340,25 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           });
                         });
                         return FocusedMenuHolder(
-                          blurSize: 4,
+                          blurSize: 0,
+                          menuOffset: 0,
                           // blurBackgroundColor: Colors.white60,
-                          menuWidth: MediaQuery.of(context).size.width * 0.60,
+                          menuWidth: MediaQuery.of(context).size.width * 0.50,
                           menuBoxDecoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0))),
+                                  BorderRadius.all(Radius.circular(60.0))),
                           onPressed: () {
                             //press on the item
                           },
                           menuItems: <FocusedMenuItem>[
+                            FocusedMenuItem(
+                                title: Text('Mark as unread'),
+                                trailingIcon: Icon(Icons.mark_chat_unread),
+                                onPressed: () {
+                                  databaseMethods.setUnreadGroupChatNumberToOne(
+                                      course[index].courseID, userdata.userID);
+                                }),
                             FocusedMenuItem(
                                 title: Text('Share'),
                                 trailingIcon: Icon(Icons.share),
@@ -373,12 +400,55 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 trailingIcon: Icon(Icons.delete),
-                                backgroundColor: Colors.redAccent,
+                                backgroundColor: Colors.orange,
                                 onPressed: () {
-                                  var a = course[index].courseID;
-                                  print('$a');
-                                  courseProvider.removeCourse(
-                                      context, course[index].courseID);
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                'Are you sure you want to delete this course?',
+                                                style: simpleTextStyle(
+                                                    Colors.black, 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text(
+                                              'Yes',
+                                              style: simpleTextStyle(
+                                                  Colors.black87, 16),
+                                            ),
+                                            onPressed: () {
+                                              var a = course[index].courseID;
+                                              print('$a');
+                                              courseProvider.removeCourse(
+                                                  context,
+                                                  course[index].courseID);
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text(
+                                              'Cancel',
+                                              style: simpleTextStyle(
+                                                  themeOrange, 16),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }),
                           ],
                           child: GestureDetector(
@@ -418,11 +488,22 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
+                                      // BoxShadow(
+                                      //     color: Colors.black.withOpacity(0.15),
+                                      //     blurRadius: 6,
+                                      //     spreadRadius: 3,s
+                                      //     offset: Offset(4, 4))
+                                      //neumorphic light
                                       BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 8,
-                                          spreadRadius: 2,
-                                          offset: Offset(4, 4))
+                                        color: Colors.white.withOpacity(0.8),
+                                        offset: Offset(-6.0, -6.0),
+                                        blurRadius: 16.0,
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        offset: Offset(6.0, 6.0),
+                                        blurRadius: 16.0,
+                                      ),
                                     ],
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(24))),
@@ -510,21 +591,12 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                         ),
                                       ],
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          right: index % 2 == 0 ? 40 : 15),
-                                      child: index % 4 == 0
-                                          ? Image.asset(
-                                              'assets/images/icons-01.png')
-                                          : index % 4 == 1
-                                              ? Image.asset(
-                                                  'assets/images/icons-02.png')
-                                              : index % 4 == 2
-                                                  ? Image.asset(
-                                                      'assets/images/icons-03.png')
-                                                  : Image.asset(
-                                                      'assets/images/icons-04.png'),
-                                    )
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 20.0),
+                                      child:
+                                          Image.asset(fileLocation[index % 6]),
+                                    ),
                                   ],
                                 )),
                           ),
