@@ -46,9 +46,10 @@ class _FriendProfileState extends State<FriendProfile> {
     double _width = MediaQuery.of(context).size.width;
     Stream<List<CourseInfo>> courseData = databaseMethods.getMyCourses(userID);
     Future<UserTags> userTag = databaseMethods.getAllTage(userID);
+
     Future<UserData> userData = databaseMethods.getUserDetailsByID(userID);
     final currentUser = Provider.of<UserData>(context, listen: false);
-
+    // Future<UserTags> myTag = databaseMethods.getAllTage(currentUser.userID);
     // a helper function for createChatRoomAndStartConversation()
     getChatRoomId(String a, String b) {
       if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {

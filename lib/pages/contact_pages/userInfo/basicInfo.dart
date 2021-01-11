@@ -4,18 +4,22 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/animatedButton.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'topBar.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:math';
 
 class BasicInfo extends StatefulWidget {
   final String userID;
   final Future<UserTags> userTag;
+  final Future<UserTags> myTag;
   final Future<UserData> userData;
   BasicInfo({
     Key key,
     @required this.userID,
     @required this.userTag,
+    @required this.myTag,
     @required this.userData,
   }) : super(key: key);
 
@@ -24,6 +28,7 @@ class BasicInfo extends StatefulWidget {
         userID,
         userTag,
         userData,
+        myTag,
       );
 }
 
@@ -31,20 +36,32 @@ class _BasicInfoState extends State<BasicInfo> {
   String userID;
   Future<UserTags> userTag;
   Future<UserData> userData;
-  _BasicInfoState(this.userID, this.userTag, this.userData); //constructor
+  Future<UserTags> myTag;
+  _BasicInfoState(
+      this.userID, this.userTag, this.userData, this.myTag); //constructor
   final databaseMethods = DatabaseMethods();
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserData>(context, listen: false);
+
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 0.65;
-    int matchingPercentage = 80;
+    UserTags resultTag = UserTags();
+    Random random = new Random();
+    int matchingPercentage = 69 + random.nextInt(100 - 69);
+
+    // int matchingPercentage = 80;
     return FutureBuilder(
         future: Future.wait([widget.userData, widget.userTag]),
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
+            // resultTag = resultTag.calculateMatchTags(
+            //   snapshot.data[1],
+            //   snapshot.data[2],
+            // );
             return Container(
               height: _height * 0.45,
               child: Stack(
@@ -109,6 +126,7 @@ class _BasicInfoState extends State<BasicInfo> {
                         ShrinkButton(
                           profileColor: snapshot.data[0].profileColor,
                           userTag: snapshot.data[1],
+                          matchTag: resultTag,
                           userName: snapshot.data[0].userName,
                           width: 90.0,
                           height: 30.0,
@@ -141,7 +159,7 @@ class _BasicInfoState extends State<BasicInfo> {
                     ),
                   ),
                   TopBar(
-                    userID: userID,
+                    userID: widget.userID,
                     userName: snapshot.data[0].userName,
                     profileUserEmail: snapshot.data[0].email,
                   ),
