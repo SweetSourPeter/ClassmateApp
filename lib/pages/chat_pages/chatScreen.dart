@@ -340,14 +340,29 @@ class _ChatScreenState extends State<ChatScreen> {
                                   }));
                                 },
                                 child: CircleAvatar(
-                                  backgroundColor: listProfileColor[widget.friendProfileColor.toInt()],
+                                  backgroundColor: listProfileColor[
+                                      widget.friendProfileColor.toInt()],
                                   radius: sidebarSize / 20,
                                   child: Container(
                                     child: Text(
-                                      widget.friendName.split(' ').length >= 2 ? widget.friendName.split(' ')[0][0].toUpperCase() + widget.friendName.split(' ')[widget.friendName.split(' ').length-1][0].toUpperCase()
+                                      widget.friendName.split(' ').length >= 2
+                                          ? widget.friendName
+                                                  .split(' ')[0][0]
+                                                  .toUpperCase() +
+                                              widget.friendName
+                                                  .split(' ')[widget.friendName
+                                                          .split(' ')
+                                                          .length -
+                                                      1][0]
+                                                  .toUpperCase()
                                           : widget.friendName[0].toUpperCase(),
                                       style: GoogleFonts.montserrat(
-                                          fontSize: widget.friendName.split(' ').length >= 2 ? 14 : 15,
+                                          fontSize: widget.friendName
+                                                      .split(' ')
+                                                      .length >=
+                                                  2
+                                              ? 14
+                                              : 15,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -405,14 +420,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                   )
                                 ],
                                 child: SearchChat(
-                                  chatRoomId: widget.chatRoomId,
-                                  friendName: widget.friendName,
-                                  friendEmail: widget.friendEmail,
-                                  friendProfileColor: widget.friendProfileColor,
-                                  myEmail: widget.myEmail,
-                                  myName: currentUser.userName,
-                                  myProfileColor: currentUser.profileColor
-                                ),
+                                    chatRoomId: widget.chatRoomId,
+                                    friendName: widget.friendName,
+                                    friendEmail: widget.friendEmail,
+                                    friendProfileColor:
+                                        widget.friendProfileColor,
+                                    myEmail: widget.myEmail,
+                                    myName: currentUser.userName,
+                                    myProfileColor: currentUser.profileColor),
                               );
                             }));
                           },
@@ -887,8 +902,15 @@ class ImageTile extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(12.0),
                                     child: CachedNetworkImage(
                                       imageUrl: message,
-                                      placeholder: (context, url) =>
-                                          new CircularProgressIndicator(),
+                                      placeholder: (context, url) => Container(
+                                          height: 70,
+                                          width: 70,
+                                          child: Center(
+                                            child:
+                                                new CircularProgressIndicator(
+                                              backgroundColor: themeOrange,
+                                            ),
+                                          )),
                                       errorWidget: (context, url, error) =>
                                           new Icon(Icons.error),
                                       height: 180.0,
@@ -935,7 +957,15 @@ class ImageTile extends StatelessWidget {
                                     child: CachedNetworkImage(
                                       imageUrl: message,
                                       placeholder: (context, url) =>
-                                          new CircularProgressIndicator(),
+                                          new Container(
+                                              height: 70,
+                                              width: 70,
+                                              child: Center(
+                                                child:
+                                                    new CircularProgressIndicator(
+                                                  backgroundColor: themeOrange,
+                                                ),
+                                              )),
                                       errorWidget: (context, url, error) =>
                                           new Icon(Icons.error),
                                       height: 180.0,

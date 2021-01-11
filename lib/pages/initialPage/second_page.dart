@@ -55,70 +55,68 @@ class _SecondPageState extends State<SecondPage>
       );
     }
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(top: _height * 0.13),
-        child: Scaffold(
-          resizeToAvoidBottomPadding: false,
-          backgroundColor: themeOrange,
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                _getHeader(),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: _height * 0.22, left: 45, right: 45),
-                  child: TextField(
-                    onChanged: (texto) {
-                      setState(() {
-                        _nikname = texto;
-                      });
+    return Padding(
+      padding: EdgeInsets.only(top: _height * 0.13),
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        backgroundColor: themeOrange,
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              _getHeader(),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _height * 0.22, left: 45, right: 45),
+                child: TextField(
+                  onChanged: (texto) {
+                    setState(() {
+                      _nikname = texto;
+                    });
+                  },
+                  cursorColor: Colors.white,
+                  style: TextStyle(color: Colors.white, fontSize: 21),
+                  decoration: textFieldInputDecoration('Your name...', 11),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: _height * 0.2),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  height: _height * 0.06,
+                  width: _width * 0.75,
+                  child: RaisedButton(
+                    hoverElevation: 0,
+                    highlightColor: Color(0xDA6D39),
+                    highlightElevation: 0,
+                    elevation: 0,
+                    color: (_nikname.isNotEmpty)
+                        ? Colors.white
+                        : Color(0xFFFF9B6B).withOpacity(1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    onPressed: () {
+                      if (_nikname.length > 0) {
+                        widget.pageController.animateToPage(1,
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.easeInCubic);
+                        databaseMethods.updateUserName(user.userID, _nikname);
+                        widget.valueChanged(_nikname);
+                        print('username saved');
+                      }
                     },
-                    cursorColor: Colors.white,
-                    style: TextStyle(color: Colors.white, fontSize: 21),
-                    decoration: textFieldInputDecoration('Your name...', 11),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: _height * 0.2),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    height: _height * 0.06,
-                    width: _width * 0.75,
-                    child: RaisedButton(
-                      hoverElevation: 0,
-                      highlightColor: Color(0xDA6D39),
-                      highlightElevation: 0,
-                      elevation: 0,
-                      color: (_nikname.isNotEmpty)
-                          ? Colors.white
-                          : Color(0xFFFF9B6B).withOpacity(1),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      onPressed: () {
-                        if (_nikname.length > 0) {
-                          widget.pageController.animateToPage(1,
-                              duration: Duration(milliseconds: 800),
-                              curve: Curves.easeInCubic);
-                          databaseMethods.updateUserName(user.userID, _nikname);
-                          widget.valueChanged(_nikname);
-                          print('username saved');
-                        }
-                      },
-                      child: Text(
-                        'Continue',
-                        style: simpleTextSansStyleBold(
-                            (_nikname.isNotEmpty) ? themeOrange : Colors.white,
-                            16),
-                      ),
+                    child: Text(
+                      'Continue',
+                      style: simpleTextSansStyleBold(
+                          (_nikname.isNotEmpty) ? themeOrange : Colors.white,
+                          16),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

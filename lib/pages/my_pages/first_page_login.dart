@@ -104,8 +104,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                     top: 15 + paddingvalue),
                                 child: Text(
                                   'Place to find fellow classmates and \n make meaningful connections',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white70),
+                                  style: simpleTextStyle(Color(0xFFF7D5C5), 16),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -199,7 +198,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                             },
                             child: Text(
                               'I already have an account',
-                              style: simpleTextSansStyleBold(Colors.white, 16),
+                              style: simpleTextStyle(Color(0xFFF7D5C5), 16),
                             ),
                           ),
                         );

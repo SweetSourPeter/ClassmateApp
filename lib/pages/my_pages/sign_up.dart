@@ -229,7 +229,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       icon: Icon(
                         Icons.keyboard_arrow_down,
                         color: Colors.white,
-                        size: 30,
                       ),
                       iconEnabledColor: Colors.white,
                       value: _selectedSchool,

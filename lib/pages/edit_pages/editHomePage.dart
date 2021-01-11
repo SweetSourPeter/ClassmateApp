@@ -3,17 +3,10 @@ import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
-import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/edit_pages/editNameModel.dart';
-import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
-import 'package:app_test/pages/explore_pages/seatNotifyAdd.dart';
-import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
-import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/auth.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:app_test/services/wrapper.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
 

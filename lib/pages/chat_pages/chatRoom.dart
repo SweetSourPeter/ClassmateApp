@@ -61,24 +61,23 @@ class _ChatRoomState extends State<ChatRoom> {
                       .toString();
 
                   return ChatRoomsTile(
-                    friendID: friendID,
-                    userName: snapshot.data.documents[index]
-                        .data()['chatRoomId']
-                        .toString()
-                        .replaceAll("_", "")
-                        .replaceAll(currentUser.email, ""),
-                    chatRoomId:
-                        snapshot.data.documents[index].data()["chatRoomId"],
-                    friendName: friendName,
-                    latestMessage: latestMessage,
-                    lastMessageTime: lastMessageTime,
-                    friendEmail: friendEmail,
-                    unreadNumber: snapshot.data.documents[index].data()[widget
-                            .myEmail
-                            .substring(0, widget.myEmail.indexOf('@')) +
-                        'unread'],
-                    friendProfileColor: friendProfileColor
-                  );
+                      friendID: friendID,
+                      userName: snapshot.data.documents[index]
+                          .data()['chatRoomId']
+                          .toString()
+                          .replaceAll("_", "")
+                          .replaceAll(currentUser.email, ""),
+                      chatRoomId:
+                          snapshot.data.documents[index].data()["chatRoomId"],
+                      friendName: friendName,
+                      latestMessage: latestMessage,
+                      lastMessageTime: lastMessageTime,
+                      friendEmail: friendEmail,
+                      unreadNumber: snapshot.data.documents[index].data()[widget
+                              .myEmail
+                              .substring(0, widget.myEmail.indexOf('@')) +
+                          'unread'],
+                      friendProfileColor: friendProfileColor);
                 })
             : Container();
       },
@@ -193,7 +192,7 @@ class ChatRoomsTile extends StatelessWidget {
     final currentUser = Provider.of<UserData>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
-
+    print('heree');
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -204,14 +203,13 @@ class ChatRoomsTile extends StatelessWidget {
               )
             ],
             child: ChatScreen(
-              chatRoomId: chatRoomId,
-              friendName: friendName,
-              friendEmail: friendEmail,
-              initialChat: 0,
-              myEmail: currentUser.email,
-              friendID: friendID,
-              friendProfileColor: friendProfileColor
-            ),
+                chatRoomId: chatRoomId,
+                friendName: friendName,
+                friendEmail: friendEmail,
+                initialChat: 0,
+                myEmail: currentUser.email,
+                friendID: friendID,
+                friendProfileColor: friendProfileColor),
           );
         }));
       },
@@ -240,15 +238,24 @@ class ChatRoomsTile extends StatelessWidget {
                     child: Stack(
                       children: [
                         CircleAvatar(
-                          backgroundColor: listProfileColor[friendProfileColor.toInt()],
+                          backgroundColor:
+                              listProfileColor[friendProfileColor.toInt()],
                           radius: sidebarSize / 10,
                           child: Container(
                             child: Text(
                               // 单个字22，双子18
-                              friendName.split(' ').length >= 2 ? friendName.split(' ')[0][0].toUpperCase() + friendName.split(' ')[friendName.split(' ').length-1][0].toUpperCase()
-                              : friendName[0].toUpperCase(),
+                              friendName.split(' ').length >= 2
+                                  ? friendName.split(' ')[0][0].toUpperCase() +
+                                      friendName
+                                          .split(' ')[
+                                              friendName.split(' ').length - 1]
+                                              [0]
+                                          .toUpperCase()
+                                  : friendName[0].toUpperCase(),
                               style: GoogleFonts.montserrat(
-                                  fontSize: friendName.split(' ').length >= 2 ? 19 : 22,
+                                  fontSize: friendName.split(' ').length >= 2
+                                      ? 19
+                                      : 22,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),

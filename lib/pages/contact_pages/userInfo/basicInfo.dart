@@ -143,7 +143,9 @@ class _BasicInfoState extends State<BasicInfo> {
                           // gradient:
                           //     listColors[snapshot.data[0].profileColor.toInt()],
                           duration: Duration(milliseconds: 100),
-                          initialText: matchingPercentage.toString() + "%",
+                          initialText: currentUser.userID == widget.userID
+                              ? "100%"
+                              : matchingPercentage.toString() + "%",
                           finalText: " match",
                           initialStyle: GoogleFonts.montserrat(
                               fontSize: 12.0,

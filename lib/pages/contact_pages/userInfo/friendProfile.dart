@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'basicInfo.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FriendProfile extends StatefulWidget {
   final String userID;
@@ -20,6 +21,15 @@ class FriendProfile extends StatefulWidget {
 
   @override
   _FriendProfileState createState() => _FriendProfileState(userID);
+}
+
+_toastInfo(String info) {
+  Fluttertoast.showToast(
+    msg: info,
+    toastLength: Toast.LENGTH_LONG,
+    timeInSecForIosWeb: 3,
+    gravity: ToastGravity.CENTER,
+  );
 }
 
 class _FriendProfileState extends State<FriendProfile> {
@@ -59,23 +69,26 @@ class _FriendProfileState extends State<FriendProfile> {
       }
     }
 
-    createChatRoomAndStartConversation(
-        String userName, String userEmail, String userID, context) {
+    createChatRoomAndStartConversation(String userName, String userEmail,
+        String userID, double userProfileColor, context) {
       // final currentUser = Provider.of<UserData>(context, listen: false);
       final myName = currentUser.userName;
       final myEmail = currentUser.email;
       final myID = currentUser.userID;
+      final myProfileColor = currentUser.profileColor;
       if (userEmail != myEmail) {
         String chatRoomId = getChatRoomId(userEmail, myEmail);
         final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
 
-        List<String> users = [
+        List<dynamic> users = [
           userName,
           userEmail,
           userID,
+          userProfileColor,
           myName,
           myEmail,
           myID,
+          myProfileColor
         ];
         Map<String, dynamic> chatRoomMap = {
           'users': users,
@@ -108,6 +121,7 @@ class _FriendProfileState extends State<FriendProfile> {
               friendEmail: userEmail,
               friendName: userName,
               initialChat: 0,
+              friendProfileColor: userProfileColor,
               myEmail: currentUser.email,
             ),
           );
@@ -134,7 +148,9 @@ class _FriendProfileState extends State<FriendProfile> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          left: 27, top: _height * 0.06, bottom: 20),
+                          left: 27,
+                          top: _height * 0.06,
+                          bottom: _height * 0.024),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text("His/Her Classes",
@@ -242,16 +258,15 @@ class _FriendProfileState extends State<FriendProfile> {
                         style: simpleTextSansStyleBold(Colors.white, 16),
                       ),
                       onPressed: () {
-                        //TODO
-                        print(snapshot.data[0].userName);
-                        print(snapshot.data[0].email);
-                        createChatRoomAndStartConversation(
-                          snapshot.data[0].userName,
-                          snapshot.data[0].email,
-                          userID,
-                          context,
-                        );
-                        print("show animation");
+                        currentUser.userID == widget.userID
+                            ? _toastInfo('This is your account')
+                            : createChatRoomAndStartConversation(
+                                snapshot.data[0].userName,
+                                snapshot.data[0].email,
+                                userID,
+                                snapshot.data[0].profileColor,
+                                context,
+                              );
                       },
                     ),
                     SizedBox(

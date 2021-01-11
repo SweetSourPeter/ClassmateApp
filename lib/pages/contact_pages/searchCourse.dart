@@ -191,6 +191,10 @@ class _SearchCourseState extends State<SearchCourse> {
                       height: 85,
                       child: DropdownButtonFormField<String>(
                         value: _selectedSemester,
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.black,
+                        ),
                         items:
                             _semesters.map<DropdownMenuItem<String>>((value) {
                           return DropdownMenuItem(
