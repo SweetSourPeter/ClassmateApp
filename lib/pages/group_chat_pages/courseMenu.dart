@@ -4,6 +4,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -339,13 +340,14 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           });
                         });
                         return FocusedMenuHolder(
-                          blurSize: 4,
+                          blurSize: 0,
+                          menuOffset: 0,
                           // blurBackgroundColor: Colors.white60,
-                          menuWidth: MediaQuery.of(context).size.width * 0.60,
+                          menuWidth: MediaQuery.of(context).size.width * 0.50,
                           menuBoxDecoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0))),
+                                  BorderRadius.all(Radius.circular(60.0))),
                           onPressed: () {
                             //press on the item
                           },
@@ -398,12 +400,55 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 trailingIcon: Icon(Icons.delete),
-                                backgroundColor: Colors.redAccent,
+                                backgroundColor: Colors.orange,
                                 onPressed: () {
-                                  var a = course[index].courseID;
-                                  print('$a');
-                                  courseProvider.removeCourse(
-                                      context, course[index].courseID);
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                'Are you sure you want to delete this course?',
+                                                style: simpleTextStyle(
+                                                    Colors.black, 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text(
+                                              'Yes',
+                                              style: simpleTextStyle(
+                                                  Colors.black87, 16),
+                                            ),
+                                            onPressed: () {
+                                              var a = course[index].courseID;
+                                              print('$a');
+                                              courseProvider.removeCourse(
+                                                  context,
+                                                  course[index].courseID);
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text(
+                                              'Cancel',
+                                              style: simpleTextStyle(
+                                                  themeOrange, 16),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }),
                           ],
                           child: GestureDetector(
@@ -443,11 +488,22 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
+                                      // BoxShadow(
+                                      //     color: Colors.black.withOpacity(0.15),
+                                      //     blurRadius: 6,
+                                      //     spreadRadius: 3,s
+                                      //     offset: Offset(4, 4))
+                                      //neumorphic light
                                       BoxShadow(
-                                          color: Colors.black.withOpacity(0.15),
-                                          blurRadius: 6,
-                                          spreadRadius: 3,
-                                          offset: Offset(4, 4))
+                                        color: Colors.white.withOpacity(0.8),
+                                        offset: Offset(-6.0, -6.0),
+                                        blurRadius: 16.0,
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        offset: Offset(6.0, 6.0),
+                                        blurRadius: 16.0,
+                                      ),
                                     ],
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(24))),
@@ -487,30 +543,42 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                             SizedBox(
                                               width: 6,
                                             ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: 18,
-                                              height: 18,
-                                              decoration: new BoxDecoration(
-                                                color: const Color(0xffFF1717),
-                                                borderRadius:
-                                                    BorderRadius.circular(32),
-                                              ),
-                                              child: Text(
-                                                listOfUnread.isNotEmpty &&
-                                                        index <=
-                                                            listOfUnread
-                                                                    .length -
-                                                                1
-                                                    ? ('+' +
-                                                        listOfUnread[index]
-                                                            .toString())
-                                                    : '+0',
-                                                style: GoogleFonts.openSans(
-                                                    fontSize: 8,
-                                                    color: Colors.white),
-                                              ),
-                                            )
+
+                                            (listOfUnread.isNotEmpty &&
+                                                    (listOfUnread[index] ??
+                                                            0) ==
+                                                        0)
+                                                ? Container()
+                                                : Container(
+                                                    alignment: Alignment.center,
+                                                    width: 18,
+                                                    height: 18,
+                                                    decoration:
+                                                        new BoxDecoration(
+                                                      color: const Color(
+                                                          0xffFF1717),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              32),
+                                                    ),
+                                                    child: Text(
+                                                      listOfUnread.isNotEmpty &&
+                                                              index <=
+                                                                  listOfUnread
+                                                                          .length -
+                                                                      1
+                                                          ? ('+' +
+                                                              listOfUnread[
+                                                                      index]
+                                                                  .toString())
+                                                          : '+0',
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                              fontSize: 8,
+                                                              color:
+                                                                  Colors.white),
+                                                    ),
+                                                  )
                                             // Text('+' + courses.userNumbers.toString() + '',
                                             //     style: TextStyle(
                                             //         color: orengeColor, fontSize: 18)),

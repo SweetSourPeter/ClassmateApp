@@ -96,14 +96,17 @@ class DatabaseMethods {
   }
 
   //---------search Course----------
-  getCourse(String term, String courseName, String section) async {
+  getCourse(
+      String term, String courseName, String section, String school) async {
     print('term is ' + term);
     print('courseName is ' + courseName);
     print('section is ' + section);
+    print('school is ' + school);
     return await FirebaseFirestore.instance
         .collection("courses")
-        .where("section", isEqualTo: section.toUpperCase())
+        .where("school", isEqualTo: school.toUpperCase())
         .where("term", isEqualTo: term.toUpperCase())
+        .where("section", isEqualTo: section.toUpperCase())
         .where(
           'myCourseName',
           isGreaterThanOrEqualTo: courseName,
@@ -115,6 +118,14 @@ class DatabaseMethods {
         .catchError((e) {
       print(e.toString());
     });
+  }
+
+  getCourseInfoByid(String courseId, String school) async {
+    return FirebaseFirestore.instance
+        .collection('courses')
+        .where("school", isEqualTo: school.toUpperCase())
+        .where('courseID', isEqualTo: courseId)
+        .get();
   }
 
   //give suggestions not used, this might increase the cost

@@ -19,6 +19,7 @@ class SearchCourse extends StatefulWidget {
 class _SearchCourseState extends State<SearchCourse> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyGroupID = GlobalKey<FormState>();
+
   TextEditingController courseIDTextEditingController =
       new TextEditingController();
   TextEditingController courseNameTextEditingController =
@@ -71,6 +72,7 @@ class _SearchCourseState extends State<SearchCourse> {
     ];
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
+
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 37),
@@ -107,11 +109,12 @@ class _SearchCourseState extends State<SearchCourse> {
               print('both unvalid');
               return;
             } else if (_formKeyGroupID.currentState.validate()) {
-              await initiateURLSearch(courseIDTextEditingController.text);
+              await initiateURLSearch(
+                  courseIDTextEditingController.text, context);
               print(searchBegain);
             } else {
               print('valid');
-              await initiateSearch(_selectedSemester);
+              await initiateSearch(_selectedSemester, context);
               print(searchBegain);
             }
             _formKey.currentState.save();
@@ -230,7 +233,7 @@ class _SearchCourseState extends State<SearchCourse> {
                             Icons.access_time,
                             color: Colors.black,
                           ),
-                          'Course Name, e.g. 111',
+                          'Course Name, e.g. CS111',
                           11,
                         ),
                         validator: (String value) {
@@ -357,12 +360,14 @@ class _SearchCourseState extends State<SearchCourse> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   bool searchBegain = false;
 
-  initiateSearch(var _selectedSemester) async {
+  initiateSearch(var _selectedSemester, BuildContext context) async {
+    final userdata = Provider.of<UserData>(context, listen: false);
     var a = _selectedSemester;
     var temp = await databaseMethods.getCourse(
       _selectedSemester.toUpperCase(),
       courseNameTextEditingController.text.toUpperCase(),
       sectionTextEditingController.text.toUpperCase(),
+      userdata.school.toUpperCase(),
     );
     print('get temp');
     // if (temp == null) return;
@@ -384,11 +389,13 @@ class _SearchCourseState extends State<SearchCourse> {
     });
   }
 
-  initiateURLSearch(String courseId) async {
+  initiateURLSearch(String courseId, BuildContext context) async {
+    final userdata = Provider.of<UserData>(context, listen: false);
     print('URL SEARCH START');
     print(courseId);
-    var temp = await databaseMethods.getCourseInfo(
+    var temp = await databaseMethods.getCourseInfoByid(
       courseId,
+      userdata.school.toUpperCase(),
     );
     setState(() {
       searchSnapshot = temp;

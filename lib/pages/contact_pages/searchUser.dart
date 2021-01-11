@@ -593,16 +593,28 @@ class SearchTile extends StatelessWidget {
       }
     }
 
+    final userdata = Provider.of<UserData>(context, listen: false);
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FriendProfile(
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: userdata,
+              ),
+              // 这个需要的话直接uncomment
+              // Provider<List<CourseInfo>>.value(
+              //   value: course,F
+              // ),
+              // final courseProvider = Provider.of<CourseProvider>(context);
+              // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+              // 不需要pass到push里面，直接复制上面这行即可
+            ],
+            child: FriendProfile(
               userID: userID, // to be modified to friend's ID
             ),
-          ),
-        );
+          );
+        }));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -612,7 +624,7 @@ class SearchTile extends StatelessWidget {
               30.0,
               userName ?? '',
               userProfileColor ?? 1.0,
-              simpleTextStyleBlack(),
+              simpleTextSansStyleBold(Colors.white, 18),
             ),
             // CircleAvatar(
             //   radius: 30.0,

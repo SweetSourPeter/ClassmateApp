@@ -120,6 +120,7 @@ class ShrinkButton extends StatefulWidget {
   final String userName;
   final TextStyle initialStyle, finalStyle;
   final UserTags userTag;
+  final UserTags matchTag;
   final double profileColor;
   ValueNotifier reset = ValueNotifier(false);
   ShrinkButton(
@@ -134,6 +135,7 @@ class ShrinkButton extends StatefulWidget {
       this.onPressed,
       this.userName,
       this.userTag,
+      this.matchTag,
       this.profileColor});
 
   _ShrinkButtonState createState() => _ShrinkButtonState();
