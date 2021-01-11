@@ -491,7 +491,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       // BoxShadow(
                                       //     color: Colors.black.withOpacity(0.15),
                                       //     blurRadius: 6,
-                                      //     spreadRadius: 3,s
+                                      //     spreadRadius: 3,
                                       //     offset: Offset(4, 4))
                                       //neumorphic light
                                       BoxShadow(
@@ -553,7 +553,11 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                                     BorderRadius.circular(32),
                                               ),
                                               child: Text(
-                                                listOfUnread.isNotEmpty && index <= listOfUnread.length - 1
+                                                listOfUnread.isNotEmpty &&
+                                                        index <=
+                                                            listOfUnread
+                                                                    .length -
+                                                                1
                                                     ? ('+' +
                                                         listOfUnread[index]
                                                             .toString())
@@ -574,8 +578,14 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                               listOfNumberOfMembers
                                                           .isNotEmpty &&
                                                       index <=
-                                                          listOfUnread.length - 1
-                                                  ? (listOfNumberOfMembers[index] > 1 ? listOfNumberOfMembers[index].toString() +
+                                                          listOfUnread.length -
+                                                              1
+                                                  ? (listOfNumberOfMembers[
+                                                              index] >
+                                                          1
+                                                      ? listOfNumberOfMembers[
+                                                                  index]
+                                                              .toString() +
                                                           ' ' +
                                                           'people'
                                                       : listOfNumberOfMembers[

@@ -6,6 +6,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpPage extends StatefulWidget {
   final PageController pageController;
@@ -39,6 +40,15 @@ class _SignUpPageState extends State<SignUpPage> {
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+  _toastInfo(String info) {
+    Fluttertoast.showToast(
+      msg: info,
+      toastLength: Toast.LENGTH_LONG,
+      timeInSecForIosWeb: 3,
+      gravity: ToastGravity.CENTER,
+    );
+  }
+
   signMeUp() {
     if (formKey.currentState.validate()) {
       setState(() {
@@ -94,10 +104,11 @@ class _SignUpPageState extends State<SignUpPage> {
         // setState(() {
         //   errorMessage = error.code;
         // });
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(error.code ?? ''),
-          duration: Duration(seconds: 3),
-        ));
+        // _scaffoldKey.currentState.showSnackBar(SnackBar(
+        //   content: Text(error.code ?? ''),
+        //   duration: Duration(seconds: 3),
+        // ));
+        _toastInfo(error.code ?? 'Unknown Error');
       });
     }
   }

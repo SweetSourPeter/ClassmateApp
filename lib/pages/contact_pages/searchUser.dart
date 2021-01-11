@@ -387,7 +387,10 @@ class _SearchUsersState extends State<SearchUsers> {
                   searchSnapshot.docs[index].data()['email'] ?? '',
               userProfileColor:
                   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                  searchSnapshot.docs[index].data()['profileColor'].toDouble() ?? 0.0,
+                  searchSnapshot.docs[index]
+                          .data()['profileColor']
+                          .toDouble() ??
+                      0.0,
             );
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
@@ -470,8 +473,8 @@ class SearchTile extends StatelessWidget {
   }
 
   // a function to create chat room
-  createChatRoomAndStartConversation(
-      String userName, String userEmail, String userID, double userProfileColor, context) {
+  createChatRoomAndStartConversation(String userName, String userEmail,
+      String userID, double userProfileColor, context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final myName = currentUser.userName;
     final myEmail = currentUser.email;

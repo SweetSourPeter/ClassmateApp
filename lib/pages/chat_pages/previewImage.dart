@@ -16,7 +16,6 @@ class PreviewImage extends StatefulWidget {
 }
 
 class _PreviewImageState extends State<PreviewImage> {
-
   _requestPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
@@ -75,7 +74,7 @@ class _PreviewImageState extends State<PreviewImage> {
               color: Colors.black,
               child: CachedNetworkImage(
                 imageUrl: widget.imageUrl,
-                height: MediaQuery.of(context).size.height-300,
+                height: MediaQuery.of(context).size.height - 300,
                 width: MediaQuery.of(context).size.width,
                 placeholder: (context, url) => new CircularProgressIndicator(),
                 errorWidget: (context, url, error) => new Icon(Icons.error),

@@ -1,5 +1,7 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
+import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
+import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,7 +43,7 @@ class _CourseDetailState extends State<CourseDetail> {
         courseTerm = value.documents[0].data()['term'];
       });
     });
-
+    print('here');
     databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
       setState(() {
         numberOfMembers = value.documents.length;
@@ -60,63 +62,104 @@ class _CourseDetailState extends State<CourseDetail> {
     super.initState();
   }
 
-  List<Widget> _renderMemberInfo(radius) {
-    return List.generate(numberOfMembers, (index) {
-      // if (index > 9) {
-      //   return GestureDetector(
-      //     child: Container(
-      //       child: Column(
-      //         children: <Widget>[
-      //           creatAddIconImage(radius),
-      //           Text(
-      //             'Invite',
-      //             style:
-      //                 GoogleFonts.montserrat(color: orengeColor, fontSize: 15),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   );
-      // }
-      final memberName = members[index][0];
-      return Container(
-        child: Column(
-          children: <Widget>[
-            CircleAvatar(
-              backgroundColor: listProfileColor[members != null ? members[index][2].toInt() : 1],
-              radius: radius,
-              child: Container(
-                child: Text(
-                  memberName.split(' ').length >= 2 ? memberName.split(' ')[0][0].toUpperCase() + memberName.split(' ')[memberName.split(' ').length-1][0].toUpperCase()
-                      : memberName[0].toUpperCase(),
-                  style: GoogleFonts.montserrat(
-                      fontSize: memberName.split(' ').length >= 2 ? 14 : 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 0),
-              child: Text(
-                members != null ? members[index][0] : '',
-                overflow: TextOverflow.ellipsis,
-                style:
-                    GoogleFonts.montserrat(color: Colors.black, fontSize: 15),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size.width;
     double gridWidth = (size - 40 - 4 * 15) / 10;
     double gridRatio = gridWidth / (gridWidth + 10);
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final courseProvider = Provider.of<CourseProvider>(context);
+    List<Widget> _renderMemberInfo(radius) {
+      return List.generate(numberOfMembers, (index) {
+        // if (index > 9) {
+        //   return GestureDetector(
+        //     child: Container(
+        //       child: Column(
+        //         children: <Widget>[
+        //           creatAddIconImage(radius),
+        //           Text(
+        //             'Invite',
+        //             style:
+        //                 GoogleFonts.montserrat(color: orengeColor, fontSize: 15),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   );
+        // }
+        if (members == null) {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: themeOrange,
+            ),
+          );
+        } else {
+          final memberName = members[index][0];
+
+          return Container(
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return MultiProvider(
+                        providers: [
+                          Provider<UserData>.value(
+                            value: currentUser,
+                          ),
+                          // 这个需要的话直接uncomment
+                          // Provider<List<CourseInfo>>.value(
+                          //   value: course,F
+                          // ),
+                          // final courseProvider = Provider.of<CourseProvider>(context);
+                          // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                          // 不需要pass到push里面，直接复制上面这行即可
+                        ],
+                        child: FriendProfile(
+                          userID: members[index]
+                              [1], // to be modified to friend's ID
+                        ),
+                      );
+                    }));
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: listProfileColor[
+                        members != null ? members[index][2].toInt() : 1],
+                    radius: radius,
+                    child: Container(
+                      child: Text(
+                        memberName.split(' ').length >= 2
+                            ? memberName.split(' ')[0][0].toUpperCase() +
+                                memberName
+                                    .split(' ')[
+                                        memberName.split(' ').length - 1][0]
+                                    .toUpperCase()
+                            : memberName[0].toUpperCase(),
+                        style: GoogleFonts.montserrat(
+                            fontSize:
+                                memberName.split(' ').length >= 2 ? 14 : 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 0),
+                  child: Text(
+                    members != null ? members[index][0] : '',
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black, fontSize: 15),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      });
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -356,21 +399,52 @@ class _CourseDetailState extends State<CourseDetail> {
                                 ),
                               ),
                               onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: currentUser,
-                                      )
-                                    ],
-                                    child: SearchGroupChat(
-                                      courseId: widget.courseId,
-                                      myEmail: widget.myEmail,
-                                      myName: widget.myName,
-                                    ),
-                                  );
-                                }));
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible:
+                                      false, // user must tap button!
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text(
+                                              'Are you sure you want to delete this course?',
+                                              style: simpleTextStyle(
+                                                  Colors.black, 16),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text(
+                                            'Yes',
+                                            style: simpleTextStyle(
+                                                Colors.black87, 16),
+                                          ),
+                                          onPressed: () {
+                                            courseProvider.removeCourse(
+                                                context, widget.courseId);
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Cancel',
+                                            style: simpleTextStyle(
+                                                themeOrange, 16),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               },
                             ),
                             // Divider(

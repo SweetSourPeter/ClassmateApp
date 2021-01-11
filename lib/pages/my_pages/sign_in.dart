@@ -6,6 +6,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignIn extends StatefulWidget {
   final PageController pageController;
@@ -29,6 +30,15 @@ TextEditingController passwordTextEditingController =
     new TextEditingController();
 String errorMessage;
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+_toastInfo(String info) {
+  Fluttertoast.showToast(
+    msg: info,
+    toastLength: Toast.LENGTH_LONG,
+    timeInSecForIosWeb: 3,
+    gravity: ToastGravity.CENTER,
+  );
+}
 
 class _SignInState extends State<SignIn> {
   signMeIn() {
@@ -73,10 +83,11 @@ class _SignInState extends State<SignIn> {
         //   default:
         //     tempError = "An undefined Error happened.";
         // }
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(error.code),
-          duration: Duration(seconds: 3),
-        ));
+        // _scaffoldKey.currentState.showSnackBar(SnackBar(
+        //   content: Text(error.code),
+        //   duration: Duration(seconds: 3),
+        // ));
+        _toastInfo(error.code ?? 'Unknown Error');
       });
     }
   }

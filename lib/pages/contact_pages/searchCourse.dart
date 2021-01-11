@@ -713,7 +713,6 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
                     ),
                   ),
           ),
-          // Spacer(),
         ],
       ),
     );

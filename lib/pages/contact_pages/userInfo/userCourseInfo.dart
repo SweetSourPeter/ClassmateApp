@@ -1,15 +1,18 @@
 import 'package:app_test/models/courseInfo.dart';
+import 'package:app_test/providers/courseProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/CourseCard.dart';
 import 'package:app_test/widgets/animatedButton.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class UserCourseInfo extends StatelessWidget {
   final int index;
   final List<CourseInfo> courseData;
   UserCourseInfo(this.index, this.courseData);
+
   List<String> fileLocation = [
     'assets/icon/courseIcon1.png',
     'assets/icon/courseIcon2.png',
@@ -20,6 +23,7 @@ class UserCourseInfo extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    final courseProvider = Provider.of<CourseProvider>(context);
     return Container(
       height: 120,
       width: 200,
@@ -27,6 +31,19 @@ class UserCourseInfo extends StatelessWidget {
       decoration: BoxDecoration(
         color: riceColor,
         borderRadius: BorderRadius.circular(15.0),
+        boxShadow: [
+          // BoxShadow(
+          //     color: Colors.black.withOpacity(0.15),
+          //     blurRadius: 6,
+          //     spreadRadius: 3,s
+          //     offset: Offset(4, 4))
+          //neumorphic light
+          BoxShadow(
+              color: Color(0xFFE3E3E3),
+              blurRadius: 6,
+              spreadRadius: 3,
+              offset: Offset(3, 5))
+        ],
       ),
       child: Container(
         child: Stack(children: <Widget>[
@@ -72,6 +89,17 @@ class UserCourseInfo extends StatelessWidget {
                       duration: Duration(milliseconds: 100),
                       onPressed: () {
                         //show dialog
+                        courseProvider.changeTerm(courseData[index].term);
+                        courseProvider.changeCourseCollege(
+                            courseData[index].myCourseCollge);
+                        courseProvider.changeCourseDepartment(
+                            courseData[index].department);
+                        courseProvider
+                            .changeCourseName(courseData[index].myCourseName);
+                        courseProvider
+                            .changeCourseSection(courseData[index].section);
+                        courseProvider.saveCourseToUser(
+                            context, courseData[index].courseID);
                         print("show animation");
                       },
                     )
