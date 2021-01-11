@@ -443,11 +443,22 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
+                                      // BoxShadow(
+                                      //     color: Colors.black.withOpacity(0.15),
+                                      //     blurRadius: 6,
+                                      //     spreadRadius: 3,
+                                      //     offset: Offset(4, 4))
+                                      //neumorphic light
                                       BoxShadow(
-                                          color: Colors.black.withOpacity(0.15),
-                                          blurRadius: 6,
-                                          spreadRadius: 3,
-                                          offset: Offset(4, 4))
+                                        color: Colors.white.withOpacity(0.8),
+                                        offset: Offset(-6.0, -6.0),
+                                        blurRadius: 16.0,
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        offset: Offset(6.0, 6.0),
+                                        blurRadius: 16.0,
+                                      ),
                                     ],
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(24))),
@@ -487,30 +498,42 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                             SizedBox(
                                               width: 6,
                                             ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: 18,
-                                              height: 18,
-                                              decoration: new BoxDecoration(
-                                                color: const Color(0xffFF1717),
-                                                borderRadius:
-                                                    BorderRadius.circular(32),
-                                              ),
-                                              child: Text(
-                                                listOfUnread.isNotEmpty &&
-                                                        index <=
-                                                            listOfUnread
-                                                                    .length -
-                                                                1
-                                                    ? ('+' +
-                                                        listOfUnread[index]
-                                                            .toString())
-                                                    : '+0',
-                                                style: GoogleFonts.openSans(
-                                                    fontSize: 8,
-                                                    color: Colors.white),
-                                              ),
-                                            )
+
+                                            (listOfUnread.isNotEmpty &&
+                                                    (listOfUnread[index] ??
+                                                            0) ==
+                                                        0)
+                                                ? Container()
+                                                : Container(
+                                                    alignment: Alignment.center,
+                                                    width: 18,
+                                                    height: 18,
+                                                    decoration:
+                                                        new BoxDecoration(
+                                                      color: const Color(
+                                                          0xffFF1717),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              32),
+                                                    ),
+                                                    child: Text(
+                                                      listOfUnread.isNotEmpty &&
+                                                              index <=
+                                                                  listOfUnread
+                                                                          .length -
+                                                                      1
+                                                          ? ('+' +
+                                                              listOfUnread[
+                                                                      index]
+                                                                  .toString())
+                                                          : '+0',
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                              fontSize: 8,
+                                                              color:
+                                                                  Colors.white),
+                                                    ),
+                                                  )
                                             // Text('+' + courses.userNumbers.toString() + '',
                                             //     style: TextStyle(
                                             //         color: orengeColor, fontSize: 18)),
