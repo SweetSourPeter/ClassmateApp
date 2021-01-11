@@ -33,26 +33,29 @@ class _SearchCourseState extends State<SearchCourse> {
   Widget build(BuildContext context) {
     final course = Provider.of<List<CourseInfo>>(context);
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        resizeToAvoidBottomPadding: true,
-        appBar: AppBar(
-          elevation: 0.0,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Scaffold(
           backgroundColor: Colors.white,
-          leading: Container(
-            padding: EdgeInsets.only(left: kDefaultPadding),
-            child: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              color: themeOrange,
-              onPressed: () {
-                //return to previous page;
-                Navigator.pop(context);
-              },
+          resizeToAvoidBottomPadding: true,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            leading: Container(
+              padding: EdgeInsets.only(left: kDefaultPadding),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                color: themeOrange,
+                onPressed: () {
+                  //return to previous page;
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ),
+          body: _stateBody(context, searchSnapshot, course),
         ),
-        body: _stateBody(context, searchSnapshot, course),
       ),
     );
   }
