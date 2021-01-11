@@ -115,10 +115,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                       Padding(
                         padding: const EdgeInsets.only(left: 25, right: 25.0),
                         child: GestureDetector(
-                          onTap: () {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            clearSearchTextInput(currentFocus);
-                          },
+                          onTap: () => Navigator.of(context).pop(),
                           child: Text(
                             'Cancel',
                             style: GoogleFonts.openSans(

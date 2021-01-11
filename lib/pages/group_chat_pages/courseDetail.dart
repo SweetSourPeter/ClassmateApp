@@ -49,9 +49,9 @@ class _CourseDetailState extends State<CourseDetail> {
     });
 
     databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-      if (this.mounted) {
-        return;
-      }
+      // if (this.mounted) {
+      //   return;
+      // }
       setState(() {
         members = value;
       });

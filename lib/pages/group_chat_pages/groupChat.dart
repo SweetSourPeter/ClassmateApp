@@ -672,7 +672,7 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: LinkWell(message,
+                              child: SelectableText(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
@@ -726,7 +726,7 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: LinkWell(message,
+                              child: SelectableText(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,

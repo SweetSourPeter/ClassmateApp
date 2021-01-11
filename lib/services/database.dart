@@ -364,10 +364,10 @@ class DatabaseMethods {
         .snapshots();
   }
 
-  getChatRooms(String userName) async {
+  getChatRooms(String userEmail) async {
     return FirebaseFirestore.instance
         .collection('chatroom')
-        .where('users', arrayContains: userName)
+        .where('users', arrayContains: userEmail)
         .snapshots();
   }
 
@@ -483,6 +483,14 @@ class DatabaseMethods {
     return listOfUserId;
   }
 
+  getUserInfoInChatRoom(String chatRoomId) async {
+    return FirebaseFirestore.instance
+        .collection('chatroom')
+        .doc(chatRoomId)
+        .collection('users')
+        .get();
+  }
+
   addOneToUnreadGroupChatNumber(String courseId, String userId) async {
     int unread = 0;
     await getUnreadGroupChatNumber(courseId, userId).then((value) {
@@ -507,6 +515,33 @@ class DatabaseMethods {
     for(var i=0; i < listOfUserId.length; i++) {
       await addOneToUnreadGroupChatNumber(courseId, listOfUserId[i]);
     }
+  }
+
+  addUserToChatRoom(String chatRoomId, String myId, String myName, String myEmail, double myProfileColor, String friendId, String friendName,
+      String friendEmail, double profileColor) async {
+    await FirebaseFirestore.instance
+        .collection('chatroom')
+        .doc(chatRoomId)
+        .collection('users')
+        .doc(myId)
+        .set({
+      'userID': myId,
+      'username': myName,
+      'email': myEmail,
+      'profileColor': myProfileColor
+    });
+
+    await FirebaseFirestore.instance
+        .collection('chatroom')
+        .doc(chatRoomId)
+        .collection('users')
+        .doc(friendId)
+        .set({
+      'userID': friendId,
+      'username': friendName,
+      'email': friendEmail,
+      'profileColor': profileColor
+    });
   }
 
   setUnreadGroupChatNumberToZero(String courseId, String userId) async {

@@ -493,72 +493,74 @@ class _SearchCourseState extends State<SearchCourse> {
               //     topRight: Radius.circular(30.0),
               //   ),
               // ),
-              child: Column(
-                children: [
-                  topLineBar(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Stack(alignment: Alignment.center, children: <Widget>[
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    topLineBar(),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Stack(alignment: Alignment.center, children: <Widget>[
+                      Container(
+                          height: 140,
+                          width: _width - 40,
+                          child: FittedBox(
+                            child: Image.asset('assets/icon/sorryBox.png'),
+                            fit: BoxFit.fill,
+                          )),
+                      Text(
+                        "Sorry,\nwe didn\'t find the course",
+                        style: largeTitleTextStyle(Colors.black, 26),
+                      ),
+                    ]),
                     Container(
                         height: 140,
-                        width: _width - 40,
+                        width: 140,
                         child: FittedBox(
-                          child: Image.asset('assets/icon/sorryBox.png'),
+                          child: Image.asset('assets/icon/failToFind.png'),
                           fit: BoxFit.fill,
                         )),
-                    Text(
-                      "Sorry,\nwe didn\'t find the course",
-                      style: largeTitleTextStyle(Colors.black, 26),
-                    ),
-                  ]),
-                  Container(
-                      height: 140,
-                      width: 140,
-                      child: FittedBox(
-                        child: Image.asset('assets/icon/failToFind.png'),
-                        fit: BoxFit.fill,
-                      )),
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Check the info. you entered, or\n',
-                          style: GoogleFonts.openSans(
-                            textStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        TextSpan(
-                            text: 'Create a course group ',
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Check the info. you entered, or\n',
                             style: GoogleFonts.openSans(
                               textStyle: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: themeOrange,
+                                  color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500),
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return Provider<UserData>.value(
-                                        value: userdata,
-                                        child: AddCourse(),
-                                      );
-                                    },
-                                  ),
-                                );
-                              }),
-                      ],
+                          ),
+                          TextSpan(
+                              text: 'Create a course group ',
+                              style: GoogleFonts.openSans(
+                                textStyle: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: themeOrange,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return Provider<UserData>.value(
+                                          value: userdata,
+                                          child: AddCourse(),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

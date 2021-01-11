@@ -472,11 +472,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                                     BorderRadius.circular(32),
                                               ),
                                               child: Text(
-                                                listOfUnread.isNotEmpty &&
-                                                        index <=
-                                                            listOfUnread
-                                                                    .length -
-                                                                1
+                                                listOfUnread.isNotEmpty && index <= listOfUnread.length - 1
                                                     ? ('+' +
                                                         listOfUnread[index]
                                                             .toString())
@@ -497,14 +493,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                               listOfNumberOfMembers
                                                           .isNotEmpty &&
                                                       index <=
-                                                          listOfUnread.length -
-                                                              1
-                                                  ? (listOfNumberOfMembers[
-                                                              index] >
-                                                          1
-                                                      ? listOfNumberOfMembers[
-                                                                  index]
-                                                              .toString() +
+                                                          listOfUnread.length - 1
+                                                  ? (listOfNumberOfMembers[index] > 1 ? listOfNumberOfMembers[index].toString() +
                                                           ' ' +
                                                           'people'
                                                       : listOfNumberOfMembers[
