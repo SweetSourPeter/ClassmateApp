@@ -55,7 +55,7 @@ dependencies:
   http: ^0.12.2
   flutter_spinkit: "^4.0.0"
   url_launcher: ^5.7.10
-  flutter_launcher_icons: ^0.8.1
+  flutter_launcher_icons: ^0.8.0
   linkwell: ^0.1.9 #url detect in text
   clipboard: ^0.1.2+8 #clipboard manager copy
   image_gallery_saver: ^1.6.7

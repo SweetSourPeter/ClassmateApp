@@ -543,30 +543,39 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                             SizedBox(
                                               width: 6,
                                             ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: 18,
-                                              height: 18,
-                                              decoration: new BoxDecoration(
-                                                color: const Color(0xffFF1717),
-                                                borderRadius:
-                                                    BorderRadius.circular(32),
-                                              ),
-                                              child: Text(
-                                                listOfUnread.isNotEmpty &&
-                                                        index <=
-                                                            listOfUnread
-                                                                    .length -
-                                                                1
-                                                    ? ('+' +
-                                                        listOfUnread[index]
-                                                            .toString())
-                                                    : '+0',
-                                                style: GoogleFonts.openSans(
-                                                    fontSize: 8,
-                                                    color: Colors.white),
-                                              ),
-                                            )
+                                            (listOfUnread.isNotEmpty &&
+                                                    listOfUnread[index] == 0)
+                                                ? Container()
+                                                : Container(
+                                                    alignment: Alignment.center,
+                                                    width: 18,
+                                                    height: 18,
+                                                    decoration:
+                                                        new BoxDecoration(
+                                                      color: const Color(
+                                                          0xffFF1717),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              32),
+                                                    ),
+                                                    child: Text(
+                                                      listOfUnread.isNotEmpty &&
+                                                              index <=
+                                                                  listOfUnread
+                                                                          .length -
+                                                                      1
+                                                          ? ('+' +
+                                                              listOfUnread[
+                                                                      index]
+                                                                  .toString())
+                                                          : '+0',
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                              fontSize: 8,
+                                                              color:
+                                                                  Colors.white),
+                                                    ),
+                                                  )
                                             // Text('+' + courses.userNumbers.toString() + '',
                                             //     style: TextStyle(
                                             //         color: orengeColor, fontSize: 18)),
