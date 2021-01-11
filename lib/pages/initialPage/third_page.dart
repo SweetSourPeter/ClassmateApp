@@ -174,7 +174,7 @@ class _ThirdPageState extends State<ThirdPage>
                       print('color num saved');
                     },
                     child: Text(
-                      'Continue',
+                      widget.isEdit ? 'Save' : 'Continue',
                       style: simpleTextSansStyleBold(
                           listColors[_currentindex.toInt()].colors[1], 16),
                     ),

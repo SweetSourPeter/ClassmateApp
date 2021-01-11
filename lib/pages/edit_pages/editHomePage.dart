@@ -25,11 +25,11 @@ class EditHomePage extends StatefulWidget {
 class _EditHomePageState extends State<EditHomePage> {
   AuthMethods authMethods = new AuthMethods();
 
-  String nickName;
+  UserData currntUsr;
   @override
   void initState() {
     super.initState();
-    nickName = 'loading';
+    currntUsr = null;
   }
 
   @override
@@ -42,7 +42,7 @@ class _EditHomePageState extends State<EditHomePage> {
 
     databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
       setState(() {
-        nickName = value.userName;
+        currntUsr = value;
       });
     });
 
@@ -91,7 +91,7 @@ class _EditHomePageState extends State<EditHomePage> {
                           ),
                           ButtonLink(
                             text: "Name",
-                            editText: nickName,
+                            editText: currntUsr.userName,
                             iconData: Icons.edit,
                             textSize: 14,
                             height: (menuContainerHeight) / 8,
@@ -100,7 +100,7 @@ class _EditHomePageState extends State<EditHomePage> {
                               showBottomPopSheet(
                                   context,
                                   EditNameModel(
-                                      userName: userdata.userName,
+                                      userName: currntUsr.userName,
                                       userId: userdata.userID));
                             },
                           ),
@@ -120,10 +120,11 @@ class _EditHomePageState extends State<EditHomePage> {
                               showBottomPopSheet(
                                   context,
                                   TagSelecting(
-                                      buttonColor: userdata.profileColor == null
+                                      buttonColor: currntUsr.profileColor ==
+                                              null
                                           ? listProfileColor[0]
                                           : listProfileColor[
-                                              userdata.profileColor.toInt()],
+                                              currntUsr.profileColor.toInt()],
                                       pageController:
                                           PageController(initialPage: 0),
                                       isEdit: true));
@@ -141,17 +142,17 @@ class _EditHomePageState extends State<EditHomePage> {
                             textSize: 14,
                             height: (menuContainerHeight) / 8,
                             isAvatar: true,
-                            user: userdata,
+                            user: currntUsr,
                             isEdit: true,
                             onTap: () {
                               showBottomPopSheet(
                                 context,
                                 ThirdPage(
                                     // buttonColor: Colors.amber,
-                                    userName: userdata.userName,
-                                    initialIndex: userdata.profileColor == null
+                                    userName: currntUsr.userName,
+                                    initialIndex: currntUsr.profileColor == null
                                         ? 0
-                                        : userdata.profileColor.toInt(),
+                                        : currntUsr.profileColor.toInt(),
                                     pageController:
                                         PageController(initialPage: 3),
                                     isEdit: true,
