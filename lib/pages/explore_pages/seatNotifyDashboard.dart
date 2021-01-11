@@ -91,6 +91,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                                   itemBuilder: (context, index) {
                                     return FocusedMenuHolder(
                                       blurSize: 4,
+                                      menuOffset: 8,
                                       menuItemExtent: 45,
                                       menuWidth:
                                           MediaQuery.of(context).size.width *

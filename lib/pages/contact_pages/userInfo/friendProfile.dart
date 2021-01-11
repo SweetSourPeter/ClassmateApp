@@ -2,6 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
+import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/pages/contact_pages/userInfo/userCourseInfo.dart';
 import 'package:app_test/services/database.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -10,6 +11,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'basicInfo.dart';
 
 class FriendProfile extends StatefulWidget {
@@ -45,6 +47,74 @@ class _FriendProfileState extends State<FriendProfile> {
     Stream<List<CourseInfo>> courseData = databaseMethods.getMyCourses(userID);
     Future<UserTags> userTag = databaseMethods.getAllTage(userID);
     Future<UserData> userData = databaseMethods.getUserDetailsByID(userID);
+    final currentUser = Provider.of<UserData>(context, listen: false);
+
+    // a helper function for createChatRoomAndStartConversation()
+    getChatRoomId(String a, String b) {
+      if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+        return '$b\_$a';
+      } else {
+        return '$a\_$b';
+      }
+    }
+
+    createChatRoomAndStartConversation(
+        String userName, String userEmail, String userID, context) {
+      // final currentUser = Provider.of<UserData>(context, listen: false);
+      final myName = currentUser.userName;
+      final myEmail = currentUser.email;
+      final myID = currentUser.userID;
+      if (userEmail != myEmail) {
+        String chatRoomId = getChatRoomId(userEmail, myEmail);
+        final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+
+        List<String> users = [
+          userName,
+          userEmail,
+          userID,
+          myName,
+          myEmail,
+          myID,
+        ];
+        Map<String, dynamic> chatRoomMap = {
+          'users': users,
+          'chatRoomId': chatRoomId,
+          'latestMessage': ('Hi! My name is ' + myName + '. Nice to meet you!'),
+          'lastMessageTime': lastMessageTime,
+          (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
+          (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
+        };
+
+        databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
+        Map<String, dynamic> messageMap = {
+          'message': 'Hi! My name is ' + myName + '. Nice to meet you!',
+          'messageType': 'text',
+          'sendBy': myEmail,
+          'time': lastMessageTime,
+        };
+
+        databaseMethods.addChatMessages(chatRoomId, messageMap);
+
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: currentUser,
+              )
+            ],
+            child: ChatScreen(
+              chatRoomId: chatRoomId,
+              friendEmail: userEmail,
+              friendName: userName,
+              initialChat: 0,
+              myEmail: currentUser.email,
+            ),
+          );
+        }));
+      } else {
+        print('This is your account!');
+      }
+    }
 
     return SafeArea(
       child: FutureBuilder(
@@ -105,7 +175,7 @@ class _FriendProfileState extends State<FriendProfile> {
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:
                             print('connecting');
-                            return CircularProgressIndicator();
+                            return Center(child: CircularProgressIndicator());
                           default:
                             return !snapshot.hasData
                                 ? Center(
@@ -167,11 +237,19 @@ class _FriendProfileState extends State<FriendProfile> {
                         colors: [themeOrange, themeOrange],
                       ),
                       child: AutoSizeText(
-                        "MESSAGE",
+                        "Message",
                         style: simpleTextSansStyleBold(Colors.white, 16),
                       ),
                       onPressed: () {
-                        //show dialog
+                        //TODO
+                        print(snapshot.data[0].userName);
+                        print(snapshot.data[0].email);
+                        createChatRoomAndStartConversation(
+                          snapshot.data[0].userName,
+                          snapshot.data[0].email,
+                          userID,
+                          context,
+                        );
                         print("show animation");
                       },
                     ),
@@ -182,7 +260,7 @@ class _FriendProfileState extends State<FriendProfile> {
                 ),
               );
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
           }),
     );

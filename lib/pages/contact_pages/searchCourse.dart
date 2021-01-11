@@ -230,7 +230,7 @@ class _SearchCourseState extends State<SearchCourse> {
                             Icons.access_time,
                             color: Colors.black,
                           ),
-                          'Course Name, e.g. 111',
+                          'Course Name, e.g. CS111',
                           11,
                         ),
                         validator: (String value) {

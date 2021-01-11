@@ -600,6 +600,7 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
     return Column(
       children: [
         displayWeek
@@ -702,15 +703,27 @@ class MessageTile extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FriendProfile(
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,F
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: FriendProfile(
                                   userID:
                                       senderID, // to be modified to friend's ID
                                 ),
-                              ),
-                            );
+                              );
+                            }));
                           },
                           child: Text(
                             senderName ?? '',
@@ -786,6 +799,7 @@ class ImageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
     return Column(
       children: [
         displayWeek
@@ -842,15 +856,27 @@ class ImageTile extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FriendProfile(
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,F
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: FriendProfile(
                                   userID:
                                       senderID, // to be modified to friend's ID
                                 ),
-                              ),
-                            );
+                              );
+                            }));
                           },
                           child: Text(
                             senderName,

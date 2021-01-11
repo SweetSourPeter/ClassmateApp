@@ -200,8 +200,19 @@ Padding topLineBar() {
 }
 
 // used to create user image
+String calculateUserName(String name) {
+  var splitString = name.split(" ");
+  if (splitString.length >= 2) {
+    return (splitString[0][0] + splitString[1][0]);
+  } else {
+    return (splitString[0][0]);
+  }
+}
 
 Container createUserImage(double radius, UserData userdata, TextStyle style) {
+  print('name:=======');
+  var string = "Hello world!";
+  print(string.split(" "));
   return Container(
     decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -214,7 +225,7 @@ Container createUserImage(double radius, UserData userdata, TextStyle style) {
       child: Container(
         child: (userdata.userName != null)
             ? Text(
-                userdata.userName[0].toUpperCase(),
+                calculateUserName(userdata.userName).toUpperCase(),
                 style: style,
               )
             : Text(
@@ -252,7 +263,7 @@ Container creatUserImageWithString(
       child: Container(
         child: (userName != null)
             ? Text(
-                userName[0].toUpperCase(),
+                calculateUserName(userName).toUpperCase(),
                 style: style,
               )
             : Text(
