@@ -56,22 +56,30 @@ class _SearchUsersState extends State<SearchUsers> {
     print(user.userName);
     FocusScopeNode currentFocus = FocusScope.of(context);
 
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          // showCancel = true;
-        });
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-      onPanUpdate: (details) {
-        if (details.delta.dx > 4) {
-          Navigator.pop(context);
-        }
-      },
-      child: SafeArea(child: Scaffold(body: buildContainerBody(currentFocus))),
-    );
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          toolbarHeight: 0,
+          backgroundColor: themeOrange,
+          elevation: 0,
+        ),
+        body: GestureDetector(
+          onTap: () {
+            setState(() {
+              // showCancel = true;
+            });
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          onPanUpdate: (details) {
+            if (details.delta.dx > 4) {
+              Navigator.pop(context);
+            }
+          },
+          child:
+              SafeArea(child: Scaffold(body: buildContainerBody(currentFocus))),
+        ));
   }
 
   Container buildContainerBody(FocusScopeNode currentFocus) {

@@ -246,23 +246,25 @@ class _TagSelectingState extends State<TagSelecting> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     onPressed: () {
-                      if (allTags.length >= 5) {
+                      if (widget.isEdit) {
                         userTagProvider.addTagsToContact(context);
-
-                        widget.isEdit
-                            ? Navigator.pop(context)
-                            : widget.pageController.animateToPage(3,
-                                duration: Duration(milliseconds: 800),
-                                curve: Curves.easeInCubic);
+                        Navigator.pop(context);
+                      } else if (allTags.length >= 5) {
+                        userTagProvider.addTagsToContact(context);
+                        widget.pageController.animateToPage(3,
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.easeInCubic);
                       } else {
                         // selectedIndex++;
                         // changeCategory(selectedIndex);
                       }
                     },
                     child: AutoSizeText(
-                      allTags.length >= 5
-                          ? 'Complete'
-                          : '${allTags.length.toString()} / 5',
+                      widget.isEdit
+                          ? 'Save'
+                          : allTags.length >= 5
+                              ? 'Complete'
+                              : '${allTags.length.toString()} / 5',
                       style: simpleTextSansStyleBold(
                           (allTags.length >= 5) ? themeOrange : Colors.white,
                           16),

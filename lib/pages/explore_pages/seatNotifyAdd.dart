@@ -120,7 +120,9 @@ class _SeatsNotificationState extends State<SeatsNotification> {
       );
     }
 
-    return SafeArea(
+    return Scaffold(
+      backgroundColor: Colors.white,
+        body: SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -357,6 +359,6 @@ class _SeatsNotificationState extends State<SeatsNotification> {
                 ),
               ),
       ),
-    );
+    ));
   }
 }
