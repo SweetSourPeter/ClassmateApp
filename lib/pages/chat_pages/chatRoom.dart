@@ -1,3 +1,4 @@
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
@@ -22,6 +23,7 @@ class _ChatRoomState extends State<ChatRoom> {
   String friendName;
   String friendEmail;
   String friendID;
+  double friendProfileColor;
   String latestMessage;
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -40,13 +42,15 @@ class _ChatRoomState extends State<ChatRoom> {
                       snapshot.data.documents[index].data()['users'];
 
                   if (userList[1] == widget.myEmail) {
-                    friendName = userList[3];
-                    friendEmail = userList[4];
-                    friendID = userList[5];
+                    friendName = userList[4];
+                    friendEmail = userList[5];
+                    friendID = userList[6];
+                    friendProfileColor = userList[7];
                   } else {
                     friendName = userList[0];
                     friendEmail = userList[1];
                     friendID = userList[2];
+                    friendProfileColor = userList[3];
                   }
 
                   latestMessage =
@@ -73,6 +77,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             .myEmail
                             .substring(0, widget.myEmail.indexOf('@')) +
                         'unread'],
+                    friendProfileColor: friendProfileColor
                   );
                 })
             : Container();
@@ -170,6 +175,7 @@ class ChatRoomsTile extends StatelessWidget {
   final String lastMessageTime;
   final String friendEmail;
   final int unreadNumber;
+  final double friendProfileColor;
 
   ChatRoomsTile(
       {this.userName,
@@ -179,7 +185,8 @@ class ChatRoomsTile extends StatelessWidget {
       this.friendID,
       this.lastMessageTime,
       this.friendEmail,
-      this.unreadNumber});
+      this.unreadNumber,
+      this.friendProfileColor});
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +210,7 @@ class ChatRoomsTile extends StatelessWidget {
               initialChat: 0,
               myEmail: currentUser.email,
               friendID: friendID,
+              friendProfileColor: friendProfileColor
             ),
           );
         }));
@@ -232,14 +240,15 @@ class ChatRoomsTile extends StatelessWidget {
                     child: Stack(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Color(0xffFF7E40),
+                          backgroundColor: listProfileColor[friendProfileColor.toInt()],
                           radius: sidebarSize / 10,
                           child: Container(
                             child: Text(
                               // 单个字22，双子18
-                              friendName[0].toUpperCase(),
+                              friendName.split(' ').length >= 2 ? friendName.split(' ')[0][0].toUpperCase() + friendName.split(' ')[friendName.split(' ').length-1][0].toUpperCase()
+                              : friendName[0].toUpperCase(),
                               style: GoogleFonts.montserrat(
-                                  fontSize: 22,
+                                  fontSize: friendName.split(' ').length >= 2 ? 19 : 22,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),

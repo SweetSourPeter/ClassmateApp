@@ -379,7 +379,7 @@ class _SearchUsersState extends State<SearchUsers> {
                   searchSnapshot.docs[index].data()['email'] ?? '',
               userProfileColor:
                   // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                  searchSnapshot.docs[index].data()['profileColor'] ?? 0.0,
+                  searchSnapshot.docs[index].data()['profileColor'].toDouble() ?? 0.0,
             );
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
@@ -394,7 +394,7 @@ class _SearchUsersState extends State<SearchUsers> {
             searchURLsnapshot.data()['email'] ?? '',
         userProfileColor:
             // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-            searchURLsnapshot.data()['profileColor'] ?? 0.0,
+            searchURLsnapshot.data()['profileColor'].toDouble() ?? 0.0,
       );
     } else if (pasteValue.isNotEmpty &&
         !pasteValue.startsWith('https://na-cc.com/')) {
@@ -452,23 +452,36 @@ class SearchTile extends StatelessWidget {
       this.userEmail,
       this.userProfileColor});
 
+  // a helper function for createChatRoomAndStartConversation()
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
+  // a function to create chat room
   createChatRoomAndStartConversation(
-      String userName, String userEmail, String userID, context) {
+      String userName, String userEmail, String userID, double userProfileColor, context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final myName = currentUser.userName;
     final myEmail = currentUser.email;
     final myID = currentUser.userID;
+    final myProfileColor = currentUser.profileColor;
     if (userEmail != myEmail) {
       String chatRoomId = getChatRoomId(userEmail, myEmail);
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
 
-      List<String> users = [
+      List<dynamic> users = [
         userName,
         userEmail,
         userID,
+        userProfileColor,
         myName,
         myEmail,
         myID,
+        myProfileColor
       ];
       Map<String, dynamic> chatRoomMap = {
         'users': users,
@@ -480,6 +493,7 @@ class SearchTile extends StatelessWidget {
       };
 
       databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
+
       Map<String, dynamic> messageMap = {
         'message': 'Hi! My name is ' + myName + '. Nice to meet you!',
         'messageType': 'text',
@@ -497,6 +511,7 @@ class SearchTile extends StatelessWidget {
             )
           ],
           child: ChatScreen(
+            friendID: userID,
             chatRoomId: chatRoomId,
             friendEmail: userEmail,
             friendName: userName,
@@ -510,80 +525,80 @@ class SearchTile extends StatelessWidget {
     }
   }
 
-  // a helper function for createChatRoomAndStartConversation()
-  getChatRoomId(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return '$b\_$a';
-    } else {
-      return '$a\_$b';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final contactProvider = Provider.of<ContactProvider>(context);
-    DatabaseMethods databaseMethods = new DatabaseMethods();
 
-    // a helper function for createChatRoomAndStartConversation()
-    getChatRoomId(String a, String b) {
-      if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-        return '$b\_$a';
-      } else {
-        return '$a\_$b';
-      }
-    }
-
-    // a function to create chat room
-    createChatRoomAndStartConversation(
-        String userName, String userEmail, String userID) {
-      final currentUser = Provider.of<UserData>(context, listen: false);
-      final myName = currentUser.userName;
-      final myEmail = currentUser.email;
-      final myID = currentUser.userID;
-      if (userEmail != myEmail) {
-        String chatRoomId = getChatRoomId(userEmail, myEmail);
-
-        List<String> users = [
-          userName,
-          userEmail,
-          userID,
-          myName,
-          myEmail,
-          myID,
-        ];
-        print('users map is:   ');
-        print(users);
-        Map<String, dynamic> chatRoomMap = {
-          'users': users,
-          'chatRoomId': chatRoomId,
-          'latestMessage': ('Say hi to ' + myName + '!'),
-          'lastMessageTime': DateTime.now().millisecondsSinceEpoch,
-          (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
-          (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
-        };
-
-        databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return MultiProvider(
-            providers: [
-              Provider<UserData>.value(
-                value: currentUser,
-              )
-            ],
-            child: ChatScreen(
-              friendID: userID,
-              chatRoomId: chatRoomId,
-              friendEmail: userEmail,
-              friendName: userName,
-              initialChat: 0,
-              myEmail: currentUser.email,
-            ),
-          );
-        }));
-      } else {
-        print('This is your account!');
-      }
-    }
+    // // a helper function for createChatRoomAndStartConversation()
+    // getChatRoomId(String a, String b) {
+    //   if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+    //     return '$b\_$a';
+    //   } else {
+    //     return '$a\_$b';
+    //   }
+    // }
+    //
+    // // a function to create chat room
+    // createChatRoomAndStartConversation(
+    //     String userName, String userEmail, String userID, double userProfileColor) {
+    //   final currentUser = Provider.of<UserData>(context, listen: false);
+    //   final myName = currentUser.userName;
+    //   final myEmail = currentUser.email;
+    //   final myID = currentUser.userID;
+    //   final myProfileColor = currentUser.profileColor;
+    //   if (userEmail != myEmail) {
+    //     String chatRoomId = getChatRoomId(userEmail, myEmail);
+    //     final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+    //
+    //     List<String> users = [
+    //       userName,
+    //       userEmail,
+    //       userID,
+    //       myName,
+    //       myEmail,
+    //       myID,
+    //     ];
+    //     Map<String, dynamic> chatRoomMap = {
+    //       'users': users,
+    //       'chatRoomId': chatRoomId,
+    //       'latestMessage': ('Hi! My name is ' + myName + '. Nice to meet you!'),
+    //       'lastMessageTime': lastMessageTime,
+    //       (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
+    //       (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
+    //     };
+    //
+    //     databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
+    //
+    //     Map<String, dynamic> messageMap = {
+    //       'message': 'Hi! My name is ' + myName + '. Nice to meet you!',
+    //       'messageType': 'text',
+    //       'sendBy': myEmail,
+    //       'time': lastMessageTime,
+    //     };
+    //
+    //     databaseMethods.addChatMessages(chatRoomId, messageMap);
+    //
+    //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //       return MultiProvider(
+    //         providers: [
+    //           Provider<UserData>.value(
+    //             value: currentUser,
+    //           )
+    //         ],
+    //         child: ChatScreen(
+    //           friendID: userID,
+    //           chatRoomId: chatRoomId,
+    //           friendEmail: userEmail,
+    //           friendName: userName,
+    //           initialChat: 0,
+    //           myEmail: currentUser.email,
+    //         ),
+    //       );
+    //     }));
+    //   } else {
+    //     print('This is your account!');
+    //   }
+    // }
 
     final userdata = Provider.of<UserData>(context, listen: false);
     return GestureDetector(
@@ -675,7 +690,7 @@ class SearchTile extends StatelessWidget {
                   contactProvider.changeUserImageUrl('imageURL');
                   contactProvider.addUserToContact(context);
                   createChatRoomAndStartConversation(
-                      userName, userEmail, userID);
+                      userName, userEmail, userID, userProfileColor, context);
                 },
                 child: AutoSizeText(
                   'Message',

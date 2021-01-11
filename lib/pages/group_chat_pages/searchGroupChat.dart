@@ -194,6 +194,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                       messageTime: DateTime.fromMillisecondsSinceEpoch(
                               snapshot.data.documents[i].data()['time'])
                           .toString(),
+                      profileColor: snapshot.data.documents[i].data()['profileColor']
                     ));
                   }
                 }
@@ -217,7 +218,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
       userData,
       String searchWord,
       int messageIndex,
-      String messageTime}) {
+      String messageTime,
+      double profileColor}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -253,13 +255,14 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: Color(0xffFF7E40),
+                        backgroundColor: listProfileColor[profileColor.toInt()],
                         radius: 19.5,
                         child: Container(
                           child: Text(
-                            userName[0].toUpperCase(),
+                            userName.split(' ').length >= 2 ? userName.split(' ')[0][0].toUpperCase() + userName.split(' ')[userName.split(' ').length-1][0].toUpperCase()
+                                : userName[0].toUpperCase(),
                             style: GoogleFonts.montserrat(
-                                fontSize: 12,
+                                fontSize: userName.split(' ').length >= 2 ? 14 : 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),

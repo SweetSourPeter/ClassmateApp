@@ -1,4 +1,5 @@
 // import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
@@ -26,6 +27,7 @@ class ChatScreen extends StatefulWidget {
   final String friendID;
   final double initialChat;
   final String myEmail;
+  final double friendProfileColor;
 
   ChatScreen(
       {this.chatRoomId,
@@ -33,7 +35,8 @@ class ChatScreen extends StatefulWidget {
       this.friendEmail,
       this.friendID,
       this.initialChat,
-      this.myEmail});
+      this.myEmail,
+      this.friendProfileColor});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -337,13 +340,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                   }));
                                 },
                                 child: CircleAvatar(
-                                  backgroundColor: Color(0xffFF7E40),
+                                  backgroundColor: listProfileColor[widget.friendProfileColor.toInt()],
                                   radius: sidebarSize / 20,
                                   child: Container(
                                     child: Text(
-                                      widget.friendName[0].toUpperCase(),
+                                      widget.friendName.split(' ').length >= 2 ? widget.friendName.split(' ')[0][0].toUpperCase() + widget.friendName.split(' ')[widget.friendName.split(' ').length-1][0].toUpperCase()
+                                          : widget.friendName[0].toUpperCase(),
                                       style: GoogleFonts.montserrat(
-                                          fontSize: 12,
+                                          fontSize: widget.friendName.split(' ').length >= 2 ? 14 : 15,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -404,8 +408,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   chatRoomId: widget.chatRoomId,
                                   friendName: widget.friendName,
                                   friendEmail: widget.friendEmail,
+                                  friendProfileColor: widget.friendProfileColor,
                                   myEmail: widget.myEmail,
                                   myName: currentUser.userName,
+                                  myProfileColor: currentUser.profileColor
                                 ),
                               );
                             }));

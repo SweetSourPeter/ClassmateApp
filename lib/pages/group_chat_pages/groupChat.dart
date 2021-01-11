@@ -190,6 +190,7 @@ class _GroupChatState extends State<GroupChat> {
           'senderName': myName,
           'time': lastMessageTime,
           'senderID': currentUser.userID,
+          'profileColor': currentUser.profileColor
         };
 
         databaseMethods.addGroupChatMessages(widget.courseId, messageMap);

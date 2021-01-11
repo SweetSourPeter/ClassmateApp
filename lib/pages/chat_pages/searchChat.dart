@@ -12,15 +12,19 @@ class SearchChat extends StatefulWidget {
   final String chatRoomId;
   final String friendName;
   final String friendEmail;
+  final double friendProfileColor;
   final String myEmail;
   final String myName;
+  final double myProfileColor;
 
   SearchChat(
       {this.chatRoomId,
       this.friendName,
       this.friendEmail,
+      this.friendProfileColor,
       this.myEmail,
-      this.myName});
+      this.myName,
+      this.myProfileColor});
 
   @override
   _SearchChatState createState() => _SearchChatState();
@@ -218,6 +222,7 @@ class _SearchChatState extends State<SearchChat> {
                       messageTime: DateTime.fromMillisecondsSinceEpoch(
                               snapshot.data.documents[i].data()['time'])
                           .toString(),
+                      friendProfileColor: widget.friendProfileColor
                     ));
                   }
                 }
@@ -241,12 +246,16 @@ class _SearchChatState extends State<SearchChat> {
       userData,
       String searchWord,
       int messageIndex,
-      String messageTime}) {
+      String messageTime,
+      double friendProfileColor}) {
     String userName = '';
+    double profileColor = 0.0;
     if (userEmail == widget.friendEmail) {
       userName = widget.friendName;
+      profileColor = widget.friendProfileColor;
     } else {
       userName = widget.myName;
+      profileColor = widget.myProfileColor;
     }
 
     Size mediaQuery = MediaQuery.of(context).size;
@@ -287,13 +296,14 @@ class _SearchChatState extends State<SearchChat> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: Color(0xffFF7E40),
+                        backgroundColor: listProfileColor[profileColor.toInt()],
                         radius: 19.5,
                         child: Container(
                           child: Text(
-                            userName[0].toUpperCase(),
+                            userName.split(' ').length >= 2 ? userName.split(' ')[0][0].toUpperCase() + userName.split(' ')[userName.split(' ').length-1][0].toUpperCase()
+                                : userName[0].toUpperCase(),
                             style: GoogleFonts.montserrat(
-                                fontSize: 12,
+                                fontSize: userName.split(' ').length >= 2 ? 14 : 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),

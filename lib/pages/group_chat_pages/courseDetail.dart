@@ -29,7 +29,7 @@ class _CourseDetailState extends State<CourseDetail> {
   String courseName;
   String courseSection;
   String courseTerm;
-  List<List<String>> members;
+  List<List<dynamic>> members;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
   @override
@@ -78,23 +78,19 @@ class _CourseDetailState extends State<CourseDetail> {
       //     ),
       //   );
       // }
+      final memberName = members[index][0];
       return Container(
         child: Column(
           children: <Widget>[
             CircleAvatar(
-              backgroundColor: index % 4 == 0
-                  ? Color(0xffFF7E40)
-                  : index % 4 == 1
-                      ? Color(0xffFFB811)
-                      : index % 4 == 2
-                          ? Color(0xff497ABB)
-                          : Color(0xff775CBE),
+              backgroundColor: listProfileColor[members != null ? members[index][2].toInt() : 1],
               radius: radius,
               child: Container(
                 child: Text(
-                  members != null ? members[index][0][0].toUpperCase() : '',
+                  memberName.split(' ').length >= 2 ? memberName.split(' ')[0][0].toUpperCase() + memberName.split(' ')[memberName.split(' ').length-1][0].toUpperCase()
+                      : memberName[0].toUpperCase(),
                   style: GoogleFonts.montserrat(
-                      fontSize: 14,
+                      fontSize: memberName.split(' ').length >= 2 ? 14 : 15,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),

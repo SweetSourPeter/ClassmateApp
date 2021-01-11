@@ -432,7 +432,7 @@ class DatabaseMethods {
   }
 
   getInfoOfMembersInCourse(String courseId) async {
-    List<List<String>> members = [];
+    List<List<dynamic>> members = [];
     await FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
@@ -447,8 +447,8 @@ class DatabaseMethods {
             .get()
             .then((value) {
           final userName = value.data()['userName'];
-          final profileColor = value.data()['profileColor'].toString();
-          List<String> userInfo = [userName, tmpUserId, profileColor];
+          final profileColor = value.data()['profileColor'].toDouble();
+          List<dynamic> userInfo = [userName, tmpUserId, profileColor];
           members.add(userInfo);
         });
       }
