@@ -543,7 +543,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                             SizedBox(
                                               width: 6,
                                             ),
-                                            (listOfUnread.isNotEmpty &&
+                                            (listOfUnread.isNotEmpty && index <= listOfUnread.length - 1 &&
                                                     listOfUnread[index] == 0)
                                                 ? Container()
                                                 : Container(
@@ -558,16 +558,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                                           BorderRadius.circular(
                                                               32),
                                                     ),
-                                                    child: Text(
-                                                      listOfUnread.isNotEmpty &&
-                                                              index <=
-                                                                  listOfUnread
-                                                                          .length -
-                                                                      1
-                                                          ? ('+' +
-                                                              listOfUnread[
-                                                                      index]
-                                                                  .toString())
+                                                    child: Text(listOfUnread.isNotEmpty && index <= listOfUnread.length - 1 ? ('+' + listOfUnread[index].toString())
                                                           : '+0',
                                                       style:
                                                           GoogleFonts.openSans(
