@@ -246,14 +246,32 @@ class _MainMenuState extends State<MainMenu> {
       index: _currentIndex,
       items: <Widget>[
         _currentIndex == 0
-            ? Image.asset('assets/icon/navigationBar1Open.png')
-            : Image.asset('assets/icon/navigationBar1Close.png'),
+            ? Container(
+                height: 30,
+                width: 30,
+                child: Image.asset('assets/icon/navigationBar1Open.png'))
+            : Container(
+                height: 30,
+                width: 30,
+                child: Image.asset('assets/icon/navigationBar1Close.png')),
         _currentIndex == 1
-            ? Image.asset('assets/icon/navigationBar2Open.png')
-            : Image.asset('assets/icon/navigationBar2Close.png'),
+            ? Container(
+                height: 45,
+                width: 45,
+                child: Image.asset('assets/icon/navigationBar2Open.png'))
+            : Container(
+                height: 45,
+                width: 45,
+                child: Image.asset('assets/icon/navigationBar2Close.png')),
         _currentIndex == 2
-            ? Image.asset('assets/icon/navigationBar3Open.png')
-            : Image.asset('assets/icon/navigationBar3Close.png'),
+            ? Container(
+                height: 35,
+                width: 35,
+                child: Image.asset('assets/icon/navigationBar3Open.png'))
+            : Container(
+                height: 35,
+                width: 35,
+                child: Image.asset('assets/icon/navigationBar3Close.png')),
       ],
       onTap: (index) {
         setState(() {
