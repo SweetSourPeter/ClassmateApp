@@ -212,18 +212,17 @@ class _SearchChatState extends State<SearchChat> {
                           .get('message')
                           .contains(searchTextEditingController.text)) {
                     children.add(searchTile(
-                      userEmail: snapshot.data.documents[i].get('sendBy'),
-                      message: snapshot.data.documents[i].get('message'),
-                      imageURL:
-                          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                      userData: currentUser,
-                      searchWord: searchTextEditingController.text,
-                      messageIndex: i,
-                      messageTime: DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[i].data()['time'])
-                          .toString(),
-                      friendProfileColor: widget.friendProfileColor
-                    ));
+                        userEmail: snapshot.data.documents[i].get('sendBy'),
+                        message: snapshot.data.documents[i].get('message'),
+                        imageURL:
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                        userData: currentUser,
+                        searchWord: searchTextEditingController.text,
+                        messageIndex: i,
+                        messageTime: DateTime.fromMillisecondsSinceEpoch(
+                                snapshot.data.documents[i].data()['time'])
+                            .toString(),
+                        friendProfileColor: widget.friendProfileColor));
                   }
                 }
                 return ListView.builder(
@@ -257,7 +256,8 @@ class _SearchChatState extends State<SearchChat> {
       userName = widget.myName;
       profileColor = widget.myProfileColor;
     }
-
+    print('profileColor');
+    print(profileColor);
     Size mediaQuery = MediaQuery.of(context).size;
 
     return GestureDetector(
@@ -274,6 +274,7 @@ class _SearchChatState extends State<SearchChat> {
               friendName: widget.friendName,
               friendEmail: widget.friendEmail,
               initialChat: messageIndex.toDouble(),
+              friendProfileColor: friendProfileColor,
               myEmail: widget.myEmail,
             ),
           );
@@ -300,10 +301,16 @@ class _SearchChatState extends State<SearchChat> {
                         radius: 19.5,
                         child: Container(
                           child: Text(
-                            userName.split(' ').length >= 2 ? userName.split(' ')[0][0].toUpperCase() + userName.split(' ')[userName.split(' ').length-1][0].toUpperCase()
+                            userName.split(' ').length >= 2
+                                ? userName.split(' ')[0][0].toUpperCase() +
+                                    userName
+                                        .split(' ')[
+                                            userName.split(' ').length - 1][0]
+                                        .toUpperCase()
                                 : userName[0].toUpperCase(),
                             style: GoogleFonts.montserrat(
-                                fontSize: userName.split(' ').length >= 2 ? 14 : 15,
+                                fontSize:
+                                    userName.split(' ').length >= 2 ? 14 : 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),
