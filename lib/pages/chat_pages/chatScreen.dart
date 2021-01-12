@@ -580,7 +580,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 showStickerKeyboard
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: mediaQuery.height / 2 - 50,
+                        height: 301,
                         // showStickerKeyboard ? 400 : 0,
                         child: EmojiPicker(
                           rows: 4,
