@@ -118,7 +118,9 @@ class UserCourseInfo extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     child: FittedBox(
-                      child: Image.asset(fileLocation[index % 6]),
+                      child: index == null
+                          ? Image.asset(fileLocation[0])
+                          : Image.asset(fileLocation[index % 6]),
                       fit: BoxFit.fill,
                     ),
                   ),
