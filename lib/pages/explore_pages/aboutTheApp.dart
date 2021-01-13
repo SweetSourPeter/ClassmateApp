@@ -48,7 +48,7 @@ class AboutTheAPP extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
-                    'Version 1.0.00',
+                    'Version 1.1.01',
                     style: simpleTextStyle(Colors.white, 18),
                   ),
                   SizedBox(

@@ -28,7 +28,9 @@ class _ChatRoomState extends State<ChatRoom> {
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
-  Widget chatRoomsList() {
+  Widget chatRoomsList(BuildContext context) {
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     final currentUser = Provider.of<UserData>(context, listen: false);
     return StreamBuilder(
       stream: chatRooms,
@@ -60,24 +62,32 @@ class _ChatRoomState extends State<ChatRoom> {
                           .data()['lastMessageTime'])
                       .toString();
 
-                  return ChatRoomsTile(
-                      friendID: friendID,
-                      userName: snapshot.data.documents[index]
-                          .data()['chatRoomId']
-                          .toString()
-                          .replaceAll("_", "")
-                          .replaceAll(currentUser.email, ""),
-                      chatRoomId:
-                          snapshot.data.documents[index].data()["chatRoomId"],
-                      friendName: friendName,
-                      latestMessage: latestMessage,
-                      lastMessageTime: lastMessageTime,
-                      friendEmail: friendEmail,
-                      unreadNumber: snapshot.data.documents[index].data()[widget
-                              .myEmail
-                              .substring(0, widget.myEmail.indexOf('@')) +
-                          'unread'],
-                      friendProfileColor: friendProfileColor);
+                  return Column(
+                    children: [
+                      ChatRoomsTile(
+                          friendID: friendID,
+                          userName: snapshot.data.documents[index]
+                              .data()['chatRoomId']
+                              .toString()
+                              .replaceAll("_", "")
+                              .replaceAll(currentUser.email, ""),
+                          chatRoomId: snapshot.data.documents[index]
+                              .data()["chatRoomId"],
+                          friendName: friendName,
+                          latestMessage: latestMessage,
+                          lastMessageTime: lastMessageTime,
+                          friendEmail: friendEmail,
+                          unreadNumber: snapshot.data.documents[index].data()[
+                              widget.myEmail.substring(
+                                      0, widget.myEmail.indexOf('@')) +
+                                  'unread'],
+                          friendProfileColor: friendProfileColor),
+                      Divider(
+                        thickness: 1,
+                        indent: _width * 0.25,
+                      ),
+                    ],
+                  );
                 })
             : Container();
       },
@@ -103,23 +113,23 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    double _height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         color: Colors.white,
         child: Column(
           children: [
             Container(
+              padding: EdgeInsets.only(
+                  top: 40, left: 40, bottom: _height * 0.064, right: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 40, left: 40, bottom: 20),
-                    child: Container(
-                      child: Text(
-                        'Chats',
-                        textAlign: TextAlign.left,
-                        style: largeTitleTextStyleBold(Colors.black, 26),
-                      ),
+                  Container(
+                    child: Text(
+                      'Chats',
+                      textAlign: TextAlign.left,
+                      style: largeTitleTextStyleBold(Colors.black, 26),
                     ),
                   ),
                   // Expanded(child: Container()),
@@ -146,7 +156,6 @@ class _ChatRoomState extends State<ChatRoom> {
                         }));
                       },
                       child: Container(
-                        padding: EdgeInsets.only(top: 20, right: 40),
                         child: Image.asset(
                           'assets/images/search.png',
                           color: Color(0xffFF7E40),
@@ -156,7 +165,7 @@ class _ChatRoomState extends State<ChatRoom> {
               ),
             ),
             Expanded(
-              child: chatRoomsList(),
+              child: chatRoomsList(context),
             ),
           ],
         ),
@@ -176,21 +185,24 @@ class ChatRoomsTile extends StatelessWidget {
   final int unreadNumber;
   final double friendProfileColor;
 
-  ChatRoomsTile(
-      {this.userName,
-      @required this.chatRoomId,
-      this.friendName,
-      this.latestMessage,
-      this.friendID,
-      this.lastMessageTime,
-      this.friendEmail,
-      this.unreadNumber,
-      this.friendProfileColor});
+  ChatRoomsTile({
+    this.userName,
+    @required this.chatRoomId,
+    this.friendName,
+    this.latestMessage,
+    this.friendID,
+    this.lastMessageTime,
+    this.friendEmail,
+    this.unreadNumber,
+    this.friendProfileColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     double sidebarSize = mediaQuery.width * 1.0;
     print('heree');
     return GestureDetector(
@@ -214,9 +226,11 @@ class ChatRoomsTile extends StatelessWidget {
         }));
       },
       child: Container(
-        height: 83,
+        height: _height * 0.08,
         margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.0,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(

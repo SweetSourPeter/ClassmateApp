@@ -45,7 +45,7 @@ class TopBar extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
-              // size: 30,
+              color: themeOrange,
             ),
             color: Colors.black,
             onPressed: () {
@@ -56,7 +56,7 @@ class TopBar extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.more_vert),
-            color: Colors.black,
+            color: themeOrange,
             onPressed: () {
               //navigate to previous page
               showGeneralDialog(
@@ -75,7 +75,7 @@ class TopBar extends StatelessWidget {
                         child: Container(),
                       ),
                       Container(
-                        height: 200,
+                        height: _height * 0.22,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [

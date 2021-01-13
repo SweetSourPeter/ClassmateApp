@@ -77,23 +77,26 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
-                              prefixIcon: IconButton(
-                                icon: Image.asset(
-                                  'assets/images/search.png',
-                                  color: Color(0xffFFCDB6),
-                                  height: 20,
-                                  width: 20,
-                                ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Color(0xFFFFCDB6),
                               ),
+                              // IconButton(
+                              //   icon: Image.asset(
+                              //     'assets/images/search.png',
+                              //     color: Color(0xffFFCDB6),
+                              //     height: 20,
+                              //     width: 20,
+                              //   ),
+                              // ),
                               suffixIcon:
                                   searchTextEditingController.text.isEmpty
                                       ? null
                                       : IconButton(
-                                          icon: Image.asset(
-                                            'assets/images/cross.png',
-                                            // color: Color(0xffFF7E40),
-                                            height: 19,
-                                            width: 19,
+                                          icon: Icon(
+                                            Icons.cancel,
+                                            color: Color(0xffFF7E40),
+                                            // size: 30,
                                           ),
                                           onPressed: () {
                                             // initiateSearch();
@@ -184,18 +187,19 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                           .data()['message']
                           .contains(searchTextEditingController.text)) {
                     children.add(searchTile(
-                      userName: snapshot.data.documents[i].data()['senderName'],
-                      message: snapshot.data.documents[i].data()['message'],
-                      imageURL:
-                          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-                      userData: currentUser,
-                      searchWord: searchTextEditingController.text,
-                      messageIndex: i,
-                      messageTime: DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[i].data()['time'])
-                          .toString(),
-                      profileColor: snapshot.data.documents[i].data()['profileColor']
-                    ));
+                        userName:
+                            snapshot.data.documents[i].data()['senderName'],
+                        message: snapshot.data.documents[i].data()['message'],
+                        imageURL:
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
+                        userData: currentUser,
+                        searchWord: searchTextEditingController.text,
+                        messageIndex: i,
+                        messageTime: DateTime.fromMillisecondsSinceEpoch(
+                                snapshot.data.documents[i].data()['time'])
+                            .toString(),
+                        profileColor:
+                            snapshot.data.documents[i].data()['profileColor']));
                   }
                 }
                 return ListView.builder(
@@ -259,10 +263,16 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         radius: 19.5,
                         child: Container(
                           child: Text(
-                            userName.split(' ').length >= 2 ? userName.split(' ')[0][0].toUpperCase() + userName.split(' ')[userName.split(' ').length-1][0].toUpperCase()
+                            userName.split(' ').length >= 2
+                                ? userName.split(' ')[0][0].toUpperCase() +
+                                    userName
+                                        .split(' ')[
+                                            userName.split(' ').length - 1][0]
+                                        .toUpperCase()
                                 : userName[0].toUpperCase(),
                             style: GoogleFonts.montserrat(
-                                fontSize: userName.split(' ').length >= 2 ? 14 : 15,
+                                fontSize:
+                                    userName.split(' ').length >= 2 ? 14 : 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),

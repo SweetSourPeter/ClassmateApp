@@ -105,23 +105,18 @@ class _SearchChatState extends State<SearchChat> {
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
-                              prefixIcon: IconButton(
-                                icon: Image.asset(
-                                  'assets/images/search.png',
-                                  color: Color(0xffFFCDB6),
-                                  height: 20,
-                                  width: 20,
-                                ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Color(0xFFFFCDB6),
                               ),
                               suffixIcon:
                                   searchTextEditingController.text.isEmpty
                                       ? null
                                       : IconButton(
-                                          icon: Image.asset(
-                                            'assets/images/cross.png',
-                                            // color: Color(0xffFF7E40),
-                                            height: 19,
-                                            width: 19,
+                                          icon: Icon(
+                                            Icons.cancel,
+                                            color: Color(0xffFF7E40),
+                                            // size: 30,
                                           ),
                                           onPressed: () {
                                             // initiateSearch();

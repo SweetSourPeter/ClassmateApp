@@ -179,13 +179,13 @@ Padding topLineBar() {
       padding: EdgeInsets.fromLTRB(10, 0, 8, 5),
       child: ClipRRect(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
-          bottomLeft: Radius.circular(30.0),
-          bottomRight: Radius.circular(30.0),
+          topLeft: Radius.circular(35.0),
+          topRight: Radius.circular(35.0),
+          bottomLeft: Radius.circular(35.0),
+          bottomRight: Radius.circular(35.0),
         ),
         child: SizedBox(
-          width: 87.0,
+          width: 65.0,
           height: 6.0,
           child: const DecoratedBox(
             decoration: const BoxDecoration(color: themeOrange),
