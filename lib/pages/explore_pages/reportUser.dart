@@ -3,11 +3,13 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ReportUser extends StatefulWidget {
   final String badUserEmail;
   final String profileID;
+
   const ReportUser({Key key, this.profileID, this.badUserEmail})
       : super(key: key);
 
@@ -19,6 +21,7 @@ class _ReportUserState extends State<ReportUser> {
   DatabaseMethods databaseMehods = new DatabaseMethods();
 
   var pageIndex = 0;
+
   void setIndex(int value) {
     setState(() {
       pageIndex = value;
@@ -34,6 +37,7 @@ class _ReportUserState extends State<ReportUser> {
 
   TextEditingController reportTextEditingController =
       new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -96,47 +100,108 @@ class _ReportUserState extends State<ReportUser> {
     );
   }
 
+  Padding topLineBar() {
+    return Padding(
+        padding: EdgeInsets.only(top: 15, bottom: 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(35.0),
+            topRight: Radius.circular(35.0),
+            bottomLeft: Radius.circular(35.0),
+            bottomRight: Radius.circular(35.0),
+          ),
+          child: SizedBox(
+            width: 38.0,
+            height: 3.0,
+            child: const DecoratedBox(
+              decoration: const BoxDecoration(color: Color(0xffFF9E70)),
+            ),
+          ),
+        )
+        // child: Container(
+        //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+        //   color: Colors.black,
+        // )
+        );
+  }
+
   SingleChildScrollView userTypeTheProblem(
       BuildContext context, String userID) {
     return SingleChildScrollView(
         child: Column(
       children: [
         topLineBar(),
-        SizedBox(
-          height: 10,
-        ),
         Container(
+          width: 64,
+          height: 24,
           alignment: Alignment.center,
           child: Text(
             'Report',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            style:
+                GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.w600),
           ),
         ),
-        Divider(),
-        ListTile(
-          title: Text(
-            'Tell us what\'s wrong?',
-            style: TextStyle(
-                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text(
-            'We won\'t let them know if you take any of these actions.',
-            style: TextStyle(
-                color: Colors.black, fontSize: 10, fontWeight: FontWeight.w300),
-          ),
-          // onTap: () => Void //TODO,
+        Divider(
+          thickness: 1,
+          height: 20,
         ),
         Container(
-            // height: 200,
+          padding: EdgeInsets.only(left: 35),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Tell us what\'s wrong?',
+            style: GoogleFonts.openSans(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w600),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.only(left: 35, top: 5, bottom: 5),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'We won\'t let them know if you take any of these actions.',
+            style: TextStyle(
+              color: Color(0xff6F6F6F),
+              fontSize: 10,
+            ),
+          ),
+        ),
+        Container(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                  20.0, 20.0, 20.0, 0.0), // content padding
+                  35.0, 10.0, 35.0, 0.0), // conten// t padding
               child: TextField(
+
+                keyboardType: TextInputType.multiline,
+                maxLines: 5,
                 controller: reportTextEditingController,
-                decoration: buildInputDecorationPinky(
-                    false, Icon(Icons.ac_unit), 'What happened...', 30),
+                decoration: new InputDecoration(
+                    focusedBorder: new OutlineInputBorder(
+                      borderSide: new BorderSide(
+                        color: Color(0xffD0CBC4),
+                        width: 1
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: new OutlineInputBorder(
+                      borderSide: new BorderSide(
+                          color: Color(0xffD0CBC4),
+                          width: 1
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    hintStyle: GoogleFonts.openSans(
+                      fontSize: 12,
+                      color: Color(0xffA8A8A8)
+                    ),
+                    contentPadding: EdgeInsets.all(10),
+                    hintText: 'Tell us what\'s wrong',
+              )
+                // buildInputDecorationPinky(
+                //     false, Icon(Icons.ac_unit), 'Tell us what\'s wrong', 30),
               ),
             ) // From with TextField inside
             ),
@@ -153,9 +218,16 @@ class _ReportUserState extends State<ReportUser> {
             height: 40,
             child: Text(
               'Submit',
-              style: TextStyle(color: Colors.blueAccent, fontSize: 20),
+              style: GoogleFonts.openSans(
+                color: Color(0xffFF7E40),
+                fontSize: 16,
+                fontWeight: FontWeight.w600
+              ),
             ),
           ),
+        ),
+        SizedBox(
+          height: 30,
         ),
       ],
     ));
@@ -167,95 +239,202 @@ class _ReportUserState extends State<ReportUser> {
         child: Column(
           children: <Widget>[
             topLineBar(),
-            SizedBox(
-              height: 10,
-            ),
             Container(
               alignment: Alignment.center,
               child: Text(
                 'Report',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
             ),
-            Divider(),
-            ListTile(
-              title: Text(
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 35),
+              alignment: Alignment.centerLeft,
+              child: Text(
                 'Why are you reporting this person?',
-                style: TextStyle(
+                style: GoogleFonts.openSans(
                     color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.w600),
               ),
-              subtitle: Text(
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 35, top: 5, bottom: 5),
+              alignment: Alignment.centerLeft,
+              child: Text(
                 'We won\'t let them know if you take any of these actions.',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w300),
+                  color: Color(0xff6F6F6F),
+                  fontSize: 10,
+                ),
               ),
-              // onTap: () => Void //TODO,
             ),
-            ListTile(
-              title: Text(
-                'Pretending to be a Real Person',
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-              trailing: Icon(Icons.arrow_forward),
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 setIndex(2);
                 saveReportData('Pretending to be a Real Person',
                     widget.profileID, widget.badUserEmail, userID);
               },
-            ),
-            Divider(),
-            ListTile(
-              title: Text(
-                'Pretending to be Someone Fake',
-                style: TextStyle(color: Colors.black, fontSize: 16),
+              child: Container(
+                padding: EdgeInsets.only(left: 35, right: 20),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Pretending to be a Real Person',
+                      style: GoogleFonts.openSans(
+                          color: Colors.black, fontSize: 14),
+                    ),
+                    Image.asset(
+                      'assets/images/arrow-forward.png',
+                      color: Color(0xff949494),
+                      width: 8,
+                      height: 8,
+                    )
+                  ],
+                ),
               ),
-              trailing: Icon(Icons.arrow_forward),
+            ),
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 setIndex(2);
                 saveReportData('Pretending to be Someone Fake',
                     widget.profileID, widget.badUserEmail, userID);
               },
-            ),
-            Divider(),
-            ListTile(
-              title: Text(
-                'Posting inappropriate Things',
-                style: TextStyle(color: Colors.black, fontSize: 16),
+              child: Container(
+                padding: EdgeInsets.only(left: 35, right: 20),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Pretending to be Someone Fake',
+                      style: GoogleFonts.openSans(
+                          color: Colors.black, fontSize: 14),
+                    ),
+                    Image.asset(
+                      'assets/images/arrow-forward.png',
+                      color: Color(0xff949494),
+                      width: 8,
+                      height: 8,
+                    )
+                  ],
+                ),
               ),
-              trailing: Icon(Icons.arrow_forward),
+            ),
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 setIndex(2);
                 saveReportData('Posting inappropriate Things', widget.profileID,
                     widget.badUserEmail, userID);
               },
-            ),
-            Divider(),
-            ListTile(
-              title: Text(
-                'Harassment or Bullying',
-                style: TextStyle(color: Colors.black, fontSize: 16),
+              child: Container(
+                padding: EdgeInsets.only(left: 35, right: 20),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Posting inappropriate Things',
+                      style: GoogleFonts.openSans(
+                          color: Colors.black, fontSize: 14),
+                    ),
+                    Image.asset(
+                      'assets/images/arrow-forward.png',
+                      color: Color(0xff949494),
+                      width: 8,
+                      height: 8,
+                    )
+                  ],
+                ),
               ),
-              trailing: Icon(Icons.arrow_forward),
+            ),
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 setIndex(2);
                 saveReportData('Harassment or Bullying', widget.profileID,
                     widget.badUserEmail, userID);
               },
-            ),
-            Divider(),
-            ListTile(
-              title: Text(
-                'Something Else...',
-                style: TextStyle(color: Colors.black, fontSize: 16),
+              child: Container(
+                padding: EdgeInsets.only(left: 35, right: 20),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Harassment or Bullying',
+                      style: GoogleFonts.openSans(
+                          color: Colors.black, fontSize: 14),
+                    ),
+                    Image.asset(
+                      'assets/images/arrow-forward.png',
+                      color: Color(0xff949494),
+                      width: 8,
+                      height: 8,
+                    )
+                  ],
+                ),
               ),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () => setIndex(1),
             ),
-            Divider(),
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => setIndex(1),
+              child: Container(
+                padding: EdgeInsets.only(left: 35, right: 20),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Something Else...',
+                      style: GoogleFonts.openSans(
+                          color: Colors.black, fontSize: 14),
+                    ),
+                    Image.asset(
+                      'assets/images/arrow-forward.png',
+                      color: Color(0xff949494),
+                      width: 8,
+                      height: 8,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Divider(
+              thickness: 1,
+              height: 20,
+            ),
+            SizedBox(
+              height: 40,
+            )
           ],
         ),
       ),

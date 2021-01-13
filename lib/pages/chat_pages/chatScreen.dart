@@ -635,22 +635,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 showStickerKeyboard
-                    ? Expanded(
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 40),
-                          // showStickerKeyboard ? 400 : 0,
-                          child: EmojiPicker(
-                            rows: 4,
-                            columns: 7,
-                            buttonMode: ButtonMode.MATERIAL,
-                            numRecommended: 10,
-                            onEmojiSelected: (emoji, category) {
-                              setState(() {
-                                messageController.text =
-                                    messageController.text + emoji.emoji;
-                              });
-                            },
-                          ),
+                    ? AnimatedContainer(
+                        duration: Duration(milliseconds: 80),
+                        // showStickerKeyboard ? 400 : 0,
+                        child: EmojiPicker(
+                          rows: 4,
+                          columns: 7,
+                          buttonMode: ButtonMode.MATERIAL,
+                          numRecommended: 10,
+                          onEmojiSelected: (emoji, category) {
+                            setState(() {
+                              messageController.text =
+                                  messageController.text + emoji.emoji;
+                            });
+                          },
                         ),
                       )
                     : Container(),
