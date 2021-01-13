@@ -1,6 +1,5 @@
 import 'package:app_test/main.dart';
 import 'package:app_test/models/user.dart' as u;
-import 'package:app_test/MainScreen.dart';
 import "package:firebase_auth/firebase_auth.dart" as auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -122,30 +121,30 @@ class AuthMethods {
     }
   }
 
-  Future<auth.User> signInWithGoogle(BuildContext context) async {
-    final GoogleSignIn _googleSignIn = new GoogleSignIn();
+  // Future<auth.User> signInWithGoogle(BuildContext context) async {
+  //   final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
-    final GoogleSignInAccount googleSignInAccount =
-        await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+  //   final GoogleSignInAccount googleSignInAccount =
+  //       await _googleSignIn.signIn();
+  //   final GoogleSignInAuthentication googleSignInAuthentication =
+  //       await googleSignInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-        idToken: googleSignInAuthentication.idToken,
-        accessToken: googleSignInAuthentication.accessToken);
+  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
+  //       idToken: googleSignInAuthentication.idToken,
+  //       accessToken: googleSignInAuthentication.accessToken);
 
-    UserCredential userCredential =
-        await _auth.signInWithCredential(credential);
-    auth.User googleUser = userCredential.user;
+  //   UserCredential userCredential =
+  //       await _auth.signInWithCredential(credential);
+  //   auth.User googleUser = userCredential.user;
 
-    if (googleUser == null) {
-    } else {
-      await UserDatabaseService(userID: googleUser.uid).updateUserData(
-          googleUser.uid, googleUser.email, googleUser.email, 'University');
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainScreen()));
-    }
-  }
+  //   if (googleUser == null) {
+  //   } else {
+  //     await UserDatabaseService(userID: googleUser.uid).updateUserData(
+  //         googleUser.uid, googleUser.email, googleUser.email, 'University');
+  //     Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => MainScreen()));
+  //   }
+  // }
 
   Future signOut() async {
     try {

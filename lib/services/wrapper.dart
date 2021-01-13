@@ -30,6 +30,7 @@ class Wrapper extends StatelessWidget {
     } else {
       Future<UserData> userData =
           databaseMethods.getUserDetailsByID(user.userID);
+
       return Scaffold(
         backgroundColor: riceColor,
         appBar: AppBar(
@@ -56,7 +57,6 @@ class Wrapper extends StatelessWidget {
                   // Completed with error
                   if (snapshot.hasError)
                     return Center(child: Text(snapshot.error.toString()));
-
                   // Completed with data
                   return MultiProvider(
                       providers: [

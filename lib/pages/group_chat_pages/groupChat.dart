@@ -513,21 +513,23 @@ class _GroupChatState extends State<GroupChat> {
                   ),
                 ),
                 showStickerKeyboard
-                    ? AnimatedContainer(
-                        duration: Duration(milliseconds: 80),
-                        height: 301,
-                        // showStickerKeyboard ? 400 : 0,
-                        child: EmojiPicker(
-                          rows: 4,
-                          columns: 7,
-                          buttonMode: ButtonMode.MATERIAL,
-                          numRecommended: 10,
-                          onEmojiSelected: (emoji, category) {
-                            setState(() {
-                              messageController.text =
-                                  messageController.text + emoji.emoji;
-                            });
-                          },
+                    ? Expanded(
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 80),
+                          // height: 301,
+                          // showStickerKeyboard ? 400 : 0,
+                          child: EmojiPicker(
+                            rows: 4,
+                            columns: 7,
+                            buttonMode: ButtonMode.MATERIAL,
+                            numRecommended: 10,
+                            onEmojiSelected: (emoji, category) {
+                              setState(() {
+                                messageController.text =
+                                    messageController.text + emoji.emoji;
+                              });
+                            },
+                          ),
                         ),
                       )
                     : Container(),

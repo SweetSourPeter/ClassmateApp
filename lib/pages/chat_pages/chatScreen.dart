@@ -3,6 +3,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -136,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'sendBy': myEmail,
         'time': lastMessageTime,
       };
-
+      print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
       databaseMethods.setLastestMessage(
           widget.chatRoomId, messageController.text, lastMessageTime);
@@ -261,6 +262,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
@@ -436,7 +439,61 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
-                Expanded(child: chatMessageList(currentUser.email)),
+                Expanded(
+                    child: (currentUser.blockedUserID != null &&
+                            currentUser.blockedUserID.contains(widget.friendID))
+                        ? Container(
+                            decoration: new BoxDecoration(
+                                color: riceColor,
+                                borderRadius: new BorderRadius.only(
+                                  topLeft: const Radius.circular(30.0),
+                                  topRight: const Radius.circular(30.0),
+                                )),
+                            height: MediaQuery.of(context).size.height * 0.5,
+
+                            // decoration: BoxDecoration(
+                            //   color: Colors.blue,
+                            //   borderRadius: BorderRadius.only(
+                            //     topLeft: Radius.circular(30.0),
+                            //     topRight: Radius.circular(30.0),
+                            //   ),
+                            // ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: _height * 0.20,
+                                  ),
+                                  Stack(
+                                      alignment: Alignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                            height: 140,
+                                            width: _width - 40,
+                                            child: FittedBox(
+                                              child: Image.asset(
+                                                  'assets/icon/sorryBox.png'),
+                                              fit: BoxFit.fill,
+                                            )),
+                                        Text(
+                                          "Let\'s not talk to this guy",
+                                          style: largeTitleTextStyle(
+                                              Colors.black, 26),
+                                        ),
+                                      ]),
+                                  Container(
+                                      height: 140,
+                                      width: 140,
+                                      child: FittedBox(
+                                        child: Image.asset(
+                                            'assets/icon/failToFind.png'),
+                                        fit: BoxFit.fill,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          )
+                        : chatMessageList(currentUser.email)),
                 Container(
                     decoration: BoxDecoration(
                   boxShadow: [
@@ -578,21 +635,22 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 showStickerKeyboard
-                    ? AnimatedContainer(
-                        duration: Duration(milliseconds: 80),
-                        height: 301,
-                        // showStickerKeyboard ? 400 : 0,
-                        child: EmojiPicker(
-                          rows: 4,
-                          columns: 7,
-                          buttonMode: ButtonMode.MATERIAL,
-                          numRecommended: 10,
-                          onEmojiSelected: (emoji, category) {
-                            setState(() {
-                              messageController.text =
-                                  messageController.text + emoji.emoji;
-                            });
-                          },
+                    ? Expanded(
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 40),
+                          // showStickerKeyboard ? 400 : 0,
+                          child: EmojiPicker(
+                            rows: 4,
+                            columns: 7,
+                            buttonMode: ButtonMode.MATERIAL,
+                            numRecommended: 10,
+                            onEmojiSelected: (emoji, category) {
+                              setState(() {
+                                messageController.text =
+                                    messageController.text + emoji.emoji;
+                              });
+                            },
+                          ),
                         ),
                       )
                     : Container(),

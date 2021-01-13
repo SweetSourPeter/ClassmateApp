@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseMethods {
   Stream<UserData> userDetails(String userID) {
-    print('called userdetails stream');
+    print('userDetails called');
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
@@ -24,9 +24,8 @@ class DatabaseMethods {
 //     // .catchError((e) {
 //     //   print(e.toString());
 //     // }));
-//   }`
+//   }
   Future<UserData> getUserDetailsByID(String userID) async {
-    print('called userdetails stream');
     // return Firestore.instance
     //     .collection('users')
     //     .document(userID)
@@ -43,6 +42,7 @@ class DatabaseMethods {
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
       profileColor: doc.data()['profileColor'],
+      blockedUserID: doc.data()['blockedUser'],
     );
     return userData;
   }
@@ -68,7 +68,6 @@ class DatabaseMethods {
   }
 
   getUsersByEmail(String email) async {
-    // print('$email');
     return await FirebaseFirestore.instance
         .collection("users")
         // .where("email", isEqualTo: email)
@@ -277,10 +276,7 @@ class DatabaseMethods {
   }
 
   setUnreadNumber(String chatRoomId, String userEmail, int unreadNumber) {
-    FirebaseFirestore.instance
-        .collection('chatroom')
-        .document(chatRoomId)
-        .updateData({
+    FirebaseFirestore.instance.collection('chatroom').doc(chatRoomId).update({
       (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): unreadNumber
     }).catchError((e) {
       print(e.toString());
@@ -290,8 +286,20 @@ class DatabaseMethods {
   getUnreadNumber(String chatRoomId, String userEmail) async {
     return FirebaseFirestore.instance
         .collection('chatroom')
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .get();
+  }
+
+//user block
+  Future<void> updateUserBlock(String userID, List<String> block) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('users').doc(userID);
+    docRef.update({
+      'blockedUser': block,
+    }).catchError((e) {
+      print(e.toString());
+    });
   }
 
   //-------User report save to satabase---------
@@ -533,8 +541,16 @@ class DatabaseMethods {
     }
   }
 
-  addUserToChatRoom(String chatRoomId, String myId, String myName, String myEmail, double myProfileColor, String friendId, String friendName,
-      String friendEmail, double profileColor) async {
+  addUserToChatRoom(
+      String chatRoomId,
+      String myId,
+      String myName,
+      String myEmail,
+      double myProfileColor,
+      String friendId,
+      String friendName,
+      String friendEmail,
+      double profileColor) async {
     await FirebaseFirestore.instance
         .collection('chatroom')
         .doc(chatRoomId)

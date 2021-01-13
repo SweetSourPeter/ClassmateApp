@@ -164,6 +164,8 @@ class _BasicInfoState extends State<BasicInfo> {
                     userID: widget.userID,
                     userName: snapshot.data[0].userName,
                     profileUserEmail: snapshot.data[0].email,
+                    currentUserEmail: currentUser.email,
+                    currentUserID: currentUser.userID,
                   ),
                 ],
               ),

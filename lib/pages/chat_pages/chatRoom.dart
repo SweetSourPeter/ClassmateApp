@@ -62,32 +62,35 @@ class _ChatRoomState extends State<ChatRoom> {
                           .data()['lastMessageTime'])
                       .toString();
 
-                  return Column(
-                    children: [
-                      ChatRoomsTile(
-                          friendID: friendID,
-                          userName: snapshot.data.documents[index]
-                              .data()['chatRoomId']
-                              .toString()
-                              .replaceAll("_", "")
-                              .replaceAll(currentUser.email, ""),
-                          chatRoomId: snapshot.data.documents[index]
-                              .data()["chatRoomId"],
-                          friendName: friendName,
-                          latestMessage: latestMessage,
-                          lastMessageTime: lastMessageTime,
-                          friendEmail: friendEmail,
-                          unreadNumber: snapshot.data.documents[index].data()[
-                              widget.myEmail.substring(
-                                      0, widget.myEmail.indexOf('@')) +
-                                  'unread'],
-                          friendProfileColor: friendProfileColor),
-                      Divider(
-                        thickness: 1,
-                        indent: _width * 0.25,
-                      ),
-                    ],
-                  );
+                  return (currentUser.blockedUserID != null &&
+                          currentUser.blockedUserID.contains(friendID))
+                      ? Container()
+                      : Column(
+                          children: [
+                            ChatRoomsTile(
+                                friendID: friendID,
+                                userName: snapshot.data.documents[index]
+                                    .data()['chatRoomId']
+                                    .toString()
+                                    .replaceAll("_", "")
+                                    .replaceAll(currentUser.email, ""),
+                                chatRoomId: snapshot.data.documents[index]
+                                    .data()["chatRoomId"],
+                                friendName: friendName,
+                                latestMessage: latestMessage,
+                                lastMessageTime: lastMessageTime,
+                                friendEmail: friendEmail,
+                                unreadNumber: snapshot.data.documents[index]
+                                    .data()[widget.myEmail.substring(
+                                        0, widget.myEmail.indexOf('@')) +
+                                    'unread'],
+                                friendProfileColor: friendProfileColor),
+                            Divider(
+                              thickness: 1,
+                              indent: _width * 0.25,
+                            ),
+                          ],
+                        );
                 })
             : Container();
       },
@@ -275,7 +278,10 @@ class ChatRoomsTile extends StatelessWidget {
                             ),
                           ),
                         ),
-                        unreadNumber > 0
+                        unreadNumber > 0 &&
+                                (currentUser.blockedUserID != null &&
+                                    !currentUser.blockedUserID
+                                        .contains(friendID))
                             ? Positioned(
                                 right: 0,
                                 top: 0,
