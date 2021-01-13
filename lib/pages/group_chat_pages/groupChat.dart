@@ -515,7 +515,6 @@ class _GroupChatState extends State<GroupChat> {
                 showStickerKeyboard
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: 301,
                         // showStickerKeyboard ? 400 : 0,
                         child: EmojiPicker(
                           rows: 4,

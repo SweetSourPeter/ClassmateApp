@@ -210,9 +210,9 @@ String calculateUserName(String name) {
 }
 
 Container createUserImage(double radius, UserData userdata, TextStyle style) {
-  print('name:=======');
-  var string = "Hello world!";
-  print(string.split(" "));
+  // print('name:=======');
+  // var string = "Hello world!";
+  // print(string.split(" "));
   return Container(
     decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -388,7 +388,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                                   onChanged: (value) {
                                     setState(() {
                                       isSwitched = value;
-                                      print(isSwitched);
+                                      // print(isSwitched);
                                     });
                                   },
                                   activeTrackColor: themeOrange,
