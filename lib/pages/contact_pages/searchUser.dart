@@ -121,12 +121,17 @@ class _SearchUsersState extends State<SearchUsers> {
                         suffixIcon: searchTextEditingController.text.isEmpty
                             ? null
                             : IconButton(
-                                icon: Image.asset(
-                                  'assets/images/cross.png',
-                                  // color: Color(0xffFF7E40),
-                                  height: 19,
-                                  width: 19,
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: Color(0xffFF7E40),
+                                  // size: 30,
                                 ),
+                                // Image.asset(
+                                //   'assets/images/cross.png',
+                                //   // color: Color(0xffFF7E40),
+                                //   height: 19,
+                                //   width: 19,
+                                // ),
                                 onPressed: () {
                                   // initiateSearch();
                                   clearSearchTextInput(currentFocus);

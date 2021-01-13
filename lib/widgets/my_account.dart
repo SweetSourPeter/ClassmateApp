@@ -117,40 +117,43 @@ class _MyAccountState extends State<MyAccount> {
               //             left: 3)
               //       ],
               //     )),
-              Container(
-                color: Colors.transparent,
-                height: 130,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      bottom: 0,
-                      left: (_width / 2) - (119 / 2),
-                      child: CircleAvatar(
-                        backgroundColor: themeOrange,
-                        radius: 119 / 2,
+              Padding(
+                padding: EdgeInsets.only(top: _height * 0.033),
+                child: Container(
+                  color: Colors.transparent,
+                  height: 130,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        bottom: 0,
+                        left: (_width / 2) - (119 / 2),
+                        child: CircleAvatar(
+                          backgroundColor: themeOrange,
+                          radius: 119 / 2,
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      left: (_width / 2) - (119 / 2) + 4,
-                      bottom: 4,
-                      child: createUserImage(
-                        111 / 2,
-                        userdata,
-                        largeTitleTextStyleBold(Colors.white, 25),
+                      Positioned(
+                        left: (_width / 2) - (119 / 2) + 4,
+                        bottom: 4,
+                        child: createUserImage(
+                          111 / 2,
+                          userdata,
+                          largeTitleTextStyleBold(Colors.white, 25),
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      left: (_width / 2) - (119 / 2),
-                      bottom: 0,
-                      child: Container(
-                          height: 130,
-                          width: 119,
-                          child: FittedBox(
-                            child: Image.asset('assets/icon/earCircle.png'),
-                            fit: BoxFit.fill,
-                          )),
-                    ),
-                  ],
+                      Positioned(
+                        left: (_width / 2) - (119 / 2),
+                        bottom: 0,
+                        child: Container(
+                            height: 130,
+                            width: 119,
+                            child: FittedBox(
+                              child: Image.asset('assets/icon/earCircle.png'),
+                              fit: BoxFit.fill,
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               // Image.asset(
