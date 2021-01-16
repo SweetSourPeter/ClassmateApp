@@ -26,10 +26,13 @@ class UserCourseInfo extends StatelessWidget {
     bool checkIftheSame(CourseInfo course, List<CourseInfo> courseList) {
       for (int i = 0; i < courseList.length; i++) {
         if (courseList[i].courseID == course.courseID) {
-          return true;
+          print(courseList[i].courseID);
+          print(courseList[i].courseID == course.courseID);
+          print('\n');
+          return false;
         }
       }
-      return false;
+      return true;
     }
 
     return Container(

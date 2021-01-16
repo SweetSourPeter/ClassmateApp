@@ -606,29 +606,34 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                             onTap: () {
-                              if (showTextKeyboard) {
-                                setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
-                                });
+                              if ((messageController.text != '' ||
+                                  messageController.text.isNotEmpty)) {
+                                sendMessage(currentUser.email);
                               } else {
-                                if (showStickerKeyboard) {
+                                if (showTextKeyboard) {
                                   setState(() {
-                                    showStickerKeyboard = false;
+                                    FocusScopeNode currentFocus =
+                                        FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                      showTextKeyboard = false;
+                                    }
                                   });
-                                } else {}
+                                } else {
+                                  if (showStickerKeyboard) {
+                                    setState(() {
+                                      showStickerKeyboard = false;
+                                    });
+                                  } else {}
+                                }
+                                setState(() {
+                                  showFunctions = !showFunctions;
+                                });
+                                Timer(
+                                    Duration(milliseconds: 30),
+                                    () => _controller.jumpTo(
+                                        _controller.position.minScrollExtent));
                               }
-                              setState(() {
-                                showFunctions = !showFunctions;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 30),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
                             },
                             child: (messageController.text != '' ||
                                     messageController.text.isNotEmpty)

@@ -8,6 +8,7 @@ import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
 import 'package:app_test/pages/chat_pages/confirmImage.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -159,21 +160,18 @@ class _MyAccountState extends State<MyAccount> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: _height * 0.02,
-              ),
               Container(
-                margin: EdgeInsets.only(top: 28),
+                margin: EdgeInsets.only(top: _height * 0.02),
                 child: Column(
                   children: [
-                    Text(
+                    AutoSizeText(
                       userdata.userName ?? '',
                       style: largeTitleTextStyleBold(Colors.black, 18),
                     ),
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
+                    AutoSizeText(
                       userdata.email ?? '',
                       style: simpleTextStyle(Color(0xFF636363), 16),
                     ),

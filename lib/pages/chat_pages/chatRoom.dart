@@ -4,6 +4,7 @@ import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -242,9 +243,13 @@ class ChatRoomsTile extends StatelessWidget {
       },
       child: Container(
         height: _height * 0.087,
-        margin: EdgeInsets.only(top: _height * 0.006, bottom: 5.0, right: 20.0),
+        margin: EdgeInsets.only(
+          top: _height * 0.006,
+          bottom: _height * 0.006,
+          right: _width * 0.03,
+        ),
         padding: EdgeInsets.symmetric(
-          horizontal: 20.0,
+          horizontal: _width * 0.03,
         ),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -318,11 +323,12 @@ class ChatRoomsTile extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 18.0, top: _height * 0.005),
+                    padding: EdgeInsets.only(
+                        left: _width * 0.04, top: _height * 0.005),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        AutoSizeText(
                           friendName,
                           style: GoogleFonts.montserrat(
                               fontSize: 16,
@@ -334,7 +340,7 @@ class ChatRoomsTile extends StatelessWidget {
                         ),
                         Container(
                           width: mediaQuery.width - 200,
-                          child: Text(latestMessage,
+                          child: AutoSizeText(latestMessage,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.openSans(
                                   fontSize: 16, color: Colors.black)),
@@ -345,9 +351,9 @@ class ChatRoomsTile extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 4.0),
+                padding: EdgeInsets.only(top: _height * 0.0049),
                 child: Container(
-                  child: Text(
+                  child: AutoSizeText(
                     lastMessageTime.substring(11, lastMessageTime.length - 7),
                     style: GoogleFonts.openSans(
                       fontSize: 14,

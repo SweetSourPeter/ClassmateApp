@@ -115,7 +115,8 @@ class _FriendProfileState extends State<FriendProfile> {
             providers: [
               Provider<UserData>.value(
                 value: currentUser,
-              )
+              ),
+              Provider<List<CourseInfo>>.value(value: currentCourse)
             ],
             child: ChatScreen(
               chatRoomId: chatRoomId,
