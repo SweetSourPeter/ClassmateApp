@@ -38,36 +38,36 @@ class AboutTheAPP extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: mediaQuery.height / 8),
+                  SizedBox(height: mediaQuery.height * 0.1),
                   LogoWidget(),
                   Text(
                     'Meechu',
                     style: largeTitleTextStyleBold(Colors.white, 26),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: mediaQuery.height * 0.0123,
                   ),
                   Text(
                     'Version 1.1.01',
                     style: simpleTextStyle(Colors.white, 18),
                   ),
                   SizedBox(
-                    height: 50,
+                    height: mediaQuery.height * 0.062,
                   ),
                   GestureDetector(
                     onTap: () {
                       _launchURL('https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y');
                     },
-                    child: buildContainer('Term of Use'),
+                    child: buildContainer('Term of Use', mediaQuery),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: mediaQuery.height * 0.0123,
                   ),
                   GestureDetector(
                     onTap: () {
                       _launchURL('https://docs.qq.com/doc/DUEhxcUl3cmtKWk5Q');
                     },
-                    child: buildContainer('Privacy Policy'),
+                    child: buildContainer('Privacy Policy', mediaQuery),
                   ),
                 ],
               ))),
@@ -76,10 +76,10 @@ class AboutTheAPP extends StatelessWidget {
     );
   }
 
-  Container buildContainer(String text) {
+  Container buildContainer(String text, Size mediaQuery) {
     return Container(
-      height: 35,
-      width: 150,
+      height: mediaQuery.height * 0.043,
+      width: mediaQuery.width * 0.4,
       decoration: BoxDecoration(
         color: Color(0xff9b6b).withOpacity(1),
         borderRadius: BorderRadius.circular(16.0),

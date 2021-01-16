@@ -15,17 +15,20 @@ class ExpandedButton extends StatefulWidget {
   final Function onPressed;
   final Duration duration;
   final TextStyle initialStyle, finalStyle;
+  final bool sameClass;
 
-  ExpandedButton(
-      {this.initialText,
-      this.finalText,
-      this.duration,
-      this.width,
-      this.height,
-      this.gradient,
-      this.finalStyle,
-      this.initialStyle,
-      this.onPressed});
+  ExpandedButton({
+    this.initialText,
+    this.finalText,
+    this.duration,
+    this.width,
+    this.height,
+    this.gradient,
+    this.finalStyle,
+    this.initialStyle,
+    this.onPressed,
+    this.sameClass,
+  });
 
   _ExpandedButtonState createState() => _ExpandedButtonState();
 }
@@ -76,20 +79,22 @@ class _ExpandedButtonState extends State<ExpandedButton>
         },
         child: AnimatedContainer(
           height: widget.height,
-          width: (_currentState == ButtonState.BEFORE_CLICK)
+          width: (_currentState == ButtonState.BEFORE_CLICK && widget.sameClass)
               ? widget.width
               : widget.width + 30.0,
           duration: _duration,
           decoration: BoxDecoration(
-            gradient: (_currentState == ButtonState.BEFORE_CLICK)
-                ? widget.gradient
-                : LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.brown[50], Colors.brown[50]],
-                  ),
+            gradient:
+                (_currentState == ButtonState.BEFORE_CLICK && widget.sameClass)
+                    ? widget.gradient
+                    : LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.brown[50], Colors.brown[50]],
+                      ),
             border: Border.all(
-              color: (_currentState == ButtonState.BEFORE_CLICK)
+              color: (_currentState == ButtonState.BEFORE_CLICK &&
+                      widget.sameClass)
                   ? Colors.transparent
                   : orengeColor,
             ),
@@ -98,7 +103,8 @@ class _ExpandedButtonState extends State<ExpandedButton>
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5.0),
             child: Center(
-                child: (_currentState == ButtonState.BEFORE_CLICK)
+                child: (_currentState == ButtonState.BEFORE_CLICK &&
+                        widget.sameClass)
                     ? Text(widget.initialText,
                         textAlign: TextAlign.center, style: widget.initialStyle)
                     : Text(widget.finalText,

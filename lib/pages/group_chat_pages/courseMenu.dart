@@ -5,6 +5,7 @@ import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -27,6 +28,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   List<int> listOfNumberOfMembers = [];
   List<int> listOfUnread = [];
+
   List<String> fileLocation = [
     'assets/icon/courseIcon1.png',
     'assets/icon/courseIcon2.png',
@@ -67,6 +69,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
+
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     return (course == null)
         ? Center(
             child: CircularProgressIndicator(
@@ -76,65 +81,6 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
             color: Colors.white,
             child: CustomScrollView(
               slivers: <Widget>[
-                // SliverAppBar(
-                //   // expandedHeight: 150,
-                //   // flexibleSpace: FlexibleSpaceBar(),
-                //   // centerTitle: true,
-                //   // title: Text(
-                //   //   "My Courses",
-                //   //   style: largeTitleTextStyle(),
-                //   // ),
-                //   backgroundColor: Colors.white,
-                //   elevation: 0.0,
-                //   floating: true,
-                //   // leading: IconButton(
-                //   //   iconSize: 35,
-                //   //   color: darkBlueColor,
-                //   //   padding: EdgeInsets.only(left: kDefaultPadding),
-                //   //   icon: Icon(Icons.menu),
-                //   //   onPressed: () {
-                //   //     //todo
-                //   //     // setMenuOpenState(true);
-                //   //   },
-                //   // ),
-                //   // actions: <Widget>[
-                //   //   IconButton(
-                //   //       iconSize: 38,
-                //   //       color: darkBlueColor,
-                //   //       padding:
-                //   //           EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                //   //       icon: Icon(Icons.search),
-                //   //       onPressed: () {
-                //   //         //TODO add course
-                //   //         Navigator.push(
-                //   //           context,
-                //   //           // MaterialPageRoute(
-                //   //           //   builder: (context) {
-                //   //           //     return Provider<UserData>.value(
-                //   //           //       value: userdata,
-                //   //           //       child: SearchGroup(),
-                //   //           //     );
-                //   //           //   },
-                //   //           // ),
-                //   //           MaterialPageRoute(
-                //   //             builder: (context) {
-                //   //               return MultiProvider(
-                //   //                 providers: [
-                //   //                   Provider<UserData>.value(
-                //   //                     value: userdata,
-                //   //                   ),
-                //   //                   Provider<List<CourseInfo>>.value(
-                //   //                     value: course,
-                //   //                   ),
-                //   //                 ],
-                //   //                 child: SearchGroup(),
-                //   //               );
-                //   //             },
-                //   //           ),
-                //   //         );
-                //   //       })
-                //   // ],
-                // ),
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: 35,
@@ -358,13 +304,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 Provider<UserData>.value(
                                   value: userdata,
                                 ),
-                                // 这个需要的话直接uncomment
-                                // Provider<List<CourseInfo>>.value(
-                                //   value: course,
-                                // ),
-                                // final courseProvider = Provider.of<CourseProvider>(context);
-                                // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                // 不需要pass到push里面，直接复制上面这行即可
+                                Provider<List<CourseInfo>>.value(
+                                  value: course,
+                                ),
                               ],
                               child: GroupChat(
                                 courseId: course[index].courseID,
@@ -376,10 +318,14 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                           }));
                         },
                         child: Container(
-                            margin: const EdgeInsets.only(
-                                bottom: 16, top: 16, left: 38, right: 38),
-                            width: 297,
-                            height: 114.32,
+                            margin: EdgeInsets.only(
+                              bottom: 0.02 * _height,
+                              top: 0.02 * _height,
+                              left: 0.101 * _width,
+                              right: 0.101 * _width,
+                            ),
+                            width: 0.792 * _width,
+                            height: 0.15 * _height,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
@@ -411,45 +357,49 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     SizedBox(
-                                      height: 43.32,
+                                      height: _height * 0.05,
                                     ),
                                     Row(
                                       children: <Widget>[
                                         SizedBox(
-                                          width: 9,
+                                          width: _width * 0.0271,
                                         ),
-                                        Text(course[index].myCourseName ?? '',
+                                        AutoSizeText(
+                                            course[index].myCourseName ?? '',
                                             style: GoogleFonts.montserrat(
                                                 color: Color(0xffFF7E40),
                                                 fontSize: 22,
                                                 fontWeight: FontWeight.bold)),
                                         SizedBox(
-                                          width: 4,
+                                          width: _width * 0.012,
                                         ),
-                                        Text(course[index].section ?? '',
+                                        AutoSizeText(
+                                            course[index].section ?? '',
                                             style: GoogleFonts.montserrat(
                                                 color: Color(0xffFF7E40),
                                                 fontSize: 22,
                                                 fontWeight: FontWeight.bold)),
                                         SizedBox(
-                                          width: 6,
+                                          width: _width * 0.016,
                                         ),
-                                        (listOfUnread.isNotEmpty &&
-                                                index <=
-                                                    listOfUnread.length - 1 &&
-                                                listOfUnread[index] == 0)
+                                        listOfUnread.isEmpty ||
+                                                (listOfUnread.isNotEmpty &&
+                                                    index <=
+                                                        listOfUnread.length -
+                                                            1 &&
+                                                    listOfUnread[index] == 0)
                                             ? Container()
                                             : Container(
                                                 alignment: Alignment.center,
-                                                width: 18,
-                                                height: 18,
+                                                width: _width * 0.048,
+                                                height: _width * 0.048,
                                                 decoration: new BoxDecoration(
                                                   color:
                                                       const Color(0xffFF1717),
                                                   borderRadius:
                                                       BorderRadius.circular(32),
                                                 ),
-                                                child: Text(
+                                                child: AutoSizeText(
                                                   listOfUnread.isNotEmpty &&
                                                           index <=
                                                               listOfUnread
@@ -470,8 +420,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       ],
                                     ),
                                     Container(
-                                      padding: EdgeInsets.only(left: 10),
-                                      child: Text(
+                                      padding: EdgeInsets.only(
+                                          left: _width * 0.0266),
+                                      child: AutoSizeText(
                                           listOfNumberOfMembers.isNotEmpty &&
                                                   index <=
                                                       listOfUnread.length - 1
@@ -494,7 +445,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   ],
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 20.0),
+                                  padding:
+                                      EdgeInsets.only(right: _width * 0.05),
                                   child: Image.asset(fileLocation[index % 6]),
                                 ),
                               ],

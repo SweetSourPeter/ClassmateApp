@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _MainMenuState extends State<MainMenu> {
     double _width = MediaQuery.of(context).size.width;
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
-
+    final userTags = Provider.of<UserTags>(context);
     return (userdata == null)
         ? CircularProgressIndicator()
         : SafeArea(
@@ -241,6 +242,7 @@ class _MainMenuState extends State<MainMenu> {
 
   CurvedNavigationBar buildBottomNavigationBar(double _height, double _width) {
     return CurvedNavigationBar(
+      animationDuration: const Duration(milliseconds: 480),
       color: Color(0xFFF9F6F1),
       backgroundColor: Colors.white, // background!!!
       buttonBackgroundColor: Colors.white,

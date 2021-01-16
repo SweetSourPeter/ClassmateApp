@@ -38,6 +38,15 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
     double modal_height = MediaQuery.of(context).size.height - 60;
 
     return Container(
+        decoration: BoxDecoration(
+          color: riceColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            // bottomLeft: Radius.circular(30.0),
+            // bottomRight: Radius.circular(30.0),
+          ),
+        ),
         height: modal_height,
         child: Padding(
           padding: EdgeInsets.only(top: 30),

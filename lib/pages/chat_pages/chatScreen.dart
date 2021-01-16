@@ -1,5 +1,6 @@
 // import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
@@ -265,6 +266,7 @@ class _ChatScreenState extends State<ChatScreen> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
 
@@ -326,6 +328,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       providers: [
                                         Provider<UserData>.value(
                                           value: currentUser,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                          value: currentCourse,
                                         ),
                                         // 这个需要的话直接uncomment
                                         // Provider<List<CourseInfo>>.value(
@@ -625,11 +630,33 @@ class _ChatScreenState extends State<ChatScreen> {
                                   () => _controller.jumpTo(
                                       _controller.position.minScrollExtent));
                             },
-                            child: showFunctions
-                                ? Image.asset('assets/images/plus_on_click.png',
+                            child: (messageController.text != '' ||
+                                    messageController.text.isNotEmpty)
+                                ? Image.asset('assets/images/messageSend.png',
                                     width: 28, height: 28)
-                                : Image.asset('assets/images/plus.png',
-                                    width: 28, height: 28)),
+                                : showFunctions
+                                    ? Image.asset(
+                                        'assets/images/plus_on_click.png',
+                                        width: 28,
+                                        height: 28)
+                                    : Image.asset(
+                                        'assets/images/plus_on_click.png',
+                                        width: 28,
+                                        height: 28)),
+
+                        // showFunctions
+                        //     ? Image.asset('assets/images/plus_on_click.png',
+                        //         width: 28, height: 28)
+                        //     : (messageController.text == '' ||
+                        //             messageController.text.isEmpty)
+                        //         ? Image.asset(
+                        //             'assets/images/messageSend.png',
+                        //             width: 28,
+                        //             height: 28)
+                        //         : Image.asset(
+                        //             'assets/images/plus_on_click.png',
+                        //             width: 28,
+                        //             height: 28)),
                       )
                     ],
                   ),

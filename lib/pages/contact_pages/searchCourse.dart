@@ -416,23 +416,23 @@ class _SearchCourseState extends State<SearchCourse> {
 
   searchList(context, List<CourseInfo> course) {
     double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
     final userdata = Provider.of<UserData>(context, listen: false);
 
     print('SearchList create');
     return searchBegain && searchSnapshot.docs.isNotEmpty
         ? Padding(
             padding: EdgeInsets.only(
-              top: 30,
+              top: 18,
             ),
             child: Container(
-              decoration: new BoxDecoration(
-                  color: riceColor,
-                  borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(30.0),
-                    topRight: const Radius.circular(30.0),
-                  )),
-              height: MediaQuery.of(context).size.height * 0.6,
-
+              // decoration: new BoxDecoration(
+              //     color: Colors.white,
+              //     borderRadius: new BorderRadius.only(
+              //       topLeft: const Radius.circular(30.0),
+              //       topRight: const Radius.circular(30.0),
+              //     )),
+              height: _height * 0.6,
               // decoration: BoxDecoration(
               //   color: Colors.blue,
               //   borderRadius: BorderRadius.only(
@@ -449,7 +449,10 @@ class _SearchCourseState extends State<SearchCourse> {
                   Expanded(
                     child: ListView.separated(
                         separatorBuilder: (context, index) {
-                          return Divider();
+                          return Divider(
+                            color: Color(0xFFEBEBEB),
+                            thickness: 0.8,
+                          );
                         },
                         itemCount: searchSnapshot.docs.length,
                         shrinkWrap: true, //when you have listview in column
@@ -494,15 +497,15 @@ class _SearchCourseState extends State<SearchCourse> {
           )
         : Padding(
             padding: EdgeInsets.only(
-              top: 30,
+              top: 18,
             ),
             child: Container(
-              decoration: new BoxDecoration(
-                  color: riceColor,
-                  borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(30.0),
-                    topRight: const Radius.circular(30.0),
-                  )),
+              // decoration: new BoxDecoration(
+              //     color: Colors.white,
+              //     borderRadius: new BorderRadius.only(
+              //       topLeft: const Radius.circular(30.0),
+              //       topRight: const Radius.circular(30.0),
+              //     )),
               height: MediaQuery.of(context).size.height * 0.5,
 
               // decoration: BoxDecoration(
@@ -519,22 +522,30 @@ class _SearchCourseState extends State<SearchCourse> {
                     SizedBox(
                       height: 5,
                     ),
-                    Stack(alignment: Alignment.center, children: <Widget>[
-                      Container(
-                          height: 140,
-                          width: _width - 40,
-                          child: FittedBox(
-                            child: Image.asset('assets/icon/sorryBox.png'),
-                            fit: BoxFit.fill,
-                          )),
-                      Text(
-                        "Sorry,\nwe didn\'t find the course",
-                        style: largeTitleTextStyle(Colors.black, 26),
-                      ),
-                    ]),
                     Container(
-                        height: 140,
-                        width: 140,
+                        alignment: Alignment.centerLeft,
+                        height: _height * 0.6 * 0.25,
+                        width: _width * 0.73,
+                        child: Stack(
+                          alignment: Alignment.centerLeft,
+                          children: [
+                            FittedBox(
+                              child: Image.asset('assets/icon/sorryBox.png'),
+                              fit: BoxFit.fill,
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: _width * 0.73 * 0.09),
+                              child: Text(
+                                "Sorry,we didn\'t find the course",
+                                style: largeTitleTextStyle(Colors.black, 16),
+                              ),
+                            ),
+                          ],
+                        )),
+                    Container(
+                        height: _width * 0.4,
+                        width: _width * 0.4,
                         child: FittedBox(
                           child: Image.asset('assets/icon/failToFind.png'),
                           fit: BoxFit.fill,
@@ -544,12 +555,12 @@ class _SearchCourseState extends State<SearchCourse> {
                         style: TextStyle(color: Colors.grey, fontSize: 15.0),
                         children: <TextSpan>[
                           TextSpan(
-                            text: 'Check the info. you entered, or\n',
+                            text: ' Check the info you entered\n or ',
                             style: GoogleFonts.openSans(
                               textStyle: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400),
                             ),
                           ),
                           TextSpan(
@@ -558,8 +569,8 @@ class _SearchCourseState extends State<SearchCourse> {
                                 textStyle: TextStyle(
                                     decoration: TextDecoration.underline,
                                     color: themeOrange,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400),
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
@@ -575,6 +586,15 @@ class _SearchCourseState extends State<SearchCourse> {
                                     ),
                                   );
                                 }),
+                          TextSpan(
+                            text: 'for others to join',
+                            style: GoogleFonts.openSans(
+                              textStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -618,13 +638,15 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
     // final course = Provider.of<List<CourseInfo>>(context);
-
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     // print('course name is ' + courseName);
     // print('section is ' + section);
     // print('is ${widget.isAdd}' + widget.courseID);
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 23),
+      padding:
+          EdgeInsets.only(left: _width * 0.056, right: _width * 0.056, top: 16),
       child: Row(
         children: <Widget>[
           Column(

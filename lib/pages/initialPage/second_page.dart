@@ -36,7 +36,7 @@ class _SecondPageState extends State<SecondPage>
           child: Column(
             children: [
               SizedBox(
-                height: 36,
+                height: _height * 0.044,
               ),
               Text(
                 'What should your classmates call you?',
@@ -44,7 +44,7 @@ class _SecondPageState extends State<SecondPage>
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: 13,
+                height: _height * 0.016,
               ),
               Text(
                 'Your profile picture dispalys the first letters of your nick name',
@@ -90,7 +90,8 @@ class _SecondPageState extends State<SecondPage>
                     },
                     cursorColor: Colors.white,
                     style: TextStyle(color: Colors.white, fontSize: 21),
-                    decoration: textFieldInputDecoration('Your name...', 11),
+                    decoration: textFieldInputDecoration(
+                        _height * 0.036, 'Your name...', 11),
                   ),
                 ),
                 Padding(

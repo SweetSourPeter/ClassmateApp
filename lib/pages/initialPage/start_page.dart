@@ -172,7 +172,7 @@ class _StartPageState extends State<StartPage> {
           ),
           AnimatedPositioned(
             top: _height * 0.9,
-            right: _width / 2 - 38,
+            right: _width / 2 - _width * 0.08,
             height: 40,
             duration: Duration(milliseconds: 400),
             curve: Curves.easeOutCubic,
@@ -181,7 +181,7 @@ class _StartPageState extends State<StartPage> {
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   height: 10,
-                  width: 10,
+                  width: _width * 0.02,
                   decoration: BoxDecoration(
                       color: _currentIndex == 0 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),
@@ -192,7 +192,7 @@ class _StartPageState extends State<StartPage> {
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   height: 70,
-                  width: 10,
+                  width: _width * 0.02,
                   decoration: BoxDecoration(
                       color: _currentIndex == 1 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),
@@ -203,7 +203,7 @@ class _StartPageState extends State<StartPage> {
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   height: 10,
-                  width: 10,
+                  width: _width * 0.02,
                   decoration: BoxDecoration(
                       color: _currentIndex == 2 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),
@@ -214,7 +214,7 @@ class _StartPageState extends State<StartPage> {
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   height: 10,
-                  width: 10,
+                  width: _width * 0.02,
                   decoration: BoxDecoration(
                       color: _currentIndex == 3 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),

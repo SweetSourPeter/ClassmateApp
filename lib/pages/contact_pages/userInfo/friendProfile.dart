@@ -59,6 +59,7 @@ class _FriendProfileState extends State<FriendProfile> {
 
     Future<UserData> userData = databaseMethods.getUserDetailsByID(userID);
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context);
     // Future<UserTags> myTag = databaseMethods.getAllTage(currentUser.userID);
     // a helper function for createChatRoomAndStartConversation()
     getChatRoomId(String a, String b) {
@@ -148,7 +149,7 @@ class _FriendProfileState extends State<FriendProfile> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          left: 27,
+                          left: 0.072 * _width,
                           top: _height * 0.06,
                           bottom: _height * 0.024),
                       child: Align(
@@ -247,7 +248,7 @@ class _FriendProfileState extends State<FriendProfile> {
                     ),
                     RaisedGradientButton(
                       width: _width * 0.75,
-                      height: 59,
+                      height: 0.072 * _height,
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,

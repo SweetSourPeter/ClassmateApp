@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
@@ -116,6 +117,7 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
@@ -145,6 +147,9 @@ class _ChatRoomState extends State<ChatRoom> {
                             providers: [
                               Provider<UserData>.value(
                                 value: currentUser,
+                              ),
+                              Provider<List<CourseInfo>>.value(
+                                value: currentCourse,
                               ),
                               // 这个需要的话直接uncomment
                               // Provider<List<CourseInfo>>.value(
@@ -206,6 +211,7 @@ class ChatRoomsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
@@ -218,7 +224,10 @@ class ChatRoomsTile extends StatelessWidget {
             providers: [
               Provider<UserData>.value(
                 value: currentUser,
-              )
+              ),
+              Provider<List<CourseInfo>>.value(
+                value: currentCourse,
+              ),
             ],
             child: ChatScreen(
                 chatRoomId: chatRoomId,
@@ -232,8 +241,8 @@ class ChatRoomsTile extends StatelessWidget {
         }));
       },
       child: Container(
-        height: _height * 0.08,
-        margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
+        height: _height * 0.087,
+        margin: EdgeInsets.only(top: _height * 0.006, bottom: 5.0, right: 20.0),
         padding: EdgeInsets.symmetric(
           horizontal: 20.0,
         ),
@@ -253,8 +262,8 @@ class ChatRoomsTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    height: 65,
-                    width: 65,
+                    height: _width * 0.175,
+                    width: _width * 0.175,
                     child: Stack(
                       children: [
                         CircleAvatar(
@@ -309,7 +318,7 @@ class ChatRoomsTile extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 18.0, top: 5),
+                    padding: EdgeInsets.only(left: 18.0, top: _height * 0.005),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -321,7 +330,7 @@ class ChatRoomsTile extends StatelessWidget {
                               color: const Color(0xffFF7E40)),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: _height * 0.009,
                         ),
                         Container(
                           width: mediaQuery.width - 200,

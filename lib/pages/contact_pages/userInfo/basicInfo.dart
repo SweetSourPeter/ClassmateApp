@@ -73,32 +73,32 @@ class _BasicInfoState extends State<BasicInfo> {
                       children: <Widget>[
                         Container(
                           color: Colors.transparent,
-                          height: 130,
+                          height: _height * 0.1465 * 1.0924,
                           child: Stack(
                             children: [
                               Positioned(
                                 bottom: 0,
-                                left: (_width / 2) - (119 / 2),
+                                left: (_width / 2) - (_height * 0.1465 / 2),
                                 child: CircleAvatar(
                                   backgroundColor: themeOrange,
-                                  radius: 119 / 2,
+                                  radius: _height * 0.1465 / 2,
                                 ),
                               ),
                               Positioned(
-                                left: (_width / 2) - (119 / 2) + 4,
+                                left: (_width / 2) - (_height * 0.1465 / 2) + 4,
                                 bottom: 4,
                                 child: createUserImage(
-                                  111 / 2,
+                                  (_height * 0.1465 - 8) / 2,
                                   snapshot.data[0],
                                   largeTitleTextStyleBold(Colors.white, 25),
                                 ),
                               ),
                               Positioned(
-                                left: (_width / 2) - (119 / 2),
+                                left: (_width / 2) - (_height * 0.1465 / 2),
                                 bottom: 0,
                                 child: Container(
-                                    height: 130,
-                                    width: 119,
+                                    height: _height * 0.1465 * 1.0924,
+                                    width: _height * 0.1465,
                                     child: FittedBox(
                                       child: Image.asset(
                                           'assets/icon/earCircle.png'),
@@ -128,8 +128,8 @@ class _BasicInfoState extends State<BasicInfo> {
                           userTag: snapshot.data[1],
                           matchTag: resultTag,
                           userName: snapshot.data[0].userName,
-                          width: 90.0,
-                          height: 30.0,
+                          width: _width * 0.24,
+                          height: _height * 0.038,
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,

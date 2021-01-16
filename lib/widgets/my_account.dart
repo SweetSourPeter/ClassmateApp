@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/edit_pages/editHomePage.dart';
@@ -36,6 +37,7 @@ class _MyAccountState extends State<MyAccount> {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     final userdata = Provider.of<UserData>(context);
+    final userTags = Provider.of<UserTags>(context);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
@@ -54,6 +56,7 @@ class _MyAccountState extends State<MyAccount> {
                   Spacer(),
                   GestureDetector(
                       onTap: () {
+                        print(userTags.college);
                         Clipboard.setData(
                           new ClipboardData(
                               text:
@@ -121,32 +124,32 @@ class _MyAccountState extends State<MyAccount> {
                 padding: EdgeInsets.only(top: _height * 0.033),
                 child: Container(
                   color: Colors.transparent,
-                  height: 130,
+                  height: _height * 0.1465 * 1.0924,
                   child: Stack(
                     children: [
                       Positioned(
                         bottom: 0,
-                        left: (_width / 2) - (119 / 2),
+                        left: (_width / 2) - (_height * 0.1465 / 2),
                         child: CircleAvatar(
                           backgroundColor: themeOrange,
-                          radius: 119 / 2,
+                          radius: _height * 0.1465 / 2,
                         ),
                       ),
                       Positioned(
-                        left: (_width / 2) - (119 / 2) + 4,
+                        left: (_width / 2) - (_height * 0.1465 / 2) + 4,
                         bottom: 4,
                         child: createUserImage(
-                          111 / 2,
+                          (_height * 0.1465 - 8) / 2,
                           userdata,
                           largeTitleTextStyleBold(Colors.white, 25),
                         ),
                       ),
                       Positioned(
-                        left: (_width / 2) - (119 / 2),
+                        left: (_width / 2) - (_height * 0.1465 / 2),
                         bottom: 0,
                         child: Container(
-                            height: 130,
-                            width: 119,
+                            height: _height * 0.1465 * 1.0924,
+                            width: _height * 0.1465,
                             child: FittedBox(
                               child: Image.asset('assets/icon/earCircle.png'),
                               fit: BoxFit.fill,
@@ -156,11 +159,9 @@ class _MyAccountState extends State<MyAccount> {
                   ),
                 ),
               ),
-              // Image.asset(
-              //   "assets/images/olivia.jpg",
-              //   width: sidebarSize / 2,
-              // ),
-
+              SizedBox(
+                height: _height * 0.02,
+              ),
               Container(
                 margin: EdgeInsets.only(top: 28),
                 child: Column(
@@ -201,6 +202,9 @@ class _MyAccountState extends State<MyAccount> {
                           return MultiProvider(providers: [
                             Provider<UserData>.value(
                               value: userdata,
+                            ),
+                            Provider<UserTags>.value(
+                              value: userTags,
                             )
                           ], child: EditHomePage());
                         }));
