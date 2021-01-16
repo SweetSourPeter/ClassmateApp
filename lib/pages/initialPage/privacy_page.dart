@@ -193,7 +193,7 @@ class _PrivacyPageState extends State<PrivacyPage>
                         }
                       },
                       child: Text(
-                        'CREATE ACCOUNT',
+                        'Create Account',
                         style: simpleTextSansStyleBold(
                             (checkedToSvalue && checkedPPvalue)
                                 ? themeOrange

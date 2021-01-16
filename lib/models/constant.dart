@@ -9,7 +9,7 @@ const lightBlueColor = Color(0xFF00A8CC);
 
 const themeOrange = Color(0xFFFF7E40);
 const gradientYellow = Color(0xFFFFAE18);
-const closeWhite = Color(0xFFFFFFB3);
+const closeWhite = Colors.white;
 
 const lightYellowColor = Color(0xFFFFEED5);
 const lightOrangeColor = Color(0xFFFFC46B);
@@ -92,46 +92,88 @@ List strudyHabits = [
   '#leader',
 ];
 const List<Color> listProfileColor = [
-  themeOrange,
-  Colors.indigoAccent,
-  Colors.purple,
-  Colors.green,
-  Colors.blue,
+  Color(0xFFD95B66),
+  Color(0xFFFFC94A),
+  Color(0xFFB7D14B),
+  Color(0xFF86E8AA),
+  Color(0xFF60CCAF),
+  //
+  Color(0xFF60BACC),
+  Color(0xFF6078CC),
+  Color(0xFFB99CDF),
+  Color(0xFFCC60C4),
+  Color(0xFFF2839E),
 ];
 const List<LinearGradient> listColors = [
   LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        themeOrange,
-        Color(0xFFFF7E49),
+        Color(0xFFD95B66),
+        Color(0xFFD95B66),
       ]),
   LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.indigoAccent,
-        Colors.teal,
+        Color(0xFFFFC94A),
+        Color(0xFFFFC94A),
       ]),
   LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.purple,
-        Colors.red,
+        Color(0xFFB7D14B),
+        Color(0xFFB7D14B),
       ]),
   LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.green,
-        Colors.blue,
+        Color(0xFF86E8AA),
+        Color(0xFF86E8AA),
       ]),
   LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.purple,
-        Colors.blue,
+        Color(0xFF60CCAF),
+        Color(0xFF60CCAF),
+      ]),
+  //
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFF60BACC),
+        Color(0xFF60BACC),
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFF6078CC),
+        Color(0xFF6078CC),
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFFB99CDF),
+        Color(0xFFB99CDF),
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFFCC60C4),
+        Color(0xFFCC60C4),
+      ]),
+  LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFFF2839E),
+        Color(0xFFF2839E),
       ]),
 ];

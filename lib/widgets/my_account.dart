@@ -6,7 +6,6 @@ import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
 import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
-import 'package:app_test/widgets/favorite_contacts.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -98,26 +97,65 @@ class _MyAccountState extends State<MyAccount> {
                       )),
                 ],
               ),
-              Container(
-                  margin: EdgeInsets.only(
-                      bottom: 0.03 * _height, top: _height * 0.043),
+              // Container(
+              //     margin: EdgeInsets.only(
+              //         bottom: 0.03 * _height, top: _height * 0.043),
+              //     child: Stack(
+              //       children: [
+              //         Image.asset(
+              //           'assets/icon/earCircle.png',
+              //           color: themeOrange,
+              //           width: sidebarSize / 3.8,
+              //         ),
+              //         Positioned(
+              //             child: createUserImage(
+              //               sidebarSize / 8,
+              //               userdata,
+              //               largeTitleTextStyleBold(Colors.white, 25),
+              //             ),
+              //             top: 13,
+              //             left: 3)
+              //       ],
+              //     )),
+              Padding(
+                padding: EdgeInsets.only(top: _height * 0.033),
+                child: Container(
+                  color: Colors.transparent,
+                  height: 130,
                   child: Stack(
                     children: [
-                      Image.asset(
-                        'assets/icon/earCircle.png',
-                        color: themeOrange,
-                        width: sidebarSize / 3.8,
+                      Positioned(
+                        bottom: 0,
+                        left: (_width / 2) - (119 / 2),
+                        child: CircleAvatar(
+                          backgroundColor: themeOrange,
+                          radius: 119 / 2,
+                        ),
                       ),
                       Positioned(
-                          child: createUserImage(
-                            sidebarSize / 8,
-                            userdata,
-                            largeTitleTextStyleBold(Colors.white, 25),
-                          ),
-                          top: 13,
-                          left: 3)
+                        left: (_width / 2) - (119 / 2) + 4,
+                        bottom: 4,
+                        child: createUserImage(
+                          111 / 2,
+                          userdata,
+                          largeTitleTextStyleBold(Colors.white, 25),
+                        ),
+                      ),
+                      Positioned(
+                        left: (_width / 2) - (119 / 2),
+                        bottom: 0,
+                        child: Container(
+                            height: 130,
+                            width: 119,
+                            child: FittedBox(
+                              child: Image.asset('assets/icon/earCircle.png'),
+                              fit: BoxFit.fill,
+                            )),
+                      ),
                     ],
-                  )),
+                  ),
+                ),
+              ),
               // Image.asset(
               //   "assets/images/olivia.jpg",
               //   width: sidebarSize / 2,

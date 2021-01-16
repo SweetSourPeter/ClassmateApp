@@ -11,10 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SearchUsers extends StatefulWidget {
   @override
   _SearchUsersState createState() => _SearchUsersState();
+}
+
+_toastInfo(String info) {
+  Fluttertoast.showToast(
+    msg: info,
+    toastLength: Toast.LENGTH_LONG,
+    timeInSecForIosWeb: 3,
+    gravity: ToastGravity.CENTER,
+  );
 }
 
 class _SearchUsersState extends State<SearchUsers> {
@@ -90,7 +100,7 @@ class _SearchUsersState extends State<SearchUsers> {
           children: <Widget>[
             Container(
               color: themeOrange,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -111,12 +121,17 @@ class _SearchUsersState extends State<SearchUsers> {
                         suffixIcon: searchTextEditingController.text.isEmpty
                             ? null
                             : IconButton(
-                                icon: Image.asset(
-                                  'assets/images/cross.png',
-                                  // color: Color(0xffFF7E40),
-                                  height: 19,
-                                  width: 19,
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: Color(0xffFF7E40),
+                                  // size: 30,
                                 ),
+                                // Image.asset(
+                                //   'assets/images/cross.png',
+                                //   // color: Color(0xffFF7E40),
+                                //   height: 19,
+                                //   width: 19,
+                                // ),
                                 onPressed: () {
                                   // initiateSearch();
                                   clearSearchTextInput(currentFocus);
@@ -146,7 +161,7 @@ class _SearchUsersState extends State<SearchUsers> {
                   )),
                   // showCancel
                   Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.only(left: 10),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
@@ -527,6 +542,7 @@ class SearchTile extends StatelessWidget {
             friendEmail: userEmail,
             friendName: userName,
             initialChat: 0,
+            friendProfileColor: userProfileColor,
             myEmail: currentUser.email,
           ),
         );
@@ -538,6 +554,8 @@ class SearchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     final contactProvider = Provider.of<ContactProvider>(context);
 
     // // a helper function for createChatRoomAndStartConversation()
@@ -622,7 +640,7 @@ class SearchTile extends StatelessWidget {
               ),
               // 这个需要的话直接uncomment
               // Provider<List<CourseInfo>>.value(
-              //   value: course,F
+              //   value: course,
               // ),
               // final courseProvider = Provider.of<CourseProvider>(context);
               // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
@@ -639,7 +657,7 @@ class SearchTile extends StatelessWidget {
         child: Row(
           children: <Widget>[
             creatUserImageWithString(
-              30.0,
+              24,
               userName ?? '',
               userProfileColor ?? 1.0,
               simpleTextSansStyleBold(Colors.white, 18),
@@ -650,11 +668,10 @@ class SearchTile extends StatelessWidget {
             //   backgroundColor: Colors.transparent,
             // ),
             SizedBox(
-              width: 20,
+              width: _width * 0.027,
             ),
             Container(
-              // color: Colors.black12,
-              width: 180,
+              width: _width * 0.29,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -677,37 +694,44 @@ class SearchTile extends StatelessWidget {
             // SizedBox(
             //   width: 10,
             // ),
-            Spacer(),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-              ),
-              width: 100,
-              height: 40,
-              child: RaisedButton(
-                hoverElevation: 0,
-                highlightColor: Color(0xDA6D39),
-                highlightElevation: 0,
-                elevation: 0,
-                color: themeOrange,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                onPressed: () {
-                  //TODO
-                  contactProvider.changeSchool(school);
-                  contactProvider.changeUserID(userID);
-                  contactProvider.changeEmail(userEmail);
-                  contactProvider.changeUserName(userName);
-                  contactProvider.changeUserImageUrl('imageURL');
-                  contactProvider.addUserToContact(context);
-                  createChatRoomAndStartConversation(
-                      userName, userEmail, userID, userProfileColor, context);
-                },
-                child: AutoSizeText(
-                  'Message',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
+            Expanded(child: Container()),
+            Padding(
+              padding: EdgeInsets.only(right: 0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                width: _width * 0.277,
+                height: 40,
+                child: RaisedButton(
+                  hoverElevation: 0,
+                  highlightColor: Color(0xDA6D39),
+                  highlightElevation: 0,
+                  elevation: 0,
+                  color: themeOrange,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  onPressed: () {
+                    //TODO
+                    if (userID == userdata.userID) {
+                      _toastInfo('This is your account');
+                    } else {
+                      contactProvider.changeSchool(school);
+                      contactProvider.changeUserID(userID);
+                      contactProvider.changeEmail(userEmail);
+                      contactProvider.changeUserName(userName);
+                      contactProvider.changeUserImageUrl('imageURL');
+                      contactProvider.addUserToContact(context);
+                      createChatRoomAndStartConversation(userName, userEmail,
+                          userID, userProfileColor, context);
+                    }
+                  },
+                  child: AutoSizeText(
+                    'Message',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

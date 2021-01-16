@@ -6,6 +6,7 @@ import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:app_test/models/constant.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
@@ -514,7 +515,6 @@ class _GroupChatState extends State<GroupChat> {
                 showStickerKeyboard
                     ? AnimatedContainer(
                         duration: Duration(milliseconds: 80),
-                        height: MediaQuery.of(context).size.height / 2 - 50,
                         // showStickerKeyboard ? 400 : 0,
                         child: EmojiPicker(
                           rows: 4,
@@ -924,7 +924,15 @@ class ImageTile extends StatelessWidget {
                                     child: CachedNetworkImage(
                                       imageUrl: message,
                                       placeholder: (context, url) =>
-                                          new CircularProgressIndicator(),
+                                          new Container(
+                                              height: 70,
+                                              width: 70,
+                                              child: Center(
+                                                child:
+                                                    new CircularProgressIndicator(
+                                                  backgroundColor: themeOrange,
+                                                ),
+                                              )),
                                       errorWidget: (context, url, error) =>
                                           new Icon(Icons.error),
                                       height: 180.0,
@@ -986,7 +994,15 @@ class ImageTile extends StatelessWidget {
                                     child: CachedNetworkImage(
                                       imageUrl: message,
                                       placeholder: (context, url) =>
-                                          new CircularProgressIndicator(),
+                                          new Container(
+                                              height: 70,
+                                              width: 70,
+                                              child: Center(
+                                                child:
+                                                    new CircularProgressIndicator(
+                                                  backgroundColor: themeOrange,
+                                                ),
+                                              )),
                                       errorWidget: (context, url, error) =>
                                           new Icon(Icons.error),
                                       height: 180.0,

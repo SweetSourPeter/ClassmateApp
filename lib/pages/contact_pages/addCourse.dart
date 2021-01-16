@@ -69,24 +69,7 @@ class _AddCourseState extends State<AddCourse> {
             //TODO create class in database
             if (formKey.currentState.validate()) {
               courseProvider.saveNewCourse(context);
-              // Navigator.push(context, MaterialPageRoute(
-              //     builder: (context){
-              //       return MultiProvider(
-              //         providers: [
-              //           Provider<UserData>.value(
-              //             value: currentUser,
-              //           )
-              //         ],
-              //         child: GroupChat(
-              //           chatRoomId: courseProvider.courseID,
-              //           courseName: courseProvider.myCourseName,
-              //           myName: currentUser.userName,
-              //           myEmail: currentUser.email,
-              //           initialChat: 0,
-              //         ),
-              //       );
-              //     }
-              // ));
+              Navigator.pop(context);
               Navigator.pop(context);
             }
           },
@@ -138,6 +121,10 @@ class _AddCourseState extends State<AddCourse> {
                   height: 30,
                 ),
                 DropdownButtonFormField<String>(
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.black,
+                  ),
                   decoration: buildInputDecorationPinky(
                     false,
                     Icon(

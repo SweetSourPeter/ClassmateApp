@@ -58,7 +58,13 @@ class _StartLoginPageState extends State<StartLoginPage> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: _currentIndexColor != null
-                        ? listColors[_currentIndexColor]
+                        ? LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                                themeOrange,
+                                themeOrange,
+                              ])
                         : null),
               ),
               builder: (BuildContext context, value, Widget child) {

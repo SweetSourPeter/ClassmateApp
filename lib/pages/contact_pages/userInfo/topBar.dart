@@ -1,41 +1,44 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/user.dart';
+import 'package:app_test/services/database.dart';
 import 'package:flutter/services.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class TopBar extends StatelessWidget {
+class TopBar extends StatefulWidget {
   final String userID;
   final String userName;
   final String profileUserEmail;
+  final String currentUserEmail;
+  final String currentUserID;
   const TopBar({
     @required this.userID,
     @required this.userName,
     @required this.profileUserEmail,
+    @required this.currentUserEmail,
+    @required this.currentUserID,
     Key key,
   }) : super(key: key);
 
   @override
+  _TopBarState createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
+  @override
+  DatabaseMethods databaseMethods = new DatabaseMethods();
+  // bool isBlocked = false;
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserData>(context, listen: false);
+    // if () {
+    //   isBlocked = ();
+    // }
+
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    // void showBottomSheet() {
-    //   showModalBottomSheet(
-    //       shape: RoundedRectangleBorder(
-    //           side: BorderSide(width: 15, color: Colors.transparent),
-    //           borderRadius: BorderRadius.only(
-    //             topLeft: Radius.circular(30.0),
-    //             topRight: Radius.circular(30.0),
-    //             // bottomLeft: Radius.circular(30.0),
-    //             // bottomRight: Radius.circular(30.0),
-    //           )),
-    //       context: context,
-    //       isScrollControlled: true,
-    //       builder: (context) {
-    //         return ReportUser();
-    //       });
-    // }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -45,7 +48,7 @@ class TopBar extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
-              // size: 30,
+              color: themeOrange,
             ),
             color: Colors.black,
             onPressed: () {
@@ -56,7 +59,7 @@ class TopBar extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.more_vert),
-            color: Colors.black,
+            color: themeOrange,
             onPressed: () {
               //navigate to previous page
               showGeneralDialog(
@@ -75,27 +78,72 @@ class TopBar extends StatelessWidget {
                         child: Container(),
                       ),
                       Container(
-                        height: 200,
+                        height: _height * 0.25,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     print("blocked");
-                            //   },
-                            //   child: Center(
-                            //     child: Material(
-                            //       child: Text(
-                            //         "Block",
-                            //         style: GoogleFonts.openSans(
-                            //             fontSize: 20.0, color: themeOrange),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            // Divider(
-                            //   height: 0.0,
-                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                print(currentUser.blockedUserID != null &&
+                                    currentUser.blockedUserID
+                                        .contains(widget.userID));
+                                if (currentUser.blockedUserID != null &&
+                                    currentUser.blockedUserID
+                                        .contains(widget.userID)) {
+                                  print('Called');
+                                  var blockedUserTemp =
+                                      currentUser.blockedUserID;
+
+                                  blockedUserTemp.remove(widget.userID);
+                                  databaseMethods
+                                      .updateUserBlock(widget.currentUserID,
+                                          blockedUserTemp.cast<String>())
+                                      .then((value) {
+                                    Navigator.pop(context);
+                                  });
+                                } else {
+                                  var blockedUserTemp =
+                                      currentUser.blockedUserID;
+                                  if (currentUser.blockedUserID == null) {
+                                    print('1');
+                                    blockedUserTemp = [widget.userID];
+                                  } else {
+                                    blockedUserTemp = currentUser.blockedUserID;
+
+                                    blockedUserTemp.add(widget.userID);
+                                  }
+
+                                  databaseMethods
+                                      .updateUserBlock(widget.currentUserID,
+                                          blockedUserTemp.cast<String>())
+                                      .then((value) {
+                                    Navigator.pop(context);
+                                  });
+                                }
+                              },
+                              child: Center(
+                                child: Material(
+                                  child: Text(
+                                    (currentUser.blockedUserID != null &&
+                                            currentUser.blockedUserID
+                                                .contains(widget.userID))
+                                        ? 'unBlock'
+                                        : "Block",
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 18.0,
+                                        color: (currentUser.blockedUserID !=
+                                                    null &&
+                                                currentUser.blockedUserID
+                                                    .contains(widget.userID))
+                                            ? themeOrange
+                                            : Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              height: 0.0,
+                            ),
                             GestureDetector(
                               onTap: () {
                                 print("reported");
@@ -103,8 +151,8 @@ class TopBar extends StatelessWidget {
                                 showBottomPopSheet(
                                     context,
                                     ReportUser(
-                                      badUserEmail: profileUserEmail,
-                                      profileID: userID,
+                                      badUserEmail: widget.profileUserEmail,
+                                      profileID: widget.userID,
                                     ));
                               },
                               child: Center(
@@ -112,7 +160,7 @@ class TopBar extends StatelessWidget {
                                   child: Text(
                                     "Report",
                                     style: GoogleFonts.openSans(
-                                        fontSize: 18.0, color: themeOrange),
+                                        fontSize: 18.0, color: Colors.black),
                                   ),
                                 ),
                               ),
@@ -123,7 +171,8 @@ class TopBar extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 Clipboard.setData(
-                                  new ClipboardData(text: '$profileUserEmail'),
+                                  new ClipboardData(
+                                      text: '${widget.profileUserEmail}'),
                                 ).then((result) {
                                   showDialog<void>(
                                     context: context,
@@ -169,7 +218,7 @@ class TopBar extends StatelessWidget {
                               onTap: () {
                                 Clipboard.setData(new ClipboardData(
                                         text:
-                                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: $profileUserEmail'))
+                                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}'))
                                     .then((result) {
                                   showDialog<void>(
                                     context: context,
@@ -227,7 +276,7 @@ class TopBar extends StatelessWidget {
                               child: Text(
                                 "Cancel",
                                 style: GoogleFonts.openSans(
-                                    fontSize: 18.0, color: Colors.black),
+                                    fontSize: 18.0, color: themeOrange),
                               ),
                             ),
                           ),

@@ -59,7 +59,8 @@ class _MainMenuState extends State<MainMenu> {
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
-
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
 
@@ -123,7 +124,8 @@ class _MainMenuState extends State<MainMenu> {
                                   : MyAccount(
                                       key: globalKey,
                                     ),
-                          bottomNavigationBar: buildBottomNavigationBar(),
+                          bottomNavigationBar:
+                              buildBottomNavigationBar(_height, _width),
                         ),
                       ),
                       AnimatedPositioned(
@@ -237,23 +239,41 @@ class _MainMenuState extends State<MainMenu> {
     }
   }
 
-  CurvedNavigationBar buildBottomNavigationBar() {
+  CurvedNavigationBar buildBottomNavigationBar(double _height, double _width) {
     return CurvedNavigationBar(
       color: Color(0xFFF9F6F1),
       backgroundColor: Colors.white, // background!!!
       buttonBackgroundColor: Colors.white,
-      height: 58,
+      height: _height * 0.08,
       index: _currentIndex,
       items: <Widget>[
         _currentIndex == 0
-            ? Image.asset('assets/icon/navigationBar1Open.png')
-            : Image.asset('assets/icon/navigationBar1Close.png'),
+            ? Container(
+                height: _height * 0.035,
+                width: _height * 0.035,
+                child: Image.asset('assets/icon/navigationBar1Open.png'))
+            : Container(
+                height: _height * 0.035,
+                width: _height * 0.035,
+                child: Image.asset('assets/icon/navigationBar1Close.png')),
         _currentIndex == 1
-            ? Image.asset('assets/icon/navigationBar2Open.png')
-            : Image.asset('assets/icon/navigationBar2Close.png'),
+            ? Container(
+                height: _height * 0.05,
+                width: _height * 0.05,
+                child: Image.asset('assets/icon/navigationBar2Open.png'))
+            : Container(
+                height: _height * 0.05,
+                width: _height * 0.05,
+                child: Image.asset('assets/icon/navigationBar2Close.png')),
         _currentIndex == 2
-            ? Image.asset('assets/icon/navigationBar3Open.png')
-            : Image.asset('assets/icon/navigationBar3Close.png'),
+            ? Container(
+                height: _height * 0.04,
+                width: _height * 0.04,
+                child: Image.asset('assets/icon/navigationBar3Open.png'))
+            : Container(
+                height: _height * 0.04,
+                width: _height * 0.04,
+                child: Image.asset('assets/icon/navigationBar3Close.png')),
       ],
       onTap: (index) {
         setState(() {

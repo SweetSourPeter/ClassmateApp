@@ -1,11 +1,11 @@
 import 'package:app_test/models/constant.dart';
-import 'package:app_test/models/message_model.dart';
 import 'package:app_test/models/userTags.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
+import 'package:app_test/widgets/widgets.dart';
 
 class ExpandedButton extends StatefulWidget {
   final String initialText, finalText;
@@ -123,20 +123,21 @@ class ShrinkButton extends StatefulWidget {
   final UserTags matchTag;
   final double profileColor;
   ValueNotifier reset = ValueNotifier(false);
-  ShrinkButton(
-      {this.initialText,
-      this.finalText,
-      this.duration,
-      this.width,
-      this.height,
-      this.gradient,
-      this.finalStyle,
-      this.initialStyle,
-      this.onPressed,
-      this.userName,
-      this.userTag,
-      this.matchTag,
-      this.profileColor});
+  ShrinkButton({
+    this.initialText,
+    this.finalText,
+    this.duration,
+    this.width,
+    this.height,
+    this.gradient,
+    this.finalStyle,
+    this.initialStyle,
+    this.onPressed,
+    this.userName,
+    this.userTag,
+    this.matchTag,
+    this.profileColor,
+  });
 
   _ShrinkButtonState createState() => _ShrinkButtonState();
 }
@@ -411,9 +412,9 @@ class _ShrinkButtonState extends State<ShrinkButton>
           key: Key(index.toString()),
           index: index, // required
           title: item,
-          activeColor: Colors.deepOrange,
+          activeColor: listProfileColor[widget.profileColor.toInt()],
           textColor: Colors.white,
-          color: Colors.deepOrange,
+          color: listProfileColor[widget.profileColor.toInt()],
           // active: item.active,
           // customData: item.customData,
           textStyle: TextStyle(

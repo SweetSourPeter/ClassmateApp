@@ -9,11 +9,8 @@ class User {
 
   User({this.userID, bool admin, this.unread});
 
-  Map<String, dynamic> toJson() => {
-        'userID': userID,
-        'admin': admin,
-        'unread': 0
-      };
+  Map<String, dynamic> toJson() =>
+      {'userID': userID, 'admin': admin, 'unread': 0};
 }
 
 class UserData {
@@ -23,6 +20,7 @@ class UserData {
   final String school;
   final String userImageUrl;
   final double profileColor;
+  final List blockedUserID;
   // final List<String> friendsList;
   // final List<String> courseList;
   UserData({
@@ -32,6 +30,7 @@ class UserData {
     this.school,
     this.userImageUrl,
     this.profileColor,
+    this.blockedUserID,
   });
   Map<String, dynamic> toCourseJson() => {
         'userID': userID,
@@ -39,7 +38,6 @@ class UserData {
       };
 
   Map<String, dynamic> toMapIntoUsers() {
-    print('mapper called to map complete');
     return {
       'userID': userID,
       'userName': userName,
@@ -47,6 +45,7 @@ class UserData {
       'school': school,
       'userImageUrl': userImageUrl,
       'profileColor': profileColor,
+      'blockedUser': blockedUserID,
     };
   }
 
@@ -56,7 +55,8 @@ class UserData {
         school = firestore['school'] ?? '',
         email = firestore['email'] ?? '',
         profileColor = firestore['profileColor'] ?? '',
-        userName = firestore['userName'] ?? '';
+        userName = firestore['userName'] ?? '',
+        blockedUserID = firestore['blockedUser'] ?? null;
 
   //get data for contacts of current user
   UserData.fromFirestoreContacts(Map<String, dynamic> firestore)
@@ -65,14 +65,6 @@ class UserData {
         school = firestore['school'],
         email = firestore['email'],
         profileColor = firestore['profileColor'],
-        userName = firestore['userName'];
-  //     CourseInfo.fromFirestore(Map<String, dynamic> firestore)
-  // : school = firestore['school'],
-  //   term = firestore['term'],
-  //   myCourseCollge = firestore['college'],
-  //   department = firestore['department'],
-  //   myCourseName = firestore['myCourseName'],
-  //   section = firestore['section'],
-  //   courseID = firestore['courseID'],
-  //   userNumbers = firestore['userNumbers'];
+        userName = firestore['userName'],
+        blockedUserID = firestore['blockedUser'];
 }

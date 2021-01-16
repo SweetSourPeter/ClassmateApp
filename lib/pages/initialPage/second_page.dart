@@ -20,6 +20,8 @@ class SecondPage extends StatefulWidget {
 class _SecondPageState extends State<SecondPage>
     with AutomaticKeepAliveClientMixin {
   DatabaseMethods databaseMethods = new DatabaseMethods();
+  final formKey = GlobalKey<FormState>();
+  TextEditingController nameTextEditingController = new TextEditingController();
   String _nikname = '';
   @override
   Widget build(BuildContext context) {
@@ -55,9 +57,10 @@ class _SecondPageState extends State<SecondPage>
       );
     }
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(top: _height * 0.13),
+    return Padding(
+      padding: EdgeInsets.only(top: _height * 0.13),
+      child: Form(
+        key: formKey,
         child: Scaffold(
           resizeToAvoidBottomPadding: false,
           backgroundColor: themeOrange,
@@ -69,7 +72,17 @@ class _SecondPageState extends State<SecondPage>
                 Padding(
                   padding:
                       EdgeInsets.only(top: _height * 0.22, left: 45, right: 45),
-                  child: TextField(
+                  child: TextFormField(
+                    controller: nameTextEditingController,
+                    validator: (val) {
+                      if (val.length >= 25) {
+                        return "Nick name has to be less than 25 chars";
+                      } else if (val.length <= 0) {
+                        return "The nick name can not be empty";
+                      } else {
+                        return null;
+                      }
+                    },
                     onChanged: (texto) {
                       setState(() {
                         _nikname = texto;
@@ -93,13 +106,15 @@ class _SecondPageState extends State<SecondPage>
                       highlightColor: Color(0xDA6D39),
                       highlightElevation: 0,
                       elevation: 0,
-                      color: (_nikname.isNotEmpty)
+                      color: (_nikname.isNotEmpty &&
+                              formKey.currentState.validate())
                           ? Colors.white
                           : Color(0xFFFF9B6B).withOpacity(1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () {
-                        if (_nikname.length > 0) {
+                        if (_nikname.length > 0 &&
+                            formKey.currentState.validate()) {
                           widget.pageController.animateToPage(1,
                               duration: Duration(milliseconds: 800),
                               curve: Curves.easeInCubic);
