@@ -1,4 +1,5 @@
 import 'package:app_test/models/user.dart';
+import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
 import 'package:app_test/services/database.dart';
@@ -19,6 +20,7 @@ class _EditHomePageState extends State<EditHomePage> {
   AuthMethods authMethods = new AuthMethods();
 
   String nickName;
+  double userProfileColor;
   @override
   void initState() {
     super.initState();
@@ -30,15 +32,20 @@ class _EditHomePageState extends State<EditHomePage> {
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
-    final userdata = Provider.of<UserData>(context);
+    final userdata = Provider.of<UserData>(context, listen: true);
+    final userTags = Provider.of<UserTags>(context);
     final databaseMehods = DatabaseMethods();
 
-    databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
-      setState(() {
-        nickName = value.userName;
+    void resetInfo() {
+      databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
+        setState(() {
+          nickName = value.userName;
+          userProfileColor = value.profileColor;
+        });
       });
-    });
+    }
 
+    resetInfo();
     // TODO: implement build
     return Scaffold(
       backgroundColor: riceColor,
@@ -93,8 +100,9 @@ class _EditHomePageState extends State<EditHomePage> {
                               showBottomPopSheet(
                                   context,
                                   EditNameModel(
-                                      userName: userdata.userName,
+                                      userName: nickName,
                                       userId: userdata.userID));
+                              setState(() {});
                             },
                           ),
                           Divider(
@@ -110,13 +118,17 @@ class _EditHomePageState extends State<EditHomePage> {
                             height: (menuContainerHeight) / 8,
                             isEdit: true,
                             onTap: () {
+                              print(userTags.college);
                               showBottomPopSheet(
                                   context,
                                   TagSelecting(
-                                      buttonColor: userdata.profileColor == null
-                                          ? listProfileColor[0]
-                                          : listProfileColor[
-                                              userdata.profileColor.toInt()],
+                                      currentTags: userTags.college ??
+                                          [] + userTags.interest ??
+                                          [] + userTags.language ??
+                                          [] + userTags.strudyHabits ??
+                                          [],
+                                      buttonColor: listProfileColor[
+                                          userProfileColor.toInt()],
                                       pageController:
                                           PageController(initialPage: 0),
                                       isEdit: true));
@@ -130,8 +142,10 @@ class _EditHomePageState extends State<EditHomePage> {
                           ButtonLink(
                             text: "Avatar",
                             editText: '',
+                            userName: nickName,
                             iconData: Icons.edit,
                             textSize: 14,
+                            userProfileColor: userProfileColor,
                             height: (menuContainerHeight) / 8,
                             isAvatar: true,
                             user: userdata,
@@ -142,9 +156,7 @@ class _EditHomePageState extends State<EditHomePage> {
                                 ThirdPage(
                                     // buttonColor: Colors.amber,
                                     userName: userdata.userName,
-                                    initialIndex: userdata.profileColor == null
-                                        ? 0
-                                        : userdata.profileColor.toInt(),
+                                    initialIndex: userProfileColor.toInt(),
                                     pageController:
                                         PageController(initialPage: 3),
                                     isEdit: true,

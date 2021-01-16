@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
+import 'package:flutter/services.dart';
 
 class CourseDetail extends StatefulWidget {
   final String courseId;
@@ -108,13 +109,6 @@ class _CourseDetailState extends State<CourseDetail> {
                           Provider<UserData>.value(
                             value: currentUser,
                           ),
-                          // 这个需要的话直接uncomment
-                          // Provider<List<CourseInfo>>.value(
-                          //   value: course,F
-                          // ),
-                          // final courseProvider = Provider.of<CourseProvider>(context);
-                          // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                          // 不需要pass到push里面，直接复制上面这行即可
                         ],
                         child: FriendProfile(
                           userID: members[index]
@@ -170,34 +164,82 @@ class _CourseDetailState extends State<CourseDetail> {
               children: [
                 Container(
                   color: Colors.white,
-                  height: 73,
-                  child: Stack(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
+                  height: 73.68,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 13.7, left: 8),
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/arrow-back.png',
-                            height: 17.96,
-                            width: 10.26,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Container(
+                          // height: 17.96,
+                          // width: 10.26,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.chevron_left,
+                              size: 35,
+                            ),
+                            // iconSize: 30.0,
+                            color: const Color(0xFFFF7E40),
+                            onPressed: () {
+                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                              Navigator.of(context).pop();
+                            },
                           ),
-                          // iconSize: 30.0,
-                          color: const Color(0xFFFF7E40),
-                          onPressed: () {
-                            // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                            Navigator.of(context).pop();
-                          },
                         ),
                       ),
-                      Center(
+                      Container(
                         child: Text(
                           (courseName ?? '') + (courseSection ?? ''),
                           style: GoogleFonts.montserrat(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        //TODO replace Icon
+                        child: GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(new ClipboardData(
+                                    text:
+                                        'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${widget.courseId}\nCourse Name: ${courseName + courseSection}'))
+                                .then((result) {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible:
+                                    false, // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text('The invite Link is copied.'),
+                                        ],
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            });
+                          },
+                          child: Text(
+                            'share',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.openSans(
+                              color: themeOrange,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                     ],

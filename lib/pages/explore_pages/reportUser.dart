@@ -127,6 +127,7 @@ class _ReportUserState extends State<ReportUser> {
 
   SingleChildScrollView userTypeTheProblem(
       BuildContext context, String userID) {
+    double _height = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -151,9 +152,7 @@ class _ReportUserState extends State<ReportUser> {
           child: Text(
             'Tell us what\'s wrong?',
             style: GoogleFonts.openSans(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w600),
+                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
         Container(
@@ -174,35 +173,28 @@ class _ReportUserState extends State<ReportUser> {
               padding: const EdgeInsets.fromLTRB(
                   35.0, 10.0, 35.0, 0.0), // conten// t padding
               child: TextField(
-
-                keyboardType: TextInputType.multiline,
-                maxLines: 5,
-                controller: reportTextEditingController,
-                decoration: new InputDecoration(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  controller: reportTextEditingController,
+                  decoration: new InputDecoration(
                     focusedBorder: new OutlineInputBorder(
-                      borderSide: new BorderSide(
-                        color: Color(0xffD0CBC4),
-                        width: 1
-                      ),
+                      borderSide:
+                          new BorderSide(color: Color(0xffD0CBC4), width: 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     enabledBorder: new OutlineInputBorder(
-                      borderSide: new BorderSide(
-                          color: Color(0xffD0CBC4),
-                          width: 1
-                      ),
+                      borderSide:
+                          new BorderSide(color: Color(0xffD0CBC4), width: 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     hintStyle: GoogleFonts.openSans(
-                      fontSize: 12,
-                      color: Color(0xffA8A8A8)
-                    ),
+                        fontSize: 12, color: Color(0xffA8A8A8)),
                     contentPadding: EdgeInsets.all(10),
                     hintText: 'Tell us what\'s wrong',
-              )
-                // buildInputDecorationPinky(
-                //     false, Icon(Icons.ac_unit), 'Tell us what\'s wrong', 30),
-              ),
+                  )
+                  // buildInputDecorationPinky(
+                  //     false, Icon(Icons.ac_unit), 'Tell us what\'s wrong', 30),
+                  ),
             ) // From with TextField inside
             ),
         SizedBox(
@@ -219,15 +211,14 @@ class _ReportUserState extends State<ReportUser> {
             child: Text(
               'Submit',
               style: GoogleFonts.openSans(
-                color: Color(0xffFF7E40),
-                fontSize: 16,
-                fontWeight: FontWeight.w600
-              ),
+                  color: Color(0xffFF7E40),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
             ),
           ),
         ),
         SizedBox(
-          height: 30,
+          height: _height * 0.14,
         ),
       ],
     ));

@@ -115,8 +115,8 @@ class _StartLoginPageState extends State<StartLoginPage> {
                 return AnimatedPositioned(
                   duration: Duration(milliseconds: 300),
                   top: _currentIndex == null || _currentIndex == 1
-                      ? _height * 0.12
-                      : _height * 0.02,
+                      ? _height * 0.11
+                      : _height * 0.000,
                   left: _width / 2 - (156 / 2), //logo widget width/2
                   child: TweenAnimationBuilder(
                     child: LogoWidget(),

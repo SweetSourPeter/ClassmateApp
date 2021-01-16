@@ -2,6 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 //input that is commenly used inside the app
 InputDecoration buildInputDecorationPinky(
@@ -40,7 +41,7 @@ InputDecoration buildInputDecorationPinky(
 }
 
 InputDecoration textFieldInputDecoration(
-    String hintText, double boarderRadius) {
+    double height, String hintText, double boarderRadius) {
   return InputDecoration(
     fillColor: Color(0xFFFF9B6B).withOpacity(1),
     filled: true,
@@ -57,7 +58,7 @@ InputDecoration textFieldInputDecoration(
       // borderSide: BorderSide.none
     ),
 
-    contentPadding: EdgeInsets.all(30), //height of the iput fie
+    contentPadding: EdgeInsets.all(height), //height of the iput fie
     hintStyle: TextStyle(color: Color(0xF7D5C5).withOpacity(0.7)), // KEY PROP
   );
 }
@@ -185,8 +186,8 @@ Padding topLineBar() {
           bottomRight: Radius.circular(35.0),
         ),
         child: SizedBox(
-          width: 65.0,
-          height: 6.0,
+          width: 42.0,
+          height: 4.0,
           child: const DecoratedBox(
             decoration: const BoxDecoration(color: themeOrange),
           ),
@@ -281,9 +282,11 @@ Container creatUserImageWithString(
 
 class ButtonLink extends StatefulWidget {
   final String text;
+  final String userName;
   final IconData iconData;
   final double textSize;
   final double height;
+  final double userProfileColor;
   final GestureTapCallback onTap;
   @required
   final bool isSimple;
@@ -302,7 +305,9 @@ class ButtonLink extends StatefulWidget {
       {this.text,
       this.iconData,
       this.textSize,
+      this.userName,
       this.height,
+      this.userProfileColor,
       this.onTap,
       this.isSimple = false,
       this.isSwitch = false,
@@ -317,10 +322,11 @@ class ButtonLink extends StatefulWidget {
 
 class _ButtonLinkState extends State<ButtonLink> {
   bool isSwitched = false;
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    final userdata = Provider.of<UserData>(context);
+
     return Column(
       children: [
         FlatButton(
@@ -362,9 +368,10 @@ class _ButtonLinkState extends State<ButtonLink> {
                   ),
                   widget.isSimple ? Container() : new Spacer(),
                   widget.isAvatar
-                      ? createUserImage(
+                      ? creatUserImageWithString(
                           widget.height / 3.5,
-                          widget.user,
+                          userdata.userName,
+                          widget.userProfileColor,
                           largeTitleTextStyle(Colors.white, 12),
                         )
                       : Container(),

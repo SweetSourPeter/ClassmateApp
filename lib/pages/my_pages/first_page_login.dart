@@ -49,6 +49,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     return Container(
       color: themeOrange,
       child: SingleChildScrollView(
@@ -76,8 +77,8 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30, vertical: _height * 0.006),
                         child: AnimatedOpacity(
                           opacity: value == 20 ? 0 : 1,
                           duration: Duration(milliseconds: 800),
@@ -101,7 +102,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                 padding: EdgeInsets.only(
                                     left: 30,
                                     right: 30,
-                                    top: 15 + paddingvalue),
+                                    top: _height * 0.018 + paddingvalue),
                                 child: Text(
                                   'Place to find fellow classmates and \n make meaningful connections',
                                   style: simpleTextStyle(Color(0xFFF7D5C5), 16),
@@ -114,7 +115,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                   );
                 }),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: _height * 0.3),
+              padding: EdgeInsets.only(top: _height * 0.28),
               child: Column(
                 children: <Widget>[
                   TweenAnimationBuilder(
@@ -128,8 +129,9 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                       return Transform.scale(
                         scale: value,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 30),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: _width * 0.119,
+                              vertical: _height * 0.027),
                           child: Row(
                             children: <Widget>[
                               Expanded(

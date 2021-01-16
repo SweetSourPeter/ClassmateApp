@@ -12,9 +12,14 @@ class TagSelecting extends StatefulWidget {
   final PageController pageController;
   final Color buttonColor;
   final bool isEdit;
-  const TagSelecting(
-      {Key key, this.pageController, this.buttonColor, this.isEdit = false})
-      : super(key: key);
+  final List currentTags;
+  const TagSelecting({
+    Key key,
+    this.pageController,
+    this.buttonColor,
+    this.isEdit = false,
+    this.currentTags,
+  }) : super(key: key);
   // TagSelecting({Key key}) : super(key: key);
 
   @override
@@ -29,18 +34,19 @@ class _TagSelectingState extends State<TagSelecting> {
   double _fontSize = 14;
   //for category selector
   int selectedIndex = 0;
-
   final List<String> categories = [
-    'College',
+    'Major', //college
+    'Study habits',
     'Interest',
     'Languages',
-    'Study habits',
   ];
   @override
   void initState() {
     super.initState();
     _items = college;
-    // if you store data on a local database (sqflite), then you could do something like this
+    if (widget.isEdit && widget.currentTags != null) {
+      allTags = widget.currentTags;
+    }
   }
 
   void changepRroviderList(UserTagsProvider userTagProvider) {
@@ -50,16 +56,18 @@ class _TagSelectingState extends State<TagSelecting> {
         // return college;
         break;
       case 1:
-        userTagProvider.changeTagInterest(_getAllItem(tagStateKeyList[1]));
-        // return Interest;
+        userTagProvider.changeTagsStudyHabits(_getAllItem(tagStateKeyList[1]));
+        // return strudyHabits;
+
         break;
       case 2:
-        userTagProvider.changeTagLanguage(_getAllItem(tagStateKeyList[2]));
-        // return language;
+        userTagProvider.changeTagInterest(_getAllItem(tagStateKeyList[2]));
+        // return Interest;
+
         break;
       case 3:
-        userTagProvider.changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
-        // return strudyHabits;
+        userTagProvider.changeTagLanguage(_getAllItem(tagStateKeyList[3]));
+        // return language;
         break;
       default:
         break;
@@ -77,6 +85,7 @@ class _TagSelectingState extends State<TagSelecting> {
     Color submitButtonTextColor = Colors.white;
     String submitButtonString = 'Next';
 
+    Size mediaQuery = MediaQuery.of(context).size;
     if (allTags.length >= 5) {
       submitButtonColor = widget.buttonColor;
       submitButtonTextColor = Colors.white;
@@ -90,26 +99,65 @@ class _TagSelectingState extends State<TagSelecting> {
     //         userTags.strudyHabits
     //       ].expand((x) => x).toList()
     //     : [];
-    Size mediaQuery = MediaQuery.of(context).size;
     // final List<Function> providerFunctions = [
     //   userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0])),
     // ];
 
-    return Scaffold(
-        backgroundColor: themeOrange,
-        body: SafeArea(
+    return SafeArea(
+      child: Container(
+          decoration: widget.isEdit
+              ? BoxDecoration(
+                  color: themeOrange,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
+                    // bottomLeft: Radius.circular(30.0),
+                    // bottomRight: Radius.circular(30.0),
+                  ),
+                )
+              : null,
+          height: widget.isEdit ? mediaQuery.height - 50 : mediaQuery.height,
+          color: widget.isEdit ? null : themeOrange,
           child: Column(
             children: [
+              widget.isEdit
+                  ? Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 8, 0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(35.0),
+                            topRight: Radius.circular(35.0),
+                            bottomLeft: Radius.circular(35.0),
+                            bottomRight: Radius.circular(35.0),
+                          ),
+                          child: SizedBox(
+                            width: 65.0,
+                            height: 6.0,
+                            child: const DecoratedBox(
+                              decoration:
+                                  const BoxDecoration(color: Colors.white),
+                            ),
+                          )
+                          // child: Container(
+                          //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+                          //   color: Colors.black,
+                          // )
+                          ),
+                    )
+                  : Container(),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 alignment: Alignment.topCenter,
-                height: mediaQuery.height * 0.56,
+                height: widget.isEdit ? (_height - 50) * 0.56 : _height * 0.56,
                 color: themeOrange,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: mediaQuery.height * 0.13,
+                        height: widget.isEdit ? _height * 0.05 : _height * 0.13,
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -123,7 +171,7 @@ class _TagSelectingState extends State<TagSelecting> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: mediaQuery.height * 0.012,
                       ),
                       Padding(
                           padding: EdgeInsets.only(
@@ -135,7 +183,7 @@ class _TagSelectingState extends State<TagSelecting> {
                                 simpleTextSansStyleBold(Color(0xFFF7D5C5), 14),
                           )),
                       SizedBox(
-                        height: 30,
+                        height: mediaQuery.height * 0.044,
                       ),
                       categorySelector(
                           widget.buttonColor, mediaQuery, userTagProvider),
@@ -202,7 +250,8 @@ class _TagSelectingState extends State<TagSelecting> {
                         //   color: Color(0xDA6D39).withOpacity(1),
                         // ),
                         Padding(
-                          padding: EdgeInsets.only(left: 21, top: 15),
+                          padding: EdgeInsets.only(
+                              left: 21, top: mediaQuery.height * 0.025),
                           child: Text(
                             'Chosen tags',
                             style: largeTitleTextStyleBold(Colors.white, 16),
@@ -225,7 +274,8 @@ class _TagSelectingState extends State<TagSelecting> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  bottom: 76.0,
+                  bottom:
+                      widget.isEdit ? (_height - 50) * 0.06 : _height * 0.094,
                   left: _width * 0.15,
                   right: _width * 0.15,
                 ),
@@ -260,11 +310,9 @@ class _TagSelectingState extends State<TagSelecting> {
                       }
                     },
                     child: AutoSizeText(
-                      widget.isEdit
-                          ? 'Save'
-                          : allTags.length >= 5
-                              ? 'Complete'
-                              : '${allTags.length.toString()} / 5',
+                      allTags.length >= 5
+                          ? (widget.isEdit ? 'Save' : 'Complete')
+                          : '${allTags.length.toString()} / 5',
                       style: simpleTextSansStyleBold(
                           (allTags.length >= 5) ? themeOrange : Colors.white,
                           16),
@@ -273,8 +321,8 @@ class _TagSelectingState extends State<TagSelecting> {
                 ),
               ),
             ],
-          ),
-        ));
+          )),
+    );
   }
 
   void changeCategory(int index) {
@@ -286,15 +334,15 @@ class _TagSelectingState extends State<TagSelecting> {
         _items = college;
       } else if (index == 1) {
         // userTagProvider.changeTagInterest(_getAllItem(tagStateKeyList[1]));
-        _items = interest;
+        _items = strudyHabits;
       } else if (index == 2) {
         // userTagProvider
         //     .changeTagLanguage(_getAllItem(tagStateKeyList[2]));
-        _items = language;
+        _items = interest;
       } else if (index == 3) {
         // userTagProvider
         //     .changeTagsStudyHabits(_getAllItem(tagStateKeyList[3]));
-        _items = strudyHabits;
+        _items = language;
       } else {
         _items = [];
       }
@@ -314,7 +362,9 @@ class _TagSelectingState extends State<TagSelecting> {
           ),
         ],*/
       ),
-      height: mediaQuery.height * 0.07,
+      height: widget.isEdit
+          ? (mediaQuery.height - 50) * 0.07
+          : mediaQuery.height * 0.07,
       // color: Colors.white,
       child: Padding(
         padding: EdgeInsets.only(left: 10),
@@ -328,10 +378,12 @@ class _TagSelectingState extends State<TagSelecting> {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 15.0,
-                  vertical: 20.0,
+                  horizontal: mediaQuery.width * 0.04,
+                  vertical: widget.isEdit
+                      ? (mediaQuery.height - 50) * 0.0246
+                      : mediaQuery.height * 0.0246,
                 ),
-                child: Text(
+                child: AutoSizeText(
                   categories[index],
                   style: TextStyle(
                     decoration: index == selectedIndex

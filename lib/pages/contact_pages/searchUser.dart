@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/contactProvider.dart';
@@ -61,7 +62,7 @@ class _SearchUsersState extends State<SearchUsers> {
   @override
   Widget build(BuildContext context) {
     // dev.debugger();
-
+    final currentCourse = Provider.of<List<CourseInfo>>(context);
     final user = Provider.of<UserData>(context);
     print(user.userName);
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -253,134 +254,6 @@ class _SearchUsersState extends State<SearchUsers> {
     });
   }
 
-  // a function to create chat room
-  // createChatRoomAndStartConversation(String userName, String userEmail) {
-  //   final currentUser = Provider.of<UserData>(context, listen: false);
-  //   final myName = currentUser.userName;
-  //   final myEmail = currentUser.email;
-  //   if (userEmail != myEmail) {
-  //     String chatRoomId = getChatRoomId(userEmail, myEmail);
-  //     final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-  //
-  //     List<String> users = [userName, userEmail, myName, myEmail];
-  //     Map<String, dynamic> chatRoomMap = {
-  //       'users': users,
-  //       'chatRoomId': chatRoomId,
-  //       'latestMessage': ('Hi! My name is ' + myName + '. Nice to meet you!'),
-  //       'lastMessageTime': lastMessageTime,
-  //       (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
-  //       (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
-  //     };
-  //
-  //     databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
-  //     Map<String, dynamic> messageMap = {
-  //       'message': 'Hi! My name is ' + myName + '. Nice to meet you!',
-  //       'messageType': 'text',
-  //       'sendBy': myEmail,
-  //       'time': lastMessageTime,
-  //     };
-  //
-  //     databaseMethods.addChatMessages(chatRoomId, messageMap);
-  //
-  //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //       return MultiProvider(
-  //         providers: [
-  //           Provider<UserData>.value(
-  //             value: currentUser,
-  //           )
-  //         ],
-  //         child: ChatScreen(
-  //           chatRoomId: chatRoomId,
-  //           friendEmail: userEmail,
-  //           friendName: userName,
-  //           initialChat: 0,
-  //           myEmail: currentUser.email,
-  //         ),
-  //       );
-  //     }));
-  //   } else {
-  //     print('This is your account!');
-  //   }
-  // }
-  //
-  // // a helper function for createChatRoomAndStartConversation()
-  // getChatRoomId(String a, String b) {
-  //   if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-  //     return '$b\_$a';
-  //   } else {
-  //     return '$a\_$b';
-  //   }
-  // }
-
-  // searchTile for searchList
-
-  // Widget searchTile({String userName, String userEmail, String imageURL}) {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-  //     child: Row(
-  //       children: <Widget>[
-  //         CircleAvatar(
-  //           radius: 30.0,
-  //           backgroundImage: NetworkImage("${imageURL}"),
-  //           backgroundColor: Colors.transparent,
-  //         ),
-  //         SizedBox(
-  //           width: 20,
-  //         ),
-  //         Container(
-  //           // color: Colors.black12,
-  //           width: 180,
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: <Widget>[
-  //               Text(
-  //                 userName ?? '',
-  //                 style: TextStyle(
-  //                     color: Colors.black,
-  //                     fontSize: 20,
-  //                     fontWeight: FontWeight.w500),
-  //               ),
-  //               SizedBox(
-  //                 height: 3,
-  //               ),
-  //               Text(
-  //                 userEmail ?? '',
-  //                 style: TextStyle(color: Colors.grey, fontSize: 14),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         // SizedBox(
-  //         //   width: 10,
-  //         // ),
-  //         Expanded(
-  //           child: RaisedGradientButton(
-  //             width: 100,
-  //             height: 40,
-  //             gradient: LinearGradient(
-  //               colors: <Color>[Colors.red, orengeColor],
-  //             ),
-  //             onPressed: () {
-  //               //TODO
-  //               createChatRoomAndStartConversation(userName, userEmail);
-  //             },
-  //             //之后需要根据friendsProvider改这部分display
-  //             //TODO
-  //             child: Text(
-  //               'Message',
-  //               style: TextStyle(
-  //                 fontSize: 14,
-  //                 color: Colors.white,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         // Spacer(),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget searchList() {
     if (searchBegain &&
         searchTextEditingController.text.isNotEmpty &&
@@ -491,6 +364,7 @@ class SearchTile extends StatelessWidget {
   createChatRoomAndStartConversation(String userName, String userEmail,
       String userID, double userProfileColor, context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     final myName = currentUser.userName;
     final myEmail = currentUser.email;
     final myID = currentUser.userID;
@@ -534,7 +408,10 @@ class SearchTile extends StatelessWidget {
           providers: [
             Provider<UserData>.value(
               value: currentUser,
-            )
+            ),
+            Provider<List<CourseInfo>>.value(
+              value: currentCourse,
+            ),
           ],
           child: ChatScreen(
             friendID: userID,
@@ -557,79 +434,8 @@ class SearchTile extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     final contactProvider = Provider.of<ContactProvider>(context);
-
-    // // a helper function for createChatRoomAndStartConversation()
-    // getChatRoomId(String a, String b) {
-    //   if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-    //     return '$b\_$a';
-    //   } else {
-    //     return '$a\_$b';
-    //   }
-    // }
-    //
-    // // a function to create chat room
-    // createChatRoomAndStartConversation(
-    //     String userName, String userEmail, String userID, double userProfileColor) {
-    //   final currentUser = Provider.of<UserData>(context, listen: false);
-    //   final myName = currentUser.userName;
-    //   final myEmail = currentUser.email;
-    //   final myID = currentUser.userID;
-    //   final myProfileColor = currentUser.profileColor;
-    //   if (userEmail != myEmail) {
-    //     String chatRoomId = getChatRoomId(userEmail, myEmail);
-    //     final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-    //
-    //     List<String> users = [
-    //       userName,
-    //       userEmail,
-    //       userID,
-    //       myName,
-    //       myEmail,
-    //       myID,
-    //     ];
-    //     Map<String, dynamic> chatRoomMap = {
-    //       'users': users,
-    //       'chatRoomId': chatRoomId,
-    //       'latestMessage': ('Hi! My name is ' + myName + '. Nice to meet you!'),
-    //       'lastMessageTime': lastMessageTime,
-    //       (userEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 1,
-    //       (myEmail.substring(0, userEmail.indexOf('@')) + 'unread'): 0
-    //     };
-    //
-    //     databaseMethods.createChatRoom(chatRoomId, chatRoomMap);
-    //
-    //     Map<String, dynamic> messageMap = {
-    //       'message': 'Hi! My name is ' + myName + '. Nice to meet you!',
-    //       'messageType': 'text',
-    //       'sendBy': myEmail,
-    //       'time': lastMessageTime,
-    //     };
-    //
-    //     databaseMethods.addChatMessages(chatRoomId, messageMap);
-    //
-    //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-    //       return MultiProvider(
-    //         providers: [
-    //           Provider<UserData>.value(
-    //             value: currentUser,
-    //           )
-    //         ],
-    //         child: ChatScreen(
-    //           friendID: userID,
-    //           chatRoomId: chatRoomId,
-    //           friendEmail: userEmail,
-    //           friendName: userName,
-    //           initialChat: 0,
-    //           myEmail: currentUser.email,
-    //         ),
-    //       );
-    //     }));
-    //   } else {
-    //     print('This is your account!');
-    //   }
-    // }
-
     final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -637,6 +443,9 @@ class SearchTile extends StatelessWidget {
             providers: [
               Provider<UserData>.value(
                 value: userdata,
+              ),
+              Provider<List<CourseInfo>>.value(
+                value: currentCourse,
               ),
               // 这个需要的话直接uncomment
               // Provider<List<CourseInfo>>.value(
