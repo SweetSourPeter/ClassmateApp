@@ -5,7 +5,7 @@ import 'package:app_test/pages/edit_pages/editHomePage.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
-import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
+import 'package:app_test/pages/chat_pages/confirmImage.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -162,6 +162,7 @@ class _MyAccountState extends State<MyAccount> {
               // ),
 
               Container(
+                margin: EdgeInsets.only(top: 28),
                 child: Column(
                   children: [
                     Text(

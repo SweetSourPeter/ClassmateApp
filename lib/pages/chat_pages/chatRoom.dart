@@ -159,11 +159,14 @@ class _ChatRoomState extends State<ChatRoom> {
                         }));
                       },
                       child: Container(
-                        child: Image.asset(
-                          'assets/images/search.png',
-                          color: Color(0xffFF7E40),
+                          child: Text(
+                        'search friend',
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.openSans(
+                          color: themeOrange,
+                          fontSize: 16,
                         ),
-                      ))
+                      )))
                 ],
               ),
             ),
