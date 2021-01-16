@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/courseProvider.dart';
@@ -70,6 +71,7 @@ class _CourseDetailState extends State<CourseDetail> {
     double gridRatio = gridWidth / (gridWidth + 10);
     final currentUser = Provider.of<UserData>(context, listen: false);
     final courseProvider = Provider.of<CourseProvider>(context);
+    final course = Provider.of<List<CourseInfo>>(context);
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         // if (index > 9) {
@@ -109,6 +111,7 @@ class _CourseDetailState extends State<CourseDetail> {
                           Provider<UserData>.value(
                             value: currentUser,
                           ),
+                          Provider<List<CourseInfo>>.value(value: course),
                         ],
                         child: FriendProfile(
                           userID: members[index]
@@ -373,7 +376,9 @@ class _CourseDetailState extends State<CourseDetail> {
                                     providers: [
                                       Provider<UserData>.value(
                                         value: currentUser,
-                                      )
+                                      ),
+                                      Provider<List<CourseInfo>>.value(
+                                          value: course)
                                     ],
                                     child: SearchGroupChat(
                                       courseId: widget.courseId,
