@@ -270,7 +270,6 @@ class _ChatScreenState extends State<ChatScreen> {
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     FocusNode myFocusNode = FocusNode();
-
     return SafeArea(
       child: Scaffold(
           backgroundColor: Color(0xffF9F6F1),
@@ -320,29 +319,28 @@ class _ChatScreenState extends State<ChatScreen> {
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: currentUser,
-                                      ),
-                                      Provider<List<CourseInfo>>.value(
-                                        value: currentCourse,
-                                      ),
-                                      // 这个需要的话直接uncomment
-                                      // Provider<List<CourseInfo>>.value(
-                                      //   value: course,F
-                                      // ),
-                                      // final courseProvider = Provider.of<CourseProvider>(context);
-                                      // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                      // 不需要pass到push里面，直接复制上面这行即可
-                                    ],
-                                    child: FriendProfile(
-                                      userID: widget
-                                          .friendID, // to be modified to friend's ID
-                                    ),
-                                  );
-                                })
-                            );
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: currentUser,
+                                  ),
+                                  Provider<List<CourseInfo>>.value(
+                                    value: currentCourse,
+                                  ),
+                                  // 这个需要的话直接uncomment
+                                  // Provider<List<CourseInfo>>.value(
+                                  //   value: course,F
+                                  // ),
+                                  // final courseProvider = Provider.of<CourseProvider>(context);
+                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                  // 不需要pass到push里面，直接复制上面这行即可
+                                ],
+                                child: FriendProfile(
+                                  userID: widget
+                                      .friendID, // to be modified to friend's ID
+                                ),
+                              );
+                            }));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -393,8 +391,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       friendCourse.isNotEmpty
-                                          ? friendCourse.toString().substring(1,
-                                              friendCourse.toString().length - 1)
+                                          ? friendCourse.toString().substring(
+                                              1,
+                                              friendCourse.toString().length -
+                                                  1)
                                           : 'No courses yet',
                                       style: GoogleFonts.openSans(
                                         fontSize: 14,
@@ -426,7 +426,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 providers: [
                                   Provider<UserData>.value(
                                     value: currentUser,
-                                  )
+                                  ),
+                                  Provider<List<CourseInfo>>.value(
+                                      value: currentCourse)
                                 ],
                                 child: SearchChat(
                                     chatRoomId: widget.chatRoomId,
@@ -647,10 +649,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                         'assets/images/plus_on_click.png',
                                         width: 28,
                                         height: 28)
-                                    : Image.asset(
-                                        'assets/images/plus.png',
-                                        width: 28,
-                                        height: 28)),
+                                    : Image.asset('assets/images/plus.png',
+                                        width: 28, height: 28)),
 
                         // showFunctions
                         //     ? Image.asset('assets/images/plus_on_click.png',

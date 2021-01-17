@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:app_test/models/courseInfo.dart';
 
 class SearchChat extends StatefulWidget {
   final String chatRoomId;
@@ -51,6 +52,7 @@ class _SearchChatState extends State<SearchChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -164,7 +166,7 @@ class _SearchChatState extends State<SearchChat> {
                   height: 25,
                 ),
                 Expanded(
-                  child: SearchList(currentUser),
+                  child: searchList(currentUser, context),
                 ),
               ],
             )),
@@ -172,7 +174,7 @@ class _SearchChatState extends State<SearchChat> {
     );
   }
 
-  Widget SearchList(currentUser) {
+  Widget searchList(currentUser, context) {
     return isSearching && searchTextEditingController.text.isNotEmpty
         ? StreamBuilder(
             stream: chatMessageStream,
@@ -217,7 +219,8 @@ class _SearchChatState extends State<SearchChat> {
                         messageTime: DateTime.fromMillisecondsSinceEpoch(
                                 snapshot.data.documents[i].data()['time'])
                             .toString(),
-                        friendProfileColor: widget.friendProfileColor));
+                        friendProfileColor: widget.friendProfileColor,
+                        context: context));
                   }
                 }
                 return ListView.builder(
@@ -241,7 +244,8 @@ class _SearchChatState extends State<SearchChat> {
       String searchWord,
       int messageIndex,
       String messageTime,
-      double friendProfileColor}) {
+      double friendProfileColor,
+      BuildContext context}) {
     String userName = '';
     double profileColor = 0.0;
     if (userEmail == widget.friendEmail) {
@@ -251,10 +255,8 @@ class _SearchChatState extends State<SearchChat> {
       userName = widget.myName;
       profileColor = widget.myProfileColor;
     }
-    print('profileColor');
-    print(profileColor);
     Size mediaQuery = MediaQuery.of(context).size;
-
+    final course = Provider.of<List<CourseInfo>>(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -262,7 +264,8 @@ class _SearchChatState extends State<SearchChat> {
             providers: [
               Provider<UserData>.value(
                 value: userData,
-              )
+              ),
+              Provider<List<CourseInfo>>.value(value: course)
             ],
             child: ChatScreen(
               chatRoomId: widget.chatRoomId,
