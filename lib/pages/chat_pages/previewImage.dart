@@ -40,7 +40,7 @@ class _PreviewImageState extends State<PreviewImage> {
 
   _saveImage(source) async {
     await _requestPermission();
-    // if (Platform.isIOS) {
+    if (Platform.isIOS) {
       _findPath(source).then((value) async {
         final result = await ImageGallerySaver.saveFile(value);
         if (result['isSuccess']) {
@@ -49,20 +49,20 @@ class _PreviewImageState extends State<PreviewImage> {
           _toastInfo('Failed to download the image. Try again later.');
         }
       });
-    // }
-    // else if (Platform.isAndroid){
-    //   var appDocDir = await getTemporaryDirectory();
-    //   String savePath = appDocDir.path + "/temp.png";
-    //   await Dio().download(source, savePath);
-    //
-    //   final result = await ImageGallerySaver.saveFile(savePath);
-    //
-    //   if (result['isSuccess']) {
-    //     _toastInfo('The image has been downloaded to your gallery!');
-    //   } else {
-    //     _toastInfo('Failed to download the image. Try again later.');
-    //   }
-    // }
+    }
+    else if (Platform.isAndroid) {
+      await Dio().download(widget.imageUrl, '/storage/emulated/0/Meechu/1610867813230.jpg');
+
+      _findPath(source).then((value) async {
+        final result = await ImageGallerySaver.saveFile(value);
+        print(result);
+        if (result['isSuccess']) {
+          _toastInfo('The image has been downloaded to your gallery!');
+        } else {
+          _toastInfo('Failed to download the image. Try again later.');
+        }
+      });
+    }
   }
 
   @override
