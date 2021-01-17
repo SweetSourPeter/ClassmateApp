@@ -189,8 +189,8 @@ class _ForgetpasswordState extends State<Forgetpassword> {
                           ? null
                           : "Please enter correct email";
                     },
-                    decoration:
-                        textFieldInputDecoration('Enter Your Email', 11),
+                    decoration: textFieldInputDecoration(
+                        _height * 0.036, 'Enter Your Email', 11),
                   ),
                   SizedBox(
                     height: 20,

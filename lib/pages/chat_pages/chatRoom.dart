@@ -1,8 +1,10 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -107,8 +109,8 @@ class _ChatRoomState extends State<ChatRoom> {
     databaseMethods.getChatRooms(myEmail).then((snapshots) {
       setState(() {
         chatRooms = snapshots;
-        // print(
-        //     "we got the data + ${chatRooms.toString()} this is name  $myEmail");
+        print(
+            "we got the data + ${chatRooms.toString()} this is name  $myEmail");
       });
     });
   }
@@ -116,63 +118,68 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          color: Colors.white,
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(
-                    top: 40, left: 40, bottom: _height * 0.064, right: 40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Text(
-                        'Chats',
-                        textAlign: TextAlign.left,
-                        style: largeTitleTextStyleBold(Colors.black, 26),
-                      ),
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                  top: 40, left: 40, bottom: _height * 0.064, right: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Text(
+                      'Chats',
+                      textAlign: TextAlign.left,
+                      style: largeTitleTextStyleBold(Colors.black, 26),
                     ),
-                    // Expanded(child: Container()),
-                    GestureDetector(
-                        onTap: () {
-                          //search for users
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return MultiProvider(
-                              providers: [
-                                Provider<UserData>.value(
-                                  value: currentUser,
-                                ),
-                                // 这个需要的话直接uncomment
-                                // Provider<List<CourseInfo>>.value(
-                                //   value: course,F
-                                // ),
-                                // final courseProvider = Provider.of<CourseProvider>(context);
-                                // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                // 不需要pass到push里面，直接复制上面这行即可
-                              ],
-                              child: SearchUsers(),
-                            );
-                          }));
-                        },
-                        child: Container(
-                          child: Image.asset(
-                            'assets/images/search.png',
-                            color: Color(0xffFF7E40),
-                          ),
-                        ))
-                  ],
-                ),
+                  ),
+                  // Expanded(child: Container()),
+                  GestureDetector(
+                      onTap: () {
+                        //search for users
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MultiProvider(
+                            providers: [
+                              Provider<UserData>.value(
+                                value: currentUser,
+                              ),
+                              Provider<List<CourseInfo>>.value(
+                                value: currentCourse,
+                              ),
+                              // 这个需要的话直接uncomment
+                              // Provider<List<CourseInfo>>.value(
+                              //   value: course,F
+                              // ),
+                              // final courseProvider = Provider.of<CourseProvider>(context);
+                              // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                              // 不需要pass到push里面，直接复制上面这行即可
+                            ],
+                            child: SearchUsers(),
+                          );
+                        }));
+                      },
+                      child: Container(
+                          child: Text(
+                        'search friend',
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.openSans(
+                          color: themeOrange,
+                          fontSize: 16,
+                        ),
+                      )))
+                ],
               ),
-              Expanded(
-                child: chatRoomsList(context),
-              ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: chatRoomsList(context),
+            ),
+          ],
         ),
       ),
     );
@@ -205,11 +212,12 @@ class ChatRoomsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = mediaQuery.width * 1.0;
-
+    print('heree');
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -217,7 +225,10 @@ class ChatRoomsTile extends StatelessWidget {
             providers: [
               Provider<UserData>.value(
                 value: currentUser,
-              )
+              ),
+              Provider<List<CourseInfo>>.value(
+                value: currentCourse,
+              ),
             ],
             child: ChatScreen(
                 chatRoomId: chatRoomId,
@@ -231,10 +242,14 @@ class ChatRoomsTile extends StatelessWidget {
         }));
       },
       child: Container(
-        height: _height * 0.08,
-        margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
+        height: _height * 0.087,
+        margin: EdgeInsets.only(
+          top: _height * 0.006,
+          bottom: _height * 0.006,
+          right: _width * 0.03,
+        ),
         padding: EdgeInsets.symmetric(
-          horizontal: 20.0,
+          horizontal: _width * 0.03,
         ),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -252,8 +267,8 @@ class ChatRoomsTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    height: 65,
-                    width: 65,
+                    height: _width * 0.175,
+                    width: _width * 0.175,
                     child: Stack(
                       children: [
                         CircleAvatar(
@@ -308,11 +323,12 @@ class ChatRoomsTile extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 18.0, top: 5),
+                    padding: EdgeInsets.only(
+                        left: _width * 0.04, top: _height * 0.005),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        AutoSizeText(
                           friendName,
                           style: GoogleFonts.montserrat(
                               fontSize: 16,
@@ -320,11 +336,11 @@ class ChatRoomsTile extends StatelessWidget {
                               color: const Color(0xffFF7E40)),
                         ),
                         SizedBox(
-                          height: 6,
+                          height: _height * 0.009,
                         ),
                         Container(
                           width: mediaQuery.width - 200,
-                          child: Text(latestMessage,
+                          child: AutoSizeText(latestMessage,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.openSans(
                                   fontSize: 16, color: Colors.black)),
@@ -335,9 +351,9 @@ class ChatRoomsTile extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 4.0),
+                padding: EdgeInsets.only(top: _height * 0.0049),
                 child: Container(
-                  child: Text(
+                  child: AutoSizeText(
                     lastMessageTime.substring(11, lastMessageTime.length - 7),
                     style: GoogleFonts.openSans(
                       fontSize: 14,

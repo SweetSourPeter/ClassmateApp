@@ -1,3 +1,4 @@
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
@@ -124,7 +125,8 @@ class _GroupChatState extends State<GroupChat> {
                           lastMessage,
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
-                          displayName
+                          displayName,
+                          snapshot.data.documents[index].data()['profileColor'] ?? 1.0,
                         )
                       : ImageTile(
                           snapshot.data.documents[index].data()['message'],
@@ -137,7 +139,8 @@ class _GroupChatState extends State<GroupChat> {
                           lastMessage,
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
-                          displayName
+                          displayName,
+                          snapshot.data.documents[index].data()['profileColor'] ?? 1.0,
                         );
                 })
             : Container();
@@ -197,6 +200,7 @@ class _GroupChatState extends State<GroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
 
     sendMessage(myEmail, myName) {
       if (messageController.text.isNotEmpty) {
@@ -372,6 +376,9 @@ class _GroupChatState extends State<GroupChat> {
                                     Provider<UserData>.value(
                                       value: currentUser,
                                     ),
+                                    Provider<List<CourseInfo>>.value(
+                                      value: currentCourse,
+                                    ),
                                   ],
                                   child: CourseDetail(
                                     courseId: widget.courseId,
@@ -499,35 +506,49 @@ class _GroupChatState extends State<GroupChat> {
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                             onTap: () {
-                              if (showTextKeyboard) {
-                                setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
-                                });
+                              if ((messageController.text != '' ||
+                                  messageController.text.isNotEmpty)) {
+                                sendMessage(
+                                    currentUser.email, currentUser.userName);
                               } else {
-                                if (showStickerKeyboard) {
+                                if (showTextKeyboard) {
                                   setState(() {
-                                    showStickerKeyboard = false;
+                                    FocusScopeNode currentFocus =
+                                        FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                      showTextKeyboard = false;
+                                    }
                                   });
-                                } else {}
+                                } else {
+                                  if (showStickerKeyboard) {
+                                    setState(() {
+                                      showStickerKeyboard = false;
+                                    });
+                                  } else {}
+                                }
+                                setState(() {
+                                  showFunctions = !showFunctions;
+                                });
+                                Timer(
+                                    Duration(milliseconds: 30),
+                                    () => _controller.jumpTo(
+                                        _controller.position.minScrollExtent));
                               }
-                              setState(() {
-                                showFunctions = !showFunctions;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 30),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
                             },
-                            child: showFunctions
-                                ? Image.asset('assets/images/plus_on_click.png',
+                            child: (messageController.text != '' ||
+                                    messageController.text.isNotEmpty)
+                                ? Image.asset('assets/images/messageSend.png',
                                     width: 28, height: 28)
-                                : Image.asset('assets/images/plus.png',
-                                    width: 28, height: 28)),
+                                : showFunctions
+                                    ? Image.asset(
+                                        'assets/images/plus_on_click.png',
+                                        width: 28,
+                                        height: 28)
+                                    : Image.asset(
+                                        'assets/images/plus_on_click.png',
+                                        width: 28,
+                                        height: 28)),
                       )
                     ],
                   ),
@@ -616,13 +637,25 @@ class MessageTile extends StatelessWidget {
   final String senderName;
   final String senderID;
   final bool displayName;
+  final double profileColor;
 
-  MessageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage, this.senderName, this.senderID, this.displayName);
+  MessageTile(
+      this.message,
+      this.isSendByMe,
+      this.currentTime,
+      this.displayTime,
+      this.displayWeek,
+      this.lastMessage,
+      this.senderName,
+      this.senderID,
+      this.displayName,
+      this.profileColor);
 
   @override
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+
     return Column(
       children: [
         displayWeek
@@ -733,13 +766,9 @@ class MessageTile extends StatelessWidget {
                                   Provider<UserData>.value(
                                     value: userdata,
                                   ),
-                                  // 这个需要的话直接uncomment
-                                  // Provider<List<CourseInfo>>.value(
-                                  //   value: course,F
-                                  // ),
-                                  // final courseProvider = Provider.of<CourseProvider>(context);
-                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                  // 不需要pass到push里面，直接复制上面这行即可
+                                  Provider<List<CourseInfo>>.value(
+                                    value: currentCourse,
+                                  ),
                                 ],
                                 child: FriendProfile(
                                   userID:
@@ -753,7 +782,7 @@ class MessageTile extends StatelessWidget {
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xffFFB811),
+                              color: listProfileColor[profileColor.toInt()],
                             ),
                           ),
                         ),
@@ -818,13 +847,25 @@ class ImageTile extends StatelessWidget {
   final String senderName;
   final String senderID;
   final bool displayName;
+  final double profileColor;
 
-  ImageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage, this.senderName, this.senderID, this.displayName);
+  ImageTile(
+      this.message,
+      this.isSendByMe,
+      this.currentTime,
+      this.displayTime,
+      this.displayWeek,
+      this.lastMessage,
+      this.senderName,
+      this.senderID,
+      this.displayName,
+      this.profileColor);
 
   @override
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+
     return Column(
       children: [
         displayWeek
@@ -945,32 +986,28 @@ class ImageTile extends StatelessWidget {
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: userdata,
-                                      ),
-                                      // 这个需要的话直接uncomment
-                                      // Provider<List<CourseInfo>>.value(
-                                      //   value: course,F
-                                      // ),
-                                      // final courseProvider = Provider.of<CourseProvider>(context);
-                                      // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                      // 不需要pass到push里面，直接复制上面这行即可
-                                    ],
-                                    child: FriendProfile(
-                                      userID:
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
+                                  ),
+                                  Provider<List<CourseInfo>>.value(
+                                    value: currentCourse,
+                                  ),
+                                ],
+                                child: FriendProfile(
+                                  userID:
                                       senderID, // to be modified to friend's ID
-                                    ),
-                                  );
-                                }));
+                                ),
+                              );
+                            }));
                           },
                           child: Text(
-                            senderName ?? '',
+                            senderName ?? ' ',
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xffFFB811),
+                              color: listProfileColor[profileColor.toInt()],
                             ),
                           ),
                         ),

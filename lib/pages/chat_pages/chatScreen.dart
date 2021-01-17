@@ -1,5 +1,6 @@
 // import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
@@ -57,7 +58,6 @@ class _ChatScreenState extends State<ChatScreen> {
   bool lastMessage;
   List<String> friendCourse = List<String>();
   ScrollController _controller;
-  FocusNode myFocusNode = FocusNode();
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -138,6 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'sendBy': myEmail,
         'time': lastMessageTime,
       };
+      print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
       databaseMethods.setLastestMessage(
           widget.chatRoomId, messageController.text, lastMessageTime);
@@ -265,6 +266,7 @@ class _ChatScreenState extends State<ChatScreen> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
 
@@ -312,36 +314,39 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return MultiProvider(
-                              providers: [
-                                Provider<UserData>.value(
-                                  value: currentUser,
-                                ),
-                                // 这个需要的话直接uncomment
-                                // Provider<List<CourseInfo>>.value(
-                                //   value: course,F
-                                // ),
-                                // final courseProvider = Provider.of<CourseProvider>(context);
-                                // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                // 不需要pass到push里面，直接复制上面这行即可
-                              ],
-                              child: FriendProfile(
-                                userID: widget
-                                    .friendID, // to be modified to friend's ID
-                              ),
-                            );
-                          }));
-                        },
-                        child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10.0),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: currentUser,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                          value: currentCourse,
+                                        ),
+                                        // 这个需要的话直接uncomment
+                                        // Provider<List<CourseInfo>>.value(
+                                        //   value: course,F
+                                        // ),
+                                        // final courseProvider = Provider.of<CourseProvider>(context);
+                                        // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                        // 不需要pass到push里面，直接复制上面这行即可
+                                      ],
+                                      child: FriendProfile(
+                                        userID: widget
+                                            .friendID, // to be modified to friend's ID
+                                      ),
+                                    );
+                                  }));
+                                },
                                 child: CircleAvatar(
                                   backgroundColor: listProfileColor[
                                       widget.friendProfileColor.toInt()],
@@ -371,37 +376,36 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ),
                                   ),
                                 ),
+                                // createUserImage(sidebarSize / 20, currentUser),
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(widget.friendName,
-                                      style: GoogleFonts.montserrat(
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold)),
-                                  Container(
-                                    width: 120,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      friendCourse.isNotEmpty
-                                          ? friendCourse.toString().substring(
-                                              1,
-                                              friendCourse.toString().length -
-                                                  1)
-                                          : 'No courses yet',
-                                      style: GoogleFonts.openSans(
-                                        fontSize: 14,
-                                        color: Color(0xff949494),
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(widget.friendName,
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold)),
+                                Container(
+                                  width: 120,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    friendCourse.isNotEmpty
+                                        ? friendCourse.toString().substring(1,
+                                            friendCourse.toString().length - 1)
+                                        : 'No courses yet',
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 14,
+                                      color: Color(0xff949494),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       Padding(
@@ -538,7 +542,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                       _controller.position.minScrollExtent));
                             },
                             controller: messageController,
-                            focusNode: myFocusNode,
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               color: Colors.black,
@@ -559,7 +562,6 @@ class _ChatScreenState extends State<ChatScreen> {
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
                               sendMessage(currentUser.email);
-                              myFocusNode.requestFocus();
                             },
                           ),
                         ),
@@ -604,35 +606,62 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                             onTap: () {
-                              if (showTextKeyboard) {
-                                setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
-                                });
+                              if ((messageController.text != '' ||
+                                  messageController.text.isNotEmpty)) {
+                                sendMessage(currentUser.email);
                               } else {
-                                if (showStickerKeyboard) {
+                                if (showTextKeyboard) {
                                   setState(() {
-                                    showStickerKeyboard = false;
+                                    FocusScopeNode currentFocus =
+                                        FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                      showTextKeyboard = false;
+                                    }
                                   });
-                                } else {}
+                                } else {
+                                  if (showStickerKeyboard) {
+                                    setState(() {
+                                      showStickerKeyboard = false;
+                                    });
+                                  } else {}
+                                }
+                                setState(() {
+                                  showFunctions = !showFunctions;
+                                });
+                                Timer(
+                                    Duration(milliseconds: 30),
+                                    () => _controller.jumpTo(
+                                        _controller.position.minScrollExtent));
                               }
-                              setState(() {
-                                showFunctions = !showFunctions;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 30),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
                             },
-                            child: showFunctions
-                                ? Image.asset('assets/images/plus_on_click.png',
+                            child: (messageController.text != '' ||
+                                    messageController.text.isNotEmpty)
+                                ? Image.asset('assets/images/messageSend.png',
                                     width: 28, height: 28)
-                                : Image.asset('assets/images/plus.png',
-                                    width: 28, height: 28)),
+                                : showFunctions
+                                    ? Image.asset(
+                                        'assets/images/plus_on_click.png',
+                                        width: 28,
+                                        height: 28)
+                                    : Image.asset(
+                                        'assets/images/plus_on_click.png',
+                                        width: 28,
+                                        height: 28)),
+
+                        // showFunctions
+                        //     ? Image.asset('assets/images/plus_on_click.png',
+                        //         width: 28, height: 28)
+                        //     : (messageController.text == '' ||
+                        //             messageController.text.isEmpty)
+                        //         ? Image.asset(
+                        //             'assets/images/messageSend.png',
+                        //             width: 28,
+                        //             height: 28)
+                        //         : Image.asset(
+                        //             'assets/images/plus_on_click.png',
+                        //             width: 28,
+                        //             height: 28)),
                       )
                     ],
                   ),
@@ -798,10 +827,8 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: SelectableText(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
-                                  toolbarOptions: ToolbarOptions(
-                                      selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -839,10 +866,8 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: SelectableText(message,
+                              child: LinkWell(message,
                                   textAlign: TextAlign.start,
-                                  toolbarOptions: ToolbarOptions(
-                                      selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,

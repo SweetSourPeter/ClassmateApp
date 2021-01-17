@@ -362,9 +362,9 @@ class DatabaseMethods {
     docRef.update({
       'tags': {
         'college': userTags.college,
+        'strudyHabits': userTags.strudyHabits,
         'interest': userTags.interest,
         'language': userTags.language,
-        'strudyHabits': userTags.strudyHabits,
       }
     }).catchError((e) {
       print(e.toString());

@@ -263,11 +263,15 @@ class _TopBarState extends State<TopBar> {
                             ),
                           ],
                         ),
+                        //               EdgeInsets.symmetric(
+                        // horizontal: _width * 0.065, vertical: _height * 0.046),
                         margin: EdgeInsets.only(
-                            bottom: 10.0, left: 20.0, right: 20.0),
+                            bottom: _height * 0.0086,
+                            left: _width * 0.065,
+                            right: _width * 0.065),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0)),
+                            borderRadius: BorderRadius.circular(23.0)),
                       ),
                       Container(
                         height: 50,
@@ -281,16 +285,18 @@ class _TopBarState extends State<TopBar> {
                               child: Text(
                                 "Cancel",
                                 style: GoogleFonts.openSans(
-                                    fontSize: 18.0, color: themeOrange),
+                                    fontSize: 18.0, color: Colors.black),
                               ),
                             ),
                           ),
                         ),
                         margin: EdgeInsets.only(
-                            bottom: 5.0, left: 20.0, right: 20.0),
+                            bottom: _height * 0.04,
+                            left: _width * 0.065,
+                            right: _width * 0.065),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0)),
+                            borderRadius: BorderRadius.circular(16.0)),
                       ),
                       SizedBox(
                         height: 8,

@@ -70,10 +70,10 @@ class _SignUpPageState extends State<SignUpPage> {
         print('auth method finish');
         isLoading = false;
         // Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Wrapper(true)),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => Wrapper(true)),
+        // );
       }).catchError((error) {
         if (!mounted) {
           return; // Just do nothing if the widget is disposed.
@@ -222,7 +222,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 15,
+                      height: _height * 0.018,
                     ),
                     DropdownButtonFormField<String>(
                       isExpanded: true,
@@ -248,6 +248,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         });
                       },
                       decoration: textFieldInputDecoration(
+                        _height * 0.036,
                         'Choose your School',
                         11,
                       ),
@@ -259,7 +260,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                     ),
                     SizedBox(
-                      height: 15,
+                      height: _height * 0.018,
                     ),
                     TextFormField(
                       style: simpleTextStyle(Colors.white, 16),
@@ -275,10 +276,11 @@ class _SignUpPageState extends State<SignUpPage> {
                               : "Please enter correct email";
                         }
                       },
-                      decoration: textFieldInputDecoration('School Email', 11),
+                      decoration: textFieldInputDecoration(
+                          _height * 0.036, 'School Email', 11),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: _height * 0.018,
                     ),
                     TextFormField(
                       style: simpleTextStyle(Colors.white, 16),
@@ -289,10 +291,11 @@ class _SignUpPageState extends State<SignUpPage> {
                             ? null
                             : "Please provoid password with at least 6 words";
                       },
-                      decoration: textFieldInputDecoration('Password', 11),
+                      decoration: textFieldInputDecoration(
+                          _height * 0.036, 'Password', 11),
                     ),
                     SizedBox(
-                      height: 25,
+                      height: _height * 0.03,
                     ),
                   ],
                 ),

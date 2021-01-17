@@ -118,28 +118,6 @@ class _SignInState extends State<SignIn> {
       );
     }
 
-    _getBottomRow(context) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()));
-            },
-            child: Text(
-              'Sign up',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
     _getSignIn() {
       return Container(
         decoration: BoxDecoration(
@@ -191,7 +169,7 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 15,
+                    height: _height * 0.018,
                   ),
                   TextFormField(
                     style: simpleTextStyle(Colors.white, 16),
@@ -203,10 +181,11 @@ class _SignInState extends State<SignIn> {
                           ? null
                           : "Please enter correct email";
                     },
-                    decoration: textFieldInputDecoration('School Email', 11),
+                    decoration: textFieldInputDecoration(
+                        _height * 0.036, 'School Email', 11),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: _height * 0.018,
                   ),
                   TextFormField(
                     style: simpleTextStyle(Colors.white, 16),
@@ -218,12 +197,13 @@ class _SignInState extends State<SignIn> {
                           : "Please provoid valid password format";
                     },
                     decoration: textFieldInputDecoration(
+                      _height * 0.036,
                       'Password',
                       11,
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: _height * 0.0246,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -243,7 +223,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   SizedBox(
-                    height: 25,
+                    height: _height * 0.03,
                   ),
                 ],
               ),
@@ -259,7 +239,7 @@ class _SignInState extends State<SignIn> {
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: _height * 0.037,
             ),
             Text(
               'Welcome',

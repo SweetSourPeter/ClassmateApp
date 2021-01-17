@@ -1,9 +1,7 @@
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:app_test/widgets/widgets.dart';
 import 'package:app_test/models/constant.dart';
-import 'package:app_test/models/CourseCard.dart';
 import 'package:app_test/widgets/animatedButton.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +22,19 @@ class UserCourseInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final courseProvider = Provider.of<CourseProvider>(context);
+    final currentCourse = Provider.of<List<CourseInfo>>(context);
+    bool checkIftheSame(CourseInfo course, List<CourseInfo> courseList) {
+      for (int i = 0; i < courseList.length; i++) {
+        if (courseList[i].courseID == course.courseID) {
+          print(courseList[i].courseID);
+          print(courseList[i].courseID == course.courseID);
+          print('\n');
+          return false;
+        }
+      }
+      return true;
+    }
+
     return Container(
       height: 120,
       width: 200,
@@ -78,6 +89,11 @@ class UserCourseInfo extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [themeOrange, themeOrange],
                       ),
+                      sameClass:
+                          checkIftheSame(courseData[index], currentCourse),
+
+                      // (courseData[index].courseID ==
+                      //     currentCourse[index].courseID),
                       initialText: "ADD",
                       initialStyle: GoogleFonts.openSans(
                           fontSize: 10.0, color: Colors.brown[50]),

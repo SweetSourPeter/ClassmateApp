@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
@@ -38,6 +39,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -142,7 +144,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                   height: 25,
                 ),
                 Expanded(
-                  child: SearchList(currentUser),
+                  child: searchList(currentUser, context),
                 ),
               ],
             )),
@@ -150,7 +152,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
     );
   }
 
-  Widget SearchList(currentUser) {
+  Widget searchList(currentUser, context) {
     return isSearching && searchTextEditingController.text.isNotEmpty
         ? StreamBuilder(
             stream: chatMessageStream,
@@ -186,7 +188,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                       snapshot.data.documents[i]
                           .data()['message']
                           .contains(searchTextEditingController.text)) {
-                    children.add(searchTile(
+                    children.add(
+                      searchTile(
                         userName:
                             snapshot.data.documents[i].data()['senderName'],
                         message: snapshot.data.documents[i].data()['message'],
@@ -199,7 +202,10 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                                 snapshot.data.documents[i].data()['time'])
                             .toString(),
                         profileColor:
-                            snapshot.data.documents[i].data()['profileColor']));
+                            snapshot.data.documents[i].data()['profileColor'],
+                        context: context,
+                      ),
+                    );
                   }
                 }
                 return ListView.builder(
@@ -215,15 +221,18 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
         : Container();
   }
 
-  Widget searchTile(
-      {String userName,
-      String message,
-      String imageURL,
-      userData,
-      String searchWord,
-      int messageIndex,
-      String messageTime,
-      double profileColor}) {
+  Widget searchTile({
+    String userName,
+    String message,
+    String imageURL,
+    userData,
+    String searchWord,
+    int messageIndex,
+    String messageTime,
+    double profileColor,
+    BuildContext context,
+  }) {
+    final course = Provider.of<List<CourseInfo>>(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -231,7 +240,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
             providers: [
               Provider<UserData>.value(
                 value: userData,
-              )
+              ),
+              Provider<List<CourseInfo>>.value(value: course)
             ],
             child: GroupChat(
               courseId: widget.courseId,
