@@ -59,8 +59,7 @@ class _GroupChatState extends State<GroupChat> {
   String courseTerm;
   int numberOfMembers = 0;
   FocusNode myFocusNode = FocusNode();
-  String lastSender = '';
-  bool displayName;
+  bool displayName = true;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -78,9 +77,10 @@ class _GroupChatState extends State<GroupChat> {
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.documents[index].data()['time']);
-                  final sender = snapshot.data.documents[index].data()['sendBy'];
+                  String sender = snapshot.data.documents[index].data()['sendBy'];
                   if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
+                    displayName = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
                         snapshot.data.documents[index + 1].data()['time']);
@@ -89,6 +89,13 @@ class _GroupChatState extends State<GroupChat> {
                       displayTime = true;
                     } else {
                       displayTime = false;
+                    }
+
+                    String prevSender = snapshot.data.documents[index + 1].data()['sendBy'];
+                    if (sender == prevSender) {
+                      displayName = false;
+                    } else {
+                      displayName = true;
                     }
                   }
 
@@ -103,14 +110,6 @@ class _GroupChatState extends State<GroupChat> {
                   } else {
                     displayWeek = false;
                   }
-
-                  if (sender != lastSender) {
-                    displayName = true;
-                  } else {
-                    displayName = false;
-                  }
-
-                  lastSender = sender;
 
                   return snapshot.data.documents[index].data()['messageType'] ==
                           'text'
@@ -239,6 +238,7 @@ class _GroupChatState extends State<GroupChat> {
           'senderName': myName,
           'time': lastMessageTime,
           'senderID': currentUser.userID,
+          'profileColor': currentUser.profileColor
         };
 
         databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
@@ -546,7 +546,7 @@ class _GroupChatState extends State<GroupChat> {
                                         width: 28,
                                         height: 28)
                                     : Image.asset(
-                                        'assets/images/plus_on_click.png',
+                                        'assets/images/plus.png',
                                         width: 28,
                                         height: 28)),
                       )

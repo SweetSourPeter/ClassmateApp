@@ -382,12 +382,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                         SizedBox(
                                           width: _width * 0.016,
                                         ),
-                                        listOfUnread.isEmpty ||
-                                                (listOfUnread.isNotEmpty &&
-                                                    index <=
-                                                        listOfUnread.length -
-                                                            1 &&
-                                                    listOfUnread[index] == 0)
+                                        listOfUnread.isEmpty || (index > listOfUnread.length - 1) || listOfUnread[index] == 0
                                             ? Container()
                                             : Container(
                                                 alignment: Alignment.center,
@@ -400,15 +395,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                                       BorderRadius.circular(32),
                                                 ),
                                                 child: AutoSizeText(
-                                                  listOfUnread.isNotEmpty &&
-                                                          index <=
-                                                              listOfUnread
-                                                                      .length -
-                                                                  1
-                                                      ? ('+' +
-                                                          listOfUnread[index]
-                                                              .toString())
-                                                      : '+0',
+                                                  ('+' + listOfUnread[index].toString()),
                                                   style: GoogleFonts.openSans(
                                                       fontSize: 8,
                                                       color: Colors.white),

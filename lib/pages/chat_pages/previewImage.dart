@@ -6,6 +6,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'dart:io' show Platform;
 
 class PreviewImage extends StatefulWidget {
   final String imageUrl;
@@ -21,8 +22,10 @@ class _PreviewImageState extends State<PreviewImage> {
 
   Future<String> _findPath(String imageUrl) async {
     final cache = DefaultCacheManager();
-    final file = await cache.getSingleFile(imageUrl);
-    return file.path;
+
+    final tmp = await cache.getFileFromCache(imageUrl);
+
+    return tmp.file.path;
   }
 
   _requestPermission() async {
@@ -37,11 +40,29 @@ class _PreviewImageState extends State<PreviewImage> {
 
   _saveImage(source) async {
     await _requestPermission();
-    _findPath(source).then((value) async {
-      await ImageGallerySaver.saveFile(value);
-    });
-
-    _toastInfo('The image has been downloaded to your gallery!');
+    // if (Platform.isIOS) {
+      _findPath(source).then((value) async {
+        final result = await ImageGallerySaver.saveFile(value);
+        if (result['isSuccess']) {
+          _toastInfo('The image has been downloaded to your gallery!');
+        } else {
+          _toastInfo('Failed to download the image. Try again later.');
+        }
+      });
+    // }
+    // else if (Platform.isAndroid){
+    //   var appDocDir = await getTemporaryDirectory();
+    //   String savePath = appDocDir.path + "/temp.png";
+    //   await Dio().download(source, savePath);
+    //
+    //   final result = await ImageGallerySaver.saveFile(savePath);
+    //
+    //   if (result['isSuccess']) {
+    //     _toastInfo('The image has been downloaded to your gallery!');
+    //   } else {
+    //     _toastInfo('Failed to download the image. Try again later.');
+    //   }
+    // }
   }
 
   @override

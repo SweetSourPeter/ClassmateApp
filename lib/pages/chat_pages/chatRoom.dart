@@ -166,13 +166,15 @@ class _ChatRoomState extends State<ChatRoom> {
                       },
                       child: Container(
                           child: Text(
-                        'search friend',
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.openSans(
-                          color: themeOrange,
-                          fontSize: 16,
-                        ),
-                      )))
+                            'find friend',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.openSans(
+                              color: themeOrange,
+                              fontSize: 16,
+                            ),
+                          )
+                      )
+                  )
                 ],
               ),
             ),
