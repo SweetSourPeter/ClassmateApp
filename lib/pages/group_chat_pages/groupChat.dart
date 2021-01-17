@@ -26,12 +26,14 @@ class GroupChat extends StatefulWidget {
   final double initialChat;
   final String myEmail;
   final String myName;
+  final String myId;
 
   GroupChat({
     this.courseId,
     this.initialChat,
     this.myEmail,
     this.myName,
+    this.myId
   });
 
   @override
@@ -55,6 +57,9 @@ class _GroupChatState extends State<GroupChat> {
   String courseSection;
   String courseTerm;
   int numberOfMembers = 0;
+  FocusNode myFocusNode = FocusNode();
+  String lastSender = '';
+  bool displayName;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -72,6 +77,7 @@ class _GroupChatState extends State<GroupChat> {
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.documents[index].data()['time']);
+                  final sender = snapshot.data.documents[index].data()['sendBy'];
                   if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
                   } else {
@@ -97,12 +103,19 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
+                  if (sender != lastSender) {
+                    displayName = true;
+                  } else {
+                    displayName = false;
+                  }
+
+                  lastSender = sender;
+
                   return snapshot.data.documents[index].data()['messageType'] ==
                           'text'
                       ? MessageTile(
                           snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          sender == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data()['time'])
                               .toString(),
@@ -111,11 +124,11 @@ class _GroupChatState extends State<GroupChat> {
                           lastMessage,
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
+                          displayName
                         )
                       : ImageTile(
                           snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          sender == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data()['time'])
                               .toString(),
@@ -124,6 +137,7 @@ class _GroupChatState extends State<GroupChat> {
                           lastMessage,
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
+                          displayName
                         );
                 })
             : Container();
@@ -155,6 +169,9 @@ class _GroupChatState extends State<GroupChat> {
       });
     });
     // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+
+    databaseMethods.setUnreadGroupChatNumberToZero(widget.courseId, widget.myId);
+
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
         courseName = value.documents[0].data()['myCourseName'];
@@ -414,6 +431,7 @@ class _GroupChatState extends State<GroupChat> {
                                       _controller.position.minScrollExtent));
                             },
                             controller: messageController,
+                            focusNode: myFocusNode,
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               color: Colors.black,
@@ -434,7 +452,9 @@ class _GroupChatState extends State<GroupChat> {
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
                               sendMessage(
-                                  currentUser.email, currentUser.userName);
+                                  currentUser.email, currentUser.userName
+                              );
+                              myFocusNode.requestFocus();
                             },
                           ),
                         ),
@@ -595,9 +615,10 @@ class MessageTile extends StatelessWidget {
   final bool lastMessage;
   final String senderName;
   final String senderID;
+  final bool displayName;
 
   MessageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage, this.senderName, this.senderID);
+      this.displayWeek, this.lastMessage, this.senderName, this.senderID, this.displayName);
 
   @override
   Widget build(BuildContext context) {
@@ -679,6 +700,7 @@ class MessageTile extends StatelessWidget {
                                   color: const Color(0xffF7D5C5)),
                               child: SelectableText(message,
                                   textAlign: TextAlign.start,
+                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -698,7 +720,7 @@ class MessageTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Sender's name
-                    Container(
+                    displayName ? Container(
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
@@ -736,7 +758,7 @@ class MessageTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    ) : Container(),
                     // Message and Time
                     Container(
                       width: 350,
@@ -758,6 +780,7 @@ class MessageTile extends StatelessWidget {
                                   color: Colors.white),
                               child: SelectableText(message,
                                   textAlign: TextAlign.start,
+                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -794,9 +817,10 @@ class ImageTile extends StatelessWidget {
   final bool lastMessage;
   final String senderName;
   final String senderID;
+  final bool displayName;
 
   ImageTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
-      this.displayWeek, this.lastMessage, this.senderName, this.senderID);
+      this.displayWeek, this.lastMessage, this.senderName, this.senderID, this.displayName);
 
   @override
   Widget build(BuildContext context) {
@@ -850,46 +874,6 @@ class ImageTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // Sender's name
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return MultiProvider(
-                                providers: [
-                                  Provider<UserData>.value(
-                                    value: userdata,
-                                  ),
-                                  // 这个需要的话直接uncomment
-                                  // Provider<List<CourseInfo>>.value(
-                                  //   value: course,F
-                                  // ),
-                                  // final courseProvider = Provider.of<CourseProvider>(context);
-                                  // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                  // 不需要pass到push里面，直接复制上面这行即可
-                                ],
-                                child: FriendProfile(
-                                  userID:
-                                      senderID, // to be modified to friend's ID
-                                ),
-                              );
-                            }));
-                          },
-                          child: Text(
-                            senderName,
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xffFFB811),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                     // Message and Time
                     Container(
                       width: 350,
@@ -953,20 +937,45 @@ class ImageTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Sender's name
-                    Container(
+                    displayName ? Container(
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          senderName,
-                          style: GoogleFonts.openSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xffFFB811),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: userdata,
+                                      ),
+                                      // 这个需要的话直接uncomment
+                                      // Provider<List<CourseInfo>>.value(
+                                      //   value: course,F
+                                      // ),
+                                      // final courseProvider = Provider.of<CourseProvider>(context);
+                                      // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                      // 不需要pass到push里面，直接复制上面这行即可
+                                    ],
+                                    child: FriendProfile(
+                                      userID:
+                                      senderID, // to be modified to friend's ID
+                                    ),
+                                  );
+                                }));
+                          },
+                          child: Text(
+                            senderName ?? '',
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xffFFB811),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ) : Container(),
                     // Message and Time
                     Container(
                       width: 350,

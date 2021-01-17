@@ -83,6 +83,7 @@ class _TopBarState extends State<TopBar> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 print(currentUser.blockedUserID != null &&
                                     currentUser.blockedUserID
@@ -127,7 +128,7 @@ class _TopBarState extends State<TopBar> {
                                     (currentUser.blockedUserID != null &&
                                             currentUser.blockedUserID
                                                 .contains(widget.userID))
-                                        ? 'unBlock'
+                                        ? 'Unblock'
                                         : "Block",
                                     style: GoogleFonts.openSans(
                                         fontSize: 18.0,
@@ -145,6 +146,7 @@ class _TopBarState extends State<TopBar> {
                               height: 0.0,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 print("reported");
                                 Navigator.of(context).pop();
@@ -169,6 +171,7 @@ class _TopBarState extends State<TopBar> {
                               height: 0.0,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 Clipboard.setData(
                                   new ClipboardData(
@@ -215,6 +218,7 @@ class _TopBarState extends State<TopBar> {
                               height: 0.0,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 Clipboard.setData(new ClipboardData(
                                         text:
@@ -268,6 +272,7 @@ class _TopBarState extends State<TopBar> {
                       Container(
                         height: 50,
                         child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: () {
                             Navigator.pop(context);
                           },

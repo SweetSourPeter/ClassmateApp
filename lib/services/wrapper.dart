@@ -22,9 +22,9 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<User>(context);
     // AuthMethods
     authMethods = new AuthMethods();
-    print('wrapper called');
+    // print('wrapper called');
     if (user == null) {
-      print('user Is null');
+      // print('user Is null');
       return StartLoginPage();
       // StartLoginPage();
     } else {

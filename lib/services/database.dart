@@ -393,6 +393,7 @@ class DatabaseMethods {
     return FirebaseFirestore.instance
         .collection('chatroom')
         .where('users', arrayContains: userEmail)
+        .orderBy('lastMessageTime', descending: true)
         .snapshots();
   }
 

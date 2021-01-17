@@ -107,8 +107,8 @@ class _ChatRoomState extends State<ChatRoom> {
     databaseMethods.getChatRooms(myEmail).then((snapshots) {
       setState(() {
         chatRooms = snapshots;
-        print(
-            "we got the data + ${chatRooms.toString()} this is name  $myEmail");
+        // print(
+        //     "we got the data + ${chatRooms.toString()} this is name  $myEmail");
       });
     });
   }
@@ -117,60 +117,62 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                  top: 40, left: 40, bottom: _height * 0.064, right: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Text(
-                      'Chats',
-                      textAlign: TextAlign.left,
-                      style: largeTitleTextStyleBold(Colors.black, 26),
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          color: Colors.white,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                    top: 40, left: 40, bottom: _height * 0.064, right: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Text(
+                        'Chats',
+                        textAlign: TextAlign.left,
+                        style: largeTitleTextStyleBold(Colors.black, 26),
+                      ),
                     ),
-                  ),
-                  // Expanded(child: Container()),
-                  GestureDetector(
-                      onTap: () {
-                        //search for users
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return MultiProvider(
-                            providers: [
-                              Provider<UserData>.value(
-                                value: currentUser,
-                              ),
-                              // 这个需要的话直接uncomment
-                              // Provider<List<CourseInfo>>.value(
-                              //   value: course,F
-                              // ),
-                              // final courseProvider = Provider.of<CourseProvider>(context);
-                              // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                              // 不需要pass到push里面，直接复制上面这行即可
-                            ],
-                            child: SearchUsers(),
-                          );
-                        }));
-                      },
-                      child: Container(
-                        child: Image.asset(
-                          'assets/images/search.png',
-                          color: Color(0xffFF7E40),
-                        ),
-                      ))
-                ],
+                    // Expanded(child: Container()),
+                    GestureDetector(
+                        onTap: () {
+                          //search for users
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return MultiProvider(
+                              providers: [
+                                Provider<UserData>.value(
+                                  value: currentUser,
+                                ),
+                                // 这个需要的话直接uncomment
+                                // Provider<List<CourseInfo>>.value(
+                                //   value: course,F
+                                // ),
+                                // final courseProvider = Provider.of<CourseProvider>(context);
+                                // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                // 不需要pass到push里面，直接复制上面这行即可
+                              ],
+                              child: SearchUsers(),
+                            );
+                          }));
+                        },
+                        child: Container(
+                          child: Image.asset(
+                            'assets/images/search.png',
+                            color: Color(0xffFF7E40),
+                          ),
+                        ))
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: chatRoomsList(context),
-            ),
-          ],
+              Expanded(
+                child: chatRoomsList(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -207,7 +209,7 @@ class ChatRoomsTile extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = mediaQuery.width * 1.0;
-    print('heree');
+
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -318,7 +320,7 @@ class ChatRoomsTile extends StatelessWidget {
                               color: const Color(0xffFF7E40)),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 6,
                         ),
                         Container(
                           width: mediaQuery.width - 200,

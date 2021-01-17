@@ -235,9 +235,10 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
             ],
             child: GroupChat(
               courseId: widget.courseId,
-              initialChat: messageIndex.toDouble(),
               myEmail: widget.myEmail,
               myName: widget.myName,
+              myId: userData.userID,
+              initialChat: messageIndex.toDouble(),
             ),
           );
         }));
