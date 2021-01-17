@@ -269,6 +269,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
+    FocusNode myFocusNode = FocusNode();
 
     return SafeArea(
       child: Scaffold(
@@ -315,38 +316,39 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return MultiProvider(
-                                      providers: [
-                                        Provider<UserData>.value(
-                                          value: currentUser,
-                                        ),
-                                        Provider<List<CourseInfo>>.value(
-                                          value: currentCourse,
-                                        ),
-                                        // 这个需要的话直接uncomment
-                                        // Provider<List<CourseInfo>>.value(
-                                        //   value: course,F
-                                        // ),
-                                        // final courseProvider = Provider.of<CourseProvider>(context);
-                                        // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                        // 不需要pass到push里面，直接复制上面这行即可
-                                      ],
-                                      child: FriendProfile(
-                                        userID: widget
-                                            .friendID, // to be modified to friend's ID
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: currentUser,
                                       ),
-                                    );
-                                  }));
-                                },
+                                      Provider<List<CourseInfo>>.value(
+                                        value: currentCourse,
+                                      ),
+                                      // 这个需要的话直接uncomment
+                                      // Provider<List<CourseInfo>>.value(
+                                      //   value: course,F
+                                      // ),
+                                      // final courseProvider = Provider.of<CourseProvider>(context);
+                                      // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                      // 不需要pass到push里面，直接复制上面这行即可
+                                    ],
+                                    child: FriendProfile(
+                                      userID: widget
+                                          .friendID, // to be modified to friend's ID
+                                    ),
+                                  );
+                                })
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
                                 child: CircleAvatar(
                                   backgroundColor: listProfileColor[
                                       widget.friendProfileColor.toInt()],
@@ -376,36 +378,35 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ),
                                   ),
                                 ),
-                                // createUserImage(sidebarSize / 20, currentUser),
                               ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.friendName,
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold)),
-                                Container(
-                                  width: 120,
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    friendCourse.isNotEmpty
-                                        ? friendCourse.toString().substring(1,
-                                            friendCourse.toString().length - 1)
-                                        : 'No courses yet',
-                                    style: GoogleFonts.openSans(
-                                      fontSize: 14,
-                                      color: Color(0xff949494),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.friendName,
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold)),
+                                  Container(
+                                    width: 120,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      friendCourse.isNotEmpty
+                                          ? friendCourse.toString().substring(1,
+                                              friendCourse.toString().length - 1)
+                                          : 'No courses yet',
+                                      style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        color: Color(0xff949494),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
@@ -541,6 +542,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   () => _controller.jumpTo(
                                       _controller.position.minScrollExtent));
                             },
+                            focusNode: myFocusNode,
                             controller: messageController,
                             style: GoogleFonts.openSans(
                               fontSize: 16,
@@ -562,6 +564,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
                               sendMessage(currentUser.email);
+                              myFocusNode.requestFocus();
                             },
                           ),
                         ),
@@ -645,7 +648,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         width: 28,
                                         height: 28)
                                     : Image.asset(
-                                        'assets/images/plus_on_click.png',
+                                        'assets/images/plus.png',
                                         width: 28,
                                         height: 28)),
 

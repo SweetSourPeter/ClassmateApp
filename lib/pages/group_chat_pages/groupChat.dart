@@ -27,12 +27,14 @@ class GroupChat extends StatefulWidget {
   final double initialChat;
   final String myEmail;
   final String myName;
+  final String myId;
 
   GroupChat({
     this.courseId,
     this.initialChat,
     this.myEmail,
     this.myName,
+    this.myId
   });
 
   @override
@@ -56,6 +58,8 @@ class _GroupChatState extends State<GroupChat> {
   String courseSection;
   String courseTerm;
   int numberOfMembers = 0;
+  FocusNode myFocusNode = FocusNode();
+  bool displayName = true;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -73,8 +77,10 @@ class _GroupChatState extends State<GroupChat> {
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.documents[index].data()['time']);
+                  String sender = snapshot.data.documents[index].data()['sendBy'];
                   if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
+                    displayName = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
                         snapshot.data.documents[index + 1].data()['time']);
@@ -83,6 +89,13 @@ class _GroupChatState extends State<GroupChat> {
                       displayTime = true;
                     } else {
                       displayTime = false;
+                    }
+
+                    String prevSender = snapshot.data.documents[index + 1].data()['sendBy'];
+                    if (sender == prevSender) {
+                      displayName = false;
+                    } else {
+                      displayName = true;
                     }
                   }
 
@@ -102,8 +115,7 @@ class _GroupChatState extends State<GroupChat> {
                           'text'
                       ? MessageTile(
                           snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          sender == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data()['time'])
                               .toString(),
@@ -112,14 +124,12 @@ class _GroupChatState extends State<GroupChat> {
                           lastMessage,
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
-                              1.0,
+                          displayName,
+                          snapshot.data.documents[index].data()['profileColor'] ?? 1.0,
                         )
                       : ImageTile(
                           snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          sender == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
                                   snapshot.data.documents[index].data()['time'])
                               .toString(),
@@ -128,9 +138,8 @@ class _GroupChatState extends State<GroupChat> {
                           lastMessage,
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
-                              1.0,
+                          displayName,
+                          snapshot.data.documents[index].data()['profileColor'] ?? 1.0,
                         );
                 })
             : Container();
@@ -162,6 +171,9 @@ class _GroupChatState extends State<GroupChat> {
       });
     });
     // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+
+    databaseMethods.setUnreadGroupChatNumberToZero(widget.courseId, widget.myId);
+
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
         courseName = value.documents[0].data()['myCourseName'];
@@ -226,6 +238,7 @@ class _GroupChatState extends State<GroupChat> {
           'senderName': myName,
           'time': lastMessageTime,
           'senderID': currentUser.userID,
+          'profileColor': currentUser.profileColor
         };
 
         databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
@@ -425,6 +438,7 @@ class _GroupChatState extends State<GroupChat> {
                                       _controller.position.minScrollExtent));
                             },
                             controller: messageController,
+                            focusNode: myFocusNode,
                             style: GoogleFonts.openSans(
                               fontSize: 16,
                               color: Colors.black,
@@ -445,7 +459,9 @@ class _GroupChatState extends State<GroupChat> {
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
                               sendMessage(
-                                  currentUser.email, currentUser.userName);
+                                  currentUser.email, currentUser.userName
+                              );
+                              myFocusNode.requestFocus();
                             },
                           ),
                         ),
@@ -530,7 +546,7 @@ class _GroupChatState extends State<GroupChat> {
                                         width: 28,
                                         height: 28)
                                     : Image.asset(
-                                        'assets/images/plus_on_click.png',
+                                        'assets/images/plus.png',
                                         width: 28,
                                         height: 28)),
                       )
@@ -620,6 +636,7 @@ class MessageTile extends StatelessWidget {
   final bool lastMessage;
   final String senderName;
   final String senderID;
+  final bool displayName;
   final double profileColor;
 
   MessageTile(
@@ -631,6 +648,7 @@ class MessageTile extends StatelessWidget {
       this.lastMessage,
       this.senderName,
       this.senderID,
+      this.displayName,
       this.profileColor);
 
   @override
@@ -715,6 +733,7 @@ class MessageTile extends StatelessWidget {
                                   color: const Color(0xffF7D5C5)),
                               child: SelectableText(message,
                                   textAlign: TextAlign.start,
+                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -734,7 +753,7 @@ class MessageTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Sender's name
-                    Container(
+                    displayName ? Container(
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
@@ -768,7 +787,7 @@ class MessageTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    ) : Container(),
                     // Message and Time
                     Container(
                       width: 350,
@@ -790,6 +809,7 @@ class MessageTile extends StatelessWidget {
                                   color: Colors.white),
                               child: SelectableText(message,
                                   textAlign: TextAlign.start,
+                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -826,6 +846,7 @@ class ImageTile extends StatelessWidget {
   final bool lastMessage;
   final String senderName;
   final String senderID;
+  final bool displayName;
   final double profileColor;
 
   ImageTile(
@@ -837,6 +858,7 @@ class ImageTile extends StatelessWidget {
       this.lastMessage,
       this.senderName,
       this.senderID,
+      this.displayName,
       this.profileColor);
 
   @override
@@ -956,8 +978,7 @@ class ImageTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Sender's name
-
-                    Container(
+                    displayName ? Container(
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
@@ -991,7 +1012,7 @@ class ImageTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    ) : Container(),
                     // Message and Time
                     Container(
                       width: 350,
