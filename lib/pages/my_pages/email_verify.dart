@@ -1,4 +1,5 @@
 import 'package:app_test/services/wrapper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -6,6 +7,7 @@ import 'package:app_test/models/constant.dart';
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+// import "package:firebase_auth/firebase_auth.dart" as auth;
 
 class EmailVerifySent extends StatefulWidget {
   @override
@@ -17,7 +19,7 @@ class _EmailVerifySentState extends State<EmailVerifySent> {
 
   bool hasSend = false;
 
-  AuthMethods authMethods = new AuthMethods();
+  // AuthMethods authMethods = new AuthMethods();
 
   Timer _timer;
   int _start = 60;

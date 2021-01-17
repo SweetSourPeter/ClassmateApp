@@ -49,12 +49,12 @@ class _ChatRoomState extends State<ChatRoom> {
                     friendName = userList[4];
                     friendEmail = userList[5];
                     friendID = userList[6];
-                    friendProfileColor = userList[7];
+                    friendProfileColor = userList[7].toDouble();
                   } else {
                     friendName = userList[0];
                     friendEmail = userList[1];
                     friendID = userList[2];
-                    friendProfileColor = userList[3];
+                    friendProfileColor = userList[3].toDouble();
                   }
 
                   latestMessage =

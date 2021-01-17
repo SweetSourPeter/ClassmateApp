@@ -42,6 +42,17 @@ class AuthMethods {
         .map(_userFromFirebaseUser);
   }
 
+  // Future reloadTheUser() async {
+  //   FirebaseUser currUser = await _auth.currentUser.reload().then((_) => _auth.currentUser());
+
+  //     try {
+  //       return await _auth.currentUser().then((u) => u.reload().then((_) => _auth.currentUser()));
+  //     } catch (error) {
+  //       throw error;
+  //     }
+
+  // }
+
   //email verify
   Future sendEmailVerify() async {
     User user = FirebaseAuth.instance.currentUser;
