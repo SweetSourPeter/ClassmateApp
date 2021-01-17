@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/my_pages/start_login.dart';
 import 'package:app_test/services/auth.dart';
-import "package:firebase_auth/firebase_auth.dart" as auth;
 
 class Wrapper extends StatelessWidget {
   final bool verified;
@@ -22,8 +21,6 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-    auth.User firebaseUser = _auth.currentUser;
     // AuthMethods
     authMethods = new AuthMethods();
     if (user == null) {
@@ -50,7 +47,6 @@ class Wrapper extends StatelessWidget {
             builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
               // return either the Home or Authenticate widget
               print('user exist called');
-              print(verified);
               switch (snapshot.connectionState) {
                 // Uncompleted State
                 case ConnectionState.none:
