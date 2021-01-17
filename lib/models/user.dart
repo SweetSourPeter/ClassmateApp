@@ -1,13 +1,23 @@
 class User {
   final String userID;
-  String userImageUrl;
+  String photoURL;
   String school;
   String email;
   String userName;
+  String password;
   bool admin;
+  bool isVerified;
   int unread;
 
-  User({this.userID, bool admin, this.unread});
+  User({
+    this.userID,
+    bool admin,
+    this.unread,
+    this.isVerified = false,
+    this.email,
+    this.photoURL,
+    this.password,
+  });
 
   Map<String, dynamic> toJson() =>
       {'userID': userID, 'admin': admin, 'unread': 0};

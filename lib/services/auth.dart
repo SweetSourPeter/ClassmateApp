@@ -1,18 +1,23 @@
-import 'package:app_test/main.dart';
 import 'package:app_test/models/user.dart' as u;
 import "package:firebase_auth/firebase_auth.dart" as auth;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:app_test/services/userDatabase.dart';
-import 'package:flutter/material.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  u.User _userFromFirebaseUser(auth.User user) {
+  u.User _userFromFirebaseUser(
+    auth.User user,
+  ) {
     // return user != null ? auth.User(userID: user.uid) : null;
-    return user != null ? u.User(userID: user.uid) : null;
+    return (user != null)
+        ? u.User(
+            userID: user.uid,
+            isVerified: user.emailVerified,
+            email: user.email,
+            photoURL: user.photoURL,
+          )
+        : null;
   }
 
   Future<bool> isUserLogged() async {
@@ -35,6 +40,29 @@ class AuthMethods {
         .authStateChanges()
         //.map((FirebaseUser user) => _userFromFirebaseUser(user));
         .map(_userFromFirebaseUser);
+  }
+
+  // Future reloadTheUser() async {
+  //   FirebaseUser currUser = await _auth.currentUser.reload().then((_) => _auth.currentUser());
+
+  //     try {
+  //       return await _auth.currentUser().then((u) => u.reload().then((_) => _auth.currentUser()));
+  //     } catch (error) {
+  //       throw error;
+  //     }
+
+  // }
+
+  //email verify
+  Future sendEmailVerify() async {
+    User user = FirebaseAuth.instance.currentUser;
+    if (!user.emailVerified) {
+      try {
+        await user.sendEmailVerification();
+      } catch (error) {
+        throw error;
+      }
+    }
   }
 
   // sign in with email and password

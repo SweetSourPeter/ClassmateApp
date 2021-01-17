@@ -75,7 +75,7 @@ class _ThirdPageState extends State<ThirdPage>
     }
 
     return Container(
-      height: widget.isEdit ? _height - 50 : _height,
+      height: widget.isEdit ? _height * 0.9 : _height,
       decoration: widget.isEdit
           ? BoxDecoration(
               color: themeOrange,
@@ -116,7 +116,7 @@ class _ThirdPageState extends State<ThirdPage>
                 )
               : Container(),
           SizedBox(
-            height: widget.isEdit ? (_height - 50) * 0.13 : _height * 0.13,
+            height: widget.isEdit ? (_height * 0.9) * 0.13 : _height * 0.13,
           ),
           _getHeader(),
           Expanded(
