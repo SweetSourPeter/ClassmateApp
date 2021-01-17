@@ -2,6 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/MainMenu.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
+import 'package:app_test/pages/my_pages/email_verify.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/userDatabase.dart';
@@ -9,30 +10,36 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/my_pages/start_login.dart';
 import 'package:app_test/services/auth.dart';
+import "package:firebase_auth/firebase_auth.dart" as auth;
 
 class Wrapper extends StatelessWidget {
-  final bool reset;
+  final bool verified;
   // Constructor, with syntactic sugar for assignment to members.
-  Wrapper(this.reset) {
+  Wrapper(this.verified) {
     // Initialization code goes here.
   }
   DatabaseMethods databaseMethods = new DatabaseMethods();
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
+    auth.User firebaseUser = _auth.currentUser;
     // AuthMethods
     authMethods = new AuthMethods();
-    print('wrapper called');
     if (user == null) {
       print('user Is null');
       return StartLoginPage();
       // StartLoginPage();
-    } else {
+    }
+    // else if (!firebaseUser.emailVerified) {
+    //   return EmailVerifySent();
+    // }
+    else {
       Future<UserData> userData =
           databaseMethods.getUserDetailsByID(user.userID);
 
       return Scaffold(
-        backgroundColor: riceColor,
+        backgroundColor: themeOrange,
         appBar: AppBar(
           toolbarHeight: 0,
           backgroundColor: Colors.white,
@@ -43,7 +50,7 @@ class Wrapper extends StatelessWidget {
             builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
               // return either the Home or Authenticate widget
               print('user exist called');
-              print(reset);
+              print(verified);
               switch (snapshot.connectionState) {
                 // Uncompleted State
                 case ConnectionState.none:

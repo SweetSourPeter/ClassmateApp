@@ -45,7 +45,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 

@@ -35,7 +35,7 @@ class _TagSelectingState extends State<TagSelecting> {
   //for category selector
   int selectedIndex = 0;
   final List<String> categories = [
-    'Major', //college
+    'college', //college
     'Study habits',
     'Interest',
     'Languages',
@@ -116,7 +116,7 @@ class _TagSelectingState extends State<TagSelecting> {
                   ),
                 )
               : null,
-          height: widget.isEdit ? mediaQuery.height - 50 : mediaQuery.height,
+          height: widget.isEdit ? (mediaQuery.height * 0.9) : mediaQuery.height,
           color: widget.isEdit ? null : themeOrange,
           child: Column(
             children: [
@@ -150,7 +150,7 @@ class _TagSelectingState extends State<TagSelecting> {
               ),
               Container(
                 alignment: Alignment.topCenter,
-                height: widget.isEdit ? (_height - 50) * 0.56 : _height * 0.56,
+                height: widget.isEdit ? (_height * 0.9) * 0.56 : _height * 0.56,
                 color: themeOrange,
                 child: SingleChildScrollView(
                   child: Column(
@@ -275,7 +275,7 @@ class _TagSelectingState extends State<TagSelecting> {
               Padding(
                 padding: EdgeInsets.only(
                   bottom:
-                      widget.isEdit ? (_height - 50) * 0.06 : _height * 0.094,
+                      widget.isEdit ? (_height * 0.9) * 0.06 : _height * 0.094,
                   left: _width * 0.15,
                   right: _width * 0.15,
                 ),
@@ -363,7 +363,7 @@ class _TagSelectingState extends State<TagSelecting> {
         ],*/
       ),
       height: widget.isEdit
-          ? (mediaQuery.height - 50) * 0.07
+          ? (mediaQuery.height * 0.9) * 0.07
           : mediaQuery.height * 0.07,
       // color: Colors.white,
       child: Padding(
@@ -380,7 +380,7 @@ class _TagSelectingState extends State<TagSelecting> {
                 padding: EdgeInsets.symmetric(
                   horizontal: mediaQuery.width * 0.04,
                   vertical: widget.isEdit
-                      ? (mediaQuery.height - 50) * 0.0246
+                      ? (mediaQuery.height * 0.9) * 0.0246
                       : mediaQuery.height * 0.0246,
                 ),
                 child: AutoSizeText(
