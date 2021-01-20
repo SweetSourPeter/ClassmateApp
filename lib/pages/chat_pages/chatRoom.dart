@@ -267,7 +267,7 @@ class ChatRoomsTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    height: _width * 0.175,
+                    height: _width *0.175,
                     width: _width * 0.175,
                     child: Stack(
                       children: [
@@ -322,42 +322,47 @@ class ChatRoomsTile extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: _width * 0.04, top: _height * 0.005),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AutoSizeText(
-                          friendName,
-                          style: GoogleFonts.montserrat(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xffFF7E40)),
-                        ),
-                        SizedBox(
-                          height: _height * 0.009,
-                        ),
-                        Container(
-                          width: mediaQuery.width - 200,
-                          child: AutoSizeText(latestMessage,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.openSans(
-                                  fontSize: 16, color: Colors.black)),
-                        )
-                      ],
+                  Container(
+                    width: _width * 0.6 - 15,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: _width * 0.04, top: _height * 0.005),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            friendName,
+                            style: GoogleFonts.montserrat(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xffFF7E40)),
+                          ),
+                          SizedBox(
+                            height: _height * 0.009,
+                          ),
+                          Container(
+                            child: AutoSizeText(latestMessage,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.openSans(
+                                    fontSize: 15.5, color: Colors.black)),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
+                  )
                 ],
               ),
-              Padding(
-                padding: EdgeInsets.only(top: _height * 0.0049),
-                child: Container(
-                  child: AutoSizeText(
-                    lastMessageTime.substring(11, lastMessageTime.length - 7),
-                    style: GoogleFonts.openSans(
-                      fontSize: 14,
-                      color: const Color(0xff949494),
+              Spacer(),
+              Container(
+                child: Padding(
+                  padding: EdgeInsets.only(top: _height * 0.0049),
+                  child: Container(
+                    child: AutoSizeText(
+                      lastMessageTime.substring(11, lastMessageTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 14,
+                        color: const Color(0xff949494),
+                      ),
                     ),
                   ),
                 ),

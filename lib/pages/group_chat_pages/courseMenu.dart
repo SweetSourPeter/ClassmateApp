@@ -357,7 +357,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     SizedBox(
-                                      height: _height * 0.05,
+                                      height: _height * 0.046,
                                     ),
                                     Row(
                                       children: <Widget>[
