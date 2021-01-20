@@ -2,6 +2,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
+import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/edit_pages/editNameModel.dart';
@@ -33,9 +34,13 @@ class _EditHomePageState extends State<EditHomePage> {
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
-    final userTags = Provider.of<UserTags>(context);
+    final userTags = Provider.of<UserTags>(context, listen: true);
+    final userTagProvider = Provider.of<UserTagsProvider>(context);
     final databaseMehods = DatabaseMethods();
-
+    // List<String> tags = (userTags.college == null ? [] : userTags.college) +
+    //     (userTags.interest == null ? [] : userTags.interest) +
+    //     (userTags.language == null ? [] : userTags.language) +
+    //     (userTags.strudyHabits == null ? [] : userTags.strudyHabits);
     void resetInfo() {
       databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
         setState(() {
@@ -46,6 +51,7 @@ class _EditHomePageState extends State<EditHomePage> {
     }
 
     resetInfo();
+    // print(userTagProvider.college);
     // TODO: implement build
     return Scaffold(
       backgroundColor: riceColor,
@@ -118,20 +124,55 @@ class _EditHomePageState extends State<EditHomePage> {
                             height: (menuContainerHeight) / 8,
                             isEdit: true,
                             onTap: () {
-                              print(userTags.college);
+                              print('tags:');
+                              print(userTagProvider.college);
+                              // print(tags);
                               showBottomPopSheet(
                                   context,
                                   TagSelecting(
-                                      currentTags: userTags.college ??
-                                          [] + userTags.interest ??
-                                          [] + userTags.language ??
-                                          [] + userTags.strudyHabits ??
-                                          [],
+                                      currentTags: (userTagProvider.college ==
+                                                  null
+                                              ? []
+                                              : userTagProvider.college
+                                                  .cast<dynamic>()) +
+                                          (userTagProvider.interest == null
+                                              ? []
+                                              : userTagProvider.interest
+                                                  .cast<dynamic>()) +
+                                          (userTagProvider.language == null
+                                              ? []
+                                              : userTagProvider.language
+                                                  .cast<dynamic>()) +
+                                          (userTagProvider.strudyHabits == null
+                                              ? []
+                                              : userTagProvider.strudyHabits
+                                                  .cast<dynamic>()),
                                       buttonColor: listProfileColor[
                                           userProfileColor.toInt()],
                                       pageController:
                                           PageController(initialPage: 0),
                                       isEdit: true));
+                              print('tags:');
+                              print(userTagProvider.college);
+                              //   setState(() {
+                              //     print(userTagProvider.college);
+                              //     tags = (userTagProvider.college == null
+                              //             ? []
+                              //             : userTagProvider.college
+                              //                 .cast<String>()) +
+                              //         (userTagProvider.interest == null
+                              //             ? []
+                              //             : userTagProvider.interest
+                              //                 .cast<String>()) +
+                              //         (userTagProvider.language == null
+                              //             ? []
+                              //             : userTagProvider.language
+                              //                 .cast<String>()) +
+                              //         (userTagProvider.strudyHabits == null
+                              //             ? []
+                              //             : userTagProvider.strudyHabits
+                              //                 .cast<String>());
+                              //   });
                             },
                           ),
                           Divider(
@@ -162,6 +203,7 @@ class _EditHomePageState extends State<EditHomePage> {
                                     isEdit: true,
                                     valueChanged: (index) => {}),
                               );
+                              setState(() {});
                             },
                           ),
                           Divider(
