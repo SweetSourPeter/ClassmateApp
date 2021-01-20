@@ -246,12 +246,14 @@ class _ThirdPageState extends State<ThirdPage>
                     borderRadius: BorderRadius.circular(30)),
                 onPressed: () {
                   if (widget.isEdit) {
+                    print('1called');
                     databaseMethods
                         .updateUserProfileColor(user.userID, _currentindex)
                         .then((value) {
                       Navigator.pop(context);
                     });
                   } else {
+                    print('2called');
                     // initialize the tags
                     userTagProvider.changeTagCollege([]);
                     userTagProvider.changeTagsStudyHabits([]);

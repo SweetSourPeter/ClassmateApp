@@ -66,160 +66,126 @@ class _MainMenuState extends State<MainMenu> {
     double sidebarSize = mediaQuery.width * 1.0;
     final userTags = Provider.of<UserTags>(context);
     return (userdata == null)
-        ? CircularProgressIndicator()
-        : SafeArea(
-            child: Scaffold(
-              backgroundColor: themeOrange,
-              body: SafeArea(
+        ? Center(
+            child: CircularProgressIndicator(
+            backgroundColor: themeOrange,
+          ))
+        : Scaffold(
+            backgroundColor: Colors.white,
+            body: Stack(
+              children: <Widget>[
+                AnimatedContainer(
+                  transform: Matrix4.translationValues(xOffset, yOffset, 20)
+                    ..scale(scaleFactor),
+                  duration: Duration(microseconds: 250),
                   child: Scaffold(
-                      body: GestureDetector(
-                //if menu close and slide to right-> menu opens
-                onPanUpdate: (details) {
-                  if (details.delta.dx > 4 &&
-                      !isMenuOpen &&
-                      _currentIndex == 0) {
-                    //setMenuOpenState(true); //remove this to enable side menu
-                  }
-                  // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 0) {
-                  //   print('b');
-                  //   setState(() {
-                  //     _currentIndex = 1;
-                  //   });
-                  // }
-                  // else if (details.delta.dx < 4 && !isMenuOpen && _currentIndex == 1) {
-                  //   print('c');
-                  //   setState(() {
-                  //     _currentIndex = 0;
-                  //   });
-                  // }
-                },
-                //if the menu opens and tap on the side->close menu
-                onTapDown: (details) {
-                  if (isMenuOpen && details.globalPosition.dx > sidebarSize) {
-                    setMenuOpenState(false);
-                  }
-                },
-                child: Container(
-                  color: themeOrange,
-                  width: mediaQuery.width,
-                  child: Stack(
-                    children: <Widget>[
-                      AnimatedContainer(
-                        transform:
-                            Matrix4.translationValues(xOffset, yOffset, 20)
-                              ..scale(scaleFactor),
-                        duration: Duration(microseconds: 250),
-                        child: Scaffold(
-                          backgroundColor: riceColor,
-                          // appBar: buildAppBar(),
-                          body: _currentIndex == 0
-                              ? CourseMainMenu(
-                                  course: course,
-                                  userData: userdata,
-                                )
-                              : _currentIndex == 1
-                                  ? ChatRoom(
-                                      myName: userdata.userName,
-                                      myEmail: userdata.email,
-                                    )
-                                  : MyAccount(
-                                      key: globalKey,
-                                    ),
-                          bottomNavigationBar:
-                              buildBottomNavigationBar(_height, _width),
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: 1500),
-                        left: isMenuOpen ? 0 : -sidebarSize + 0,
-                        top: 0,
-                        curve: Curves.elasticOut,
-                        child: SizedBox(
-                          width: sidebarSize,
-                          child: GestureDetector(
-                            onPanUpdate: (details) {
-                              if (details.localPosition.dx <= sidebarSize) {
-                                setState(() {
-                                  _offset = details.localPosition;
-                                });
-                              }
-
-                              if (details.localPosition.dx > sidebarSize - 25 &&
-                                  details.delta.distanceSquared > 2) {
-                                setMenuOpenState(true);
-                              }
-
-                              if (details.localPosition.dx < sidebarSize + 25 &&
-                                  details.delta.distanceSquared < 2) {
-                                setMenuOpenState(false);
-                              }
-                            },
-                            onPanEnd: (details) {
-                              setState(() {
-                                _offset = Offset(0, 0);
-                              });
-                            },
-                            child: Stack(
-                              children: <Widget>[
-                                CustomPaint(
-                                  size: Size(sidebarSize, mediaQuery.height),
-                                  painter: DrawerPainter(offset: _offset),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: 300),
-                        left: (isMenuOpen) ? 10 : sidebarSize - 20,
-                        // left: (isMenuOpen) ? 10 : 100,
-                        top: 5,
-                        child: IconButton(
-                          enableFeedback: true,
-                          icon: Icon(
-                            Icons.chevron_left,
-                            color: Colors.black,
-                            size: 40,
-                          ),
-                          onPressed: () {
-                            setMenuOpenState(false);
-                          },
-                        ),
-                      )
-                    ],
+                    backgroundColor: Colors.white,
+                    // appBar: buildAppBar(),
+                    body: _currentIndex == 0
+                        ? CourseMainMenu(
+                            course: course,
+                            userData: userdata,
+                          )
+                        : _currentIndex == 1
+                            ? ChatRoom(
+                                myName: userdata.userName,
+                                myEmail: userdata.email,
+                              )
+                            : MyAccount(
+                                key: globalKey,
+                              ),
+                    bottomNavigationBar:
+                        buildBottomNavigationBar(_height, _width),
                   ),
                 ),
-              ))),
+                AnimatedPositioned(
+                  duration: Duration(milliseconds: 1500),
+                  left: isMenuOpen ? 0 : -sidebarSize + 0,
+                  top: 0,
+                  curve: Curves.elasticOut,
+                  child: SizedBox(
+                    width: sidebarSize,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        if (details.localPosition.dx <= sidebarSize) {
+                          setState(() {
+                            _offset = details.localPosition;
+                          });
+                        }
+
+                        if (details.localPosition.dx > sidebarSize - 25 &&
+                            details.delta.distanceSquared > 2) {
+                          setMenuOpenState(true);
+                        }
+
+                        if (details.localPosition.dx < sidebarSize + 25 &&
+                            details.delta.distanceSquared < 2) {
+                          setMenuOpenState(false);
+                        }
+                      },
+                      onPanEnd: (details) {
+                        setState(() {
+                          _offset = Offset(0, 0);
+                        });
+                      },
+                      child: Stack(
+                        children: <Widget>[
+                          CustomPaint(
+                            size: Size(sidebarSize, mediaQuery.height),
+                            painter: DrawerPainter(offset: _offset),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                AnimatedPositioned(
+                  duration: Duration(milliseconds: 300),
+                  left: (isMenuOpen) ? 10 : sidebarSize - 20,
+                  // left: (isMenuOpen) ? 10 : 100,
+                  top: 5,
+                  child: IconButton(
+                    enableFeedback: true,
+                    icon: Icon(
+                      Icons.chevron_left,
+                      color: Colors.black,
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      setMenuOpenState(false);
+                    },
+                  ),
+                )
+              ],
             ),
           );
   }
 
-  Padding userInfoDetailsBox(
-      Size mediaQuery, String topText, String bottomText) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 60),
-      child: Column(
-        children: [
-          Container(
-            height: 20,
-            child: Text(
-              topText,
-              style: TextStyle(
-                  fontSize: 16,
-                  color: themeOrange,
-                  fontWeight: FontWeight.w800),
-            ),
-          ),
-          Text(
-            bottomText,
-            style: TextStyle(
-                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
-          ),
-        ],
-      ),
-    );
-  }
+  // Padding userInfoDetailsBox(
+  //     Size mediaQuery, String topText, String bottomText) {
+  //   return Padding(
+  //     padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 60),
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           height: 20,
+  //           child: Text(
+  //             topText,
+  //             style: TextStyle(
+  //                 fontSize: 16,
+  //                 color: themeOrange,
+  //                 fontWeight: FontWeight.w800),
+  //           ),
+  //         ),
+  //         Text(
+  //           bottomText,
+  //           style: TextStyle(
+  //               fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   void setMenuOpenState(bool state) {
     isMenuOpen = state;
