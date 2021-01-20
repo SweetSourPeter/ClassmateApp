@@ -45,31 +45,37 @@ class _TagSelectingState extends State<TagSelecting> {
   @override
   void initState() {
     super.initState();
+    print('tags page called');
     _items = college;
     if (widget.isEdit && widget.currentTags != null) {
       allTags = widget.currentTags;
+      setState(() {
+        blureShow = widget.isEdit;
+      });
     }
-    setState(() {
-      blureShow = widget.isEdit;
-    });
+    blureShow = widget.isEdit;
   }
 
-  void changepRroviderList(UserTagsProvider userTagProvider) {
+  Future<void> changepRroviderList(UserTagsProvider userTagProvider) async {
+    print('selected index is =----------- $selectedIndex');
     switch (selectedIndex) {
       case 0:
         // userTagProvider.changeTagCollege(
         //     (userTagProvider.college ?? [] + _getAllItem(tagStateKeyList[0]))
         //         .toSet()
         //         .toList());
-        userTagProvider.changeTagCollege((_getAllItem(tagStateKeyList[0])));
+        print('provider change called');
+        await userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0]));
         // return college;
+        print('done');
         break;
       case 1:
         // userTagProvider.changeTagsStudyHabits((userTagProvider.strudyHabits ??
         //         [] + _getAllItem(tagStateKeyList[1]))
         //     .toSet()
         //     .toList());
-        userTagProvider.changeTagsStudyHabits(_getAllItem(tagStateKeyList[1]));
+        await userTagProvider
+            .changeTagsStudyHabits(_getAllItem(tagStateKeyList[1]));
         // return strudyHabits;
 
         break;
@@ -78,7 +84,8 @@ class _TagSelectingState extends State<TagSelecting> {
         //     (userTagProvider.interest ?? [] + _getAllItem(tagStateKeyList[2]))
         //         .toSet()
         //         .toList());
-        userTagProvider.changeTagInterest(_getAllItem(tagStateKeyList[2]));
+        await userTagProvider
+            .changeTagInterest(_getAllItem(tagStateKeyList[2]));
         // return Interest;
 
         break;
@@ -87,7 +94,8 @@ class _TagSelectingState extends State<TagSelecting> {
         //     (userTagProvider.language ?? [] + _getAllItem(tagStateKeyList[3]))
         //         .toSet()
         //         .toList());
-        userTagProvider.changeTagLanguage(_getAllItem(tagStateKeyList[3]));
+        await userTagProvider
+            .changeTagLanguage(_getAllItem(tagStateKeyList[3]));
         // return language;
         break;
       default:
@@ -321,12 +329,12 @@ class _TagSelectingState extends State<TagSelecting> {
                           : Color(0xFFFF9B6B).withOpacity(1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
-                      onPressed: () {
+                      onPressed: () async {
                         if (widget.isEdit) {
-                          userTagProvider.addTagsToContact(context);
+                          await userTagProvider.addTagsToContact(context);
                           Navigator.pop(context);
                         } else if (allTags.length >= 5) {
-                          userTagProvider.addTagsToContact(context);
+                          await userTagProvider.addTagsToContact(context);
                           widget.pageController.animateToPage(3,
                               duration: Duration(milliseconds: 800),
                               curve: Curves.easeInCubic);
@@ -350,6 +358,7 @@ class _TagSelectingState extends State<TagSelecting> {
             ),
             GestureDetector(
               onTap: () {
+                print('glass taped');
                 setState(() {
                   blureShow = false;
                   allTags = [];
@@ -567,16 +576,23 @@ class _TagSelectingState extends State<TagSelecting> {
           textColor: Colors.white,
 
           combine: ItemTagsCombine.withTextBefore,
-          onPressed: (item) {
+          onPressed: (item) async {
+            print('await change');
             print(item.title);
-            setState(() {
-              if (!allTags.contains(item.title)) {
-                changepRroviderList(userTagProvider);
+            print('await change');
+
+            if (!allTags.contains(item.title)) {
+              await changepRroviderList(userTagProvider);
+
+              setState(() {
                 allTags.add(item.title);
-              } else {
+              });
+            } else {
+              setState(() {
                 allTags.remove(item.title);
-              }
-            });
+              });
+            }
+            print('onpress finished');
           },
         );
       },

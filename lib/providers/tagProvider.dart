@@ -46,4 +46,15 @@ class UserTagsProvider with ChangeNotifier {
     );
     databaseMehods.updateAllTags(user.userID, tags);
   }
+
+  addEmptyTagsToContact(BuildContext context) {
+    final user = Provider.of<User>(context, listen: false);
+    var tags = UserTags(
+      interest: [],
+      college: [],
+      language: [],
+      strudyHabits: [],
+    );
+    databaseMehods.updateAllTags(user.userID, tags);
+  }
 }

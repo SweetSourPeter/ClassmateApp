@@ -74,8 +74,7 @@ class _SecondPageState extends State<SecondPage>
       height: widget.isEdit ? (_height * 0.9) : _height,
       color: widget.isEdit ? null : themeOrange,
       child: Padding(
-        padding: EdgeInsets.only(
-            top: widget.isEdit ? (_height * 0.9 * 0.13) : _height * 0.13),
+        padding: EdgeInsets.only(top: widget.isEdit ? (22) : 0),
         child: Form(
           key: formKey,
           child: Scaffold(
@@ -83,9 +82,39 @@ class _SecondPageState extends State<SecondPage>
             backgroundColor: themeOrange,
             body: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _getHeader(),
+                  widget.isEdit
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 8, 0),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(35.0),
+                                topRight: Radius.circular(35.0),
+                                bottomLeft: Radius.circular(35.0),
+                                bottomRight: Radius.circular(35.0),
+                              ),
+                              child: SizedBox(
+                                width: 65.0,
+                                height: 6.0,
+                                child: const DecoratedBox(
+                                  decoration:
+                                      const BoxDecoration(color: Colors.white),
+                                ),
+                              )
+                              // child: Container(
+                              //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+                              //   color: Colors.black,
+                              // )
+                              ),
+                        )
+                      : Container(),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: widget.isEdit
+                              ? (_height * 0.9 * 0.13 - 22)
+                              : _height * 0.13 - 22),
+                      child: _getHeader()),
                   Padding(
                     padding: EdgeInsets.only(
                         top: widget.isEdit

@@ -244,7 +244,7 @@ class _ThirdPageState extends State<ThirdPage>
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
-                onPressed: () {
+                onPressed: () async {
                   if (widget.isEdit) {
                     print('1called');
                     databaseMethods
@@ -255,11 +255,7 @@ class _ThirdPageState extends State<ThirdPage>
                   } else {
                     print('2called');
                     // initialize the tags
-                    userTagProvider.changeTagCollege([]);
-                    userTagProvider.changeTagsStudyHabits([]);
-                    userTagProvider.changeTagInterest([]);
-                    userTagProvider.changeTagLanguage([]);
-                    userTagProvider.addTagsToContact(context);
+                    await userTagProvider.addEmptyTagsToContact(context);
                     databaseMethods
                         .updateUserProfileColor(user.userID, _currentindex)
                         .then((value) {
@@ -268,15 +264,18 @@ class _ThirdPageState extends State<ThirdPage>
                           curve: Curves.easeInCubic);
                     });
                   }
-                  // databaseMethods
-                  //     .updateUserProfileColor(user.userID, _currentindex)
-                  //     .then((value) {
-                  //   widget.isEdit
-                  //       ? Navigator.pop(context)
-                  //       : widget.pageController.animateToPage(2,
-                  //           duration: Duration(milliseconds: 800),
-                  //           curve: Curves.easeInCubic);
-                  // });
+                  databaseMethods
+                      .updateUserProfileColor(
+                          user.userID,
+                          num.parse(_currentindex.toStringAsFixed(0))
+                              .toDouble())
+                      .then((value) {
+                    widget.isEdit
+                        ? Navigator.pop(context)
+                        : widget.pageController.animateToPage(2,
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.easeInCubic);
+                  });
                   print('color num saved');
                 },
                 child: Text(
