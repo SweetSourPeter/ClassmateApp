@@ -51,27 +51,15 @@ class _PreviewImageState extends State<PreviewImage> {
       });
     }
     else if (Platform.isAndroid) {
-      // _findPath(source).then((value) async {
-      //   final result = await ImageGallerySaver.saveFile(value);
-      //   print(result);
-      //   if (result['isSuccess']) {
-      //     _toastInfo('The image has been downloaded to your gallery!');
-      //   } else {
-      //     _toastInfo('Failed to download the image. Try again later.');
-      //   }
-      // });
-      await _requestPermission();
-      var appDocDir = await getTemporaryDirectory();
-      setState(() {
-        savePath = appDocDir.path + "/temp.png";
+      _findPath(source).then((value) async {
+        final result = await ImageGallerySaver.saveFile(value);
+        print(result);
+        if (result['isSuccess']) {
+          _toastInfo('The image has been downloaded to your gallery!');
+        } else {
+          _toastInfo('Failed to download the image. Try again later.');
+        }
       });
-      await Dio().download(widget.imageUrl, savePath);
-      final result = await ImageGallerySaver.saveFile(savePath);
-      if (result['isSuccess']) {
-        _toastInfo('The image has been downloaded to your gallery!');
-      } else {
-        _toastInfo('Failed to download the image. Try again later.');
-      }
     }
   }
 
