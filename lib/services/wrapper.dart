@@ -36,59 +36,54 @@ class Wrapper extends StatelessWidget {
       Future<UserData> userData =
           databaseMethods.getUserDetailsByID(user.userID);
 
-      return Scaffold(
-        backgroundColor: themeOrange,
-        appBar: AppBar(
-          toolbarHeight: 0,
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        body: FutureBuilder(
-            future: Future.wait([userData]),
-            builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-              // return either the Home or Authenticate widget
-              print('user exist called');
-              switch (snapshot.connectionState) {
-                // Uncompleted State
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: themeOrange,
-                  ));
-                  break;
-                default:
-                  // Completed with error
-                  if (snapshot.hasError)
-                    return Center(child: Text(snapshot.error.toString()));
-                  // Completed with data
-                  return MultiProvider(
-                      providers: [
-                        StreamProvider(
-                            create: (context) => DatabaseMethods().userDetails(
-                                user.userID)), //Login user data details
-                        // authMethods.isUserLogged().then((value) => null);
-                        StreamProvider(
-                            create: (context) => DatabaseMethods()
-                                .getMyCourses(user.userID)), // get all course
-                        StreamProvider(
-                            create: (context) => UserDatabaseService()
-                                .getMyContacts(
-                                    user.userID)), // get all contacts
-                        FutureProvider(
-                            create: (context) =>
-                                DatabaseMethods().getAllTage(user.userID)),
-                      ],
-                      child: (snapshot.data[0].profileColor == null)
-                          ? StartPage()
-                          : MainMenu()
-                      // FriendProfile(
-                      //   userID: user.userID, // to be modified to friend's ID
-                      // ),
-                      );
-              }
-            }),
-      );
+      return FutureBuilder(
+          future: Future.wait([userData]),
+          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+            // return either the Home or Authenticate widget
+            print('user exist called');
+            switch (snapshot.connectionState) {
+              // Uncompleted State
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return Center(
+                    child: CircularProgressIndicator(
+                  backgroundColor: themeOrange,
+                ));
+                break;
+              default:
+                // Completed with error
+                if (snapshot.hasError)
+                  return Center(child: Text(snapshot.error.toString()));
+                // Completed with data
+                return MultiProvider(
+                    providers: [
+                      StreamProvider(
+                          create: (context) => DatabaseMethods().userDetails(
+                              user.userID)), //Login user data details
+                      // authMethods.isUserLogged().then((value) => null);
+                      StreamProvider(
+                          create: (context) => DatabaseMethods()
+                              .getMyCourses(user.userID)), // get all course
+                      StreamProvider(
+                          create: (context) => UserDatabaseService()
+                              .getMyContacts(user.userID)), // get all contacts
+                      FutureProvider(
+                          create: (context) =>
+                              DatabaseMethods().getAllTage(user.userID)),
+                    ],
+                    child: (snapshot.data[0].profileColor == null)
+                        ? Container(
+                            color: themeOrange,
+                            child: SafeArea(child: StartPage()))
+                        : Container(
+                            color: Colors.white,
+                            child: SafeArea(child: MainMenu()))
+                    // FriendProfile(
+                    //   userID: user.userID, // to be modified to friend's ID
+                    // ),
+                    );
+            }
+          });
     }
   }
 }
