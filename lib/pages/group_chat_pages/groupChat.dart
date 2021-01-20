@@ -170,7 +170,6 @@ class _GroupChatState extends State<GroupChat> {
         chatMessageStream = value;
       });
     });
-    // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
 
     databaseMethods.setUnreadGroupChatNumberToZero(widget.courseId, widget.myId);
 

@@ -58,6 +58,8 @@ class _ChatScreenState extends State<ChatScreen> {
   bool lastMessage;
   List<String> friendCourse = List<String>();
   ScrollController _controller;
+  FocusNode myFocusNode = FocusNode();
+
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -269,7 +271,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
-    FocusNode myFocusNode = FocusNode();
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: Color(0xffF9F6F1),
@@ -618,10 +620,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                             onTap: () {
-                              if ((messageController.text != '' ||
-                                  messageController.text.isNotEmpty)) {
-                                sendMessage(currentUser.email);
-                              } else {
                                 if (showTextKeyboard) {
                                   setState(() {
                                     FocusScopeNode currentFocus =
@@ -645,12 +643,18 @@ class _ChatScreenState extends State<ChatScreen> {
                                     Duration(milliseconds: 30),
                                     () => _controller.jumpTo(
                                         _controller.position.minScrollExtent));
-                              }
                             },
-                            child: (messageController.text != '' ||
-                                    messageController.text.isNotEmpty)
-                                ? Image.asset('assets/images/messageSend.png',
-                                    width: 28, height: 28)
+                            child: (showStickerKeyboard || showTextKeyboard)
+                                ? GestureDetector(
+                                    child: Image.asset(
+                                      'assets/images/messageSend.png',
+                                      height: 28,
+                                      width: 28,
+                                    ),
+                                    onTap: () {
+                                      sendMessage(currentUser.email);
+                                    },
+                                  )
                                 : showFunctions
                                     ? Image.asset(
                                         'assets/images/plus_on_click.png',
@@ -658,20 +662,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                         height: 28)
                                     : Image.asset('assets/images/plus.png',
                                         width: 28, height: 28)),
-
-                        // showFunctions
-                        //     ? Image.asset('assets/images/plus_on_click.png',
-                        //         width: 28, height: 28)
-                        //     : (messageController.text == '' ||
-                        //             messageController.text.isEmpty)
-                        //         ? Image.asset(
-                        //             'assets/images/messageSend.png',
-                        //             width: 28,
-                        //             height: 28)
-                        //         : Image.asset(
-                        //             'assets/images/plus_on_click.png',
-                        //             width: 28,
-                        //             height: 28)),
                       )
                     ],
                   ),
@@ -837,12 +827,14 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: LinkWell(message,
+                              child: SelectableText(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
-                                  )),
+                                  ),
+                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                              ),
                             ),
                           ),
                         ],
@@ -876,12 +868,14 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: LinkWell(message,
+                              child: SelectableText(message,
                                   textAlign: TextAlign.start,
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
-                                  )),
+                                  ),
+                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                              ),
                             ),
                           ),
                           Text(
