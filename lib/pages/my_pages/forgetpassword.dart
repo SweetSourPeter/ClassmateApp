@@ -203,34 +203,37 @@ class _ForgetpasswordState extends State<Forgetpassword> {
       );
     }
 
-    return SafeArea(
-      child: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
+    return Container(
+      color: themeOrange,
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
 
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Scaffold(
-          backgroundColor: themeOrange,
-          resizeToAvoidBottomPadding: false,
-          body: isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                  backgroundColor: themeOrange,
-                ))
-              : SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _getBackBtn(),
-                      _getHeader(),
-                      _getTextFields(),
-                      _enterEmail(),
-                    ],
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: themeOrange,
+            resizeToAvoidBottomPadding: false,
+            body: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: themeOrange,
+                  ))
+                : SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _getBackBtn(),
+                        _getHeader(),
+                        _getTextFields(),
+                        _enterEmail(),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );
