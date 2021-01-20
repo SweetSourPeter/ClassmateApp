@@ -31,6 +31,7 @@ class UserData {
   final String userImageUrl;
   final double profileColor;
   final List blockedUserID;
+  final bool agreedToTerms;
   // final List<String> friendsList;
   // final List<String> courseList;
   UserData({
@@ -41,6 +42,7 @@ class UserData {
     this.userImageUrl,
     this.profileColor,
     this.blockedUserID,
+    this.agreedToTerms,
   });
   Map<String, dynamic> toCourseJson() => {
         'userID': userID,
@@ -56,6 +58,7 @@ class UserData {
       'userImageUrl': userImageUrl,
       'profileColor': profileColor,
       'blockedUser': blockedUserID,
+      'agreedToTerms': agreedToTerms,
     };
   }
 
@@ -66,6 +69,7 @@ class UserData {
         email = firestore['email'] ?? '',
         profileColor = firestore['profileColor'] ?? '',
         userName = firestore['userName'] ?? '',
+        agreedToTerms = firestore['agreedToTerms'] ?? false,
         blockedUserID = firestore['blockedUser'] ?? null;
 
   //get data for contacts of current user
@@ -76,5 +80,6 @@ class UserData {
         email = firestore['email'],
         profileColor = firestore['profileColor'],
         userName = firestore['userName'],
+        agreedToTerms = firestore['agreedToTerms'] ?? false,
         blockedUserID = firestore['blockedUser'];
 }

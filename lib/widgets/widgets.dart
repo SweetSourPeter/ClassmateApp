@@ -203,7 +203,8 @@ Padding topLineBar() {
 // used to create user image
 String calculateUserName(String name) {
   var splitString = name.split(" ");
-  if (splitString.length >= 2) {
+  if (splitString.length >= 2 &&
+      name.split(' ')[name.split(' ').length - 1].isNotEmpty) {
     return (splitString[0][0] + splitString[1][0]);
   } else {
     return (splitString[0][0]);

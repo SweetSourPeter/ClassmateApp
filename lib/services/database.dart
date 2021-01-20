@@ -198,6 +198,7 @@ class DatabaseMethods {
   //get all my courses from firestore
   Stream<List<CourseInfo>> getMyCourses(String userID) {
     print('gettre cources called');
+    print(userID);
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)

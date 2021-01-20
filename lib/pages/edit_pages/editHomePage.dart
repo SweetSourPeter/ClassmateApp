@@ -1,5 +1,6 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
+import 'package:app_test/pages/initialPage/second_page.dart';
 import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
 import 'package:app_test/providers/tagProvider.dart';
@@ -105,9 +106,16 @@ class _EditHomePageState extends State<EditHomePage> {
                             onTap: () {
                               showBottomPopSheet(
                                   context,
-                                  EditNameModel(
-                                      userName: nickName,
-                                      userId: userdata.userID));
+                                  SecondPage(
+                                    pageController:
+                                        PageController(initialPage: 0),
+                                    isEdit: true,
+                                    valueChanged: (index) => {},
+                                  )
+                                  // EditNameModel(
+                                  //     userName: nickName,
+                                  //     userId: userdata.userID)
+                                  );
                               setState(() {});
                             },
                           ),
@@ -142,11 +150,11 @@ class _EditHomePageState extends State<EditHomePage> {
                                           (userTagProvider.language == null
                                               ? []
                                               : userTagProvider.language
-                                                  .cast<dynamic>()) +
+                                                  .cast<String>()) +
                                           (userTagProvider.strudyHabits == null
                                               ? []
                                               : userTagProvider.strudyHabits
-                                                  .cast<dynamic>()),
+                                                  .cast<String>()),
                                       buttonColor: listProfileColor[
                                           userProfileColor.toInt()],
                                       pageController:
