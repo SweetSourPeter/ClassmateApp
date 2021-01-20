@@ -38,7 +38,7 @@ class _MyAccountState extends State<MyAccount> {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     final userdata = Provider.of<UserData>(context);
-    final userTags = Provider.of<UserTags>(context);
+    final userTags = Provider.of<UserTags>(context, listen: true);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
