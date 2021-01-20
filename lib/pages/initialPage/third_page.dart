@@ -1,5 +1,6 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/change_color.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -48,6 +49,7 @@ class _ThirdPageState extends State<ThirdPage>
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
+    final userTagProvider = Provider.of<UserTagsProvider>(context);
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     _getHeader() {
@@ -243,15 +245,36 @@ class _ThirdPageState extends State<ThirdPage>
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
                 onPressed: () {
-                  databaseMethods
-                      .updateUserProfileColor(user.userID, _currentindex)
-                      .then((value) {
-                    widget.isEdit
-                        ? Navigator.pop(context)
-                        : widget.pageController.animateToPage(2,
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.easeInCubic);
-                  });
+                  if (widget.isEdit) {
+                    databaseMethods
+                        .updateUserProfileColor(user.userID, _currentindex)
+                        .then((value) {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    // initialize the tags
+                    userTagProvider.changeTagCollege([]);
+                    userTagProvider.changeTagsStudyHabits([]);
+                    userTagProvider.changeTagInterest([]);
+                    userTagProvider.changeTagLanguage([]);
+                    userTagProvider.addTagsToContact(context);
+                    databaseMethods
+                        .updateUserProfileColor(user.userID, _currentindex)
+                        .then((value) {
+                      widget.pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.easeInCubic);
+                    });
+                  }
+                  // databaseMethods
+                  //     .updateUserProfileColor(user.userID, _currentindex)
+                  //     .then((value) {
+                  //   widget.isEdit
+                  //       ? Navigator.pop(context)
+                  //       : widget.pageController.animateToPage(2,
+                  //           duration: Duration(milliseconds: 800),
+                  //           curve: Curves.easeInCubic);
+                  // });
                   print('color num saved');
                 },
                 child: Text(

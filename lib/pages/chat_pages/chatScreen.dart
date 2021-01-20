@@ -353,7 +353,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                   radius: sidebarSize / 20,
                                   child: Container(
                                     child: Text(
-                                      widget.friendName.split(' ').length >= 2
+                                      (widget.friendName.split(' ').length >=
+                                                  2 &&
+                                              widget.friendName
+                                                  .split(' ')[widget.friendName
+                                                          .split(' ')
+                                                          .length -
+                                                      1]
+                                                  .isNotEmpty)
                                           ? widget.friendName
                                                   .split(' ')[0][0]
                                                   .toUpperCase() +

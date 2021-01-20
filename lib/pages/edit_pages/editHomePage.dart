@@ -142,11 +142,11 @@ class _EditHomePageState extends State<EditHomePage> {
                                           (userTagProvider.language == null
                                               ? []
                                               : userTagProvider.language
-                                                  .cast<dynamic>()) +
+                                                  .cast<String>()) +
                                           (userTagProvider.strudyHabits == null
                                               ? []
                                               : userTagProvider.strudyHabits
-                                                  .cast<dynamic>()),
+                                                  .cast<String>()),
                                       buttonColor: listProfileColor[
                                           userProfileColor.toInt()],
                                       pageController:

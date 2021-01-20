@@ -100,7 +100,7 @@ class _MainMenuState extends State<MainMenu> {
                   }
                 },
                 child: Container(
-                  color: Colors.white,
+                  color: themeOrange,
                   width: mediaQuery.width,
                   child: Stack(
                     children: <Widget>[

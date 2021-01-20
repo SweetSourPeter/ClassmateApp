@@ -79,6 +79,8 @@ class _SecondPageState extends State<SecondPage>
                         return "Nick name has to be less than 25 chars";
                       } else if (val.length <= 0) {
                         return "The nick name can not be empty";
+                      } else if (val.substring(val.length - 1) == ' ') {
+                        return "The nick name can not end with empty space";
                       } else {
                         return null;
                       }

@@ -166,15 +166,13 @@ class _ChatRoomState extends State<ChatRoom> {
                       },
                       child: Container(
                           child: Text(
-                            'find friend',
-                            textAlign: TextAlign.left,
-                            style: GoogleFonts.openSans(
-                              color: themeOrange,
-                              fontSize: 16,
-                            ),
-                          )
-                      )
-                  )
+                        'find friend',
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.openSans(
+                          color: themeOrange,
+                          fontSize: 16,
+                        ),
+                      )))
                 ],
               ),
             ),
@@ -280,7 +278,11 @@ class ChatRoomsTile extends StatelessWidget {
                           child: Container(
                             child: Text(
                               // 单个字22，双子18
-                              friendName.split(' ').length >= 2
+                              (friendName.split(' ').length >= 2 &&
+                                      friendName
+                                          .split(' ')[
+                                              friendName.split(' ').length - 1]
+                                          .isNotEmpty)
                                   ? friendName.split(' ')[0][0].toUpperCase() +
                                       friendName
                                           .split(' ')[
