@@ -8,7 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';
-import 'widgets/my_account.dart';
+import 'pages/my_pages/my_account.dart';
 
 class MainMenu extends StatefulWidget {
   @override

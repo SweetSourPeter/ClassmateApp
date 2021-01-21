@@ -103,8 +103,8 @@ class CourseProvider with ChangeNotifier {
 
   removeCourse(BuildContext context, String courseID) {
     final user = Provider.of<User>(context, listen: false);
-    print(user.userID);
-    print(courseID);
+    // print(user.userID);
+    // print(courseID);
     databaseMethods.removeCourseFromUser(courseID, user.userID);
     databaseMethods.removeUserFromCourse(courseID, user.userID);
   }

@@ -8,7 +8,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:linkwell/linkwell.dart';
+// import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -21,6 +21,7 @@ import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+// import 'confirmImage.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -59,7 +60,6 @@ class _ChatScreenState extends State<ChatScreen> {
   List<String> friendCourse = List<String>();
   ScrollController _controller;
   FocusNode myFocusNode = FocusNode();
-
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -140,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'sendBy': myEmail,
         'time': lastMessageTime,
       };
-      print(widget.chatRoomId);
+      // print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
       databaseMethods.setLastestMessage(
           widget.chatRoomId, messageController.text, lastMessageTime);
@@ -189,17 +189,33 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future _pickImage(ImageSource source, myEmail) async {
+  Future _pickImage(ImageSource source, myEmail, context, currentUser) async {
     PickedFile selected = await _picker.getImage(source: source);
+
+    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //       return MultiProvider(
+    //         providers: [
+    //           Provider<UserData>.value(
+    //             value: currentUser,
+    //           ),
+    //         ],
+    //         child: ConfirmImage(
+    //           imageFile: File(selected.path)
+    //         ),
+    //       );
+    //     })
+    // );
 
     setState(() {
       _imageFile = File(selected.path);
     });
 
-    if (selected != null) {
-      _uploadFile(myEmail);
-      print('Image Path $_imageFile');
-    }
+    _showImageConfirmDialog(context, currentUser.email);
+
+    // if (selected != null) {
+    //   _uploadFile(myEmail);
+    //   print('Image Path $_imageFile');
+    // }
 
 //    Navigator.push(context, MaterialPageRoute(
 //        builder: (context) => PictureDisplay(imageFile: File(selected.path))
@@ -216,11 +232,48 @@ class _ChatScreenState extends State<ChatScreen> {
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
         _uploadedFileURL = downloadUrl;
-        print('picture uploaded');
-        print(_uploadedFileURL);
+        // print('picture uploaded');
+        // print(_uploadedFileURL);
         sendImage(myEmail);
       });
     });
+  }
+
+  Future<void> _showImageConfirmDialog(context, myEmail) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Send this image?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.file(
+                  _imageFile,
+                  width: MediaQuery.of(context).size.width/2,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('send'),
+              onPressed: () {
+                _uploadFile(myEmail);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Future _cropImage() async {
@@ -703,8 +756,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                     icon: Image.asset(
                                       'assets/images/camera.png',
                                     ),
-                                    onPressed: () => _pickImage(
-                                        ImageSource.camera, currentUser.email)),
+                                    onPressed: () {
+                                      _pickImage(ImageSource.camera, currentUser.email, context, currentUser);
+                                    }),
                               ),
                               Container(
                                 height: 64,
@@ -714,8 +768,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                       'assets/images/photo_library.png',
                                     ),
                                     onPressed: () => _pickImage(
-                                        ImageSource.gallery,
-                                        currentUser.email)),
+                                      ImageSource.gallery,
+                                      currentUser.email,
+                                      context,
+                                      currentUser
+                                    )
+                                ),
                               ),
                               Container(
                                 height: 64,

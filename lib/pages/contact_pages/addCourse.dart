@@ -141,7 +141,7 @@ class _AddCourseState extends State<AddCourse> {
                     setState(() {
                       currentSelectedValue = newValue;
                     });
-                    print(currentSelectedValue);
+                    // print(currentSelectedValue);
                     courseProvider.changeTerm(currentSelectedValue);
                   },
                   validator: (String val) {

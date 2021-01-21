@@ -115,7 +115,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                               //TODO replace Icon
                               child: GestureDetector(
                                 onTap: () {
-                                  print(userdata.school);
+                                  // print(userdata.school);
                                   //TODO add course
                                   Navigator.push(
                                     context,
@@ -272,7 +272,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                         ),
                                         onPressed: () {
                                           var a = course[index].courseID;
-                                          print('$a');
+                                          // print('$a');
                                           courseProvider.removeCourse(
                                               context, course[index].courseID);
                                           Navigator.of(context).pop();

@@ -163,6 +163,119 @@ class _GroupChatState extends State<GroupChat> {
   //   });
   // }
 
+  sendMessage(UserData currentUser) {
+    if (messageController.text.isNotEmpty) {
+      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> messageMap = {
+        'message': messageController.text,
+        'messageType': 'text',
+        'sendBy': currentUser.email,
+        'senderName': currentUser.userName,
+        'time': lastMessageTime,
+        'senderID': currentUser.userID,
+        'profileColor': currentUser.profileColor
+      };
+
+      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      databaseMethods
+          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+      // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
+      // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
+      //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
+      //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
+      // });
+
+      _controller.jumpTo(_controller.position.minScrollExtent);
+      messageController.text = '';
+    }
+  }
+
+  sendImage(UserData currentUser) {
+    if (_uploadedFileURL.isNotEmpty) {
+      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> messageMap = {
+        'message': _uploadedFileURL,
+        'messageType': 'image',
+        'sendBy': currentUser.email,
+        'senderName': currentUser.userName,
+        'time': lastMessageTime,
+        'senderID': currentUser.userID,
+        'profileColor': currentUser.profileColor
+      };
+
+      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      databaseMethods
+          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+
+      _controller.jumpTo(_controller.position.minScrollExtent);
+      _uploadedFileURL = '';
+    }
+  }
+
+  Future _uploadFile(UserData currentUser) async {
+    String fileName = basename(_imageFile.path);
+    firebase_storage.Reference firebaseStorageRef =
+    firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask =
+    firebaseStorageRef.putFile(_imageFile);
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+      setState(() {
+        _uploadedFileURL = downloadUrl;
+        // print('picture uploaded');
+        // print(_uploadedFileURL);
+        sendImage(currentUser);
+      });
+    });
+  }
+
+  Future _pickImage(ImageSource source, UserData currentUser, context) async {
+    PickedFile selected = await _picker.getImage(source: source);
+
+    setState(() {
+      _imageFile = File(selected.path);
+    });
+
+    _showImageConfirmDialog(context, currentUser);
+  }
+
+  Future<void> _showImageConfirmDialog(context, currentUser) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Send this image?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Image.file(
+                  _imageFile,
+                  width: MediaQuery.of(context).size.width/2,
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('send'),
+              onPressed: () {
+                _uploadFile(currentUser);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
@@ -199,90 +312,6 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
-
-    sendMessage(myEmail, myName) {
-      if (messageController.text.isNotEmpty) {
-        final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-        Map<String, dynamic> messageMap = {
-          'message': messageController.text,
-          'messageType': 'text',
-          'sendBy': myEmail,
-          'senderName': myName,
-          'time': lastMessageTime,
-          'senderID': currentUser.userID,
-          'profileColor': currentUser.profileColor
-        };
-
-        databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-        databaseMethods
-            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
-        // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
-        // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
-        //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
-        //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
-        // });
-
-        _controller.jumpTo(_controller.position.minScrollExtent);
-        messageController.text = '';
-      }
-    }
-
-    sendImage(myEmail, myName) {
-      if (_uploadedFileURL.isNotEmpty) {
-        final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-        Map<String, dynamic> messageMap = {
-          'message': _uploadedFileURL,
-          'messageType': 'image',
-          'sendBy': myEmail,
-          'senderName': myName,
-          'time': lastMessageTime,
-          'senderID': currentUser.userID,
-          'profileColor': currentUser.profileColor
-        };
-
-        databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-        databaseMethods
-            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
-        // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
-        // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
-        //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
-        //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
-        // });
-
-        _controller.jumpTo(_controller.position.minScrollExtent);
-        _uploadedFileURL = '';
-      }
-    }
-
-    Future _uploadFile(myEmail, myName) async {
-      String fileName = basename(_imageFile.path);
-      firebase_storage.Reference firebaseStorageRef =
-          firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-      firebase_storage.UploadTask uploadTask =
-          firebaseStorageRef.putFile(_imageFile);
-      firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
-      taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-        setState(() {
-          _uploadedFileURL = downloadUrl;
-          print('picture uploaded');
-          print(_uploadedFileURL);
-          sendImage(myEmail, myName);
-        });
-      });
-    }
-
-    Future _pickImage(ImageSource source, myEmail, myName) async {
-      PickedFile selected = await _picker.getImage(source: source);
-
-      setState(() {
-        _imageFile = File(selected.path);
-      });
-
-      if (selected != null) {
-        _uploadFile(myEmail, myName);
-        print('Image Path $_imageFile');
-      }
-    }
 
     return SafeArea(
       child: Scaffold(
@@ -457,9 +486,7 @@ class _GroupChatState extends State<GroupChat> {
                             ),
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
-                              sendMessage(
-                                  currentUser.email, currentUser.userName
-                              );
+                              sendMessage(currentUser);
                               myFocusNode.requestFocus();
                             },
                           ),
@@ -507,8 +534,7 @@ class _GroupChatState extends State<GroupChat> {
                             onTap: () {
                               if ((messageController.text != '' ||
                                   messageController.text.isNotEmpty)) {
-                                sendMessage(
-                                    currentUser.email, currentUser.userName);
+                                sendMessage(currentUser);
                               } else {
                                 if (showTextKeyboard) {
                                   setState(() {
@@ -590,8 +616,9 @@ class _GroupChatState extends State<GroupChat> {
                                         Image.asset('assets/images/camera.png'),
                                     onPressed: () => _pickImage(
                                         ImageSource.camera,
-                                        currentUser.email,
-                                        currentUser.userName)),
+                                        currentUser,
+                                        context
+                                    )),
                               ),
                               Container(
                                 height: 64,
@@ -601,8 +628,10 @@ class _GroupChatState extends State<GroupChat> {
                                         'assets/images/photo_library.png'),
                                     onPressed: () => _pickImage(
                                         ImageSource.gallery,
-                                        currentUser.email,
-                                        currentUser.userName)),
+                                        currentUser,
+                                        context
+                                    )
+                                ),
                               ),
                               Container(
                                 height: 64,

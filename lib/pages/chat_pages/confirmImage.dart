@@ -1,16 +1,21 @@
+import 'dart:io';
 import 'package:app_test/models/user.dart';
-import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
-import 'package:app_test/pages/initialPage/third_page.dart';
+// import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
+// import 'package:app_test/pages/initialPage/third_page.dart';
 import 'package:app_test/services/database.dart';
-import 'package:app_test/services/wrapper.dart';
-import 'package:app_test/pages/edit_pages/editNameModel.dart';
-import 'package:app_test/widgets/widgets.dart';
+// import 'package:app_test/services/wrapper.dart';
+// import 'package:app_test/pages/edit_pages/editNameModel.dart';
+// import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
 
 class ConfirmImage extends StatefulWidget {
+  final File imageFile;
+
+  ConfirmImage({this.imageFile});
+
   @override
   _ConfirmImageState createState() => _ConfirmImageState();
 }
@@ -18,11 +23,12 @@ class ConfirmImage extends StatefulWidget {
 class _ConfirmImageState extends State<ConfirmImage> {
   AuthMethods authMethods = new AuthMethods();
 
-  UserData currntUsr;
+  UserData currentUser;
+
   @override
   void initState() {
     super.initState();
-    currntUsr = null;
+    currentUser = null;
   }
 
   @override
@@ -31,11 +37,11 @@ class _ConfirmImageState extends State<ConfirmImage> {
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context);
-    final databaseMehods = DatabaseMethods();
+    final databaseMethods = DatabaseMethods();
 
-    databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
+    databaseMethods.getUserDetailsByID(userdata.userID).then((value) {
       setState(() {
-        currntUsr = value;
+        currentUser = value;
       });
     });
 
@@ -66,8 +72,8 @@ class _ConfirmImageState extends State<ConfirmImage> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(top: menuContainerHeight / 3),
-                          child: Image.asset(
-                              'assets/courseimage/cs_course_BG.jpg')),
+                        child: Image.file(widget.imageFile),
+                      ),
                       Positioned(
                         bottom: 29,
                         right: 15,
