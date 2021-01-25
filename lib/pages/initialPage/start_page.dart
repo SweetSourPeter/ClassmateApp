@@ -8,6 +8,7 @@ import 'package:app_test/pages/utils/animation_item.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app_test/widgets/widgets.dart';
 
 class StartPage extends StatefulWidget {
   @override
@@ -44,7 +45,7 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,

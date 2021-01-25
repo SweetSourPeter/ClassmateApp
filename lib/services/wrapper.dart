@@ -32,7 +32,7 @@ class Wrapper extends StatelessWidget {
           databaseMethods.getUserDetailsByID(user.userID);
 
       return Scaffold(
-        backgroundColor: riceColor,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: 0,
           backgroundColor: Colors.white,

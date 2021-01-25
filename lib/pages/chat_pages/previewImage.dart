@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:app_test/widgets/widgets.dart';
 
 class PreviewImage extends StatefulWidget {
   final String imageUrl;
@@ -75,7 +76,7 @@ class _PreviewImageState extends State<PreviewImage> {
               child: CachedNetworkImage(
                 imageUrl: widget.imageUrl,
                 height: MediaQuery.of(context).size.height - 300,
-                width: MediaQuery.of(context).size.width,
+                width: getRealWidth(MediaQuery.of(context).size.width),
                 placeholder: (context, url) => new CircularProgressIndicator(),
                 errorWidget: (context, url, error) => new Icon(Icons.error),
               ),

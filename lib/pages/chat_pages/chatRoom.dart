@@ -32,7 +32,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Widget chatRoomsList(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     final currentUser = Provider.of<UserData>(context, listen: false);
     return StreamBuilder(
       stream: chatRooms,
@@ -215,8 +215,8 @@ class ChatRoomsTile extends StatelessWidget {
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
     print('heree');
     return GestureDetector(
       onTap: () {
@@ -267,7 +267,7 @@ class ChatRoomsTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    height: _width *0.175,
+                    height: _width * 0.175,
                     width: _width * 0.175,
                     child: Stack(
                       children: [

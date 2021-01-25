@@ -263,7 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
@@ -271,471 +271,504 @@ class _ChatScreenState extends State<ChatScreen> {
     double sidebarSize = mediaQuery.width * 1.0;
 
     return SafeArea(
-      child: Scaffold(
-          backgroundColor: Color(0xffF9F6F1),
-          body: GestureDetector(
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
+        child: Scaffold(
+            backgroundColor: Color(0xffF9F6F1),
+            body: Center(
+              child: Container(
+                  width: maxWidth,
+                  child: GestureDetector(
+                    onTap: () {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
 
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              setState(() {
-                showStickerKeyboard = false;
-                showTextKeyboard = false;
-                showFunctions = false;
-              });
-            },
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.white,
-                  height: 73,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/arrow-back.png',
-                            ),
-                            // iconSize: 30.0,
-                            color: const Color(0xFFFFB811),
-                            onPressed: () {
-                              databaseMethods.setUnreadNumber(
-                                  widget.chatRoomId, widget.myEmail, 0);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return MultiProvider(
-                                      providers: [
-                                        Provider<UserData>.value(
-                                          value: currentUser,
-                                        ),
-                                        Provider<List<CourseInfo>>.value(
-                                          value: currentCourse,
-                                        ),
-                                        // 这个需要的话直接uncomment
-                                        // Provider<List<CourseInfo>>.value(
-                                        //   value: course,F
-                                        // ),
-                                        // final courseProvider = Provider.of<CourseProvider>(context);
-                                        // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                        // 不需要pass到push里面，直接复制上面这行即可
-                                      ],
-                                      child: FriendProfile(
-                                        userID: widget
-                                            .friendID, // to be modified to friend's ID
-                                      ),
-                                    );
-                                  }));
-                                },
-                                child: CircleAvatar(
-                                  backgroundColor: listProfileColor[
-                                      widget.friendProfileColor.toInt()],
-                                  radius: sidebarSize / 20,
-                                  child: Container(
-                                    child: Text(
-                                      widget.friendName.split(' ').length >= 2
-                                          ? widget.friendName
-                                                  .split(' ')[0][0]
-                                                  .toUpperCase() +
-                                              widget.friendName
-                                                  .split(' ')[widget.friendName
-                                                          .split(' ')
-                                                          .length -
-                                                      1][0]
-                                                  .toUpperCase()
-                                          : widget.friendName[0].toUpperCase(),
-                                      style: GoogleFonts.montserrat(
-                                          fontSize: widget.friendName
-                                                      .split(' ')
-                                                      .length >=
-                                                  2
-                                              ? 14
-                                              : 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                      setState(() {
+                        showStickerKeyboard = false;
+                        showTextKeyboard = false;
+                        showFunctions = false;
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          color: Colors.white,
+                          height: 73,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/arrow-back.png',
                                     ),
+                                    // iconSize: 30.0,
+                                    color: const Color(0xFFFFB811),
+                                    onPressed: () {
+                                      databaseMethods.setUnreadNumber(
+                                          widget.chatRoomId, widget.myEmail, 0);
+                                      Navigator.of(context).pop();
+                                    },
                                   ),
                                 ),
-                                // createUserImage(sidebarSize / 20, currentUser),
                               ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.friendName,
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold)),
-                                Container(
-                                  width: 120,
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    friendCourse.isNotEmpty
-                                        ? friendCourse.toString().substring(1,
-                                            friendCourse.toString().length - 1)
-                                        : 'No courses yet',
-                                    style: GoogleFonts.openSans(
-                                      fontSize: 14,
-                                      color: Color(0xff949494),
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 10.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return MultiProvider(
+                                              providers: [
+                                                Provider<UserData>.value(
+                                                  value: currentUser,
+                                                ),
+                                                Provider<
+                                                    List<CourseInfo>>.value(
+                                                  value: currentCourse,
+                                                ),
+                                                // 这个需要的话直接uncomment
+                                                // Provider<List<CourseInfo>>.value(
+                                                //   value: course,F
+                                                // ),
+                                                // final courseProvider = Provider.of<CourseProvider>(context);
+                                                // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                                // 不需要pass到push里面，直接复制上面这行即可
+                                              ],
+                                              child: FriendProfile(
+                                                userID: widget
+                                                    .friendID, // to be modified to friend's ID
+                                              ),
+                                            );
+                                          }));
+                                        },
+                                        child: CircleAvatar(
+                                          backgroundColor: listProfileColor[
+                                              widget.friendProfileColor
+                                                  .toInt()],
+                                          radius: sidebarSize / 20,
+                                          child: Container(
+                                            child: Text(
+                                              widget.friendName
+                                                          .split(' ')
+                                                          .length >=
+                                                      2
+                                                  ? widget.friendName
+                                                          .split(' ')[0][0]
+                                                          .toUpperCase() +
+                                                      widget.friendName
+                                                          .split(' ')[widget
+                                                                  .friendName
+                                                                  .split(' ')
+                                                                  .length -
+                                                              1][0]
+                                                          .toUpperCase()
+                                                  : widget.friendName[0]
+                                                      .toUpperCase(),
+                                              style: GoogleFonts.montserrat(
+                                                  fontSize: widget.friendName
+                                                              .split(' ')
+                                                              .length >=
+                                                          2
+                                                      ? 14
+                                                      : 15,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        // createUserImage(sidebarSize / 20, currentUser),
+                                      ),
                                     ),
-                                    overflow: TextOverflow.ellipsis,
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(widget.friendName,
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold)),
+                                        Container(
+                                          width: 120,
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            friendCourse.isNotEmpty
+                                                ? friendCourse
+                                                    .toString()
+                                                    .substring(
+                                                        1,
+                                                        friendCourse
+                                                                .toString()
+                                                                .length -
+                                                            1)
+                                                : 'No courses yet',
+                                            style: GoogleFonts.openSans(
+                                              fontSize: 14,
+                                              color: Color(0xff949494),
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/search.png',
+                                    height: 23,
+                                    width: 23,
+                                    color: Color(0xffFF7E40),
                                   ),
-                                )
-                              ],
+                                  // iconSize: 10.0,
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return MultiProvider(
+                                        providers: [
+                                          Provider<UserData>.value(
+                                            value: currentUser,
+                                          )
+                                        ],
+                                        child: SearchChat(
+                                            chatRoomId: widget.chatRoomId,
+                                            friendName: widget.friendName,
+                                            friendEmail: widget.friendEmail,
+                                            friendProfileColor:
+                                                widget.friendProfileColor,
+                                            myEmail: widget.myEmail,
+                                            myName: currentUser.userName,
+                                            myProfileColor:
+                                                currentUser.profileColor),
+                                      );
+                                    }));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                            child: (currentUser.blockedUserID != null &&
+                                    currentUser.blockedUserID
+                                        .contains(widget.friendID))
+                                ? Container(
+                                    decoration: new BoxDecoration(
+                                        color: riceColor,
+                                        borderRadius: new BorderRadius.only(
+                                          topLeft: const Radius.circular(30.0),
+                                          topRight: const Radius.circular(30.0),
+                                        )),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+
+                                    // decoration: BoxDecoration(
+                                    //   color: Colors.blue,
+                                    //   borderRadius: BorderRadius.only(
+                                    //     topLeft: Radius.circular(30.0),
+                                    //     topRight: Radius.circular(30.0),
+                                    //   ),
+                                    // ),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: _height * 0.20,
+                                          ),
+                                          Stack(
+                                              alignment: Alignment.center,
+                                              children: <Widget>[
+                                                Container(
+                                                    height: 140,
+                                                    width: _width - 40,
+                                                    child: FittedBox(
+                                                      child: Image.asset(
+                                                          'assets/icon/sorryBox.png'),
+                                                      fit: BoxFit.fill,
+                                                    )),
+                                                Text(
+                                                  "Let\'s not talk to this guy",
+                                                  style: largeTitleTextStyle(
+                                                      Colors.black, 26),
+                                                ),
+                                              ]),
+                                          Container(
+                                              height: 140,
+                                              width: 140,
+                                              child: FittedBox(
+                                                child: Image.asset(
+                                                    'assets/icon/failToFind.png'),
+                                                fit: BoxFit.fill,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : chatMessageList(currentUser.email)),
+                        Container(
+                            decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset:
+                                  Offset(0, 3), // changes position of shadow
                             ),
                           ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/search.png',
-                            height: 23,
-                            width: 23,
-                            color: Color(0xffFF7E40),
-                          ),
-                          // iconSize: 10.0,
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return MultiProvider(
-                                providers: [
-                                  Provider<UserData>.value(
-                                    value: currentUser,
-                                  )
-                                ],
-                                child: SearchChat(
-                                    chatRoomId: widget.chatRoomId,
-                                    friendName: widget.friendName,
-                                    friendEmail: widget.friendEmail,
-                                    friendProfileColor:
-                                        widget.friendProfileColor,
-                                    myEmail: widget.myEmail,
-                                    myName: currentUser.userName,
-                                    myProfileColor: currentUser.profileColor),
-                              );
-                            }));
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                    child: (currentUser.blockedUserID != null &&
-                            currentUser.blockedUserID.contains(widget.friendID))
-                        ? Container(
-                            decoration: new BoxDecoration(
-                                color: riceColor,
-                                borderRadius: new BorderRadius.only(
-                                  topLeft: const Radius.circular(30.0),
-                                  topRight: const Radius.circular(30.0),
-                                )),
-                            height: MediaQuery.of(context).size.height * 0.5,
-
-                            // decoration: BoxDecoration(
-                            //   color: Colors.blue,
-                            //   borderRadius: BorderRadius.only(
-                            //     topLeft: Radius.circular(30.0),
-                            //     topRight: Radius.circular(30.0),
-                            //   ),
-                            // ),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: _height * 0.20,
-                                  ),
-                                  Stack(
-                                      alignment: Alignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                            height: 140,
-                                            width: _width - 40,
-                                            child: FittedBox(
-                                              child: Image.asset(
-                                                  'assets/icon/sorryBox.png'),
-                                              fit: BoxFit.fill,
-                                            )),
-                                        Text(
-                                          "Let\'s not talk to this guy",
-                                          style: largeTitleTextStyle(
-                                              Colors.black, 26),
-                                        ),
-                                      ]),
-                                  Container(
-                                      height: 140,
-                                      width: 140,
-                                      child: FittedBox(
-                                        child: Image.asset(
-                                            'assets/icon/failToFind.png'),
-                                        fit: BoxFit.fill,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          )
-                        : chatMessageList(currentUser.email)),
-                Container(
-                    decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                )),
-                Container(
-                  alignment: Alignment.center,
-                  height: 74.0,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Container(
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Color(0xffF9F6F1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: TextField(
-                            onTap: () {
-                              setState(() {
-                                showStickerKeyboard = false;
-                                showTextKeyboard = true;
-                                showFunctions = false;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 160),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
-                            },
-                            controller: messageController,
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 15.0),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                            ),
-                            textInputAction: TextInputAction.send,
-                            onSubmitted: (value) {
-                              sendMessage(currentUser.email);
-                            },
-                          ),
-                        ),
-                      )),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 14.0),
-                        child: GestureDetector(
-                            child: showStickerKeyboard
-                                ? Image.asset(
-                                    'assets/images/emoji_on_click.png',
-                                    width: 29,
-                                    height: 27.83)
-                                : Image.asset('assets/images/emoji.png',
-                                    width: 29, height: 27.83),
-                            onTap: () {
-                              if (showTextKeyboard) {
-                                setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
-                                });
-                              } else {
-                                if (showFunctions) {
-                                  setState(() {
-                                    showFunctions = false;
-                                  });
-                                } else {}
-                              }
-                              setState(() {
-                                showStickerKeyboard = !showStickerKeyboard;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 30),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
-                            }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 25.0),
-                        child: GestureDetector(
-                            onTap: () {
-                              if ((messageController.text != '' ||
-                                  messageController.text.isNotEmpty)) {
-                                sendMessage(currentUser.email);
-                              } else {
-                                if (showTextKeyboard) {
-                                  setState(() {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                      showTextKeyboard = false;
-                                    }
-                                  });
-                                } else {
-                                  if (showStickerKeyboard) {
-                                    setState(() {
-                                      showStickerKeyboard = false;
-                                    });
-                                  } else {}
-                                }
-                                setState(() {
-                                  showFunctions = !showFunctions;
-                                });
-                                Timer(
-                                    Duration(milliseconds: 30),
-                                    () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent));
-                              }
-                            },
-                            child: (messageController.text != '' ||
-                                    messageController.text.isNotEmpty)
-                                ? Image.asset('assets/images/messageSend.png',
-                                    width: 28, height: 28)
-                                : showFunctions
-                                    ? Image.asset(
-                                        'assets/images/plus_on_click.png',
-                                        width: 28,
-                                        height: 28)
-                                    : Image.asset(
-                                        'assets/images/plus_on_click.png',
-                                        width: 28,
-                                        height: 28)),
-
-                        // showFunctions
-                        //     ? Image.asset('assets/images/plus_on_click.png',
-                        //         width: 28, height: 28)
-                        //     : (messageController.text == '' ||
-                        //             messageController.text.isEmpty)
-                        //         ? Image.asset(
-                        //             'assets/images/messageSend.png',
-                        //             width: 28,
-                        //             height: 28)
-                        //         : Image.asset(
-                        //             'assets/images/plus_on_click.png',
-                        //             width: 28,
-                        //             height: 28)),
-                      )
-                    ],
-                  ),
-                ),
-                showStickerKeyboard
-                    ? AnimatedContainer(
-                        duration: Duration(milliseconds: 80),
-                        // showStickerKeyboard ? 400 : 0,
-                        child: EmojiPicker(
-                          rows: 4,
-                          columns: 7,
-                          buttonMode: ButtonMode.MATERIAL,
-                          numRecommended: 10,
-                          onEmojiSelected: (emoji, category) {
-                            setState(() {
-                              messageController.text =
-                                  messageController.text + emoji.emoji;
-                            });
-                          },
-                        ),
-                      )
-                    : Container(),
-                showFunctions
-                    ? AnimatedContainer(
-                        duration: Duration(milliseconds: 80),
-                        height: 80,
-                        width: mediaQuery.width,
-                        color: Colors.white,
-                        child: Container(
-                          padding: EdgeInsets.only(left: 50, right: 50),
+                        )),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 74.0,
+                          width:
+                              getRealWidth(MediaQuery.of(context).size.width),
+                          color: Colors.white,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                height: 64,
-                                width: 65,
-                                child: IconButton(
-                                    icon: Image.asset(
-                                      'assets/images/camera.png',
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffF9F6F1),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: TextField(
+                                    onTap: () {
+                                      setState(() {
+                                        showStickerKeyboard = false;
+                                        showTextKeyboard = true;
+                                        showFunctions = false;
+                                      });
+                                      Timer(
+                                          Duration(milliseconds: 160),
+                                          () => _controller.jumpTo(_controller
+                                              .position.minScrollExtent));
+                                    },
+                                    controller: messageController,
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 16,
+                                      color: Colors.black,
                                     ),
-                                    onPressed: () => _pickImage(
-                                        ImageSource.camera, currentUser.email)),
-                              ),
-                              Container(
-                                height: 64,
-                                width: 65,
-                                child: IconButton(
-                                    icon: Image.asset(
-                                      'assets/images/photo_library.png',
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.only(left: 15.0),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(35),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(35),
+                                      ),
                                     ),
-                                    onPressed: () => _pickImage(
-                                        ImageSource.gallery,
-                                        currentUser.email)),
+                                    textInputAction: TextInputAction.send,
+                                    onSubmitted: (value) {
+                                      sendMessage(currentUser.email);
+                                    },
+                                  ),
+                                ),
+                              )),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 14.0),
+                                child: GestureDetector(
+                                    child: showStickerKeyboard
+                                        ? Image.asset(
+                                            'assets/images/emoji_on_click.png',
+                                            width: 29,
+                                            height: 27.83)
+                                        : Image.asset('assets/images/emoji.png',
+                                            width: 29, height: 27.83),
+                                    onTap: () {
+                                      if (showTextKeyboard) {
+                                        setState(() {
+                                          FocusScopeNode currentFocus =
+                                              FocusScope.of(context);
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                            showTextKeyboard = false;
+                                          }
+                                        });
+                                      } else {
+                                        if (showFunctions) {
+                                          setState(() {
+                                            showFunctions = false;
+                                          });
+                                        } else {}
+                                      }
+                                      setState(() {
+                                        showStickerKeyboard =
+                                            !showStickerKeyboard;
+                                      });
+                                      Timer(
+                                          Duration(milliseconds: 30),
+                                          () => _controller.jumpTo(_controller
+                                              .position.minScrollExtent));
+                                    }),
                               ),
-                              Container(
-                                height: 64,
-                                width: 55,
-                                color: Colors.white,
-                              ),
-                              Container(
-                                height: 64,
-                                width: 55,
-                                color: Colors.white,
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, right: 25.0),
+                                child: GestureDetector(
+                                    onTap: () {
+                                      if ((messageController.text != '' ||
+                                          messageController.text.isNotEmpty)) {
+                                        sendMessage(currentUser.email);
+                                      } else {
+                                        if (showTextKeyboard) {
+                                          setState(() {
+                                            FocusScopeNode currentFocus =
+                                                FocusScope.of(context);
+                                            if (!currentFocus.hasPrimaryFocus) {
+                                              currentFocus.unfocus();
+                                              showTextKeyboard = false;
+                                            }
+                                          });
+                                        } else {
+                                          if (showStickerKeyboard) {
+                                            setState(() {
+                                              showStickerKeyboard = false;
+                                            });
+                                          } else {}
+                                        }
+                                        setState(() {
+                                          showFunctions = !showFunctions;
+                                        });
+                                        Timer(
+                                            Duration(milliseconds: 30),
+                                            () => _controller.jumpTo(_controller
+                                                .position.minScrollExtent));
+                                      }
+                                    },
+                                    child: (messageController.text != '' ||
+                                            messageController.text.isNotEmpty)
+                                        ? Image.asset(
+                                            'assets/images/messageSend.png',
+                                            width: 28,
+                                            height: 28)
+                                        : showFunctions
+                                            ? Image.asset(
+                                                'assets/images/plus_on_click.png',
+                                                width: 28,
+                                                height: 28)
+                                            : Image.asset(
+                                                'assets/images/plus_on_click.png',
+                                                width: 28,
+                                                height: 28)),
+
+                                // showFunctions
+                                //     ? Image.asset('assets/images/plus_on_click.png',
+                                //         width: 28, height: 28)
+                                //     : (messageController.text == '' ||
+                                //             messageController.text.isEmpty)
+                                //         ? Image.asset(
+                                //             'assets/images/messageSend.png',
+                                //             width: 28,
+                                //             height: 28)
+                                //         : Image.asset(
+                                //             'assets/images/plus_on_click.png',
+                                //             width: 28,
+                                //             height: 28)),
                               )
                             ],
                           ),
                         ),
-                      )
-                    : Container(),
-              ],
-            ),
-          )),
-    );
+                        showStickerKeyboard
+                            ? AnimatedContainer(
+                                duration: Duration(milliseconds: 80),
+                                // showStickerKeyboard ? 400 : 0,
+                                child: EmojiPicker(
+                                  rows: 4,
+                                  columns: 7,
+                                  buttonMode: ButtonMode.MATERIAL,
+                                  numRecommended: 10,
+                                  onEmojiSelected: (emoji, category) {
+                                    setState(() {
+                                      messageController.text =
+                                          messageController.text + emoji.emoji;
+                                    });
+                                  },
+                                ),
+                              )
+                            : Container(),
+                        showFunctions
+                            ? AnimatedContainer(
+                                duration: Duration(milliseconds: 80),
+                                height: 80,
+                                width: mediaQuery.width,
+                                color: Colors.white,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 50, right: 50),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/camera.png',
+                                            ),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.camera,
+                                                currentUser.email)),
+                                      ),
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/photo_library.png',
+                                            ),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.gallery,
+                                                currentUser.email)),
+                                      ),
+                                      Container(
+                                        height: 64,
+                                        width: 55,
+                                        color: Colors.white,
+                                      ),
+                                      Container(
+                                        height: 64,
+                                        width: 55,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                  )),
+            )));
   }
 }
 
@@ -803,7 +836,8 @@ class MessageTile extends StatelessWidget {
                   children: [
                     // Message and Time
                     Container(
-                      width: MediaQuery.of(context).size.width - 60,
+                      width:
+                          getRealWidth(MediaQuery.of(context).size.width) - 60,
                       alignment: Alignment.centerRight,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

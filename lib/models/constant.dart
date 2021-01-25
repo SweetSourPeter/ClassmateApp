@@ -25,6 +25,7 @@ const dividerColor = Color(0xFFD1D1D1);
 const whiteAndGray = Color(0xFFEEEEEE); //loading color
 const kDefaultPadding = 20.0;
 
+const maxWidth = 800.0;
 const kDefaultShadow = BoxShadow(
   offset: Offset(0, 4),
   blurRadius: 4,

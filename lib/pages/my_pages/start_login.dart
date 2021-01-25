@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
+import 'package:app_test/widgets/widgets.dart';
 
 class StartLoginPage extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,

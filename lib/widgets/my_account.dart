@@ -36,11 +36,11 @@ class _MyAccountState extends State<MyAccount> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     final userdata = Provider.of<UserData>(context);
     final userTags = Provider.of<UserTags>(context);
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
 
     // TODO: implement build

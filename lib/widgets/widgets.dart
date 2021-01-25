@@ -334,7 +334,7 @@ class _ButtonLinkState extends State<ButtonLink> {
               ? EdgeInsets.fromLTRB(20, 10, 20, 10)
               : EdgeInsets.fromLTRB(20, 0, 20, 0),
           height: widget.height,
-          minWidth: MediaQuery.of(context).size.width,
+          minWidth: getRealWidth(MediaQuery.of(context).size.width),
           color: Colors.white,
           child: Column(
             children: [
@@ -471,7 +471,7 @@ class _ButtonLinkState extends State<ButtonLink> {
 
 Padding userInfoDetailsBox(Size mediaQuery, String topText, String bottomText) {
   return Padding(
-    padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 0),
+    padding: EdgeInsets.fromLTRB(getRealWidth(mediaQuery.width) / 7, 0, 0, 0),
     child: Column(
       children: [
         Container(
@@ -510,4 +510,12 @@ void showBottomPopSheet(BuildContext context, Widget widget) {
       builder: (context) {
         return SafeArea(child: widget);
       });
+}
+
+double getRealWidth(double width) {
+  if (width >= maxWidth) {
+    return maxWidth;
+  }
+
+  return width;
 }

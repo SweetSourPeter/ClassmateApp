@@ -28,7 +28,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
   @override
   Widget build(BuildContext context) {
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context);
     final databaseMehods = DatabaseMethods();
@@ -65,7 +65,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
                   child: Stack(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(top: menuContainerHeight / 3),
+                          margin: EdgeInsets.only(top: menuContainerHeight / 3),
                           child: Image.asset(
                               'assets/courseimage/cs_course_BG.jpg')),
                       Positioned(

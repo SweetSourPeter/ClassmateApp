@@ -6,6 +6,7 @@ import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
 import './groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app_test/widgets/widgets.dart';
 
 class SearchGroupChat extends StatefulWidget {
   final String courseId;
@@ -162,7 +163,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                 children.add(Container(
                     padding:
                         const EdgeInsets.only(left: 25, right: 25, bottom: 10),
-                    width: MediaQuery.of(context).size.width - 50,
+                    width: getRealWidth(MediaQuery.of(context).size.width) - 50,
                     child: Row(children: [
                       Text(
                         'Messages with word: ',
@@ -289,7 +290,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width - 94,
+                        width: getRealWidth(MediaQuery.of(context).size.width) -
+                            94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -319,7 +321,9 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                               ],
                             ),
                             Container(
-                              width: MediaQuery.of(context).size.width - 100,
+                              width: getRealWidth(
+                                      MediaQuery.of(context).size.width) -
+                                  100,
                               padding: EdgeInsets.only(left: 8),
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,

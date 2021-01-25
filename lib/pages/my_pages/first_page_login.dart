@@ -49,7 +49,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     return Container(
       color: themeOrange,
       child: SingleChildScrollView(

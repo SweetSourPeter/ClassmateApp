@@ -102,9 +102,11 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                                       blurSize: 4,
                                       menuOffset: 8,
                                       menuItemExtent: 45,
-                                      menuWidth:
-                                          MediaQuery.of(context).size.width *
-                                              0.80,
+                                      menuWidth: getRealWidth(
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width) *
+                                          0.80,
                                       menuBoxDecoration: BoxDecoration(
                                           color: Colors.grey,
                                           borderRadius: BorderRadius.all(
@@ -213,7 +215,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
     String semester,
     String imageLocation,
   ) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
 
     // var date = new DateTime.fromMillisecondsSinceEpoch(1000 * submittedTime);
     return Card(

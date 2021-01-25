@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';
 import 'widgets/my_account.dart';
+import 'package:app_test/widgets/widgets.dart';
 
 class MainMenu extends StatefulWidget {
   @override
@@ -61,13 +62,16 @@ class _MainMenuState extends State<MainMenu> {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
     final userTags = Provider.of<UserTags>(context);
     return (userdata == null)
         ? CircularProgressIndicator()
         : SafeArea(
+            child: Center(
+                child: Container(
+            width: maxWidth,
             child: Scaffold(
               backgroundColor: themeOrange,
               body: SafeArea(
@@ -101,7 +105,6 @@ class _MainMenuState extends State<MainMenu> {
                 },
                 child: Container(
                   color: Colors.white,
-                  width: mediaQuery.width,
                   child: Stack(
                     children: <Widget>[
                       AnimatedContainer(
@@ -192,13 +195,14 @@ class _MainMenuState extends State<MainMenu> {
                 ),
               ))),
             ),
-          );
+          )));
   }
 
   Padding userInfoDetailsBox(
       Size mediaQuery, String topText, String bottomText) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 60),
+      padding:
+          EdgeInsets.fromLTRB(getRealWidth(mediaQuery.width) / 7, 0, 0, 60),
       child: Column(
         children: [
           Container(

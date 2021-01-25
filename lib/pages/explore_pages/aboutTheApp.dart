@@ -79,7 +79,7 @@ class AboutTheAPP extends StatelessWidget {
   Container buildContainer(String text, Size mediaQuery) {
     return Container(
       height: mediaQuery.height * 0.043,
-      width: mediaQuery.width * 0.4,
+      width: getRealWidth(mediaQuery.width) * 0.4,
       decoration: BoxDecoration(
         color: Color(0xff9b6b).withOpacity(1),
         borderRadius: BorderRadius.circular(16.0),

@@ -34,7 +34,7 @@ class _AddCourseState extends State<AddCourse> {
     //provider of the course
     final courseProvider = Provider.of<CourseProvider>(context);
     final currentUser = Provider.of<UserData>(context, listen: false);
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 37),

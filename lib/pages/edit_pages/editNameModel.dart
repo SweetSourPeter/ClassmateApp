@@ -35,16 +35,12 @@ class _EditNameModelState extends State<EditNameModel> {
         TextPosition(offset: _controller.text.length));
 
     return Container(
+        margin: EdgeInsets.only(top:10),
         height: modelHeight,
-        child: Container(
-          child:
-              // RefreshIndicator(
-              // key: refreshKey,
-              // onRefresh: () async {
-              //   await refreshList();
-              // },
-              // child:
-              Column(
+        child: Center(
+            child: Container(
+          width: maxWidth / 1.5,
+          child: Column(
             children: [
               topLineBar(),
               Container(
@@ -114,7 +110,15 @@ class _EditNameModelState extends State<EditNameModel> {
               )
             ],
           ),
-          // ),
-        ));
+        )
+            // RefreshIndicator(
+            // key: refreshKey,
+            // onRefresh: () async {
+            //   await refreshList();
+            // },
+            // child:
+
+            // ),
+            ));
   }
 }

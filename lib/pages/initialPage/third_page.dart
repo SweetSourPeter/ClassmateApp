@@ -49,7 +49,7 @@ class _ThirdPageState extends State<ThirdPage>
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.23),

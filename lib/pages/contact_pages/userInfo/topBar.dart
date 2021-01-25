@@ -38,7 +38,7 @@ class _TopBarState extends State<TopBar> {
     // }
 
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = getRealWidth(MediaQuery.of(context).size.width);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),

@@ -312,7 +312,7 @@ class _SearchChatState extends State<SearchChat> {
                         ),
                       ),
                       Container(
-                        width: mediaQuery.width - 94,
+                        width: getRealWidth(mediaQuery.width) - 94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -342,7 +342,7 @@ class _SearchChatState extends State<SearchChat> {
                               ],
                             ),
                             Container(
-                              width: mediaQuery.width - 100,
+                              width: getRealWidth(mediaQuery.width) - 100,
                               padding: EdgeInsets.only(left: 8),
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,
