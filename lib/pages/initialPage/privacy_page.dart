@@ -65,6 +65,7 @@ class _PrivacyPageState extends State<PrivacyPage>
       );
     }
 
+    DatabaseMethods databaseMethods = new DatabaseMethods();
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(top: _height * 0.13),
@@ -184,12 +185,17 @@ class _PrivacyPageState extends State<PrivacyPage>
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () {
                         if (checkedToSvalue && checkedPPvalue) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Wrapper(false),
-                            ),
-                          );
+                          databaseMethods
+                              .updateUserAgreement(user.userID,
+                                  checkedToSvalue && checkedPPvalue)
+                              .then((value) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Wrapper(false),
+                              ),
+                            );
+                          });
                         }
                       },
                       child: Text(

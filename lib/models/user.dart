@@ -1,3 +1,5 @@
+import 'package:app_test/models/userTags.dart';
+
 class User {
   final String userID;
   String photoURL;
@@ -32,6 +34,7 @@ class UserData {
   final double profileColor;
   final List blockedUserID;
   final bool agreedToTerms;
+  final UserTags userTags;
   // final List<String> friendsList;
   // final List<String> courseList;
   UserData({
@@ -43,6 +46,7 @@ class UserData {
     this.profileColor,
     this.blockedUserID,
     this.agreedToTerms,
+    this.userTags,
   });
   Map<String, dynamic> toCourseJson() => {
         'userID': userID,
@@ -59,6 +63,7 @@ class UserData {
       'profileColor': profileColor,
       'blockedUser': blockedUserID,
       'agreedToTerms': agreedToTerms,
+      'userTags': userTags,
     };
   }
 
@@ -69,8 +74,11 @@ class UserData {
         email = firestore['email'] ?? '',
         profileColor = firestore['profileColor'] ?? '',
         userName = firestore['userName'] ?? '',
-        agreedToTerms = firestore['agreedToTerms'] ?? false,
-        blockedUserID = firestore['blockedUser'] ?? null;
+        agreedToTerms = firestore['agreedToTerms'] ?? null,
+        blockedUserID = firestore['blockedUser'] ?? null,
+        userTags = firestore['tags'] == null
+            ? null
+            : UserTags.fromFirestoreTags(firestore['tags']);
 
   //get data for contacts of current user
   UserData.fromFirestoreContacts(Map<String, dynamic> firestore)
@@ -80,6 +88,9 @@ class UserData {
         email = firestore['email'],
         profileColor = firestore['profileColor'],
         userName = firestore['userName'],
-        agreedToTerms = firestore['agreedToTerms'] ?? false,
-        blockedUserID = firestore['blockedUser'];
+        agreedToTerms = firestore['agreedToTerms'] ?? null,
+        blockedUserID = firestore['blockedUser'],
+        userTags = firestore['tags'] == null
+            ? null
+            : UserTags.fromFirestoreTags(firestore['tags']);
 }

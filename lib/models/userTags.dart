@@ -14,10 +14,16 @@ class UserTags {
   });
 
   UserTags.fromFirestoreTags(Map<String, dynamic> firestore)
-      : interest = firestore['interest'],
-        college = firestore['college'],
-        language = firestore['language'],
-        strudyHabits = firestore['strudyHabits'];
+      : interest = firestore['interest'] ?? null,
+        college = firestore['college'] ?? null,
+        language = firestore['language'] ?? null,
+        strudyHabits = firestore['strudyHabits'] ?? null;
+
+//   UserTags.fromFirestoreTagsToUserData(Map<String, dynamic> firestore)
+// : interest = firestore['interest'],
+//   college = firestore['college'],
+//   language = firestore['language'],
+//   strudyHabits = firestore['strudyHabits'];
 
   UserTags calculateMatchTags(UserTags friendTag, UserTags myTag) {
     UserTags resultTag;

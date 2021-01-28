@@ -4,6 +4,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -69,14 +70,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
-
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return (course == null)
-        ? Center(
-            child: CircularProgressIndicator(
-            backgroundColor: themeOrange,
-          ))
+        ? LoadingScreen(Colors.white)
         : Container(
             color: Colors.white,
             child: CustomScrollView(
@@ -382,7 +379,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                         SizedBox(
                                           width: _width * 0.016,
                                         ),
-                                        listOfUnread.isEmpty || (index > listOfUnread.length - 1) || listOfUnread[index] == 0
+                                        listOfUnread.isEmpty ||
+                                                (index >
+                                                    listOfUnread.length - 1) ||
+                                                listOfUnread[index] == 0
                                             ? Container()
                                             : Container(
                                                 alignment: Alignment.center,
@@ -395,7 +395,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                                       BorderRadius.circular(32),
                                                 ),
                                                 child: AutoSizeText(
-                                                  ('+' + listOfUnread[index].toString()),
+                                                  ('+' +
+                                                      listOfUnread[index]
+                                                          .toString()),
                                                   style: GoogleFonts.openSans(
                                                       fontSize: 8,
                                                       color: Colors.white),

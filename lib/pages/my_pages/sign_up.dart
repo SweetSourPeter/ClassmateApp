@@ -108,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
         //   content: Text(error.code ?? ''),
         //   duration: Duration(seconds: 3),
         // ));
-        _toastInfo(error.code ?? 'Unknown Error');
+        _toastInfo(error.code.toString() ?? 'Unknown Error');
       });
     }
   }

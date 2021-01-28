@@ -35,6 +35,7 @@ class DatabaseMethods {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
     DocumentSnapshot doc = await docRef.get();
+    print(doc.data()['tags']);
     var userData = UserData(
       email: doc.data()['email'],
       school: doc.data()['school'],
@@ -42,7 +43,11 @@ class DatabaseMethods {
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
       profileColor: doc.data()['profileColor'],
+      agreedToTerms: doc.data()['agreedToTerms'],
       blockedUserID: doc.data()['blockedUser'],
+      userTags: doc.data()['tags'] == null
+          ? null
+          : UserTags.fromFirestoreTags(doc.data()['tags']),
     );
     return userData;
   }
@@ -634,6 +639,17 @@ class DatabaseMethods {
         FirebaseFirestore.instance.collection('users').doc(userID);
     docRef.update({
       'profileColor': color,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future<void> updateUserAgreement(String userID, bool agreedToTerms) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('users').doc(userID);
+    docRef.update({
+      'agreedToTerms': agreedToTerms,
     }).catchError((e) {
       print(e.toString());
     });

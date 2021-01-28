@@ -2,6 +2,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
+import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_svg/svg.dart';
@@ -66,10 +67,7 @@ class _MainMenuState extends State<MainMenu> {
     double sidebarSize = mediaQuery.width * 1.0;
     final userTags = Provider.of<UserTags>(context);
     return (userdata == null)
-        ? Center(
-            child: CircularProgressIndicator(
-            backgroundColor: themeOrange,
-          ))
+        ? LoadingScreen(Colors.white)
         : Scaffold(
             backgroundColor: Colors.white,
             body: Stack(
