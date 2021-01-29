@@ -298,14 +298,17 @@ class _CourseDetailState extends State<CourseDetail> {
                                           10 +
                                           40,
                               padding: EdgeInsets.only(top: 30),
-                              child: GridView.count(
-                                primary: false,
-                                shrinkWrap: true,
-                                crossAxisSpacing: 15,
-                                mainAxisSpacing: 10,
-                                crossAxisCount: 5,
-                                childAspectRatio: gridRatio,
-                                children: _renderMemberInfo(gridWidth - 5),
+                              child: Scrollbar(
+                                thickness: 4,
+                                child: GridView.count(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  crossAxisSpacing: 15,
+                                  mainAxisSpacing: 10,
+                                  crossAxisCount: 5,
+                                  childAspectRatio: gridRatio,
+                                  children: _renderMemberInfo(gridWidth - 5),
+                                ),
                               ),
                             )
                           ]),

@@ -6,19 +6,17 @@ class SimpleLoadingScreen extends StatelessWidget {
   final Color backgroundColor;
   @override
   Widget build(BuildContext context) {
-    return Lottie.asset(
-      'assets/icon/Simplified Loading Animation.zip',
-      fit: BoxFit.cover,
-    );
-    // Container(
-    //   color: backgroundColor,
-    //   child: Lottie.asset(
-    //     'assets/icon/Simplified Loading Animation.zip',
-    //     width: 100,
-    //     height: 100,
-    //     fit: BoxFit.contain,
-    //   ),
+    // return Lottie.asset(
+    //   'assets/icon/Simplified Loading Animation.zip',
+    //   fit: BoxFit.contain,
     // );
+    return Container(
+      color: backgroundColor,
+      child: Lottie.asset(
+        'assets/icon/Simplified Loading Animation.zip',
+        fit: BoxFit.fill,
+      ),
+    );
   }
 }
 

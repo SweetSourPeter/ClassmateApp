@@ -2,6 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
+import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
@@ -341,7 +342,7 @@ class _SignUpPageState extends State<SignUpPage> {
             resizeToAvoidBottomPadding: false,
             key: _scaffoldKey,
             body: isLoading
-                ? Container(child: Center(child: CircularProgressIndicator()))
+                ? Container(child: LoadingScreen(themeOrange))
                 : Scaffold(
                     resizeToAvoidBottomPadding: false,
                     backgroundColor: themeOrange,
