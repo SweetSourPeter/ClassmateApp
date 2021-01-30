@@ -1,5 +1,7 @@
 // import 'dart:html';
 
+import 'package:app_test/services/database.dart';
+
 class CourseInfo {
   String term;
   String school;
@@ -43,7 +45,6 @@ class CourseInfo {
       'myCourseName': myCourseName,
       'section': section,
       'courseID': courseID,
-
       'userNumbers': userNumbers,
       //       school: user.school,
       // term: term,
@@ -56,6 +57,7 @@ class CourseInfo {
     };
   }
 
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   CourseInfo.fromFirestore(Map<String, dynamic> firestore)
       : school = firestore['school'],
         term = firestore['term'],
@@ -64,7 +66,7 @@ class CourseInfo {
         myCourseName = firestore['myCourseName'],
         section = firestore['section'],
         courseID = firestore['courseID'],
-        userNumbers = firestore['userNumbers'];
+        userNumbers = firestore['userNumbers'] ?? null;
 }
 
 //TEMP LIST FOR THE BUILDER

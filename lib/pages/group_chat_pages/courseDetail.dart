@@ -3,6 +3,7 @@ import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/courseProvider.dart';
+import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,28 +75,8 @@ class _CourseDetailState extends State<CourseDetail> {
     final course = Provider.of<List<CourseInfo>>(context);
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
-        // if (index > 9) {
-        //   return GestureDetector(
-        //     child: Container(
-        //       child: Column(
-        //         children: <Widget>[
-        //           creatAddIconImage(radius),
-        //           Text(
-        //             'Invite',
-        //             style:
-        //                 GoogleFonts.montserrat(color: orengeColor, fontSize: 15),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   );
-        // }
         if (members == null) {
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: themeOrange,
-            ),
-          );
+          return SimpleLoadingScreen(Colors.white);
         } else {
           final memberName = members[index][0];
 
@@ -158,294 +139,60 @@ class _CourseDetailState extends State<CourseDetail> {
       });
     }
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(0xfff9f6f1),
-        body: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.white,
-                  height: 73.68,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Container(
-                          // height: 17.96,
-                          // width: 10.26,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.chevron_left,
-                              size: 35,
-                            ),
-                            // iconSize: 30.0,
-                            color: const Color(0xFFFF7E40),
-                            onPressed: () {
-                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          (courseName ?? '') + (courseSection ?? ''),
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        //TODO replace Icon
-                        child: GestureDetector(
-                          onTap: () {
-                            Clipboard.setData(new ClipboardData(
-                                    text:
-                                        'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${widget.courseId}\nCourse Name: ${courseName + courseSection}'))
-                                .then((result) {
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible:
-                                    false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          Text('The invite Link is copied.'),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text('OK'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            });
-                          },
-                          child: Text(
-                            'share',
-                            textAlign: TextAlign.left,
-                            style: GoogleFonts.openSans(
-                              color: themeOrange,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: riceColor,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                            right: 20, left: 20, top: 20, bottom: 30),
-                        margin: EdgeInsets.only(top: 25),
-                        color: Colors.white,
-                        child: Column(children: <Widget>[
-                          Container(
-                            height: 20,
-                            //color: Colors.black,
-                            child: Stack(children: <Widget>[
-                              Positioned(
-                                child: Text('Group Members',
-                                    style: GoogleFonts.montserrat(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14)),
-                                top: 0,
-                                left: 0,
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
+          backgroundColor: const Color(0xfff9f6f1),
+          body: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    height: 73.68,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Container(
+                            // height: 17.96,
+                            // width: 10.26,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.chevron_left,
+                                size: 35,
                               ),
-                              Positioned(
-                                  child: GestureDetector(
-                                    child: Row(
-                                      // Replace with a Row for horizontal icon + text
-                                      children: <Widget>[
-                                        Text(
-                                            numberOfMembers > 1
-                                                ? numberOfMembers.toString() +
-                                                    ' ' +
-                                                    'people'
-                                                : numberOfMembers.toString() +
-                                                    ' ' +
-                                                    'person',
-                                            style: GoogleFonts.openSans(
-                                              color: Colors.black38,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.normal,
-                                            )),
-                                        // Container(
-                                        //   margin: EdgeInsets.only(top: 3),
-                                        //   child: Icon(
-                                        //     Icons.navigate_next,
-                                        //     color: Colors.black38,
-                                        //   ),
-                                        // )
-                                      ],
-                                    ),
-                                  ),
-                                  top: 0,
-                                  right: 0),
-                            ]),
-                          ),
-                          Container(
-                            //color: Colors.green,
-                            height: numberOfMembers <= 5
-                                ? (gridWidth * 2 / gridRatio) + 10 + 20
-                                : numberOfMembers <= 10
-                                    ? (gridWidth * 2 / gridRatio) * 2 + 10 + 30
-                                    : (gridWidth * 2 / gridRatio) * 3 + 10 + 40,
-                            padding: EdgeInsets.only(top: 30),
-                            child: GridView.count(
-                              primary: false,
-                              shrinkWrap: true,
-                              crossAxisSpacing: 15,
-                              mainAxisSpacing: 10,
-                              crossAxisCount: 5,
-                              childAspectRatio: gridRatio,
-                              children: _renderMemberInfo(gridWidth - 5),
-                            ),
-                          )
-                        ]),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 25),
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            // Divider(
-                            //   height: 0,
-                            //   thickness: 1,
-                            // ),
-                            // ButtonLink(
-                            //   text: "Media, Links, and Docs",
-                            //   iconData: Icons.folder,
-                            //   textSize: 18,
-                            //   height: 50,
-                            // ),
-                            GestureDetector(
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                height: 50,
-                                width: MediaQuery.of(context).size.width,
-                                color: Colors.white,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 21.0),
-                                      child: Text(
-                                        "Chat Search",
-                                        style: GoogleFonts.montserrat(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 21.0),
-                                      child: Image.asset(
-                                          'assets/images/arrow-forward.png',
-                                          height: 9.02,
-                                          width: 4.86,
-                                          color: const Color(0xFF949494)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: currentUser,
-                                      ),
-                                      Provider<List<CourseInfo>>.value(
-                                          value: course)
-                                    ],
-                                    child: SearchGroupChat(
-                                      courseId: widget.courseId,
-                                      myEmail: widget.myEmail,
-                                      myName: widget.myName,
-                                    ),
-                                  );
-                                }));
+                              // iconSize: 30.0,
+                              color: const Color(0xFFFF7E40),
+                              onPressed: () {
+                                // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                                Navigator.of(context).pop();
                               },
                             ),
-                            // ButtonLink(
-                            //     text: "Mute",
-                            //     iconData: Icons.notifications_off,
-                            //     textSize: 18,
-                            //     height: 50,
-                            //     isSwitch: true),
-                            // Divider(
-                            //                             //   height: 0,
-                            //                             //   thickness: 1,
-                            //                             // )
-                          ],
+                          ),
                         ),
-                      ),
-                      // Container(
-                      //     margin: EdgeInsets.only(top: 25),
-                      //     child: Column(
-                      //       children: [
-                      //         Divider(
-                      //           height: 0,
-                      //           thickness: 1,
-                      //         ),
-                      //         // ButtonLink(
-                      //         //     text: "Clear Chat",
-                      //         //     iconData: Icons.cleaning_services,
-                      //         //     textSize: 18,
-                      //         //     height: 50,
-                      //         //     isSimple: true),
-                      //         Divider(
-                      //           height: 0,
-                      //           thickness: 1,
-                      //         )
-                      //       ],
-                      //     )),
-                      Container(
-                        margin: EdgeInsets.only(top: 25),
-                        child: Column(
-                          children: [
-                            // Divider(
-                            //   height: 0,
-                            //   thickness: 1,
-                            // ),
-                            GestureDetector(
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                height: 50,
-                                width: MediaQuery.of(context).size.width,
-                                color: Colors.white,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 21.0),
-                                  child: Text(
-                                    "Exit Group",
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 14, color: Color(0xffFF7E40)),
-                                  ),
-                                ),
-                              ),
-                              onTap: () {
+                        Container(
+                          child: Text(
+                            (courseName ?? '') + (courseSection ?? ''),
+                            style: GoogleFonts.montserrat(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 20),
+                          //TODO replace Icon
+                          child: GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(new ClipboardData(
+                                      text:
+                                          'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name'))
+                                  .then((result) {
                                 showDialog<void>(
                                   context: context,
                                   barrierDismissible:
@@ -455,35 +202,13 @@ class _CourseDetailState extends State<CourseDetail> {
                                       content: SingleChildScrollView(
                                         child: ListBody(
                                           children: <Widget>[
-                                            Text(
-                                              'Are you sure you want to delete this course?',
-                                              style: simpleTextStyle(
-                                                  Colors.black, 16),
-                                            ),
+                                            Text('The invite Link is copied.'),
                                           ],
                                         ),
                                       ),
                                       actions: <Widget>[
                                         TextButton(
-                                          child: Text(
-                                            'Yes',
-                                            style: simpleTextStyle(
-                                                Colors.black87, 16),
-                                          ),
-                                          onPressed: () {
-                                            courseProvider.removeCourse(
-                                                context, widget.courseId);
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: Text(
-                                            'Cancel',
-                                            style: simpleTextStyle(
-                                                themeOrange, 16),
-                                          ),
+                                          child: Text('OK'),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
@@ -492,20 +217,288 @@ class _CourseDetailState extends State<CourseDetail> {
                                     );
                                   },
                                 );
-                              },
+                              });
+                            },
+                            child: Text(
+                              'share',
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.openSans(
+                                color: themeOrange,
+                                fontSize: 16,
+                              ),
                             ),
-                            // Divider(
-                            //   height: 0,
-                            //   thickness: 1,
-                            // )
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )),
+                  Container(
+                    color: riceColor,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(
+                              right: 20, left: 20, top: 20, bottom: 30),
+                          margin: EdgeInsets.only(top: 25),
+                          color: Colors.white,
+                          child: Column(children: <Widget>[
+                            Container(
+                              height: 20,
+                              //color: Colors.black,
+                              child: Stack(children: <Widget>[
+                                Positioned(
+                                  child: Text('Group Members',
+                                      style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14)),
+                                  top: 0,
+                                  left: 0,
+                                ),
+                                Positioned(
+                                    child: GestureDetector(
+                                      child: Row(
+                                        // Replace with a Row for horizontal icon + text
+                                        children: <Widget>[
+                                          Text(
+                                              numberOfMembers > 1
+                                                  ? numberOfMembers.toString() +
+                                                      ' ' +
+                                                      'people'
+                                                  : numberOfMembers.toString() +
+                                                      ' ' +
+                                                      'person',
+                                              style: GoogleFonts.openSans(
+                                                color: Colors.black38,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal,
+                                              )),
+                                          // Container(
+                                          //   margin: EdgeInsets.only(top: 3),
+                                          //   child: Icon(
+                                          //     Icons.navigate_next,
+                                          //     color: Colors.black38,
+                                          //   ),
+                                          // )
+                                        ],
+                                      ),
+                                    ),
+                                    top: 0,
+                                    right: 0),
+                              ]),
+                            ),
+                            Container(
+                              //color: Colors.green,
+                              height: numberOfMembers <= 5
+                                  ? (gridWidth * 2 / gridRatio) + 10 + 20
+                                  : numberOfMembers <= 10
+                                      ? (gridWidth * 2 / gridRatio) * 2 +
+                                          10 +
+                                          30
+                                      : (gridWidth * 2 / gridRatio) * 3 +
+                                          10 +
+                                          40,
+                              padding: EdgeInsets.only(top: 30),
+                              child: Scrollbar(
+                                thickness: 4,
+                                child: GridView.count(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  crossAxisSpacing: 15,
+                                  mainAxisSpacing: 10,
+                                  crossAxisCount: 5,
+                                  childAspectRatio: gridRatio,
+                                  children: _renderMemberInfo(gridWidth - 5),
+                                ),
+                              ),
+                            )
+                          ]),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 25),
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              // Divider(
+                              //   height: 0,
+                              //   thickness: 1,
+                              // ),
+                              // ButtonLink(
+                              //   text: "Media, Links, and Docs",
+                              //   iconData: Icons.folder,
+                              //   textSize: 18,
+                              //   height: 50,
+                              // ),
+                              GestureDetector(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  color: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 21.0),
+                                        child: Text(
+                                          "Chat Search",
+                                          style: GoogleFonts.montserrat(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 21.0),
+                                        child: Image.asset(
+                                            'assets/images/arrow-forward.png',
+                                            height: 9.02,
+                                            width: 4.86,
+                                            color: const Color(0xFF949494)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: currentUser,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                            value: course)
+                                      ],
+                                      child: SearchGroupChat(
+                                        courseId: widget.courseId,
+                                        myEmail: widget.myEmail,
+                                        myName: widget.myName,
+                                      ),
+                                    );
+                                  }));
+                                },
+                              ),
+                              // ButtonLink(
+                              //     text: "Mute",
+                              //     iconData: Icons.notifications_off,
+                              //     textSize: 18,
+                              //     height: 50,
+                              //     isSwitch: true),
+                              // Divider(
+                              //                             //   height: 0,
+                              //                             //   thickness: 1,
+                              //                             // )
+                            ],
+                          ),
+                        ),
+                        // Container(
+                        //     margin: EdgeInsets.only(top: 25),
+                        //     child: Column(
+                        //       children: [
+                        //         Divider(
+                        //           height: 0,
+                        //           thickness: 1,
+                        //         ),
+                        //         // ButtonLink(
+                        //         //     text: "Clear Chat",
+                        //         //     iconData: Icons.cleaning_services,
+                        //         //     textSize: 18,
+                        //         //     height: 50,
+                        //         //     isSimple: true),
+                        //         Divider(
+                        //           height: 0,
+                        //           thickness: 1,
+                        //         )
+                        //       ],
+                        //     )),
+                        Container(
+                          margin: EdgeInsets.only(top: 25),
+                          child: Column(
+                            children: [
+                              // Divider(
+                              //   height: 0,
+                              //   thickness: 1,
+                              // ),
+                              GestureDetector(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 21.0),
+                                    child: Text(
+                                      "Exit Group",
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 14,
+                                          color: Color(0xffFF7E40)),
+                                    ),
+                                  ),
+                                ),
+                                onTap: () {
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible:
+                                        false, // user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              Text(
+                                                'Are you sure you want to delete this course?',
+                                                style: simpleTextStyle(
+                                                    Colors.black, 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text(
+                                              'Yes',
+                                              style: simpleTextStyle(
+                                                  Colors.black87, 16),
+                                            ),
+                                            onPressed: () {
+                                              courseProvider.removeCourse(
+                                                  context, widget.courseId);
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text(
+                                              'Cancel',
+                                              style: simpleTextStyle(
+                                                  themeOrange, 16),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              // Divider(
+                              //   height: 0,
+                              //   thickness: 1,
+                              // )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }

@@ -57,7 +57,6 @@ class _MyAccountState extends State<MyAccount> {
                   Spacer(),
                   GestureDetector(
                       onTap: () {
-                        print(userTags.college);
                         Clipboard.setData(
                           new ClipboardData(
                               text:

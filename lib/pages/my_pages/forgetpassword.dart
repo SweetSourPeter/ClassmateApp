@@ -1,9 +1,11 @@
+import 'package:app_test/widgets/loadingAnimation.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:app_test/models/constant.dart';
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Forgetpassword extends StatefulWidget {
   @override
@@ -19,9 +21,17 @@ class _ForgetpasswordState extends State<Forgetpassword> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   AuthMethods authMethods = new AuthMethods();
+  _toastInfo(String info) {
+    Fluttertoast.showToast(
+      msg: info,
+      toastLength: Toast.LENGTH_LONG,
+      timeInSecForIosWeb: 3,
+      gravity: ToastGravity.CENTER,
+    );
+  }
 
   Timer _timer;
-  int _start = 60;
+  int _start = 10;
 
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
@@ -32,7 +42,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           setState(() {
             hasSend = false;
             timer.cancel();
-            _start = 60;
+            _start = 10;
           });
         } else {
           setState(() {
@@ -70,13 +80,17 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           });
         }).catchError((error) {
           //TODO
+          if (!mounted) {
+            return; // Just do nothing if the widget is disposed.
+          }
           setState(() {
+            hasSend = false;
+            _timer?.cancel();
+            _start = 10;
             isLoading = false;
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text(error.code),
-              duration: Duration(seconds: 3),
-            ));
           });
+          print(error.code);
+          _toastInfo(error.code.toString() ?? 'Unknown Error');
         });
       }
     }
@@ -218,10 +232,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
             backgroundColor: themeOrange,
             resizeToAvoidBottomPadding: false,
             body: isLoading
-                ? Center(
-                    child: CircularProgressIndicator(
-                    backgroundColor: themeOrange,
-                  ))
+                ? LoadingScreen(themeOrange)
                 : SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,

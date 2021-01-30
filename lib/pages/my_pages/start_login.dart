@@ -47,6 +47,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
     return Container(
       color: themeOrange,
       child: SafeArea(
+        bottom: false,
         child: Scaffold(
           backgroundColor: Colors.transparent,
           extendBody: true,

@@ -4,6 +4,7 @@ import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -40,16 +41,16 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
 
   @override
   void initState() {
-    databaseMethods
-        .getListOfNumberOfMembersInCourses(widget.course)
-        .then((value) {
-      if (!mounted) {
-        return; // Just do nothing if the widget is disposed.
-      }
-      setState(() {
-        listOfNumberOfMembers = value;
-      });
-    });
+    // databaseMethods
+    //     .getListOfNumberOfMembersInCourses(widget.course)
+    //     .then((value) {
+    //   if (!mounted) {
+    //     return; // Just do nothing if the widget is disposed.
+    //   }
+    //   setState(() {
+    //     listOfNumberOfMembers = value;
+    //   });
+    // });
 
     databaseMethods
         .getListOfUnreadInCourses(widget.course, widget.userData.userID)
@@ -69,14 +70,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
-
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return (course == null)
-        ? Center(
-            child: CircularProgressIndicator(
-            backgroundColor: themeOrange,
-          ))
+        ? LoadingScreen(Colors.white)
         : Container(
             color: Colors.white,
             child: CustomScrollView(
@@ -162,16 +159,16 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    databaseMethods
-                        .getListOfNumberOfMembersInCourses(widget.course)
-                        .then((value) {
-                      if (!mounted) {
-                        return; // Just do nothing if the widget is disposed.
-                      }
-                      setState(() {
-                        listOfNumberOfMembers = value;
-                      });
-                    });
+                    // databaseMethods
+                    //     .getListOfNumberOfMembersInCourses(widget.course)
+                    //     .then((value) {
+                    //   if (!mounted) {
+                    //     return; // Just do nothing if the widget is disposed.
+                    //   }
+                    //   setState(() {
+                    //     listOfNumberOfMembers = value;
+                    //   });
+                    // });
 
                     databaseMethods
                         .getListOfUnreadInCourses(
@@ -382,7 +379,10 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                         SizedBox(
                                           width: _width * 0.016,
                                         ),
-                                        listOfUnread.isEmpty || (index > listOfUnread.length - 1) || listOfUnread[index] == 0
+                                        listOfUnread.isEmpty ||
+                                                (index >
+                                                    listOfUnread.length - 1) ||
+                                                listOfUnread[index] == 0
                                             ? Container()
                                             : Container(
                                                 alignment: Alignment.center,
@@ -395,7 +395,9 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                                       BorderRadius.circular(32),
                                                 ),
                                                 child: AutoSizeText(
-                                                  ('+' + listOfUnread[index].toString()),
+                                                  ('+' +
+                                                      listOfUnread[index]
+                                                          .toString()),
                                                   style: GoogleFonts.openSans(
                                                       fontSize: 8,
                                                       color: Colors.white),
@@ -410,20 +412,19 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       padding: EdgeInsets.only(
                                           left: _width * 0.0266),
                                       child: AutoSizeText(
-                                          listOfNumberOfMembers.isNotEmpty &&
-                                                  index <=
-                                                      listOfUnread.length - 1
-                                              ? (listOfNumberOfMembers[index] >
-                                                      1
-                                                  ? listOfNumberOfMembers[index]
+                                          course[index].userNumbers != null
+                                              ? (course[index].userNumbers > 1
+                                                  ? course[index]
+                                                          .userNumbers
                                                           .toString() +
                                                       ' ' +
                                                       'people'
-                                                  : listOfNumberOfMembers[index]
+                                                  : course[index]
+                                                          .userNumbers
                                                           .toString() +
                                                       ' ' +
                                                       'person')
-                                              : '0 people',
+                                              : 'Loading...',
                                           style: GoogleFonts.openSans(
                                             color: Color(0xffFF7E40),
                                             fontSize: 12,
