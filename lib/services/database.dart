@@ -202,8 +202,6 @@ class DatabaseMethods {
 
   //get all my courses from firestore
   Stream<List<CourseInfo>> getMyCourses(String userID) {
-    print('gettre cources called');
-    print(userID);
     //  return FirebaseFirestore.instance
     //     .collection('users')
     //     .doc(userID)
@@ -223,12 +221,6 @@ class DatabaseMethods {
         .snapshots()
         .map((snapshot) => snapshot.docs.map((document) {
               CourseInfo temp = CourseInfo.fromFirestore(document.data());
-              // print('here');
-              // print(getNumberOfMembersInCourse(document.data()['courseID'])
-              //     .docs
-              //     .length
-              //     .toInt());
-
               getNumberOfMembersInCourse(document.data()['courseID'])
                   .then((value) {
                 temp.userNumbers = value.docs.length;

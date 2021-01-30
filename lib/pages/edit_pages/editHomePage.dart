@@ -35,8 +35,6 @@ class _EditHomePageState extends State<EditHomePage> {
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
-    final userTags = Provider.of<UserTags>(context, listen: true);
-    final userTagProvider = Provider.of<UserTagsProvider>(context);
     final databaseMehods = DatabaseMethods();
     // List<String> tags = (userTags.college == null ? [] : userTags.college) +
     //     (userTags.interest == null ? [] : userTags.interest) +
@@ -52,7 +50,6 @@ class _EditHomePageState extends State<EditHomePage> {
     }
 
     resetInfo();
-    // print(userTagProvider.college);
     // TODO: implement build
     return Scaffold(
       backgroundColor: riceColor,
@@ -132,36 +129,32 @@ class _EditHomePageState extends State<EditHomePage> {
                             height: (menuContainerHeight) / 8,
                             isEdit: true,
                             onTap: () {
-                              print('tags:');
-                              print(userTagProvider.college);
-                              // print(tags);
                               showBottomPopSheet(
                                   context,
                                   TagSelecting(
-                                      currentTags: (userTagProvider.college ==
+                                      currentTags: (userdata.userTags.college ==
                                                   null
                                               ? []
-                                              : userTagProvider.college
+                                              : userdata.userTags.college
                                                   .cast<dynamic>()) +
-                                          (userTagProvider.interest == null
+                                          (userdata.userTags.interest == null
                                               ? []
-                                              : userTagProvider.interest
+                                              : userdata.userTags.interest
                                                   .cast<dynamic>()) +
-                                          (userTagProvider.language == null
+                                          (userdata.userTags.language == null
                                               ? []
-                                              : userTagProvider.language
+                                              : userdata.userTags.language
                                                   .cast<String>()) +
-                                          (userTagProvider.strudyHabits == null
+                                          (userdata.userTags.strudyHabits ==
+                                                  null
                                               ? []
-                                              : userTagProvider.strudyHabits
+                                              : userdata.userTags.strudyHabits
                                                   .cast<String>()),
                                       buttonColor: listProfileColor[
                                           userProfileColor.toInt()],
                                       pageController:
                                           PageController(initialPage: 0),
                                       isEdit: true));
-                              print('tags:');
-                              print(userTagProvider.college);
                               //   setState(() {
                               //     print(userTagProvider.college);
                               //     tags = (userTagProvider.college == null

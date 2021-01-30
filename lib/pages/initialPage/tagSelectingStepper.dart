@@ -358,7 +358,6 @@ class _TagSelectingState extends State<TagSelecting> {
             ),
             GestureDetector(
               onTap: () {
-                print('glass taped');
                 setState(() {
                   blureShow = false;
                   allTags = [];
@@ -577,10 +576,6 @@ class _TagSelectingState extends State<TagSelecting> {
 
           combine: ItemTagsCombine.withTextBefore,
           onPressed: (item) async {
-            print('await change');
-            print(item.title);
-            print('await change');
-
             if (!allTags.contains(item.title)) {
               await changepRroviderList(userTagProvider);
 
@@ -592,7 +587,6 @@ class _TagSelectingState extends State<TagSelecting> {
                 allTags.remove(item.title);
               });
             }
-            print('onpress finished');
           },
         );
       },
@@ -609,12 +603,11 @@ class _TagSelectingState extends State<TagSelecting> {
 
 // Allows you to get a list of all the ItemTags
   List _getAllItem(GlobalKey<TagsState> tagStateKey) {
-    print('get all item called');
     List<Item> lst = tagStateKey.currentState?.getAllItem;
     List<String> lst2 = [];
     if (lst != null)
       lst.where((a) => a.active == false).forEach((a) => lst2.add(a.title));
-    print(lst2);
+
     return lst2;
   }
 }
