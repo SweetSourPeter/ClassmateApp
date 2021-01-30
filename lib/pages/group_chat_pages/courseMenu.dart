@@ -41,16 +41,16 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
 
   @override
   void initState() {
-    databaseMethods
-        .getListOfNumberOfMembersInCourses(widget.course)
-        .then((value) {
-      if (!mounted) {
-        return; // Just do nothing if the widget is disposed.
-      }
-      setState(() {
-        listOfNumberOfMembers = value;
-      });
-    });
+    // databaseMethods
+    //     .getListOfNumberOfMembersInCourses(widget.course)
+    //     .then((value) {
+    //   if (!mounted) {
+    //     return; // Just do nothing if the widget is disposed.
+    //   }
+    //   setState(() {
+    //     listOfNumberOfMembers = value;
+    //   });
+    // });
 
     databaseMethods
         .getListOfUnreadInCourses(widget.course, widget.userData.userID)
@@ -159,16 +159,16 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    databaseMethods
-                        .getListOfNumberOfMembersInCourses(widget.course)
-                        .then((value) {
-                      if (!mounted) {
-                        return; // Just do nothing if the widget is disposed.
-                      }
-                      setState(() {
-                        listOfNumberOfMembers = value;
-                      });
-                    });
+                    // databaseMethods
+                    //     .getListOfNumberOfMembersInCourses(widget.course)
+                    //     .then((value) {
+                    //   if (!mounted) {
+                    //     return; // Just do nothing if the widget is disposed.
+                    //   }
+                    //   setState(() {
+                    //     listOfNumberOfMembers = value;
+                    //   });
+                    // });
 
                     databaseMethods
                         .getListOfUnreadInCourses(
@@ -412,20 +412,19 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       padding: EdgeInsets.only(
                                           left: _width * 0.0266),
                                       child: AutoSizeText(
-                                          listOfNumberOfMembers.isNotEmpty &&
-                                                  index <=
-                                                      listOfUnread.length - 1
-                                              ? (listOfNumberOfMembers[index] >
-                                                      1
-                                                  ? listOfNumberOfMembers[index]
+                                          course[index].userNumbers != null
+                                              ? (course[index].userNumbers > 1
+                                                  ? course[index]
+                                                          .userNumbers
                                                           .toString() +
                                                       ' ' +
                                                       'people'
-                                                  : listOfNumberOfMembers[index]
+                                                  : course[index]
+                                                          .userNumbers
                                                           .toString() +
                                                       ' ' +
                                                       'person')
-                                              : '0 people',
+                                              : 'Loading...',
                                           style: GoogleFonts.openSans(
                                             color: Color(0xffFF7E40),
                                             fontSize: 12,

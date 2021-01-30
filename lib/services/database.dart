@@ -204,14 +204,37 @@ class DatabaseMethods {
   Stream<List<CourseInfo>> getMyCourses(String userID) {
     print('gettre cources called');
     print(userID);
+    //  return FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(userID)
+    //     .collection('courses')
+    //     .snapshots()
+    //     .map((snapshot) => snapshot.docs.map((document) {
+    //           CourseInfo temp = CourseInfo.fromFirestore(document.data());
+    //           temp.userNumbers =
+    //               getNumberOfMembersInCourse(document.data()['userNumbers'])
+    //                   .toInt();
+    //           return temp;
+    //         }).toList());
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .collection('courses')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((document) => CourseInfo.fromFirestore(document.data()))
-            .toList());
+        .map((snapshot) => snapshot.docs.map((document) {
+              CourseInfo temp = CourseInfo.fromFirestore(document.data());
+              // print('here');
+              // print(getNumberOfMembersInCourse(document.data()['courseID'])
+              //     .docs
+              //     .length
+              //     .toInt());
+
+              getNumberOfMembersInCourse(document.data()['courseID'])
+                  .then((value) {
+                temp.userNumbers = value.docs.length;
+              }).then((value) {});
+              return temp;
+            }).toList());
   }
 
   //delete course for user
