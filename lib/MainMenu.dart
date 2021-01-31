@@ -88,8 +88,7 @@ class _MainMenuState extends State<MainMenu> {
                           )
                         : _currentIndex == 1
                             ? ChatRoom(
-                                myName: userdata.userName,
-                                myEmail: userdata.email,
+                                myData: userdata
                               )
                             : MyAccount(
                                 key: globalKey,

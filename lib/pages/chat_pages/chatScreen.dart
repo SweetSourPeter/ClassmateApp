@@ -5,6 +5,7 @@ import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -131,14 +132,16 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  sendMessage(myEmail) {
+  sendMessage(UserData currentUser) {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
         'messageType': 'text',
-        'sendBy': myEmail,
+        'sendBy': currentUser.email,
         'time': lastMessageTime,
+        'sendById': currentUser.userID,
+        'sendToId': widget.friendID
       };
       // print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
@@ -364,6 +367,12 @@ class _ChatScreenState extends State<ChatScreen> {
                             onPressed: () {
                               databaseMethods.setUnreadNumber(
                                   widget.chatRoomId, widget.myEmail, 0);
+
+                              // put to database.dart later
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(currentUser.userID)
+                                  .update({'chattingWith': 'null'});
                               Navigator.of(context).pop();
                             },
                           ),
@@ -627,7 +636,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                             textInputAction: TextInputAction.send,
                             onSubmitted: (value) {
-                              sendMessage(currentUser.email);
+                              sendMessage(currentUser);
                               myFocusNode.requestFocus();
                             },
                           ),
@@ -705,7 +714,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       width: 28,
                                     ),
                                     onTap: () {
-                                      sendMessage(currentUser.email);
+                                      sendMessage(currentUser);
                                     },
                                   )
                                 : showFunctions

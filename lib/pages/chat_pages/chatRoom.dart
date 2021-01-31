@@ -5,16 +5,21 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'dart:io' show Platform;
 
 class ChatRoom extends StatefulWidget {
-  final String myName;
-  final String myEmail;
+  final UserData myData;
 
-  ChatRoom({this.myName, this.myEmail});
+  ChatRoom({this.myData});
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -29,6 +34,10 @@ class _ChatRoomState extends State<ChatRoom> {
   String latestMessage;
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
+
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
   Widget chatRoomsList(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -45,7 +54,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   final userList =
                       snapshot.data.documents[index].data()['users'];
 
-                  if (userList[1] == widget.myEmail) {
+                  if (userList[1] == widget.myData.email) {
                     friendName = userList[4];
                     friendEmail = userList[5];
                     friendID = userList[6];
@@ -83,8 +92,8 @@ class _ChatRoomState extends State<ChatRoom> {
                                 lastMessageTime: lastMessageTime,
                                 friendEmail: friendEmail,
                                 unreadNumber: snapshot.data.documents[index]
-                                    .data()[widget.myEmail.substring(
-                                        0, widget.myEmail.indexOf('@')) +
+                                    .data()[widget.myData.email.substring(
+                                        0, widget.myData.email.indexOf('@')) +
                                     'unread'],
                                 friendProfileColor: friendProfileColor),
                             Divider(
@@ -101,8 +110,78 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
-    getUserInfoGetChats(widget.myEmail);
+    getUserInfoGetChats(widget.myData.email);
     super.initState();
+    registerNotification(widget.myData);
+    configLocalNotification();
+  }
+
+  void registerNotification(UserData currentUser) {
+    firebaseMessaging.requestNotificationPermissions();
+
+    firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
+      print('onMessage: $message');
+      Platform.isAndroid
+          ? showNotification(message['notification'])
+          : showNotification(message['aps']['alert']);
+      return;
+    }, onResume: (Map<String, dynamic> message) {
+      print('onResume: $message');
+      return;
+    }, onLaunch: (Map<String, dynamic> message) {
+      print('onLaunch: $message');
+      return;
+    });
+
+    firebaseMessaging.getToken().then((token) {
+      print('token: $token');
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.userID)
+          .update({'pushToken': token});
+    }).catchError((err) {
+      Fluttertoast.showToast(msg: err.message.toString());
+    });
+  }
+
+  void configLocalNotification() {
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void showNotification(message) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      Platform.isAndroid
+          ? 'com.nacc.android'
+          : 'com.na-cc.ios',
+      'Meechu Notification',
+      'This channel is for pushing notification of new messages in Meechu',
+      playSound: true,
+      enableVibration: true,
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+
+    print(message);
+//    print(message['body'].toString());
+//    print(json.encode(message));
+
+    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+        message['body'].toString(), platformChannelSpecifics,
+        payload: json.encode(message));
+
+//    await flutterLocalNotificationsPlugin.show(
+//        0, 'plain title', 'plain body', platformChannelSpecifics,
+//        payload: 'item x');
   }
 
   getUserInfoGetChats(myEmail) async {
@@ -217,9 +296,15 @@ class ChatRoomsTile extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = mediaQuery.width * 1.0;
-    print('heree');
+
     return GestureDetector(
       onTap: () {
+        // put into database.dart later
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.userID)
+            .update({'chattingWith': friendID});
+
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return MultiProvider(
             providers: [
