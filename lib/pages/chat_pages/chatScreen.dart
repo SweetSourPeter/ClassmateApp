@@ -8,7 +8,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:linkwell/linkwell.dart';
+import 'package:app_test/widgets/LinkWellModified.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -896,8 +896,8 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: SelectableText(
-                                message,
+                              child: SelectableText.rich(
+                                linkwellFunc(message, null, null),
                                 textAlign: TextAlign.start,
                                 style: GoogleFonts.openSans(
                                   fontSize: 16,
@@ -906,6 +906,17 @@ class MessageTile extends StatelessWidget {
                                 toolbarOptions:
                                     ToolbarOptions(selectAll: true, copy: true),
                               ),
+
+                              // SelectableText(
+                              //   message,
+                              //   textAlign: TextAlign.start,
+                              //   style: GoogleFonts.openSans(
+                              //     fontSize: 16,
+                              //     color: Colors.black,
+                              //   ),
+                              //   toolbarOptions:
+                              //       ToolbarOptions(selectAll: true, copy: true),
+                              // ),
                             ),
                           ),
                         ],
@@ -939,8 +950,8 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: SelectableText(
-                                message,
+                              child: SelectableText.rich(
+                                linkwellFunc(message, null, null),
                                 textAlign: TextAlign.start,
                                 style: GoogleFonts.openSans(
                                   fontSize: 16,

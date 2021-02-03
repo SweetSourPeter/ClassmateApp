@@ -71,7 +71,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           hasSend = false;
         });
         authMethods.resetPassword(emailTextEditingController.text).then((val) {
-          print('object');
+          _toastInfo('Email has been sent');
           // print(val.error.toString());
           startTimer();
           setState(() {

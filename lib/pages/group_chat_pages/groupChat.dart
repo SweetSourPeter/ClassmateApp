@@ -21,6 +21,7 @@ import 'package:emoji_picker/emoji_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:app_test/widgets/LinkWellModified.dart';
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -761,7 +762,8 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: SelectableText(message,
+                              child: SelectableText.rich(
+                                  linkwellFunc(message, null, null),
                                   textAlign: TextAlign.start,
                                   toolbarOptions: ToolbarOptions(
                                       selectAll: true, copy: true),
@@ -769,6 +771,15 @@ class MessageTile extends StatelessWidget {
                                     fontSize: 16,
                                     color: Colors.black,
                                   )),
+
+                              // SelectableText(message,
+                              //     textAlign: TextAlign.start,
+                              //     toolbarOptions: ToolbarOptions(
+                              //         selectAll: true, copy: true),
+                              //     style: GoogleFonts.openSans(
+                              //       fontSize: 16,
+                              //       color: Colors.black,
+                              //     )),
                             ),
                           ),
                         ],
@@ -841,7 +852,8 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: SelectableText(message,
+                              child: SelectableText.rich(
+                                  linkwellFunc(message, null, null),
                                   textAlign: TextAlign.start,
                                   toolbarOptions: ToolbarOptions(
                                       selectAll: true, copy: true),
