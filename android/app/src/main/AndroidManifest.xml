@@ -11,6 +11,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Meechu"
         android:icon="@mipmap/launcher_icon">
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@mipmap/launcher_icon" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -46,8 +49,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data
+        <!-- <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/app_icon.png" />
+            android:resource="@drawable/app_icon.png" /> -->
     </application>
 </manifest>
