@@ -21,6 +21,9 @@ import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -61,6 +64,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
+
+  List<PlatformFile> _paths;
+  String _extension;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
@@ -195,7 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     if (selected != null) {
-      _uploadFile(myEmail);
+      _uploadFile(myEmail, _imageFile.path);
       print('Image Path $_imageFile');
     }
 
@@ -204,8 +211,8 @@ class _ChatScreenState extends State<ChatScreen> {
 //    ));
   }
 
-  Future _uploadFile(myEmail) async {
-    String fileName = basename(_imageFile.path);
+  Future _uploadFile(myEmail, path) async {
+    String fileName = basename(path);
     firebase_storage.Reference firebaseStorageRef =
         firebase_storage.FirebaseStorage.instance.ref().child(fileName);
     firebase_storage.UploadTask uploadTask =
@@ -219,6 +226,18 @@ class _ChatScreenState extends State<ChatScreen> {
         sendImage(myEmail);
       });
     });
+  }
+
+  Future _pickFile(myEmail) async {
+    try {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String filePath = '${appDocDir.absolute}/file-to-upload.png';
+      print(filePath);
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    } catch (ex) {
+      print(ex);
+    }
   }
 
   // Future _cropImage() async {
@@ -751,10 +770,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 currentUser.email)),
                                       ),
                                       Container(
-                                        height: 64,
-                                        width: 55,
-                                        color: Colors.white,
-                                      ),
+                                          height: 64,
+                                          width: 65,
+                                          child: IconButton(
+                                              icon: Image.asset(
+                                                'assets/images/photo_library.png',
+                                              ),
+                                              onPressed: () => _pickFile(
+                                                  currentUser.email))),
                                       Container(
                                         height: 64,
                                         width: 55,
