@@ -59,7 +59,8 @@ class _EditHomePageState extends State<EditHomePage> {
               elevation: 0,
               title: Text(
                 'Setting',
-                style: TextStyle(color: Colors.black),
+                textAlign: TextAlign.start,
+                style: largeTitleTextStyle(Colors.black, 16),
               ),
               backgroundColor: riceColor,
               leading: GestureDetector(
