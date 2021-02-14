@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
@@ -21,6 +23,7 @@ import 'package:emoji_picker/emoji_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:app_test/widgets/LinkWellModified.dart';
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -191,6 +194,25 @@ class _GroupChatState extends State<GroupChat> {
     }
   }
 
+  sendInviteMeetMessage(meetID, UserData currentUser) {
+    final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+    Map<String, dynamic> messageMap = {
+      'message':
+          '${currentUser.userName} is inviting you to a call\n\nClick on https://meet.jit.si/$meetID \nto open in Meechu\n\n\nOR paste in your PC browser',
+      'messageType': 'text',
+      'sendBy': currentUser.email,
+      'senderName': currentUser.userName,
+      'time': lastMessageTime,
+      'senderID': currentUser.userID,
+      'profileColor': currentUser.profileColor
+    };
+
+    databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+    databaseMethods.addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+    // _controller.jumpTo(_controller.position.minScrollExtent);
+    // messageController.text = '';
+  }
+
   sendImage(UserData currentUser) {
     if (_uploadedFileURL.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
@@ -310,240 +332,266 @@ class _GroupChatState extends State<GroupChat> {
     super.initState();
   }
 
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    _joinMeeting() async {
+      String chatRoomId = widget.courseId;
+      print(chatRoomId);
+      try {
+        FeatureFlag featureFlag = FeatureFlag();
+        featureFlag.welcomePageEnabled = false;
+        featureFlag.resolution = FeatureFlagVideoResolution
+            .MD_RESOLUTION; // Limit video resolution to 360p
 
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: const Color(0xffF9F6F1),
-          body: GestureDetector(
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
+        var options = JitsiMeetingOptions()
+          ..room = chatRoomId // Required, spaces will be trimmed
+          // ..serverURL = "https://na-cc.com"
+          ..subject = chatRoomId
+          ..userDisplayName = currentUser.userName
+          ..userEmail = currentUser.email
+          // ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+          ..audioOnly = true
+          ..audioMuted = true
+          ..videoMuted = true
+          ..featureFlag = featureFlag;
 
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              setState(() {
-                showStickerKeyboard = false;
-                showTextKeyboard = false;
-                showFunctions = false;
-              });
-            },
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.white,
-                  height: 73.68,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Container(
-                          // height: 17.96,
-                          // width: 10.26,
-                          child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/arrow-back.png',
-                              height: 17.96,
-                              width: 10.26,
+        await JitsiMeet.joinMeeting(options).then((value) {
+          if (value.isSuccess) {
+            print('sendithere');
+            sendInviteMeetMessage(chatRoomId, currentUser);
+          }
+          print('respsdgfadsgasdgasdgasdg');
+          print(value.isSuccess);
+        });
+      } catch (error) {
+        debugPrint("error: $error");
+      }
+    }
+
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
+            backgroundColor: const Color(0xffF9F6F1),
+            body: GestureDetector(
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                setState(() {
+                  showStickerKeyboard = false;
+                  showTextKeyboard = false;
+                  showFunctions = false;
+                });
+              },
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    height: 73.68,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8, right: 20),
+                          child: Container(
+                            // height: 17.96,
+                            // width: 10.26,
+                            child: IconButton(
+                              icon: Image.asset(
+                                'assets/images/arrow-back.png',
+                                height: 17.96,
+                                width: 10.26,
+                              ),
+                              // iconSize: 30.0,
+                              color: const Color(0xFFFF7E40),
+                              onPressed: () {
+                                // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                                databaseMethods.setUnreadGroupChatNumberToZero(
+                                    widget.courseId, currentUser.userID);
+                                Navigator.of(context).pop();
+                              },
                             ),
-                            // iconSize: 30.0,
-                            color: const Color(0xFFFF7E40),
-                            onPressed: () {
-                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                              databaseMethods.setUnreadGroupChatNumberToZero(
-                                  widget.courseId, currentUser.userID);
-                              Navigator.of(context).pop();
-                            },
                           ),
                         ),
-                      ),
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              (courseName ?? '') + (courseSection ?? ''),
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                                numberOfMembers > 1
-                                    ? numberOfMembers.toString() +
-                                        ' ' +
-                                        'people'
-                                    : numberOfMembers.toString() +
-                                        ' ' +
-                                        'person',
-                                style: GoogleFonts.openSans(
-                                  color: Color(0xff949494),
-                                  fontSize: 14,
-                                )),
-                          ],
+                        Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                (courseName ?? '') + (courseSection ?? ''),
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                  numberOfMembers > 1
+                                      ? numberOfMembers.toString() +
+                                          ' ' +
+                                          'people'
+                                      : numberOfMembers.toString() +
+                                          ' ' +
+                                          'person',
+                                  style: GoogleFonts.openSans(
+                                    color: Color(0xff949494),
+                                    fontSize: 14,
+                                  )),
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: Container(
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 0.0),
                           child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/group_more.png',
-                              height: 32.44,
-                              width: 41.46,
+                            icon: Icon(
+                              Icons.phone,
+                              size: 26,
+                              color: Color(0xffFF7E40),
                             ),
                             // iconSize: 10.0,
                             onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return MultiProvider(
-                                  providers: [
-                                    Provider<UserData>.value(
-                                      value: currentUser,
-                                    ),
-                                    Provider<List<CourseInfo>>.value(
-                                      value: currentCourse,
-                                    ),
-                                  ],
-                                  child: CourseDetail(
-                                    courseId: widget.courseId,
-                                    myEmail: widget.myEmail,
-                                    myName: widget.myName,
-                                  ),
-                                );
-                              }));
+                              _joinMeeting();
                             },
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Container(
+                            child: IconButton(
+                              icon: Image.asset(
+                                'assets/images/group_more.png',
+                                height: 32.44,
+                                width: 41.46,
+                              ),
+                              // iconSize: 10.0,
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return MultiProvider(
+                                    providers: [
+                                      Provider<UserData>.value(
+                                        value: currentUser,
+                                      ),
+                                      Provider<List<CourseInfo>>.value(
+                                        value: currentCourse,
+                                      ),
+                                    ],
+                                    child: CourseDetail(
+                                      courseId: widget.courseId,
+                                      myEmail: widget.myEmail,
+                                      myName: widget.myName,
+                                    ),
+                                  );
+                                }));
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(child: chatMessageList(currentUser.email)),
+                  Container(
+                      decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
                       ),
                     ],
-                  ),
-                ),
-                Expanded(child: chatMessageList(currentUser.email)),
-                Container(
-                    decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                )),
-                Container(
-                  padding: const EdgeInsets.only(top: 8, bottom: 8),
-                  alignment: Alignment.center,
-                  // height: 74.0,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Container(
-                          // height: 40,
-                          decoration: BoxDecoration(
-                            color: Color(0xffF9F6F1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: TextField(
-                            keyboardType: TextInputType.multiline,
-                            minLines:
-                                1, //Normal textInputField will be displayed
-                            maxLines:
-                                4, // when user presses enter it will adapt to it
-                            onTap: () {
-                              setState(() {
-                                showStickerKeyboard = false;
-                                showTextKeyboard = true;
-                                showFunctions = false;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 160),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
-                            },
-                            controller: messageController,
-                            focusNode: myFocusNode,
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 15.0),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                            ),
-                            textInputAction: TextInputAction.send,
-                            onSubmitted: (value) {
-                              sendMessage(currentUser);
-                              myFocusNode.requestFocus();
-                            },
-                          ),
+                  )),
+                  Container(
+                    padding: const EdgeInsets.only(top: 8, bottom: 8),
+                    alignment: Alignment.center,
+                    // height: 74.0,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 16,
                         ),
-                      )),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 14.0),
-                        child: GestureDetector(
-                            child: showStickerKeyboard
-                                ? Image.asset(
-                                    'assets/images/emoji_on_click.png',
-                                    width: 29,
-                                    height: 27.83)
-                                : Image.asset('assets/images/emoji.png',
-                                    width: 29, height: 27.83),
-                            onTap: () {
-                              if (showTextKeyboard) {
+                        Expanded(
+                            child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Container(
+                            // height: 40,
+                            decoration: BoxDecoration(
+                              color: Color(0xffF9F6F1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: TextField(
+                              keyboardType: TextInputType.multiline,
+                              minLines:
+                                  1, //Normal textInputField will be displayed
+                              maxLines:
+                                  4, // when user presses enter it will adapt to it
+                              onTap: () {
                                 setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
+                                  showStickerKeyboard = false;
+                                  showTextKeyboard = true;
+                                  showFunctions = false;
                                 });
-                              } else {
-                                if (showFunctions) {
-                                  setState(() {
-                                    showFunctions = false;
-                                  });
-                                } else {}
-                              }
-                              setState(() {
-                                showStickerKeyboard = !showStickerKeyboard;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 30),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
-                            }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 25.0),
-                        child: GestureDetector(
-                            onTap: () {
-                              if ((messageController.text != '' ||
-                                  messageController.text.isNotEmpty)) {
+                                Timer(
+                                    Duration(milliseconds: 160),
+                                    () => _controller.jumpTo(
+                                        _controller.position.minScrollExtent));
+                              },
+                              controller: messageController,
+                              focusNode: myFocusNode,
+                              style: GoogleFonts.openSans(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(left: 15.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(35),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(35),
+                                ),
+                              ),
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (value) {
                                 sendMessage(currentUser);
-                              } else {
+                                myFocusNode.requestFocus();
+                              },
+                            ),
+                          ),
+                        )),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 14.0),
+                          child: GestureDetector(
+                              child: showStickerKeyboard
+                                  ? Image.asset(
+                                      'assets/images/emoji_on_click.png',
+                                      width: 29,
+                                      height: 27.83)
+                                  : Image.asset('assets/images/emoji.png',
+                                      width: 29, height: 27.83),
+                              onTap: () {
                                 if (showTextKeyboard) {
                                   setState(() {
                                     FocusScopeNode currentFocus =
@@ -554,106 +602,141 @@ class _GroupChatState extends State<GroupChat> {
                                     }
                                   });
                                 } else {
-                                  if (showStickerKeyboard) {
+                                  if (showFunctions) {
                                     setState(() {
-                                      showStickerKeyboard = false;
+                                      showFunctions = false;
                                     });
                                   } else {}
                                 }
                                 setState(() {
-                                  showFunctions = !showFunctions;
+                                  showStickerKeyboard = !showStickerKeyboard;
                                 });
                                 Timer(
                                     Duration(milliseconds: 30),
                                     () => _controller.jumpTo(
                                         _controller.position.minScrollExtent));
-                              }
-                            },
-                            child: (messageController.text != '' ||
-                                    messageController.text.isNotEmpty)
-                                ? Image.asset('assets/images/messageSend.png',
-                                    width: 28, height: 28)
-                                : showFunctions
-                                    ? Image.asset(
-                                        'assets/images/plus_on_click.png',
-                                        width: 28,
-                                        height: 28)
-                                    : Image.asset('assets/images/plus.png',
-                                        width: 28, height: 28)),
-                      )
-                    ],
+                              }),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 10.0, right: 25.0),
+                          child: GestureDetector(
+                              onTap: () {
+                                if ((messageController.text != '' ||
+                                    messageController.text.isNotEmpty)) {
+                                  sendMessage(currentUser);
+                                } else {
+                                  if (showTextKeyboard) {
+                                    setState(() {
+                                      FocusScopeNode currentFocus =
+                                          FocusScope.of(context);
+                                      if (!currentFocus.hasPrimaryFocus) {
+                                        currentFocus.unfocus();
+                                        showTextKeyboard = false;
+                                      }
+                                    });
+                                  } else {
+                                    if (showStickerKeyboard) {
+                                      setState(() {
+                                        showStickerKeyboard = false;
+                                      });
+                                    } else {}
+                                  }
+                                  setState(() {
+                                    showFunctions = !showFunctions;
+                                  });
+                                  Timer(
+                                      Duration(milliseconds: 30),
+                                      () => _controller.jumpTo(_controller
+                                          .position.minScrollExtent));
+                                }
+                              },
+                              child: (messageController.text != '' ||
+                                      messageController.text.isNotEmpty)
+                                  ? Image.asset('assets/images/messageSend.png',
+                                      width: 28, height: 28)
+                                  : showFunctions
+                                      ? Image.asset(
+                                          'assets/images/plus_on_click.png',
+                                          width: 28,
+                                          height: 28)
+                                      : Image.asset('assets/images/plus.png',
+                                          width: 28, height: 28)),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                showStickerKeyboard
-                    ? AnimatedContainer(
-                        duration: Duration(milliseconds: 80),
-                        // showStickerKeyboard ? 400 : 0,
-                        child: EmojiPicker(
-                          rows: 4,
-                          columns: 7,
-                          buttonMode: ButtonMode.MATERIAL,
-                          numRecommended: 10,
-                          onEmojiSelected: (emoji, category) {
-                            setState(() {
-                              messageController.text =
-                                  messageController.text + emoji.emoji;
-                            });
-                          },
-                        ),
-                      )
-                    : Container(),
-                showFunctions
-                    ? AnimatedContainer(
-                        duration: Duration(milliseconds: 80),
-                        height: 80,
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.white,
-                        child: Container(
-                          padding: EdgeInsets.only(left: 50, right: 50),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 64,
-                                width: 65,
-                                child: IconButton(
-                                    icon:
-                                        Image.asset('assets/images/camera.png'),
-                                    onPressed: () => _pickImage(
-                                        ImageSource.camera,
-                                        currentUser,
-                                        context)),
-                              ),
-                              Container(
-                                height: 64,
-                                width: 65,
-                                child: IconButton(
-                                    icon: Image.asset(
-                                        'assets/images/photo_library.png'),
-                                    onPressed: () => _pickImage(
-                                        ImageSource.gallery,
-                                        currentUser,
-                                        context)),
-                              ),
-                              Container(
-                                height: 64,
-                                width: 55,
-                                color: Colors.white,
-                              ),
-                              Container(
-                                height: 64,
-                                width: 55,
-                                color: Colors.white,
-                              )
-                            ],
+                  showStickerKeyboard
+                      ? AnimatedContainer(
+                          duration: Duration(milliseconds: 80),
+                          // showStickerKeyboard ? 400 : 0,
+                          child: EmojiPicker(
+                            rows: 4,
+                            columns: 7,
+                            buttonMode: ButtonMode.MATERIAL,
+                            numRecommended: 10,
+                            onEmojiSelected: (emoji, category) {
+                              setState(() {
+                                messageController.text =
+                                    messageController.text + emoji.emoji;
+                              });
+                            },
                           ),
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
-          )),
+                        )
+                      : Container(),
+                  showFunctions
+                      ? AnimatedContainer(
+                          duration: Duration(milliseconds: 80),
+                          height: 80,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: Container(
+                            padding: EdgeInsets.only(left: 50, right: 50),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 65,
+                                  child: IconButton(
+                                      icon: Image.asset(
+                                          'assets/images/camera.png'),
+                                      onPressed: () => _pickImage(
+                                          ImageSource.camera,
+                                          currentUser,
+                                          context)),
+                                ),
+                                Container(
+                                  height: 64,
+                                  width: 65,
+                                  child: IconButton(
+                                      icon: Image.asset(
+                                          'assets/images/photo_library.png'),
+                                      onPressed: () => _pickImage(
+                                          ImageSource.gallery,
+                                          currentUser,
+                                          context)),
+                                ),
+                                Container(
+                                  height: 64,
+                                  width: 55,
+                                  color: Colors.white,
+                                ),
+                                Container(
+                                  height: 64,
+                                  width: 55,
+                                  color: Colors.white,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
+            )),
+      ),
     );
   }
 }
@@ -762,7 +845,8 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: SelectableText(message,
+                              child: SelectableText.rich(
+                                  linkwellFunc(message, null, null, userdata),
                                   textAlign: TextAlign.start,
                                   toolbarOptions: ToolbarOptions(
                                       selectAll: true, copy: true),
@@ -770,6 +854,15 @@ class MessageTile extends StatelessWidget {
                                     fontSize: 16,
                                     color: Colors.black,
                                   )),
+
+                              // SelectableText(message,
+                              //     textAlign: TextAlign.start,
+                              //     toolbarOptions: ToolbarOptions(
+                              //         selectAll: true, copy: true),
+                              //     style: GoogleFonts.openSans(
+                              //       fontSize: 16,
+                              //       color: Colors.black,
+                              //     )),
                             ),
                           ),
                         ],
@@ -842,7 +935,13 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: SelectableText(message,
+                              child: SelectableText.rich(
+                                  linkwellFunc(
+                                    message,
+                                    null,
+                                    null,
+                                    userdata,
+                                  ),
                                   textAlign: TextAlign.start,
                                   toolbarOptions: ToolbarOptions(
                                       selectAll: true, copy: true),

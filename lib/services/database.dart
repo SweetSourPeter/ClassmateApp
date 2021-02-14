@@ -35,6 +35,7 @@ class DatabaseMethods {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
     DocumentSnapshot doc = await docRef.get();
+    print(doc.data()['tags']);
     var userData = UserData(
       email: doc.data()['email'],
       school: doc.data()['school'],
@@ -42,7 +43,11 @@ class DatabaseMethods {
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
       profileColor: doc.data()['profileColor'],
+      agreedToTerms: doc.data()['agreedToTerms'],
       blockedUserID: doc.data()['blockedUser'],
+      userTags: doc.data()['tags'] == null
+          ? null
+          : UserTags.fromFirestoreTags(doc.data()['tags']),
     );
     return userData;
   }
@@ -197,16 +202,31 @@ class DatabaseMethods {
 
   //get all my courses from firestore
   Stream<List<CourseInfo>> getMyCourses(String userID) {
-    print('gettre cources called');
-    print(userID);
+    //  return FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(userID)
+    //     .collection('courses')
+    //     .snapshots()
+    //     .map((snapshot) => snapshot.docs.map((document) {
+    //           CourseInfo temp = CourseInfo.fromFirestore(document.data());
+    //           temp.userNumbers =
+    //               getNumberOfMembersInCourse(document.data()['userNumbers'])
+    //                   .toInt();
+    //           return temp;
+    //         }).toList());
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .collection('courses')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((document) => CourseInfo.fromFirestore(document.data()))
-            .toList());
+        .map((snapshot) => snapshot.docs.map((document) {
+              CourseInfo temp = CourseInfo.fromFirestore(document.data());
+              getNumberOfMembersInCourse(document.data()['courseID'])
+                  .then((value) {
+                temp.userNumbers = value.docs.length;
+              }).then((value) {});
+              return temp;
+            }).toList());
   }
 
   //delete course for user
@@ -634,6 +654,17 @@ class DatabaseMethods {
         FirebaseFirestore.instance.collection('users').doc(userID);
     docRef.update({
       'profileColor': color,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future<void> updateUserAgreement(String userID, bool agreedToTerms) async {
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('users').doc(userID);
+    docRef.update({
+      'agreedToTerms': agreedToTerms,
     }).catchError((e) {
       print(e.toString());
     });

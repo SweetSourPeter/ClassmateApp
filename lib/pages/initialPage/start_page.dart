@@ -10,6 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class StartPage extends StatefulWidget {
+  final int initialPageNumber;
+  final String userNameIn;
+  const StartPage({
+    Key key,
+    this.initialPageNumber = 0,
+    this.userNameIn = '',
+  }) : super(key: key);
   @override
   _StartPageState createState() => _StartPageState();
 }
@@ -36,7 +43,9 @@ class _StartPageState extends State<StartPage> {
         animationlist.add(animation);
       });
     });
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(initialPage: widget.initialPageNumber);
+    _currentIndex = widget.initialPageNumber;
+    _currentUserName = widget.userNameIn;
     postionLogo = Tween(begin: 0.0, end: 0.0);
     _animacaoColor = Tween(begin: 2.3, end: 2.3);
   }
