@@ -8,6 +8,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 // import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
@@ -21,6 +22,8 @@ import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
+
 // import 'confirmImage.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -160,6 +163,35 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  sendInviteMeetMessage(myEmail, meetID, currentUserName) {
+    final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+    Map<String, dynamic> messageMap = {
+      'message':
+          '$currentUserName has started a meeting\n\nTo open in Meechu: click on the widget below \n\n\nTo open on PC: open \nhttps://meet.jit.si/$meetID \nin your PC browser',
+      'messageType': 'text',
+      'isMeetInvite': true,
+      'sendBy': myEmail,
+      'time': lastMessageTime,
+    };
+    // print(widget.chatRoomId);
+    databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+    databaseMethods.setLastestMessage(
+        widget.chatRoomId, messageController.text, lastMessageTime);
+    databaseMethods
+        .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
+        .then((value) {
+      final unreadNumber = value.data()[
+              widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) +
+                  'unread'] +
+          1;
+      databaseMethods.setUnreadNumber(
+          widget.chatRoomId, widget.friendEmail, unreadNumber);
+    });
+
+    // _controller.jumpTo(_controller.position.minScrollExtent);
+    // messageController.text = '';
+  }
+
   sendImage(myEmail) {
     if (_uploadedFileURL.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
@@ -251,7 +283,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: <Widget>[
                 Image.file(
                   _imageFile,
-                  width: MediaQuery.of(context).size.width/2,
+                  width: MediaQuery.of(context).size.width / 2,
                 )
               ],
             ),
@@ -316,6 +348,15 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
+  // a helper function for createChatRoomAndStartConversation()
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
@@ -324,6 +365,42 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
+    _joinMeeting() async {
+      String chatRoomId = getChatRoomId(currentUser.email, widget.friendEmail)
+          .replaceAll(RegExp(r"@[a-zA-Z0-9]+\.[a-zA-Z]+"), '_')
+          .replaceAll(RegExp('.'), '_');
+      print(chatRoomId);
+      try {
+        FeatureFlag featureFlag = FeatureFlag();
+        featureFlag.welcomePageEnabled = false;
+        featureFlag.resolution = FeatureFlagVideoResolution
+            .MD_RESOLUTION; // Limit video resolution to 360p
+
+        var options = JitsiMeetingOptions()
+          ..room = chatRoomId // Required, spaces will be trimmed
+          // ..serverURL = "https://na-cc.com"
+          ..subject = chatRoomId
+          ..userDisplayName = currentUser.userName
+          ..userEmail = currentUser.email
+          // ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+          ..audioOnly = true
+          ..audioMuted = true
+          ..videoMuted = true
+          ..featureFlag = featureFlag;
+
+        await JitsiMeet.joinMeeting(options).then((value) {
+          if (value.isSuccess) {
+            print('sendithere');
+            sendInviteMeetMessage(
+                currentUser.email, chatRoomId, currentUser.userName);
+          }
+          print('respsdgfadsgasdgasdgasdg');
+          print(value.isSuccess);
+        });
+      } catch (error) {
+        debugPrint("error: $error");
+      }
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -391,8 +468,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   // 不需要pass到push里面，直接复制上面这行即可
                                 ],
                                 child: FriendProfile(
-                                  userID: widget
-                                      .friendID, // to be modified to friend's ID
+                                  userID: widget.friendID,
                                 ),
                               );
                             }));
@@ -469,6 +545,19 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             ],
                           ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 0.0),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.phone,
+                            color: Color(0xffFF7E40),
+                          ),
+                          // iconSize: 10.0,
+                          onPressed: () {
+                            _joinMeeting();
+                          },
                         ),
                       ),
                       Padding(
@@ -576,8 +665,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 )),
                 Container(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
                   alignment: Alignment.center,
-                  height: 74.0,
+                  // height: 74.0,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.white,
                   child: Row(
@@ -589,12 +679,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Container(
-                          height: 40,
+                          // height: 100,
                           decoration: BoxDecoration(
                             color: Color(0xffF9F6F1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            minLines:
+                                1, //Normal textInputField will be displayed
+                            maxLines:
+                                4, // when user presses enter it will adapt to it
                             onTap: () {
                               setState(() {
                                 showStickerKeyboard = false;
@@ -673,29 +768,29 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                             onTap: () {
-                                if (showTextKeyboard) {
-                                  setState(() {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                      showTextKeyboard = false;
-                                    }
-                                  });
-                                } else {
-                                  if (showStickerKeyboard) {
-                                    setState(() {
-                                      showStickerKeyboard = false;
-                                    });
-                                  } else {}
-                                }
+                              if (showTextKeyboard) {
                                 setState(() {
-                                  showFunctions = !showFunctions;
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                    showTextKeyboard = false;
+                                  }
                                 });
-                                Timer(
-                                    Duration(milliseconds: 30),
-                                    () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent));
+                              } else {
+                                if (showStickerKeyboard) {
+                                  setState(() {
+                                    showStickerKeyboard = false;
+                                  });
+                                } else {}
+                              }
+                              setState(() {
+                                showFunctions = !showFunctions;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 30),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
                             },
                             child: (showStickerKeyboard || showTextKeyboard)
                                 ? GestureDetector(
@@ -757,7 +852,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                       'assets/images/camera.png',
                                     ),
                                     onPressed: () {
-                                      _pickImage(ImageSource.camera, currentUser.email, context, currentUser);
+                                      _pickImage(
+                                          ImageSource.camera,
+                                          currentUser.email,
+                                          context,
+                                          currentUser);
                                     }),
                               ),
                               Container(
@@ -768,12 +867,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                       'assets/images/photo_library.png',
                                     ),
                                     onPressed: () => _pickImage(
-                                      ImageSource.gallery,
-                                      currentUser.email,
-                                      context,
-                                      currentUser
-                                    )
-                                ),
+                                        ImageSource.gallery,
+                                        currentUser.email,
+                                        context,
+                                        currentUser)),
                               ),
                               Container(
                                 height: 64,
@@ -885,13 +982,15 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: SelectableText(message,
-                                  textAlign: TextAlign.start,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                              child: SelectableText(
+                                message,
+                                textAlign: TextAlign.start,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                                toolbarOptions:
+                                    ToolbarOptions(selectAll: true, copy: true),
                               ),
                             ),
                           ),
@@ -926,13 +1025,15 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: SelectableText(message,
-                                  textAlign: TextAlign.start,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                              child: SelectableText(
+                                message,
+                                textAlign: TextAlign.start,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                                toolbarOptions:
+                                    ToolbarOptions(selectAll: true, copy: true),
                               ),
                             ),
                           ),

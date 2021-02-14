@@ -29,13 +29,8 @@ class GroupChat extends StatefulWidget {
   final String myName;
   final String myId;
 
-  GroupChat({
-    this.courseId,
-    this.initialChat,
-    this.myEmail,
-    this.myName,
-    this.myId
-  });
+  GroupChat(
+      {this.courseId, this.initialChat, this.myEmail, this.myName, this.myId});
 
   @override
   _GroupChatState createState() => _GroupChatState();
@@ -77,7 +72,8 @@ class _GroupChatState extends State<GroupChat> {
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.documents[index].data()['time']);
-                  String sender = snapshot.data.documents[index].data()['sendBy'];
+                  String sender =
+                      snapshot.data.documents[index].data()['sendBy'];
                   if (index == snapshot.data.documents.length - 1) {
                     displayTime = true;
                     displayName = true;
@@ -91,7 +87,8 @@ class _GroupChatState extends State<GroupChat> {
                       displayTime = false;
                     }
 
-                    String prevSender = snapshot.data.documents[index + 1].data()['sendBy'];
+                    String prevSender =
+                        snapshot.data.documents[index + 1].data()['sendBy'];
                     if (sender == prevSender) {
                       displayName = false;
                     } else {
@@ -125,7 +122,9 @@ class _GroupChatState extends State<GroupChat> {
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
                           displayName,
-                          snapshot.data.documents[index].data()['profileColor'] ?? 1.0,
+                          snapshot.data.documents[index]
+                                  .data()['profileColor'] ??
+                              1.0,
                         )
                       : ImageTile(
                           snapshot.data.documents[index].data()['message'],
@@ -139,7 +138,9 @@ class _GroupChatState extends State<GroupChat> {
                           snapshot.data.documents[index].data()['senderName'],
                           snapshot.data.documents[index].data()['senderID'],
                           displayName,
-                          snapshot.data.documents[index].data()['profileColor'] ?? 1.0,
+                          snapshot.data.documents[index]
+                                  .data()['profileColor'] ??
+                              1.0,
                         );
                 })
             : Container();
@@ -215,9 +216,9 @@ class _GroupChatState extends State<GroupChat> {
   Future _uploadFile(UserData currentUser) async {
     String fileName = basename(_imageFile.path);
     firebase_storage.Reference firebaseStorageRef =
-    firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
     firebase_storage.UploadTask uploadTask =
-    firebaseStorageRef.putFile(_imageFile);
+        firebaseStorageRef.putFile(_imageFile);
     firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
@@ -251,7 +252,7 @@ class _GroupChatState extends State<GroupChat> {
               children: <Widget>[
                 Image.file(
                   _imageFile,
-                  width: MediaQuery.of(context).size.width/2,
+                  width: MediaQuery.of(context).size.width / 2,
                 )
               ],
             ),
@@ -284,7 +285,8 @@ class _GroupChatState extends State<GroupChat> {
       });
     });
 
-    databaseMethods.setUnreadGroupChatNumberToZero(widget.courseId, widget.myId);
+    databaseMethods.setUnreadGroupChatNumberToZero(
+        widget.courseId, widget.myId);
 
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
@@ -435,8 +437,9 @@ class _GroupChatState extends State<GroupChat> {
                   ],
                 )),
                 Container(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
                   alignment: Alignment.center,
-                  height: 74.0,
+                  // height: 74.0,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.white,
                   child: Row(
@@ -448,12 +451,17 @@ class _GroupChatState extends State<GroupChat> {
                           child: Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Container(
-                          height: 40,
+                          // height: 40,
                           decoration: BoxDecoration(
                             color: Color(0xffF9F6F1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            minLines:
+                                1, //Normal textInputField will be displayed
+                            maxLines:
+                                4, // when user presses enter it will adapt to it
                             onTap: () {
                               setState(() {
                                 showStickerKeyboard = false;
@@ -570,10 +578,8 @@ class _GroupChatState extends State<GroupChat> {
                                         'assets/images/plus_on_click.png',
                                         width: 28,
                                         height: 28)
-                                    : Image.asset(
-                                        'assets/images/plus.png',
-                                        width: 28,
-                                        height: 28)),
+                                    : Image.asset('assets/images/plus.png',
+                                        width: 28, height: 28)),
                       )
                     ],
                   ),
@@ -617,8 +623,7 @@ class _GroupChatState extends State<GroupChat> {
                                     onPressed: () => _pickImage(
                                         ImageSource.camera,
                                         currentUser,
-                                        context
-                                    )),
+                                        context)),
                               ),
                               Container(
                                 height: 64,
@@ -629,9 +634,7 @@ class _GroupChatState extends State<GroupChat> {
                                     onPressed: () => _pickImage(
                                         ImageSource.gallery,
                                         currentUser,
-                                        context
-                                    )
-                                ),
+                                        context)),
                               ),
                               Container(
                                 height: 64,
@@ -761,7 +764,8 @@ class MessageTile extends StatelessWidget {
                                   color: const Color(0xffF7D5C5)),
                               child: SelectableText(message,
                                   textAlign: TextAlign.start,
-                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                                  toolbarOptions: ToolbarOptions(
+                                      selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -781,41 +785,44 @@ class MessageTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Sender's name
-                    displayName ? Container(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return MultiProvider(
-                                providers: [
-                                  Provider<UserData>.value(
-                                    value: userdata,
+                    displayName
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: userdata,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                          value: currentCourse,
+                                        ),
+                                      ],
+                                      child: FriendProfile(
+                                        userID:
+                                            senderID, // to be modified to friend's ID
+                                      ),
+                                    );
+                                  }));
+                                },
+                                child: Text(
+                                  senderName ?? '',
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        listProfileColor[profileColor.toInt()],
                                   ),
-                                  Provider<List<CourseInfo>>.value(
-                                    value: currentCourse,
-                                  ),
-                                ],
-                                child: FriendProfile(
-                                  userID:
-                                      senderID, // to be modified to friend's ID
                                 ),
-                              );
-                            }));
-                          },
-                          child: Text(
-                            senderName ?? '',
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: listProfileColor[profileColor.toInt()],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ) : Container(),
+                          )
+                        : Container(),
                     // Message and Time
                     Container(
                       width: 350,
@@ -837,7 +844,8 @@ class MessageTile extends StatelessWidget {
                                   color: Colors.white),
                               child: SelectableText(message,
                                   textAlign: TextAlign.start,
-                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                                  toolbarOptions: ToolbarOptions(
+                                      selectAll: true, copy: true),
                                   style: GoogleFonts.openSans(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -1006,41 +1014,44 @@ class ImageTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Sender's name
-                    displayName ? Container(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return MultiProvider(
-                                providers: [
-                                  Provider<UserData>.value(
-                                    value: userdata,
+                    displayName
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: userdata,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                          value: currentCourse,
+                                        ),
+                                      ],
+                                      child: FriendProfile(
+                                        userID:
+                                            senderID, // to be modified to friend's ID
+                                      ),
+                                    );
+                                  }));
+                                },
+                                child: Text(
+                                  senderName ?? ' ',
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        listProfileColor[profileColor.toInt()],
                                   ),
-                                  Provider<List<CourseInfo>>.value(
-                                    value: currentCourse,
-                                  ),
-                                ],
-                                child: FriendProfile(
-                                  userID:
-                                      senderID, // to be modified to friend's ID
                                 ),
-                              );
-                            }));
-                          },
-                          child: Text(
-                            senderName ?? ' ',
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: listProfileColor[profileColor.toInt()],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ) : Container(),
+                          )
+                        : Container(),
                     // Message and Time
                     Container(
                       width: 350,

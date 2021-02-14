@@ -63,6 +63,7 @@ dependencies:
   dio: ^3.0.10
   permission_handler: ^5.0.1+1
   fluttertoast: ^7.1.6
+  jitsi_meet: ^2.0.0
 
 dev_dependencies:
   flutter_test:
