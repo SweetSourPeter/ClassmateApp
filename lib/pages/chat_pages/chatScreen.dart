@@ -674,8 +674,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   )),
                   Container(
+                    padding: EdgeInsets.symmetric(vertical: 8),
                     alignment: Alignment.center,
-                    height: 74.0,
+                    // height: 74.0,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white,
                     child: Row(
@@ -684,53 +685,51 @@ class _ChatScreenState extends State<ChatScreen> {
                           width: 16,
                         ),
                         Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Color(0xffF9F6F1),
-                              borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                          // height: 40,
+                          decoration: BoxDecoration(
+                            color: Color(0xffF9F6F1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            minLines: 1,
+                            maxLines: 4,
+                            onTap: () {
+                              setState(() {
+                                showStickerKeyboard = false;
+                                showTextKeyboard = true;
+                                showFunctions = false;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 160),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
+                            },
+                            focusNode: myFocusNode,
+                            controller: messageController,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
                             ),
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 4,
-                              onTap: () {
-                                setState(() {
-                                  showStickerKeyboard = false;
-                                  showTextKeyboard = true;
-                                  showFunctions = false;
-                                });
-                                Timer(
-                                    Duration(milliseconds: 160),
-                                    () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent));
-                              },
-                              focusNode: myFocusNode,
-                              controller: messageController,
-                              style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Colors.black,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 15.0),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
                               ),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.only(left: 15.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
                               ),
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (value) {
-                                sendMessage(currentUser.email);
-                                myFocusNode.requestFocus();
-                              },
                             ),
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (value) {
+                              sendMessage(currentUser.email);
+                              myFocusNode.requestFocus();
+                            },
                           ),
                         )),
                         Padding(
