@@ -509,6 +509,6 @@ void showBottomPopSheet(BuildContext context, Widget widget) {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return SafeArea(child: widget);
+        return SafeArea(bottom: false, child: widget);
       });
 }
