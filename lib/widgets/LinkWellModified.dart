@@ -1,9 +1,12 @@
 library linkwell;
 
+import 'package:app_test/models/user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Helper {
@@ -28,6 +31,7 @@ TextSpan linkwellFunc(
   String text,
   TextStyle style,
   TextStyle linkStyle,
+  UserData currentUser,
 ) {
   final RegExp exp = Helper.regex;
   final List links = <String>[];
@@ -46,6 +50,31 @@ TextSpan linkwellFunc(
     /// otherwise set style to user defined
     textSpanWidget.add(TextSpan(
         text: text, style: style == null ? Helper.defaultTextStyle : style));
+  }
+
+  _joinMeeting(String chatRoomId) async {
+    try {
+      FeatureFlag featureFlag = FeatureFlag();
+      featureFlag.welcomePageEnabled = false;
+      featureFlag.resolution = FeatureFlagVideoResolution
+          .MD_RESOLUTION; // Limit video resolution to 360p
+
+      var options = JitsiMeetingOptions()
+        ..room = chatRoomId // Required, spaces will be trimmed
+        // ..serverURL = "https://na-cc.com"
+        ..subject = chatRoomId
+        ..userDisplayName = currentUser.userName
+        ..userEmail = currentUser.email
+        // ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+        ..audioOnly = true
+        ..audioMuted = true
+        ..videoMuted = true
+        ..featureFlag = featureFlag;
+
+      await JitsiMeet.joinMeeting(options).then((value) {});
+    } catch (error) {
+      debugPrint("error: $error");
+    }
   }
 
   _buildBody() async {
@@ -98,6 +127,21 @@ TextSpan linkwellFunc(
             text: name,
             style: linkStyle == null ? Helper.linkDefaultTextStyle : linkStyle,
             recognizer: new TapGestureRecognizer()..onTap = () => launch(url));
+
+        /// added
+        textSpanWidget.add(link);
+      } else if (value.toString().contains('https://meet.jit.si')) {
+        String start = 'https://meet.jit.si/';
+        int startIndex = value.indexOf(start);
+        String result = value.substring(startIndex + start.length).trim();
+        print(result);
+        var link = TextSpan(
+            text: value.toString(),
+            style: linkStyle == null ? Helper.linkDefaultTextStyle : linkStyle,
+            recognizer: new TapGestureRecognizer()
+              ..onTap = () {
+                _joinMeeting(result);
+              });
 
         /// added
         textSpanWidget.add(link);

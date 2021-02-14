@@ -21,7 +21,8 @@ import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-// import 'confirmImage.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -158,6 +159,35 @@ class _ChatScreenState extends State<ChatScreen> {
       _controller.jumpTo(_controller.position.minScrollExtent);
       messageController.text = '';
     }
+  }
+
+  sendInviteMeetMessage(myEmail, meetID, currentUserName) {
+    final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+    Map<String, dynamic> messageMap = {
+      'message':
+          '$currentUserName is inviting you to a call\n\nClick on https://meet.jit.si/$meetID \nto open in Meechu\n\n\nOR paste in your PC browser',
+      'messageType': 'text',
+      'isMeetInvite': true,
+      'sendBy': myEmail,
+      'time': lastMessageTime,
+    };
+    // print(widget.chatRoomId);
+    databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+    databaseMethods.setLastestMessage(
+        widget.chatRoomId, messageController.text, lastMessageTime);
+    databaseMethods
+        .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
+        .then((value) {
+      final unreadNumber = value.data()[
+              widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) +
+                  'unread'] +
+          1;
+      databaseMethods.setUnreadNumber(
+          widget.chatRoomId, widget.friendEmail, unreadNumber);
+    });
+
+    // _controller.jumpTo(_controller.position.minScrollExtent);
+    // messageController.text = '';
   }
 
   sendImage(myEmail) {
@@ -316,6 +346,15 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
+  // a helper function for createChatRoomAndStartConversation()
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
@@ -324,6 +363,41 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
+    _joinMeeting() async {
+      String chatRoomId = getChatRoomId(currentUser.email, widget.friendEmail)
+          .replaceAll(RegExp("@[a-zA-Z0-9]+\.[a-zA-Z]+"), '');
+      print(chatRoomId);
+      try {
+        FeatureFlag featureFlag = FeatureFlag();
+        featureFlag.welcomePageEnabled = false;
+        featureFlag.resolution = FeatureFlagVideoResolution
+            .MD_RESOLUTION; // Limit video resolution to 360p
+
+        var options = JitsiMeetingOptions()
+          ..room = chatRoomId // Required, spaces will be trimmed
+          // ..serverURL = "https://na-cc.com"
+          ..subject = chatRoomId
+          ..userDisplayName = currentUser.userName
+          ..userEmail = currentUser.email
+          // ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+          ..audioOnly = true
+          ..audioMuted = true
+          ..videoMuted = true
+          ..featureFlag = featureFlag;
+
+        await JitsiMeet.joinMeeting(options).then((value) {
+          if (value.isSuccess) {
+            print('sendithere');
+            sendInviteMeetMessage(
+                currentUser.email, chatRoomId, currentUser.userName);
+          }
+          print('respsdgfadsgasdgasdgasdg');
+          print(value.isSuccess);
+        });
+      } catch (error) {
+        debugPrint("error: $error");
+      }
+    }
 
     return Container(
       color: Colors.white,
@@ -354,7 +428,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.only(left: 8, right: 20),
                           child: Container(
                             height: 40,
                             width: 40,
@@ -477,41 +551,58 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                         ),
+                        Spacer(),
                         Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(left: 0.0),
                           child: IconButton(
-                            icon: Image.asset(
-                              'assets/images/search.png',
-                              height: 23,
-                              width: 23,
+                            icon: Icon(
+                              Icons.phone,
+                              size: 26,
                               color: Color(0xffFF7E40),
                             ),
                             // iconSize: 10.0,
                             onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return MultiProvider(
-                                  providers: [
-                                    Provider<UserData>.value(
-                                      value: currentUser,
-                                    ),
-                                    Provider<List<CourseInfo>>.value(
-                                        value: currentCourse)
-                                  ],
-                                  child: SearchChat(
-                                      chatRoomId: widget.chatRoomId,
-                                      friendName: widget.friendName,
-                                      friendEmail: widget.friendEmail,
-                                      friendProfileColor:
-                                          widget.friendProfileColor,
-                                      myEmail: widget.myEmail,
-                                      myName: currentUser.userName,
-                                      myProfileColor: currentUser.profileColor),
-                                );
-                              }));
+                              _joinMeeting();
                             },
                           ),
                         ),
+                        Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Container(
+                              child: IconButton(
+                                icon: Image.asset(
+                                  'assets/images/search.png',
+                                  height: 23,
+                                  width: 23,
+                                  color: Color(0xffFF7E40),
+                                ),
+                                // iconSize: 10.0,
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: currentUser,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                            value: currentCourse)
+                                      ],
+                                      child: SearchChat(
+                                          chatRoomId: widget.chatRoomId,
+                                          friendName: widget.friendName,
+                                          friendEmail: widget.friendEmail,
+                                          friendProfileColor:
+                                              widget.friendProfileColor,
+                                          myEmail: widget.myEmail,
+                                          myName: currentUser.userName,
+                                          myProfileColor:
+                                              currentUser.profileColor),
+                                    );
+                                  }));
+                                },
+                              ),
+                            )),
                       ],
                     ),
                   ),
@@ -583,8 +674,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   )),
                   Container(
+                    padding: EdgeInsets.symmetric(vertical: 8),
                     alignment: Alignment.center,
-                    height: 74.0,
+                    // height: 74.0,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white,
                     child: Row(
@@ -593,51 +685,51 @@ class _ChatScreenState extends State<ChatScreen> {
                           width: 16,
                         ),
                         Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Color(0xffF9F6F1),
-                              borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                          // height: 40,
+                          decoration: BoxDecoration(
+                            color: Color(0xffF9F6F1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            minLines: 1,
+                            maxLines: 4,
+                            onTap: () {
+                              setState(() {
+                                showStickerKeyboard = false;
+                                showTextKeyboard = true;
+                                showFunctions = false;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 160),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
+                            },
+                            focusNode: myFocusNode,
+                            controller: messageController,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
                             ),
-                            child: TextField(
-                              onTap: () {
-                                setState(() {
-                                  showStickerKeyboard = false;
-                                  showTextKeyboard = true;
-                                  showFunctions = false;
-                                });
-                                Timer(
-                                    Duration(milliseconds: 160),
-                                    () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent));
-                              },
-                              focusNode: myFocusNode,
-                              controller: messageController,
-                              style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Colors.black,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 15.0),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
                               ),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.only(left: 15.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
                               ),
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (value) {
-                                sendMessage(currentUser.email);
-                                myFocusNode.requestFocus();
-                              },
                             ),
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (value) {
+                              sendMessage(currentUser.email);
+                              myFocusNode.requestFocus();
+                            },
                           ),
                         )),
                         Padding(
@@ -821,6 +913,7 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserData>(context, listen: false);
     return Column(
       children: [
         displayWeek
@@ -897,7 +990,7 @@ class MessageTile extends StatelessWidget {
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
                               child: SelectableText.rich(
-                                linkwellFunc(message, null, null),
+                                linkwellFunc(message, null, null, currentUser),
                                 textAlign: TextAlign.start,
                                 style: GoogleFonts.openSans(
                                   fontSize: 16,
@@ -951,7 +1044,7 @@ class MessageTile extends StatelessWidget {
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
                               child: SelectableText.rich(
-                                linkwellFunc(message, null, null),
+                                linkwellFunc(message, null, null, currentUser),
                                 textAlign: TextAlign.start,
                                 style: GoogleFonts.openSans(
                                   fontSize: 16,

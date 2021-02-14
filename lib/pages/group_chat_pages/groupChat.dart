@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
@@ -192,6 +194,25 @@ class _GroupChatState extends State<GroupChat> {
     }
   }
 
+  sendInviteMeetMessage(meetID, UserData currentUser) {
+    final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+    Map<String, dynamic> messageMap = {
+      'message':
+          '${currentUser.userName} is inviting you to a call\n\nClick on https://meet.jit.si/$meetID \nto open in Meechu\n\n\nOR paste in your PC browser',
+      'messageType': 'text',
+      'sendBy': currentUser.email,
+      'senderName': currentUser.userName,
+      'time': lastMessageTime,
+      'senderID': currentUser.userID,
+      'profileColor': currentUser.profileColor
+    };
+
+    databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+    databaseMethods.addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+    // _controller.jumpTo(_controller.position.minScrollExtent);
+    // messageController.text = '';
+  }
+
   sendImage(UserData currentUser) {
     if (_uploadedFileURL.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
@@ -311,10 +332,51 @@ class _GroupChatState extends State<GroupChat> {
     super.initState();
   }
 
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    _joinMeeting() async {
+      String chatRoomId = widget.courseId;
+      print(chatRoomId);
+      try {
+        FeatureFlag featureFlag = FeatureFlag();
+        featureFlag.welcomePageEnabled = false;
+        featureFlag.resolution = FeatureFlagVideoResolution
+            .MD_RESOLUTION; // Limit video resolution to 360p
+
+        var options = JitsiMeetingOptions()
+          ..room = chatRoomId // Required, spaces will be trimmed
+          // ..serverURL = "https://na-cc.com"
+          ..subject = chatRoomId
+          ..userDisplayName = currentUser.userName
+          ..userEmail = currentUser.email
+          // ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+          ..audioOnly = true
+          ..audioMuted = true
+          ..videoMuted = true
+          ..featureFlag = featureFlag;
+
+        await JitsiMeet.joinMeeting(options).then((value) {
+          if (value.isSuccess) {
+            print('sendithere');
+            sendInviteMeetMessage(chatRoomId, currentUser);
+          }
+          print('respsdgfadsgasdgasdgasdg');
+          print(value.isSuccess);
+        });
+      } catch (error) {
+        debugPrint("error: $error");
+      }
+    }
 
     return Container(
       color: Colors.white,
@@ -345,7 +407,7 @@ class _GroupChatState extends State<GroupChat> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.only(left: 8, right: 20),
                           child: Container(
                             // height: 17.96,
                             // width: 10.26,
@@ -390,6 +452,21 @@ class _GroupChatState extends State<GroupChat> {
                                     fontSize: 14,
                                   )),
                             ],
+                          ),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 0.0),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.phone,
+                              size: 26,
+                              color: Color(0xffFF7E40),
+                            ),
+                            // iconSize: 10.0,
+                            onPressed: () {
+                              _joinMeeting();
+                            },
                           ),
                         ),
                         Padding(
@@ -441,8 +518,9 @@ class _GroupChatState extends State<GroupChat> {
                     ],
                   )),
                   Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     alignment: Alignment.center,
-                    height: 74.0,
+                    // height: 74.0,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white,
                     child: Row(
@@ -451,51 +529,53 @@ class _GroupChatState extends State<GroupChat> {
                           width: 16,
                         ),
                         Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Color(0xffF9F6F1),
-                              borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                          // height: 40,
+                          decoration: BoxDecoration(
+                            color: Color(0xffF9F6F1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            minLines:
+                                1, //Normal textInputField will be displayed
+                            maxLines:
+                                4, // when user presses enter it will adapt to it
+                            onTap: () {
+                              setState(() {
+                                showStickerKeyboard = false;
+                                showTextKeyboard = true;
+                                showFunctions = false;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 160),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
+                            },
+                            controller: messageController,
+                            focusNode: myFocusNode,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.black,
                             ),
-                            child: TextField(
-                              onTap: () {
-                                setState(() {
-                                  showStickerKeyboard = false;
-                                  showTextKeyboard = true;
-                                  showFunctions = false;
-                                });
-                                Timer(
-                                    Duration(milliseconds: 160),
-                                    () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent));
-                              },
-                              controller: messageController,
-                              focusNode: myFocusNode,
-                              style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Colors.black,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 15.0),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
                               ),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.only(left: 15.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(35),
                               ),
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (value) {
-                                sendMessage(currentUser);
-                                myFocusNode.requestFocus();
-                              },
                             ),
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (value) {
+                              sendMessage(currentUser);
+                              myFocusNode.requestFocus();
+                            },
                           ),
                         )),
                         Padding(
@@ -763,7 +843,7 @@ class MessageTile extends StatelessWidget {
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
                               child: SelectableText.rich(
-                                  linkwellFunc(message, null, null),
+                                  linkwellFunc(message, null, null, userdata),
                                   textAlign: TextAlign.start,
                                   toolbarOptions: ToolbarOptions(
                                       selectAll: true, copy: true),
@@ -853,7 +933,12 @@ class MessageTile extends StatelessWidget {
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
                               child: SelectableText.rich(
-                                  linkwellFunc(message, null, null),
+                                  linkwellFunc(
+                                    message,
+                                    null,
+                                    null,
+                                    userdata,
+                                  ),
                                   textAlign: TextAlign.start,
                                   toolbarOptions: ToolbarOptions(
                                       selectAll: true, copy: true),

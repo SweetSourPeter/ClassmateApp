@@ -360,7 +360,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.text,
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.openSans(
                             color: Color(0xFF000000),
                             fontSize: widget.textSize,
                             fontWeight: FontWeight.w500,
@@ -379,7 +379,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                   widget.isEdit && widget.editText.length > 0
                       ? Text(
                           widget.editText,
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.openSans(
                               color: Colors.black45, fontSize: widget.textSize),
                         )
                       : Container(),
@@ -509,6 +509,6 @@ void showBottomPopSheet(BuildContext context, Widget widget) {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return SafeArea(child: widget);
+        return SafeArea(bottom: false, child: widget);
       });
 }
