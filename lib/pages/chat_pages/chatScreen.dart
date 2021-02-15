@@ -771,7 +771,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ),
                                       Container(
                                         height: 64,
-                                        width: 65,
+                                        width: 55,
                                       ),
                                       Container(
                                         height: 64,
