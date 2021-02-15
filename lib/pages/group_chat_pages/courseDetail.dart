@@ -8,6 +8,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
@@ -189,35 +190,40 @@ class _CourseDetailState extends State<CourseDetail> {
                           //TODO replace Icon
                           child: GestureDetector(
                             onTap: () {
-                              Clipboard.setData(new ClipboardData(
-                                      text:
-                                          'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name'))
-                                  .then((result) {
-                                showDialog<void>(
-                                  context: context,
-                                  barrierDismissible:
-                                      false, // user must tap button!
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[
-                                            Text('The invite Link is copied.'),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              });
+                              Share.share(
+                                  'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                                  subject:
+                                      'Join ${courseName + courseSection} chat at Meechu');
+
+                              // Clipboard.setData(new ClipboardData(
+                              //         text:
+                              //             'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name'))
+                              //     .then((result) {
+                              //   showDialog<void>(
+                              //     context: context,
+                              //     barrierDismissible:
+                              //         false, // user must tap button!
+                              //     builder: (BuildContext context) {
+                              //       return AlertDialog(
+                              //         content: SingleChildScrollView(
+                              //           child: ListBody(
+                              //             children: <Widget>[
+                              //               Text('The invite Link is copied.'),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //         actions: <Widget>[
+                              //           TextButton(
+                              //             child: Text('OK'),
+                              //             onPressed: () {
+                              //               Navigator.of(context).pop();
+                              //             },
+                              //           ),
+                              //         ],
+                              //       );
+                              //     },
+                              //   );
+                              // });
                             },
                             child: Text(
                               'share',

@@ -248,9 +248,7 @@ class _FriendProfileState extends State<FriendProfile> {
                           }
                         },
                       ),
-                      Expanded(
-                        child: Container(),
-                      ),
+                      Spacer(),
                       RaisedGradientButton(
                         width: _width * 0.75,
                         height: 0.072 * _height,

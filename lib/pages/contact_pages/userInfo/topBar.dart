@@ -7,6 +7,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 
 class TopBar extends StatefulWidget {
   final String userID;
@@ -220,36 +221,39 @@ class _TopBarState extends State<TopBar> {
                             GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: () {
-                                Clipboard.setData(new ClipboardData(
-                                        text:
-                                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}'))
-                                    .then((result) {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible:
-                                        false, // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        content: SingleChildScrollView(
-                                          child: ListBody(
-                                            children: <Widget>[
-                                              Text(
-                                                  'You can PASTE to Share this profile with others.'),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                });
+                                Share.share(
+                                    'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}',
+                                    subject: 'Join me on Meechu1!');
+                                // Clipboard.setData(new ClipboardData(
+                                //         text:
+                                //             'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}'))
+                                //     .then((result) {
+                                //   showDialog<void>(
+                                //     context: context,
+                                //     barrierDismissible:
+                                //         false, // user must tap button!
+                                //     builder: (BuildContext context) {
+                                //       return AlertDialog(
+                                //         content: SingleChildScrollView(
+                                //           child: ListBody(
+                                //             children: <Widget>[
+                                //               Text(
+                                //                   'You can PASTE to Share this profile with others.'),
+                                //             ],
+                                //           ),
+                                //         ),
+                                //         actions: <Widget>[
+                                //           TextButton(
+                                //             child: Text('OK'),
+                                //             onPressed: () {
+                                //               Navigator.of(context).pop();
+                                //             },
+                                //           ),
+                                //         ],
+                                //       );
+                                //     },
+                                //   );
+                                // });
                               },
                               child: Center(
                                 child: Material(

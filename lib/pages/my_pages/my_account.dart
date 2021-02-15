@@ -12,6 +12,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import '../../models/constant.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
@@ -57,36 +58,39 @@ class _MyAccountState extends State<MyAccount> {
                   Spacer(),
                   GestureDetector(
                       onTap: () {
-                        Clipboard.setData(
-                          new ClipboardData(
-                              text:
-                                  'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}'),
-                        ).then((result) {
-                          showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      Text(
-                                          'Your profile invitation has been copied.'),
-                                    ],
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        });
+                        Share.share(
+                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}',
+                            subject: 'Join me on Meechu!');
+                        // Clipboard.setData(
+                        //   new ClipboardData(
+                        //       text:
+                        //           'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}'),
+                        // ).then((result) {
+                        //   showDialog<void>(
+                        //     context: context,
+                        //     barrierDismissible: false, // user must tap button!
+                        //     builder: (BuildContext context) {
+                        //       return AlertDialog(
+                        //         content: SingleChildScrollView(
+                        //           child: ListBody(
+                        //             children: <Widget>[
+                        //               Text(
+                        //                   'Your profile invitation has been copied.'),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         actions: <Widget>[
+                        //           TextButton(
+                        //             child: Text('OK'),
+                        //             onPressed: () {
+                        //               Navigator.of(context).pop();
+                        //             },
+                        //           ),
+                        //         ],
+                        //       );
+                        //     },
+                        //   );
+                        // });
                       },
                       child: Container(
                         padding: EdgeInsets.only(right: 39, top: 29),
