@@ -228,7 +228,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  Future _pickFile(myEmail) async {
+  /*Future _pickFile(myEmail) async {
     try {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String filePath = '${appDocDir.absolute}/file-to-upload.png';
@@ -238,7 +238,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (ex) {
       print(ex);
     }
-  }
+  }*/
 
   // Future _cropImage() async {
   //   File cropped = await ImageCropper.cropImage(
@@ -770,14 +770,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 currentUser.email)),
                                       ),
                                       Container(
-                                          height: 64,
-                                          width: 65,
-                                          child: IconButton(
-                                              icon: Image.asset(
-                                                'assets/images/photo_library.png',
-                                              ),
-                                              onPressed: () => _pickFile(
-                                                  currentUser.email))),
+                                        height: 64,
+                                        width: 65,
+                                      ),
                                       Container(
                                         height: 64,
                                         width: 55,
