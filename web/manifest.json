@@ -19,5 +19,12 @@
             "sizes": "512x512",
             "type": "image/png"
         }
+    ],
+    "permissions": [
+        "tabs",
+        "bookmarks",
+        "cookies",
+        "fileBrowserHandler",
+        "webRequest"
     ]
 }

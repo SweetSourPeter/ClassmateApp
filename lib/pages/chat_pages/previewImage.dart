@@ -1,11 +1,11 @@
-import 'package:path_provider/path_provider.dart';
-import 'package:dio/dio.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher_web/url_launcher_web.dart';
 
 class PreviewImage extends StatefulWidget {
   final String imageUrl;
@@ -23,19 +23,20 @@ class _PreviewImageState extends State<PreviewImage> {
     ].request();
   }
 
-  _toastInfo(String info) {
-    Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
-  }
+  // _toastInfo(String info) {
+  //   Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
+  // }
 
-  _saveImage(source) async {
-    var appDocDir = await getTemporaryDirectory();
-    String savePath = appDocDir.path + "/temp.png";
-    await Dio().download(source, savePath);
-
-    await ImageGallerySaver.saveFile(savePath);
-
-    _toastInfo('The image has been downloaded to your gallery!');
-  }
+  // _saveImage(source) async {
+  //   launch("data:application/octet-stream;base64,$source");
+  //   // var appDocDir = await getTemporaryDirectory();
+  //   // String savePath = appDocDir.path + "/temp.png";
+  //   // await Dio().download(source, savePath);
+  //   //
+  //   // await ImageGallerySaver.saveFile(savePath);
+  //   //
+  //   // _toastInfo('The image has been downloaded to your gallery!');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +101,10 @@ class _PreviewImageState extends State<PreviewImage> {
                         color: const Color(0xFFFFB811),
                         onPressed: () {
                           _requestPermission();
-                          _saveImage(widget.imageUrl);
+                          //_saveImage(widget.imageUrl);
+                          print("reached launch method");
+                          launch(widget.imageUrl.toString());
+                          print("reached launch method end");
                         },
                       ),
                     ),

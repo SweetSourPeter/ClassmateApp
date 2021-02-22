@@ -1,4 +1,6 @@
 // import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
+import 'dart:typed_data';
+
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
@@ -11,7 +13,9 @@ import 'package:flutter/widgets.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
+
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -21,9 +25,12 @@ import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:image_picker_web/image_picker_web.dart';
+
+import 'package:universal_html/prefer_universal/html.dart' as html;
+import 'package:firebase/firebase.dart' as fb;
+import 'package:file_picker_web/file_picker_web.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -48,9 +55,11 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  File _imageFile;
+  html.File _imageFile;
+  html.File _file;
   String _uploadedFileURL;
-  final _picker = ImagePicker();
+  String _link;
+  //final _picker = ImagePickerWeb();
   bool showStickerKeyboard;
   bool showTextKeyboard;
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -65,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Stream chatMessageStream;
   Future friendCoursesFuture;
 
-  List<PlatformFile> _paths;
+  // List<PlatformFile> _paths;
   String _extension;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -194,49 +203,148 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future _pickImage(ImageSource source, myEmail) async {
-    PickedFile selected = await _picker.getImage(source: source);
+  sendLink(myEmail) {
+    if (_link.isNotEmpty) {
+      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> messageMap = {
+        'message': 'file sent: ' + _link,
+        'messageType': 'text',
+        'sendBy': myEmail,
+        'time': lastMessageTime,
+      };
+      print(widget.chatRoomId);
+      databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+      databaseMethods.setLastestMessage(
+          widget.chatRoomId, _link, lastMessageTime);
+      databaseMethods
+          .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
+          .then((value) {
+        final unreadNumber = value.data()[widget.friendEmail
+            .substring(0, widget.friendEmail.indexOf('@')) +
+            'unread'] +
+            1;
+        databaseMethods.setUnreadNumber(
+            widget.chatRoomId, widget.friendEmail, unreadNumber);
+      });
 
-    setState(() {
-      _imageFile = File(selected.path);
-    });
+      _controller.jumpTo(_controller.position.minScrollExtent);
+      _link = '';
+    }
+  }
+
+  Future _pickImage(ImageSource source, myEmail) async {
+    //Image selected = await FlutterWebImagePicker.getImage;
+
+    //Uint8List selected = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
+    print("1");
+    html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
 
     if (selected != null) {
-      _uploadFile(myEmail, _imageFile.path);
-      print('Image Path $_imageFile');
+      debugPrint(selected.toString());
     }
+
+    print("2");
+
+    setState(() {
+      //_imageFile = File.fromRawPath(selected);
+          //File(selected.path)
+      _imageFile = selected;
+    });
+
+    print("3");
+
+    if (selected != null) {
+      // _uploadFile(myEmail, _imageFile.path);
+      _uploadFile(myEmail, _imageFile);
+      //print('Image Path $_imageFile');
+    }
+
+    print("4");
 
 //    Navigator.push(context, MaterialPageRoute(
 //        builder: (context) => PictureDisplay(imageFile: File(selected.path))
 //    ));
   }
 
-  Future _uploadFile(myEmail, path) async {
-    String fileName = basename(path);
-    firebase_storage.Reference firebaseStorageRef =
-        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-    firebase_storage.UploadTask uploadTask =
-        firebaseStorageRef.putFile(_imageFile);
-    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
-    taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-      setState(() {
-        _uploadedFileURL = downloadUrl;
-        print('picture uploaded');
-        print(_uploadedFileURL);
-        sendImage(myEmail);
-      });
-    });
+  Future<void> _uploadFile(myEmail, html.File image,
+      {String imageName}) async {
+    imageName = image.name;
+    fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
+
+    fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(image).future;
+
+    Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+    print(imageUri);
+
+    _uploadedFileURL = imageUri.toString();
+
+    sendImage(myEmail);
+    //return imageUri;
+  }
+
+  // Future _uploadFile(myEmail, path) async {
+  //   print("i am here8");
+  //   String fileName = basename(path);
+  //
+  //   firebase_storage.Reference firebaseStorageRef =
+  //       firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+  //
+  //   print("i am here9");
+  //   firebase_storage.UploadTask uploadTask =
+  //       firebaseStorageRef.putFile(_imageFile);
+  //
+  //   print("i am here10");
+  //   firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+  //
+  //   print("i am here11");
+  //   taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+  //     setState(() {
+  //       _uploadedFileURL = downloadUrl;
+  //       print('picture uploaded');
+  //       print(_uploadedFileURL);
+  //       sendImage(myEmail);
+  //     });
+  //   });
+  // }
+
+  Future<void> _uploadNonImage(myEmail, html.File f,
+      {String fName}) async {
+    fName = f.name;
+    fb.StorageReference storageRef = fb.storage().ref('images/$fName');
+
+    fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(f).future;
+
+    Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+    print(imageUri);
+
+    _uploadedFileURL = imageUri.toString();
+    _link = imageUri.toString();
+
+    sendLink(myEmail);
+    //return imageUri;
   }
 
   Future _pickFile(myEmail) async {
-    try {
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      String filePath = '${appDocDir.absolute}/file-to-upload.png';
-      print(filePath);
-    } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
-    } catch (ex) {
-      print(ex);
+    print('11');
+    // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
+    html.File selected = await FilePicker.getFile() ?? [];
+
+    print('12');
+
+    if (selected != null) {
+      debugPrint(selected.toString());
+    }
+
+    print('13');
+
+    setState(() {
+      _file = selected;
+    });
+
+    print('14');
+
+    if (selected != null) {
+      _uploadNonImage(myEmail, _file);
     }
   }
 
