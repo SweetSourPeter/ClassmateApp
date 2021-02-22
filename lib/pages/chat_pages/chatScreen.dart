@@ -220,8 +220,8 @@ class _ChatScreenState extends State<ChatScreen> {
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
           .then((value) {
         final unreadNumber = value.data()[widget.friendEmail
-            .substring(0, widget.friendEmail.indexOf('@')) +
-            'unread'] +
+                    .substring(0, widget.friendEmail.indexOf('@')) +
+                'unread'] +
             1;
         databaseMethods.setUnreadNumber(
             widget.chatRoomId, widget.friendEmail, unreadNumber);
@@ -237,7 +237,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
     //Uint8List selected = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
     print("1");
-    html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
+    html.File selected =
+        await ImagePickerWeb.getImage(outputType: ImageType.file);
 
     if (selected != null) {
       debugPrint(selected.toString());
@@ -247,7 +248,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() {
       //_imageFile = File.fromRawPath(selected);
-          //File(selected.path)
+      //File(selected.path)
       _imageFile = selected;
     });
 
@@ -266,12 +267,12 @@ class _ChatScreenState extends State<ChatScreen> {
 //    ));
   }
 
-  Future<void> _uploadFile(myEmail, html.File image,
-      {String imageName}) async {
+  Future<void> _uploadFile(myEmail, html.File image, {String imageName}) async {
     imageName = image.name;
     fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
 
-    fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(image).future;
+    fb.UploadTaskSnapshot uploadTaskSnapshot =
+        await storageRef.put(image).future;
 
     Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
     print(imageUri);
@@ -307,8 +308,7 @@ class _ChatScreenState extends State<ChatScreen> {
   //   });
   // }
 
-  Future<void> _uploadNonImage(myEmail, html.File f,
-      {String fName}) async {
+  Future<void> _uploadNonImage(myEmail, html.File f, {String fName}) async {
     fName = f.name;
     fb.StorageReference storageRef = fb.storage().ref('images/$fName');
 
@@ -878,14 +878,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 currentUser.email)),
                                       ),
                                       Container(
-                                          height: 64,
-                                          width: 65,
-                                          child: IconButton(
-                                              icon: Image.asset(
-                                                'assets/images/photo_library.png',
-                                              ),
-                                              onPressed: () => _pickFile(
-                                                  currentUser.email))),
+                                        height: 64,
+                                        width: 55,
+                                      ),
                                       Container(
                                         height: 64,
                                         width: 55,
