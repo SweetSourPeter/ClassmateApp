@@ -69,7 +69,7 @@ class _PrivacyPageState extends State<PrivacyPage>
       child: Padding(
         padding: EdgeInsets.only(top: _height * 0.13),
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           backgroundColor: themeOrange,
           body: SingleChildScrollView(
             child: Column(

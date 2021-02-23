@@ -214,7 +214,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
         },
         child: Scaffold(
           backgroundColor: themeOrange,
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           body: isLoading
               ? Center(
                   child: CircularProgressIndicator(
