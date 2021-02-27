@@ -4,6 +4,7 @@ import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -995,6 +996,8 @@ class ImageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     final userdata = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
 
@@ -1075,15 +1078,15 @@ class ImageTile extends StatelessWidget {
                                 );
                               },
                               child: Container(
-                                  margin: EdgeInsets.only(left: 10),
+                                  margin: EdgeInsets.only(right: 10),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12.0),
                                     child: CachedNetworkImage(
                                       imageUrl: message,
                                       placeholder: (context, url) =>
                                           new Container(
-                                              height: 70,
-                                              width: 70,
+                                              color: Colors.grey[400],
+                                              width: 100,
                                               child: Center(
                                                 child:
                                                     new CircularProgressIndicator(
@@ -1091,7 +1094,20 @@ class ImageTile extends StatelessWidget {
                                                 ),
                                               )),
                                       errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
+                                          Container(
+                                              color: Colors.grey[400],
+                                              // height: 70,
+                                              width: 100,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    new Icon(Icons.error),
+                                                    AutoSizeText('Outdated')
+                                                  ],
+                                                ),
+                                              )),
                                       height: 180.0,
                                     ),
                                   )),
@@ -1176,8 +1192,8 @@ class ImageTile extends StatelessWidget {
                                       imageUrl: message,
                                       placeholder: (context, url) =>
                                           new Container(
-                                              height: 70,
-                                              width: 70,
+                                              color: Colors.grey[400],
+                                              width: 100,
                                               child: Center(
                                                 child:
                                                     new CircularProgressIndicator(
@@ -1185,7 +1201,18 @@ class ImageTile extends StatelessWidget {
                                                 ),
                                               )),
                                       errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
+                                          Container(
+                                              color: Colors.grey[400],
+                                              // height: 70,
+                                              width: 100,
+                                              child: Center(
+                                                child: Column(
+                                                  children: [
+                                                    new Icon(Icons.error),
+                                                    AutoSizeText('Outdated')
+                                                  ],
+                                                ),
+                                              )),
                                       height: 180.0,
                                     ),
                                   )),

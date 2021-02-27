@@ -245,18 +245,19 @@ class _ShrinkButtonState extends State<ShrinkButton>
 
   Future showMyDialog() {
     return showDialog(
-        context: context,
-        child: Padding(
-          padding: EdgeInsets.only(top: 240.0),
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            child: dialogContent(context),
-          ),
-        )).then((value) => toggleState());
+            builder: (context) => Padding(
+                  padding: EdgeInsets.only(top: 240.0),
+                  child: Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    child: dialogContent(context),
+                  ),
+                ),
+            context: context)
+        .then((value) => toggleState());
   }
 
   dialogContent(BuildContext context) {

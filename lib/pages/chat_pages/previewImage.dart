@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -112,7 +113,7 @@ class _PreviewImageState extends State<PreviewImage> {
               ),
             ),
             Container(
-              color: Colors.black,
+              color: Colors.grey[400],
               child: InteractiveViewer(
                 maxScale: 4.0,
                 child: CachedNetworkImage(
@@ -120,8 +121,20 @@ class _PreviewImageState extends State<PreviewImage> {
                   height: MediaQuery.of(context).size.height - 300,
                   width: MediaQuery.of(context).size.width,
                   placeholder: (context, url) =>
-                      new CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => new Icon(Icons.error),
+                      Center(child: new CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[400],
+                      // height: 70,
+                      width: 100,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            new Icon(Icons.error),
+                            AutoSizeText('Outdated')
+                          ],
+                        ),
+                      )),
                 ),
               ),
             ),

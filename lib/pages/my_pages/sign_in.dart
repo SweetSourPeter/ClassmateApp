@@ -267,12 +267,12 @@ class _SignInState extends State<SignIn> {
 
       child: SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           body: isLoading
               ? Container(child: LoadingScreen(themeOrange))
               : Scaffold(
-                  resizeToAvoidBottomPadding: false,
+                  resizeToAvoidBottomInset: false,
                   backgroundColor: themeOrange,
                   body: SingleChildScrollView(
                     child: Column(

@@ -5,7 +5,6 @@ import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';

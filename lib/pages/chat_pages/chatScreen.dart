@@ -5,6 +5,7 @@ import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -439,8 +440,6 @@ class _ChatScreenState extends State<ChatScreen> {
                               // iconSize: 30.0,
                               color: const Color(0xFFFFB811),
                               onPressed: () {
-                                databaseMethods.setUnreadNumber(
-                                    widget.chatRoomId, widget.myEmail, 0);
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -1166,22 +1165,36 @@ class ImageTile extends StatelessWidget {
                                 );
                               },
                               child: Container(
-                                  margin: EdgeInsets.only(left: 10),
+                                  margin: EdgeInsets.only(right: 10),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12.0),
                                     child: CachedNetworkImage(
                                       imageUrl: message,
-                                      placeholder: (context, url) => Container(
-                                          height: 70,
-                                          width: 70,
-                                          child: Center(
-                                            child:
-                                                new CircularProgressIndicator(
-                                              backgroundColor: themeOrange,
-                                            ),
-                                          )),
+                                      placeholder: (context, url) =>
+                                          new Container(
+                                              color: Colors.grey[400],
+                                              width: 100,
+                                              child: Center(
+                                                child:
+                                                    new CircularProgressIndicator(
+                                                  backgroundColor: themeOrange,
+                                                ),
+                                              )),
                                       errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
+                                          Container(
+                                              color: Colors.grey[400],
+                                              // height: 70,
+                                              width: 100,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    new Icon(Icons.error),
+                                                    AutoSizeText('Outdated')
+                                                  ],
+                                                ),
+                                              )),
                                       height: 180.0,
                                     ),
                                   )),
@@ -1227,8 +1240,8 @@ class ImageTile extends StatelessWidget {
                                       imageUrl: message,
                                       placeholder: (context, url) =>
                                           new Container(
-                                              height: 70,
-                                              width: 70,
+                                              color: Colors.grey[400],
+                                              width: 100,
                                               child: Center(
                                                 child:
                                                     new CircularProgressIndicator(
@@ -1236,7 +1249,20 @@ class ImageTile extends StatelessWidget {
                                                 ),
                                               )),
                                       errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
+                                          Container(
+                                              color: Colors.grey[400],
+                                              // height: 70,
+                                              width: 100,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    new Icon(Icons.error),
+                                                    AutoSizeText('Outdated')
+                                                  ],
+                                                ),
+                                              )),
                                       height: 180.0,
                                     ),
                                   )),

@@ -217,9 +217,11 @@ class ChatRoomsTile extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = mediaQuery.width * 1.0;
-    print('heree');
+    DatabaseMethods databaseMethods = new DatabaseMethods();
     return GestureDetector(
       onTap: () {
+        databaseMethods.setUnreadNumber(chatRoomId, currentUser.email, 0);
+
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return MultiProvider(
             providers: [
