@@ -29,7 +29,6 @@ import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
 import 'package:file_picker_web/file_picker_web.dart';
 
-
 class GroupChat extends StatefulWidget {
   final String courseId;
   final double initialChat;
@@ -48,7 +47,8 @@ class GroupChat extends StatefulWidget {
 }
 
 class _GroupChatState extends State<GroupChat> {
-  File _imageFile;
+  html.File _imageFile;
+  html.File _file;
   String _uploadedFileURL;
   String _link;
   final _picker = ImagePicker();
@@ -278,35 +278,114 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
-    Future _uploadFile(myEmail, myName) async {
-      String fileName = basename(_imageFile.path);
-      firebase_storage.Reference firebaseStorageRef =
-          firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-      firebase_storage.UploadTask uploadTask =
-          firebaseStorageRef.putFile(_imageFile);
-      firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
-      taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-        setState(() {
-          _uploadedFileURL = downloadUrl;
-          print('picture uploaded');
-          print(_uploadedFileURL);
-          sendImage(myEmail, myName);
-        });
-      });
+    // Future _uploadFile(myEmail, myName) async {
+    //   String fileName = basename(_imageFile.path);
+    //   firebase_storage.Reference firebaseStorageRef =
+    //       firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    //   firebase_storage.UploadTask uploadTask =
+    //       firebaseStorageRef.putFile(_imageFile);
+    //   firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+    //   taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+    //     setState(() {
+    //       _uploadedFileURL = downloadUrl;
+    //       print('picture uploaded');
+    //       print(_uploadedFileURL);
+    //       sendImage(myEmail, myName);
+    //     });
+    //   });
+    // }
+
+    Future<void> _uploadFile(myEmail, myName, html.File image,
+        {String imageName}) async {
+      imageName = image.name;
+      fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
+
+      fb.UploadTaskSnapshot uploadTaskSnapshot =
+          await storageRef.put(image).future;
+
+      Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+      print(imageUri);
+
+      _uploadedFileURL = imageUri.toString();
+
+      sendImage(myEmail, myName);
+      //return imageUri;
+    }
+
+    Future<void> _uploadNonImage(myEmail, myName, html.File f,
+        {String fName}) async {
+      fName = f.name;
+      fb.StorageReference storageRef = fb.storage().ref('images/$fName');
+
+      fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(f).future;
+
+      Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+      print(imageUri);
+
+      _uploadedFileURL = imageUri.toString();
+      _link = imageUri.toString();
+
+      sendLink(myEmail, myName);
+      //return imageUri;
     }
 
     Future _pickImage(ImageSource source, myEmail, myName) async {
-      PickedFile selected = await _picker.getImage(source: source);
+      //Image selected = await FlutterWebImagePicker.getImage;
+
+      //Uint8List selected = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
+      html.File selected =
+          await ImagePickerWeb.getImage(outputType: ImageType.file);
+
+      if (selected != null) {
+        debugPrint(selected.toString());
+      }
 
       setState(() {
-        _imageFile = File(selected.path);
+        //_imageFile = File.fromRawPath(selected);
+        //File(selected.path)
+        _imageFile = selected;
       });
 
       if (selected != null) {
-        _uploadFile(myEmail, myName);
-        print('Image Path $_imageFile');
+        // _uploadFile(myEmail, _imageFile.path);
+        _uploadFile(myEmail, myName, _imageFile);
+        //print('Image Path $_imageFile');
+      }
+
+//    Navigator.push(context, MaterialPageRoute(
+//        builder: (context) => PictureDisplay(imageFile: File(selected.path))
+//    ));
+    }
+
+    Future _pickFile(myEmail, myName) async {
+      // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
+      html.File selected = await FilePicker.getFile() ?? [];
+
+      if (selected != null) {
+        debugPrint(selected.toString());
+      }
+
+      setState(() {
+        _file = selected;
+      });
+
+      if (selected != null) {
+        _uploadNonImage(myEmail, myName, _file);
       }
     }
+
+    // Future _pickImage(ImageSource source, myEmail, myName) async {
+    //   PickedFile selected = await _picker.getImage(source: source);
+    //
+    //   setState(() {
+    //     _imageFile = File(selected.path);
+    //   });
+    //
+    //   if (selected != null) {
+    //     _uploadFile(myEmail, myName);
+    //     print('Image Path $_imageFile');
+    //   }
+    // }
 
     return SafeArea(
         child: Scaffold(
@@ -487,23 +566,19 @@ class _GroupChatState extends State<GroupChat> {
                       padding: const EdgeInsets.only(left: 14.0),
                       child: GestureDetector(
                           child: showStickerKeyboard
-                              ? Image.asset(
-                              'assets/images/messageSend.png',
-                              width: 28,
-                              height: 28)
-                          // : showFunctions
-                          // ? Image.asset(
-                          // 'assets/images/plus_on_click.png',
-                          // width: 28,
-                          // height: 28)
-                              : Image.asset(
-                              'assets/images/plus_on_click.png',
-                              width: 28,
-                              height: 28),
-                              // ? Image.asset('assets/images/emoji_on_click.png',
-                              //     width: 29, height: 27.83)
-                              // : Image.asset('assets/images/emoji.png',
-                              //     width: 29, height: 27.83),
+                              ? Image.asset('assets/images/messageSend.png',
+                                  width: 28, height: 28)
+                              // : showFunctions
+                              // ? Image.asset(
+                              // 'assets/images/plus_on_click.png',
+                              // width: 28,
+                              // height: 28)
+                              : Image.asset('assets/images/plus_on_click.png',
+                                  width: 28, height: 28),
+                          // ? Image.asset('assets/images/emoji_on_click.png',
+                          //     width: 29, height: 27.83)
+                          // : Image.asset('assets/images/emoji.png',
+                          //     width: 29, height: 27.83),
                           onTap: () {
                             if (showTextKeyboard) {
                               setState(() {
@@ -522,7 +597,7 @@ class _GroupChatState extends State<GroupChat> {
                               // } else {}
                             }
                             setState(() {
-                              // showStickerKeyboard = !showStickerKeyboard;
+                              showStickerKeyboard = !showStickerKeyboard;
                             });
                             Timer(
                                 Duration(milliseconds: 30),
@@ -582,28 +657,28 @@ class _GroupChatState extends State<GroupChat> {
                 ),
               ),
               showStickerKeyboard
-              //     ? AnimatedContainer(
-              //         duration: Duration(milliseconds: 80),
-              //         // showStickerKeyboard ? 400 : 0,
-              //         child: EmojiPicker(
-              //           rows: 4,
-              //           columns: 7,
-              //           buttonMode: ButtonMode.MATERIAL,
-              //           numRecommended: 10,
-              //           onEmojiSelected: (emoji, category) {
-              //             setState(() {
-              //               messageController.text =
-              //                   messageController.text + emoji.emoji;
-              //             });
-              //           },
-              //         ),
-              //       )
-              //     : Container(),
-              // showFunctions
+                  //     ? AnimatedContainer(
+                  //         duration: Duration(milliseconds: 80),
+                  //         // showStickerKeyboard ? 400 : 0,
+                  //         child: EmojiPicker(
+                  //           rows: 4,
+                  //           columns: 7,
+                  //           buttonMode: ButtonMode.MATERIAL,
+                  //           numRecommended: 10,
+                  //           onEmojiSelected: (emoji, category) {
+                  //             setState(() {
+                  //               messageController.text =
+                  //                   messageController.text + emoji.emoji;
+                  //             });
+                  //           },
+                  //         ),
+                  //       )
+                  //     : Container(),
+                  // showFunctions
                   ? AnimatedContainer(
                       duration: Duration(milliseconds: 80),
                       height: 80,
-                      width: getRealWidth(MediaQuery.of(context).size.width),
+                      width: MediaQuery.of(context).size.width,
                       color: Colors.white,
                       child: Container(
                         padding: EdgeInsets.only(left: 50, right: 50),
@@ -611,24 +686,24 @@ class _GroupChatState extends State<GroupChat> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Container(
-                            //   height: 64,
-                            //   width: 65,
-                            //   child: IconButton(
-                            //       icon: Image.asset('assets/images/camera.png'),
-                            //       onPressed: () => _pickImage(
-                            //           ImageSource.camera,
-                            //           currentUser.email,
-                            //           currentUser.userName)),
-                            // ),
+                            Container(
+                              height: 64,
+                              width: 65,
+                              child: IconButton(
+                                  icon: Image.asset('assets/images/camera.png'),
+                                  onPressed: () => _pickImage(
+                                      ImageSource.camera,
+                                      currentUser.email,
+                                      currentUser.userName)),
+                            ),
                             Container(
                               height: 64,
                               width: 65,
                               child: IconButton(
                                   icon: Image.asset(
                                       'assets/images/photo_library.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.gallery,
+                                  onPressed: () => _pickFile(
+                                      //ImageSource.gallery,
                                       currentUser.email,
                                       currentUser.userName)),
                             ),

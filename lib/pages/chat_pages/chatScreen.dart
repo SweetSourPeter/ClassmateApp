@@ -236,7 +236,6 @@ class _ChatScreenState extends State<ChatScreen> {
     //Image selected = await FlutterWebImagePicker.getImage;
 
     //Uint8List selected = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
-    print("1");
     html.File selected =
         await ImagePickerWeb.getImage(outputType: ImageType.file);
 
@@ -244,23 +243,17 @@ class _ChatScreenState extends State<ChatScreen> {
       debugPrint(selected.toString());
     }
 
-    print("2");
-
     setState(() {
       //_imageFile = File.fromRawPath(selected);
       //File(selected.path)
       _imageFile = selected;
     });
 
-    print("3");
-
     if (selected != null) {
       // _uploadFile(myEmail, _imageFile.path);
       _uploadFile(myEmail, _imageFile);
       //print('Image Path $_imageFile');
     }
-
-    print("4");
 
 //    Navigator.push(context, MaterialPageRoute(
 //        builder: (context) => PictureDisplay(imageFile: File(selected.path))
@@ -860,17 +853,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Container(
-                                      //   height: 64,
-                                      //   width: 65,
-                                      //   child: IconButton(
-                                      //       icon: Image.asset(
-                                      //         'assets/images/camera.png',
-                                      //       ),
-                                      //       onPressed: () => _pickImage(
-                                      //           ImageSource.camera,
-                                      //           currentUser.email)),
-                                      // ),
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/camera.png',
+                                            ),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.camera,
+                                                currentUser.email)),
+                                      ),
                                       Container(
                                         height: 64,
                                         width: 65,
@@ -878,9 +871,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                             icon: Image.asset(
                                               'assets/images/photo_library.png',
                                             ),
-                                            onPressed: () => _pickImage(
-                                                ImageSource.gallery,
-                                                currentUser.email)),
+                                            onPressed: () => _pickFile(
+                                                // ImageSource.gallery
+                                                currentUser.email
+                                            )),
                                       ),
                                       // Container(
                                       //   height: 64,
