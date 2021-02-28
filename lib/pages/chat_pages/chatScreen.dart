@@ -325,23 +325,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future _pickFile(myEmail) async {
-    print('11');
     // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
     html.File selected = await FilePicker.getFile() ?? [];
-
-    print('12');
 
     if (selected != null) {
       debugPrint(selected.toString());
     }
 
-    print('13');
-
     setState(() {
       _file = selected;
     });
-
-    print('14');
 
     if (selected != null) {
       _uploadNonImage(myEmail, _file);
@@ -390,7 +383,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
@@ -402,7 +395,7 @@ class _ChatScreenState extends State<ChatScreen> {
             backgroundColor: Color(0xffF9F6F1),
             body: Center(
               child: Container(
-                  width: maxWidth,
+                  width: _width,
                   child: GestureDetector(
                     onTap: () {
                       FocusScopeNode currentFocus = FocusScope.of(context);
@@ -664,8 +657,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         Container(
                           alignment: Alignment.center,
                           height: 74.0,
-                          width:
-                              getRealWidth(MediaQuery.of(context).size.width),
+                          width: MediaQuery.of(context).size.width,
                           color: Colors.white,
                           child: Row(
                             children: [
@@ -724,11 +716,24 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: GestureDetector(
                                     child: showStickerKeyboard
                                         ? Image.asset(
-                                            'assets/images/emoji_on_click.png',
-                                            width: 29,
-                                            height: 27.83)
-                                        : Image.asset('assets/images/emoji.png',
-                                            width: 29, height: 27.83),
+                                            'assets/images/messageSend.png',
+                                            width: 28,
+                                            height: 28)
+                                        // : showFunctions
+                                        // ? Image.asset(
+                                        // 'assets/images/plus_on_click.png',
+                                        // width: 28,
+                                        // height: 28)
+                                        : Image.asset(
+                                            'assets/images/plus_on_click.png',
+                                            width: 28,
+                                            height: 28),
+                                    // ? Image.asset(
+                                    //     'assets/images/emoji_on_click.png',
+                                    //     width: 29,
+                                    //     height: 27.83)
+                                    // : Image.asset('assets/images/emoji.png',
+                                    //     width: 29, height: 27.83),
                                     onTap: () {
                                       if (showTextKeyboard) {
                                         setState(() {
@@ -740,11 +745,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                           }
                                         });
                                       } else {
-                                        if (showFunctions) {
-                                          setState(() {
-                                            showFunctions = false;
-                                          });
-                                        } else {}
+                                        // if (showFunctions) {
+                                        //   setState(() {
+                                        //     showFunctions = false;
+                                        //   });
+                                        // } else {}
                                       }
                                       setState(() {
                                         showStickerKeyboard =
@@ -759,52 +764,52 @@ class _ChatScreenState extends State<ChatScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 10.0, right: 25.0),
-                                child: GestureDetector(
-                                    onTap: () {
-                                      if ((messageController.text != '' ||
-                                          messageController.text.isNotEmpty)) {
-                                        sendMessage(currentUser.email);
-                                      } else {
-                                        if (showTextKeyboard) {
-                                          setState(() {
-                                            FocusScopeNode currentFocus =
-                                                FocusScope.of(context);
-                                            if (!currentFocus.hasPrimaryFocus) {
-                                              currentFocus.unfocus();
-                                              showTextKeyboard = false;
-                                            }
-                                          });
-                                        } else {
-                                          if (showStickerKeyboard) {
-                                            setState(() {
-                                              showStickerKeyboard = false;
-                                            });
-                                          } else {}
-                                        }
-                                        setState(() {
-                                          showFunctions = !showFunctions;
-                                        });
-                                        Timer(
-                                            Duration(milliseconds: 30),
-                                            () => _controller.jumpTo(_controller
-                                                .position.minScrollExtent));
-                                      }
-                                    },
-                                    child: (messageController.text != '' ||
-                                            messageController.text.isNotEmpty)
-                                        ? Image.asset(
-                                            'assets/images/messageSend.png',
-                                            width: 28,
-                                            height: 28)
-                                        : showFunctions
-                                            ? Image.asset(
-                                                'assets/images/plus_on_click.png',
-                                                width: 28,
-                                                height: 28)
-                                            : Image.asset(
-                                                'assets/images/plus_on_click.png',
-                                                width: 28,
-                                                height: 28)),
+                                // child: GestureDetector(
+                                //     onTap: () {
+                                //       if ((messageController.text != '' ||
+                                //           messageController.text.isNotEmpty)) {
+                                //         sendMessage(currentUser.email);
+                                //       } else {
+                                //         if (showTextKeyboard) {
+                                //           setState(() {
+                                //             FocusScopeNode currentFocus =
+                                //                 FocusScope.of(context);
+                                //             if (!currentFocus.hasPrimaryFocus) {
+                                //               currentFocus.unfocus();
+                                //               showTextKeyboard = false;
+                                //             }
+                                //           });
+                                //         } else {
+                                //           if (showStickerKeyboard) {
+                                //             setState(() {
+                                //               showStickerKeyboard = false;
+                                //             });
+                                //           } else {}
+                                //         }
+                                //         setState(() {
+                                //           // showFunctions = !showFunctions;
+                                //         });
+                                //         Timer(
+                                //             Duration(milliseconds: 30),
+                                //             () => _controller.jumpTo(_controller
+                                //                 .position.minScrollExtent));
+                                //       }
+                                //     },
+                                //     child: (messageController.text != '' ||
+                                //             messageController.text.isNotEmpty)
+                                //         ? Image.asset(
+                                //             'assets/images/messageSend.png',
+                                //             width: 28,
+                                //             height: 28)
+                                //         : showFunctions
+                                //             ? Image.asset(
+                                //                 'assets/images/plus_on_click.png',
+                                //                 width: 28,
+                                //                 height: 28)
+                                //             : Image.asset(
+                                //                 'assets/images/plus_on_click.png',
+                                //                 width: 28,
+                                //                 height: 28)),
 
                                 // showFunctions
                                 //     ? Image.asset('assets/images/plus_on_click.png',
@@ -824,24 +829,24 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         showStickerKeyboard
-                            ? AnimatedContainer(
-                                duration: Duration(milliseconds: 80),
-                                // showStickerKeyboard ? 400 : 0,
-                                child: EmojiPicker(
-                                  rows: 4,
-                                  columns: 7,
-                                  buttonMode: ButtonMode.MATERIAL,
-                                  numRecommended: 10,
-                                  onEmojiSelected: (emoji, category) {
-                                    setState(() {
-                                      messageController.text =
-                                          messageController.text + emoji.emoji;
-                                    });
-                                  },
-                                ),
-                              )
-                            : Container(),
-                        showFunctions
+                            //     ? AnimatedContainer(
+                            //         duration: Duration(milliseconds: 80),
+                            //         // showStickerKeyboard ? 400 : 0,
+                            //         child: EmojiPicker(
+                            //           rows: 4,
+                            //           columns: 7,
+                            //           buttonMode: ButtonMode.MATERIAL,
+                            //           numRecommended: 10,
+                            //           onEmojiSelected: (emoji, category) {
+                            //             setState(() {
+                            //               messageController.text =
+                            //                   messageController.text + emoji.emoji;
+                            //             });
+                            //           },
+                            //         ),
+                            //       )
+                            //     : Container(),
+                            // showFunctions
                             ? AnimatedContainer(
                                 duration: Duration(milliseconds: 80),
                                 height: 80,
@@ -855,17 +860,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        height: 64,
-                                        width: 65,
-                                        child: IconButton(
-                                            icon: Image.asset(
-                                              'assets/images/camera.png',
-                                            ),
-                                            onPressed: () => _pickImage(
-                                                ImageSource.camera,
-                                                currentUser.email)),
-                                      ),
+                                      // Container(
+                                      //   height: 64,
+                                      //   width: 65,
+                                      //   child: IconButton(
+                                      //       icon: Image.asset(
+                                      //         'assets/images/camera.png',
+                                      //       ),
+                                      //       onPressed: () => _pickImage(
+                                      //           ImageSource.camera,
+                                      //           currentUser.email)),
+                                      // ),
                                       Container(
                                         height: 64,
                                         width: 65,
@@ -877,10 +882,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 ImageSource.gallery,
                                                 currentUser.email)),
                                       ),
-                                      Container(
-                                        height: 64,
-                                        width: 55,
-                                      ),
+                                      // Container(
+                                      //   height: 64,
+                                      //   width: 55,
+                                      // ),
                                       Container(
                                         height: 64,
                                         width: 55,

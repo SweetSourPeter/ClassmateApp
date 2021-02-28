@@ -47,8 +47,9 @@ class _MyAccountState extends State<MyAccount> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
+        alignment: Alignment.center,
         height: mediaQuery.height,
-        width: sidebarSize,
+        width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -130,14 +131,14 @@ class _MyAccountState extends State<MyAccount> {
                     children: [
                       Positioned(
                         bottom: 0,
-                        left: (_width / 2) - (_height * 0.1465 / 2),
+                        left: (MediaQuery.of(context).size.width / 2) - (_height * 0.1465 / 2),
                         child: CircleAvatar(
                           backgroundColor: themeOrange,
                           radius: _height * 0.1465 / 2,
                         ),
                       ),
                       Positioned(
-                        left: (_width / 2) - (_height * 0.1465 / 2) + 4,
+                        left: (MediaQuery.of(context).size.width / 2) - (_height * 0.1465 / 2) + 4,
                         bottom: 4,
                         child: createUserImage(
                           (_height * 0.1465 - 8) / 2,
@@ -146,7 +147,7 @@ class _MyAccountState extends State<MyAccount> {
                         ),
                       ),
                       Positioned(
-                        left: (_width / 2) - (_height * 0.1465 / 2),
+                        left: (MediaQuery.of(context).size.width / 2) - (_height * 0.1465 / 2),
                         bottom: 0,
                         child: Container(
                             height: _height * 0.1465 * 1.0924,

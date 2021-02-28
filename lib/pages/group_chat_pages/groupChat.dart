@@ -17,11 +17,18 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emoji_picker/emoji_picker.dart';
+// import 'package:emoji_picker/emoji_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:app_test/widgets/widgets.dart';
+
+import 'package:image_picker_web/image_picker_web.dart';
+
+import 'package:universal_html/prefer_universal/html.dart' as html;
+import 'package:firebase/firebase.dart' as fb;
+import 'package:file_picker_web/file_picker_web.dart';
+
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -43,6 +50,7 @@ class GroupChat extends StatefulWidget {
 class _GroupChatState extends State<GroupChat> {
   File _imageFile;
   String _uploadedFileURL;
+  String _link;
   final _picker = ImagePicker();
   bool showStickerKeyboard;
   bool showTextKeyboard;
@@ -244,6 +252,32 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
+    sendLink(myEmail, myName) {
+      if (_uploadedFileURL.isNotEmpty) {
+        final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+        Map<String, dynamic> messageMap = {
+          'message': 'file sent: ' + _link,
+          'messageType': 'text',
+          'sendBy': myEmail,
+          'senderName': myName,
+          'time': lastMessageTime,
+          'senderID': currentUser.userID,
+        };
+
+        databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+        databaseMethods
+            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+        // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
+        // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
+        //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
+        //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
+        // });
+
+        _controller.jumpTo(_controller.position.minScrollExtent);
+        _link = '';
+      }
+    }
+
     Future _uploadFile(myEmail, myName) async {
       String fileName = basename(_imageFile.path);
       firebase_storage.Reference firebaseStorageRef =
@@ -279,7 +313,7 @@ class _GroupChatState extends State<GroupChat> {
       backgroundColor: const Color(0xffF9F6F1),
       body: Center(
           child: Container(
-        width: maxWidth,
+        width: MediaQuery.of(context).size.width,
         child: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -397,7 +431,7 @@ class _GroupChatState extends State<GroupChat> {
               Container(
                 alignment: Alignment.center,
                 height: 74.0,
-                width: getRealWidth(MediaQuery.of(context).size.width),
+                width: MediaQuery.of(context).size.width,
                 color: Colors.white,
                 child: Row(
                   children: [
@@ -453,10 +487,23 @@ class _GroupChatState extends State<GroupChat> {
                       padding: const EdgeInsets.only(left: 14.0),
                       child: GestureDetector(
                           child: showStickerKeyboard
-                              ? Image.asset('assets/images/emoji_on_click.png',
-                                  width: 29, height: 27.83)
-                              : Image.asset('assets/images/emoji.png',
-                                  width: 29, height: 27.83),
+                              ? Image.asset(
+                              'assets/images/messageSend.png',
+                              width: 28,
+                              height: 28)
+                          // : showFunctions
+                          // ? Image.asset(
+                          // 'assets/images/plus_on_click.png',
+                          // width: 28,
+                          // height: 28)
+                              : Image.asset(
+                              'assets/images/plus_on_click.png',
+                              width: 28,
+                              height: 28),
+                              // ? Image.asset('assets/images/emoji_on_click.png',
+                              //     width: 29, height: 27.83)
+                              // : Image.asset('assets/images/emoji.png',
+                              //     width: 29, height: 27.83),
                           onTap: () {
                             if (showTextKeyboard) {
                               setState(() {
@@ -468,14 +515,14 @@ class _GroupChatState extends State<GroupChat> {
                                 }
                               });
                             } else {
-                              if (showFunctions) {
-                                setState(() {
-                                  showFunctions = false;
-                                });
-                              } else {}
+                              // if (showFunctions) {
+                              //   setState(() {
+                              //     showFunctions = false;
+                              //   });
+                              // } else {}
                             }
                             setState(() {
-                              showStickerKeyboard = !showStickerKeyboard;
+                              // showStickerKeyboard = !showStickerKeyboard;
                             });
                             Timer(
                                 Duration(milliseconds: 30),
@@ -485,74 +532,74 @@ class _GroupChatState extends State<GroupChat> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 25.0),
-                      child: GestureDetector(
-                          onTap: () {
-                            if ((messageController.text != '' ||
-                                messageController.text.isNotEmpty)) {
-                              sendMessage(
-                                  currentUser.email, currentUser.userName);
-                            } else {
-                              if (showTextKeyboard) {
-                                setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
-                                });
-                              } else {
-                                if (showStickerKeyboard) {
-                                  setState(() {
-                                    showStickerKeyboard = false;
-                                  });
-                                } else {}
-                              }
-                              setState(() {
-                                showFunctions = !showFunctions;
-                              });
-                              Timer(
-                                  Duration(milliseconds: 30),
-                                  () => _controller.jumpTo(
-                                      _controller.position.minScrollExtent));
-                            }
-                          },
-                          child: (messageController.text != '' ||
-                                  messageController.text.isNotEmpty)
-                              ? Image.asset('assets/images/messageSend.png',
-                                  width: 28, height: 28)
-                              : showFunctions
-                                  ? Image.asset(
-                                      'assets/images/plus_on_click.png',
-                                      width: 28,
-                                      height: 28)
-                                  : Image.asset(
-                                      'assets/images/plus_on_click.png',
-                                      width: 28,
-                                      height: 28)),
+                      // child: GestureDetector(
+                      //     onTap: () {
+                      //       if ((messageController.text != '' ||
+                      //           messageController.text.isNotEmpty)) {
+                      //         sendMessage(
+                      //             currentUser.email, currentUser.userName);
+                      //       } else {
+                      //         if (showTextKeyboard) {
+                      //           setState(() {
+                      //             FocusScopeNode currentFocus =
+                      //                 FocusScope.of(context);
+                      //             if (!currentFocus.hasPrimaryFocus) {
+                      //               currentFocus.unfocus();
+                      //               showTextKeyboard = false;
+                      //             }
+                      //           });
+                      //         } else {
+                      //           if (showStickerKeyboard) {
+                      //             setState(() {
+                      //               showStickerKeyboard = false;
+                      //             });
+                      //           } else {}
+                      //         }
+                      //         setState(() {
+                      //           showFunctions = !showFunctions;
+                      //         });
+                      //         Timer(
+                      //             Duration(milliseconds: 30),
+                      //             () => _controller.jumpTo(
+                      //                 _controller.position.minScrollExtent));
+                      //       }
+                      //     },
+                      //     child: (messageController.text != '' ||
+                      //             messageController.text.isNotEmpty)
+                      //         ? Image.asset('assets/images/messageSend.png',
+                      //             width: 28, height: 28)
+                      //         : showFunctions
+                      //             ? Image.asset(
+                      //                 'assets/images/plus_on_click.png',
+                      //                 width: 28,
+                      //                 height: 28)
+                      //             : Image.asset(
+                      //                 'assets/images/plus_on_click.png',
+                      //                 width: 28,
+                      //                 height: 28)),
                     )
                   ],
                 ),
               ),
               showStickerKeyboard
-                  ? AnimatedContainer(
-                      duration: Duration(milliseconds: 80),
-                      // showStickerKeyboard ? 400 : 0,
-                      child: EmojiPicker(
-                        rows: 4,
-                        columns: 7,
-                        buttonMode: ButtonMode.MATERIAL,
-                        numRecommended: 10,
-                        onEmojiSelected: (emoji, category) {
-                          setState(() {
-                            messageController.text =
-                                messageController.text + emoji.emoji;
-                          });
-                        },
-                      ),
-                    )
-                  : Container(),
-              showFunctions
+              //     ? AnimatedContainer(
+              //         duration: Duration(milliseconds: 80),
+              //         // showStickerKeyboard ? 400 : 0,
+              //         child: EmojiPicker(
+              //           rows: 4,
+              //           columns: 7,
+              //           buttonMode: ButtonMode.MATERIAL,
+              //           numRecommended: 10,
+              //           onEmojiSelected: (emoji, category) {
+              //             setState(() {
+              //               messageController.text =
+              //                   messageController.text + emoji.emoji;
+              //             });
+              //           },
+              //         ),
+              //       )
+              //     : Container(),
+              // showFunctions
                   ? AnimatedContainer(
                       duration: Duration(milliseconds: 80),
                       height: 80,
@@ -564,16 +611,16 @@ class _GroupChatState extends State<GroupChat> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 64,
-                              width: 65,
-                              child: IconButton(
-                                  icon: Image.asset('assets/images/camera.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.camera,
-                                      currentUser.email,
-                                      currentUser.userName)),
-                            ),
+                            // Container(
+                            //   height: 64,
+                            //   width: 65,
+                            //   child: IconButton(
+                            //       icon: Image.asset('assets/images/camera.png'),
+                            //       onPressed: () => _pickImage(
+                            //           ImageSource.camera,
+                            //           currentUser.email,
+                            //           currentUser.userName)),
+                            // ),
                             Container(
                               height: 64,
                               width: 65,
@@ -585,11 +632,11 @@ class _GroupChatState extends State<GroupChat> {
                                       currentUser.email,
                                       currentUser.userName)),
                             ),
-                            Container(
-                              height: 64,
-                              width: 55,
-                              color: Colors.white,
-                            ),
+                            // Container(
+                            //   height: 64,
+                            //   width: 55,
+                            //   color: Colors.white,
+                            // ),
                             Container(
                               height: 64,
                               width: 55,
