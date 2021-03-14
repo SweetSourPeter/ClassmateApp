@@ -4,13 +4,20 @@ import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';
 import 'pages/my_pages/my_account.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io' show Platform;
+
 class MainMenu extends StatefulWidget {
+  final UserData myData;
+
+  MainMenu({this.myData});
   @override
   _MainMenuState createState() => _MainMenuState();
 }
@@ -26,13 +33,42 @@ class _MainMenuState extends State<MainMenu> {
   double xOffset = 0;
   double yOffset = 0;
   double scaleFactor = 1;
-
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   @override
   void initState() {
     super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
     WidgetsBinding.instance.addPostFrameCallback(getPosition);
+    registerNotification(widget.myData);
+  }
+
+  void registerNotification(UserData currentUser) {
+    firebaseMessaging.requestNotificationPermissions();
+
+    firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
+      print('onMessage: $message');
+      Platform.isAndroid
+          ? print(message['notification'])
+          : print(message['aps']['alert']);
+      return;
+    }, onResume: (Map<String, dynamic> message) {
+      print('onResume: $message');
+      return;
+    }, onLaunch: (Map<String, dynamic> message) {
+      print('onLaunch: $message');
+      return;
+    });
+
+    firebaseMessaging.getToken().then((token) {
+      print('token: $token');
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.userID)
+          .update({'pushToken': token});
+    }).catchError((err) {
+      Fluttertoast.showToast(msg: err.message.toString());
+    });
   }
 
   getPosition(duration) {
@@ -87,9 +123,7 @@ class _MainMenuState extends State<MainMenu> {
                             userData: userdata,
                           )
                         : _currentIndex == 1
-                            ? ChatRoom(
-                                myData: userdata
-                              )
+                            ? ChatRoom(myData: userdata)
                             : MyAccount(
                                 key: globalKey,
                               ),

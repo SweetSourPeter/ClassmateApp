@@ -37,7 +37,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   Widget chatRoomsList(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -146,19 +146,16 @@ class _ChatRoomState extends State<ChatRoom> {
 
   void configLocalNotification() {
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
+        new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS);
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid
-          ? 'com.nacc.android'
-          : 'com.na-cc.ios',
+      Platform.isAndroid ? 'com.nacc.android' : 'com.na-cc.ios',
       'Meechu Notification',
       'This channel is for pushing notification of new messages in Meechu',
       playSound: true,

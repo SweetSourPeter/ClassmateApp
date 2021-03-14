@@ -254,7 +254,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: <Widget>[
                 Image.file(
                   _imageFile,
-                  width: MediaQuery.of(context).size.width/2,
+                  width: MediaQuery.of(context).size.width / 2,
                 )
               ],
             ),
@@ -682,29 +682,29 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: const EdgeInsets.only(left: 10.0, right: 25.0),
                         child: GestureDetector(
                             onTap: () {
-                                if (showTextKeyboard) {
-                                  setState(() {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                      showTextKeyboard = false;
-                                    }
-                                  });
-                                } else {
-                                  if (showStickerKeyboard) {
-                                    setState(() {
-                                      showStickerKeyboard = false;
-                                    });
-                                  } else {}
-                                }
+                              if (showTextKeyboard) {
                                 setState(() {
-                                  showFunctions = !showFunctions;
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                    showTextKeyboard = false;
+                                  }
                                 });
-                                Timer(
-                                    Duration(milliseconds: 30),
-                                    () => _controller.jumpTo(
-                                        _controller.position.minScrollExtent));
+                              } else {
+                                if (showStickerKeyboard) {
+                                  setState(() {
+                                    showStickerKeyboard = false;
+                                  });
+                                } else {}
+                              }
+                              setState(() {
+                                showFunctions = !showFunctions;
+                              });
+                              Timer(
+                                  Duration(milliseconds: 30),
+                                  () => _controller.jumpTo(
+                                      _controller.position.minScrollExtent));
                             },
                             child: (showStickerKeyboard || showTextKeyboard)
                                 ? GestureDetector(
@@ -766,7 +766,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                       'assets/images/camera.png',
                                     ),
                                     onPressed: () {
-                                      _pickImage(ImageSource.camera, currentUser.email, context, currentUser);
+                                      _pickImage(
+                                          ImageSource.camera,
+                                          currentUser.email,
+                                          context,
+                                          currentUser);
                                     }),
                               ),
                               Container(
@@ -777,12 +781,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                       'assets/images/photo_library.png',
                                     ),
                                     onPressed: () => _pickImage(
-                                      ImageSource.gallery,
-                                      currentUser.email,
-                                      context,
-                                      currentUser
-                                    )
-                                ),
+                                        ImageSource.gallery,
+                                        currentUser.email,
+                                        context,
+                                        currentUser)),
                               ),
                               Container(
                                 height: 64,
@@ -894,13 +896,15 @@ class MessageTile extends StatelessWidget {
                                       topLeft: Radius.circular(12),
                                       bottomLeft: Radius.circular(12)),
                                   color: const Color(0xffF7D5C5)),
-                              child: SelectableText(message,
-                                  textAlign: TextAlign.start,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                              child: SelectableText(
+                                message,
+                                textAlign: TextAlign.start,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                                toolbarOptions:
+                                    ToolbarOptions(selectAll: true, copy: true),
                               ),
                             ),
                           ),
@@ -935,13 +939,15 @@ class MessageTile extends StatelessWidget {
                                       topRight: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
                                   color: Colors.white),
-                              child: SelectableText(message,
-                                  textAlign: TextAlign.start,
-                                  style: GoogleFonts.openSans(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
+                              child: SelectableText(
+                                message,
+                                textAlign: TextAlign.start,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                                toolbarOptions:
+                                    ToolbarOptions(selectAll: true, copy: true),
                               ),
                             ),
                           ),
