@@ -19,11 +19,13 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
 }
 
+// http://universities.hipolabs.com/search?name=University%20of%20California,%20Santa%20Barbara
 class _SignUpPageState extends State<SignUpPage> {
   String _selectedSchool;
   List<String> _schools = [
     "Boston University",
-    "pennsylvania state university",
+    "University of California, Santa Barbara",
+    "Pennsylvania State University",
   ];
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
