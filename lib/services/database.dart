@@ -552,14 +552,16 @@ class DatabaseMethods {
         .update({'unread': (unread + 1)});
   }
 
-  addOneToUnreadGroupChatNumberForAllMembers(String courseId) async {
+  addOneToUnreadGroupChatNumberForOtherMembers(String courseId, String myId) async {
     List<String> listOfUserId = [];
     await getUserIdOfOtherMembersInCourse(courseId).then((value) {
       listOfUserId = value;
     });
 
     for (var i = 0; i < listOfUserId.length; i++) {
-      await addOneToUnreadGroupChatNumber(courseId, listOfUserId[i]);
+      if (listOfUserId[i] != myId) {
+        await addOneToUnreadGroupChatNumber(courseId, listOfUserId[i]);
+      }
     }
   }
 

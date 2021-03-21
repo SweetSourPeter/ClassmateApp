@@ -140,6 +140,8 @@ class _SignInState extends State<SignIn> {
           ),
           onPressed: () {
             signMeIn();
+            emailTextEditingController.clear();
+            passwordTextEditingController.clear();
           },
           child: AutoSizeText(
             'Continue',

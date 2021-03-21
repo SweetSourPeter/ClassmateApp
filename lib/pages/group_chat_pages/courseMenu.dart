@@ -294,6 +294,8 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                       child: GestureDetector(
                         onTap: () {
                           //TODO navigate into course fourm
+                          databaseMethods.setUnreadGroupChatNumberToZero(
+                              course[index].courseID, userdata.userID);
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return MultiProvider(
@@ -309,6 +311,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                 courseId: course[index].courseID,
                                 myEmail: userdata.email,
                                 myName: userdata.userName,
+                                myId: userdata.userID,
                                 initialChat: 0,
                               ),
                             );

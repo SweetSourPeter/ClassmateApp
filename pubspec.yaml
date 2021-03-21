@@ -66,6 +66,7 @@ dependencies:
   jitsi_meet: ^2.0.0
   lottie: ^0.7.0+1
   share: ^0.6.5+4
+  upgrader: ^2.8.2
 
 
 dev_dependencies:

@@ -182,7 +182,7 @@ class _GroupChatState extends State<GroupChat> {
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
       databaseMethods
-          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
       // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
       // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -208,7 +208,7 @@ class _GroupChatState extends State<GroupChat> {
     };
 
     databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-    databaseMethods.addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
     // _controller.jumpTo(_controller.position.minScrollExtent);
     // messageController.text = '';
   }
@@ -228,7 +228,7 @@ class _GroupChatState extends State<GroupChat> {
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
       databaseMethods
-          .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
 
       _controller.jumpTo(_controller.position.minScrollExtent);
       _uploadedFileURL = '';
@@ -307,8 +307,8 @@ class _GroupChatState extends State<GroupChat> {
       });
     });
 
-    databaseMethods.setUnreadGroupChatNumberToZero(
-        widget.courseId, widget.myId);
+    // databaseMethods.setUnreadGroupChatNumberToZero(
+    //     widget.courseId, widget.myId);
 
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
@@ -421,8 +421,8 @@ class _GroupChatState extends State<GroupChat> {
                               color: const Color(0xFFFF7E40),
                               onPressed: () {
                                 // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                                databaseMethods.setUnreadGroupChatNumberToZero(
-                                    widget.courseId, currentUser.userID);
+                                // databaseMethods.setUnreadGroupChatNumberToZero(
+                                //     widget.courseId, currentUser.userID);
                                 Navigator.of(context).pop();
                               },
                             ),
