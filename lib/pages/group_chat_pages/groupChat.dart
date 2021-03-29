@@ -28,6 +28,7 @@ import 'package:image_picker_web/image_picker_web.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
 import 'package:file_picker_web/file_picker_web.dart';
+import 'dart:html' as html;
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -51,7 +52,9 @@ class _GroupChatState extends State<GroupChat> {
   html.File _file;
   String _uploadedFileURL;
   String _link;
-  final _picker = ImagePicker();
+  String messageUrl;
+  String fileName;
+  // final _picker = ImagePicker();
   bool showStickerKeyboard;
   bool showTextKeyboard;
   DatabaseMethods databaseMethods = new DatabaseMethods();
@@ -107,40 +110,95 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
-                  return snapshot.data.documents[index].data()['messageType'] ==
-                          'text'
-                      ? MessageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
-                              1.0,
-                        )
-                      : ImageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
-                              1.0,
-                        );
+                  if (snapshot.data.documents[index].data()['messageType'] == 'text') {
+                    return MessageTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      snapshot.data.documents[index].data()['senderName'],
+                      snapshot.data.documents[index].data()['senderID'],
+                      snapshot.data.documents[index]
+                          .data()['profileColor'] ??
+                          1.0,
+                    );
+                  } else if (snapshot.data.documents[index].data()['messageType'] == 'image') {
+                    return ImageTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      snapshot.data.documents[index].data()['senderName'],
+                      snapshot.data.documents[index].data()['senderID'],
+                      snapshot.data.documents[index]
+                          .data()['profileColor'] ??
+                          1.0,
+                    );
+                  } else {
+                    return FileTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      snapshot.data.documents[index].data()['senderName'],
+                      snapshot.data.documents[index].data()['senderID'],
+                      snapshot.data.documents[index]
+                          .data()['profileColor'] ??
+                          1.0,
+                      _link = snapshot.data.documents[index].data()['message'],
+                      fileName = snapshot.data.documents[index].data()['fileName'],
+                    );
+                  }
+
+                  // return snapshot.data.documents[index].data()['messageType'] ==
+                  //         'text'
+                  //     ? MessageTile(
+                  //         snapshot.data.documents[index].data()['message'],
+                  //         snapshot.data.documents[index].data()['sendBy'] ==
+                  //             myEmail,
+                  //         DateTime.fromMillisecondsSinceEpoch(
+                  //                 snapshot.data.documents[index].data()['time'])
+                  //             .toString(),
+                  //         displayTime,
+                  //         displayWeek,
+                  //         lastMessage,
+                  //         snapshot.data.documents[index].data()['senderName'],
+                  //         snapshot.data.documents[index].data()['senderID'],
+                  //         snapshot.data.documents[index]
+                  //                 .data()['profileColor'] ??
+                  //             1.0,
+                  //       )
+                  //     : ImageTile(
+                  //         snapshot.data.documents[index].data()['message'],
+                  //         snapshot.data.documents[index].data()['sendBy'] ==
+                  //             myEmail,
+                  //         DateTime.fromMillisecondsSinceEpoch(
+                  //                 snapshot.data.documents[index].data()['time'])
+                  //             .toString(),
+                  //         displayTime,
+                  //         displayWeek,
+                  //         lastMessage,
+                  //         snapshot.data.documents[index].data()['senderName'],
+                  //         snapshot.data.documents[index].data()['senderID'],
+                  //         snapshot.data.documents[index]
+                  //                 .data()['profileColor'] ??
+                  //             1.0,
+                  //       );
                 })
             : Container();
       },
@@ -253,11 +311,13 @@ class _GroupChatState extends State<GroupChat> {
     }
 
     sendLink(myEmail, myName) {
-      if (_uploadedFileURL.isNotEmpty) {
+      if (_link.isNotEmpty) {
         final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
         Map<String, dynamic> messageMap = {
-          'message': 'file sent: ' + _link,
-          'messageType': 'text',
+          'message': _link,
+          'fileName': fileName,
+          'messageUrl': _link,
+          'messageType': 'file',
           'sendBy': myEmail,
           'senderName': myName,
           'time': lastMessageTime,
@@ -275,6 +335,7 @@ class _GroupChatState extends State<GroupChat> {
 
         _controller.jumpTo(_controller.position.minScrollExtent);
         _link = '';
+        fileName = '';
       }
     }
 
@@ -322,17 +383,16 @@ class _GroupChatState extends State<GroupChat> {
       Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
       print(imageUri);
 
-      _uploadedFileURL = imageUri.toString();
+      //_uploadedFileURL = imageUri.toString();
       _link = imageUri.toString();
+      messageUrl = _link;
+      fileName = f.name;
 
       sendLink(myEmail, myName);
       //return imageUri;
     }
 
     Future _pickImage(ImageSource source, myEmail, myName) async {
-      //Image selected = await FlutterWebImagePicker.getImage;
-
-      //Uint8List selected = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
       html.File selected =
           await ImagePickerWeb.getImage(outputType: ImageType.file);
 
@@ -341,20 +401,12 @@ class _GroupChatState extends State<GroupChat> {
       }
 
       setState(() {
-        //_imageFile = File.fromRawPath(selected);
-        //File(selected.path)
         _imageFile = selected;
       });
 
       if (selected != null) {
-        // _uploadFile(myEmail, _imageFile.path);
         _uploadFile(myEmail, myName, _imageFile);
-        //print('Image Path $_imageFile');
       }
-
-//    Navigator.push(context, MaterialPageRoute(
-//        builder: (context) => PictureDisplay(imageFile: File(selected.path))
-//    ));
     }
 
     Future _pickFile(myEmail, myName) async {
@@ -1168,6 +1220,317 @@ class ImageTile extends StatelessWidget {
                   ],
                 ),
               ),
+        SizedBox(
+          height: lastMessage ? 20 : 0,
+        )
+      ],
+    );
+  }
+}
+
+class FileTile extends StatelessWidget {
+  final String message;
+  final bool isSendByMe;
+  final String currentTime;
+  final bool displayTime;
+  final bool displayWeek;
+  final bool lastMessage;
+  final String senderName;
+  final String senderID;
+  final double profileColor;
+  final String messageUrl;
+  final String fileName;
+
+  FileTile(
+      this.message,
+      this.isSendByMe,
+      this.currentTime,
+      this.displayTime,
+      this.displayWeek,
+      this.lastMessage,
+      this.senderName,
+      this.senderID,
+      this.profileColor,
+      this.messageUrl,
+      this.fileName);
+
+  @override
+  Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+
+    return Column(
+      children: [
+        displayWeek
+            ? displayTime
+            ? Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              DateFormat('EEEE')
+                  .format(DateTime.parse(currentTime))
+                  .substring(0, 3) +
+                  ', ' +
+                  DateFormat('MMMM')
+                      .format(DateTime.parse(currentTime))
+                      .substring(0, 3) +
+                  ' ' +
+                  DateFormat('d').format(DateTime.parse(currentTime)),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        )
+            : Container()
+            : displayTime
+            ? Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              currentTime.substring(0, currentTime.length - 13),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        )
+            : Container(),
+        // Message Box
+        isSendByMe
+            ? Container(
+          padding: EdgeInsets.only(top: 20, right: 25),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () {
+                          html.window.open(messageUrl, 'PlaceholderName');
+                          //downloadFile(messageUrl);
+                        },
+                        // onTap: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => PreviewImage(
+                        //         imageUrl: message,
+                        //       ),
+                        //     ),
+                        //   );
+                        // },
+                        child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Stack(
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 130,
+                                        height: 80,
+                                        color: const Color(0xff00838f),
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.insert_drive_file,
+                                            color: const Color(0xfff9fbe7),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                              'file: ' + fileName,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: const Color(0xfff9fbe7),
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                      width: 130,
+                                      height: 40,
+                                      color: const Color(0xff26c6da),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.file_download,
+                                          color: const Color(0xfff9fbe7),
+                                        ),
+                                        //onPressed: () => downloadFile(message.fileUrl)
+                                      )
+                                  )
+                                ],
+                              ),
+                            )
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+            : Container(
+          padding: EdgeInsets.only(top: 20, left: 25),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Sender's name
+
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return MultiProvider(
+                              providers: [
+                                Provider<UserData>.value(
+                                  value: userdata,
+                                ),
+                                Provider<List<CourseInfo>>.value(
+                                  value: currentCourse,
+                                ),
+                              ],
+                              child: FriendProfile(
+                                userID:
+                                senderID, // to be modified to friend's ID
+                              ),
+                            );
+                          }));
+                    },
+                    child: Text(
+                      senderName ?? ' ',
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: listProfileColor[profileColor.toInt()],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () {
+                          html.window.open(messageUrl, 'PlaceholderName');
+                          //downloadFile(messageUrl);
+                        },
+                        // onTap: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => PreviewImage(
+                        //         imageUrl: message,
+                        //       ),
+                        //     ),
+                        //   );
+                        // },
+                        child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Stack(
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 130,
+                                        height: 80,
+                                        color: const Color(0xff00838f),
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.insert_drive_file,
+                                            color: const Color(0xfff9fbe7),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                              'file: ' + fileName,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: const Color(0xfff9fbe7),
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                      width: 130,
+                                      height: 40,
+                                      color: const Color(0xff26c6da),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.file_download,
+                                          color: const Color(0xfff9fbe7),
+                                        ),
+                                        //onPressed: () => downloadFile(message.fileUrl)
+                                      )
+                                  )
+                                ],
+                              ),
+                            )
+                        ),
+                      ),
+                    ),
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )
