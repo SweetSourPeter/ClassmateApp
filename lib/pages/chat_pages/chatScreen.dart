@@ -174,7 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // print(widget.chatRoomId);
     databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
     databaseMethods.setLastestMessage(
-        widget.chatRoomId, messageController.text, lastMessageTime);
+        widget.chatRoomId, 'Your are invited to a video call', lastMessageTime);
     databaseMethods
         .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
         .then((value) {
