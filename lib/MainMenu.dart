@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';
 import 'pages/my_pages/my_account.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -67,7 +66,8 @@ class _MainMenuState extends State<MainMenu> {
           .doc(currentUser.userID)
           .update({'pushToken': token});
     }).catchError((err) {
-      Fluttertoast.showToast(msg: err.message.toString());
+      // Fluttertoast.showToast(msg: err.message.toString());
+      print(err);
     });
   }
 
