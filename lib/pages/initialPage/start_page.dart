@@ -134,7 +134,7 @@ class _StartPageState extends State<StartPage> {
                 top: _currentIndex == 2 ? -_height : _height * 0.004,
                 left: _width / 2 - (156 / 2), //logo widget width/2
                 child: TweenAnimationBuilder(
-                  child: LogoWidget(),
+                  child: LogoWidget(140, 156),
                   duration: Duration(milliseconds: 300),
                   curve: Curves.elasticOut,
                   tween: findAnimation('logo_scale', 0.0, animationlist),

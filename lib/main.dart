@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:app_test/web_initial_pages/web_wrapper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           highlightColor: themeOrange, // color for scroll bar
         ),
-        home: SplashScreen(),
+        home: WebWrapper(),
       ),
     );
   }
