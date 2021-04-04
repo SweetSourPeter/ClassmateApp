@@ -1493,19 +1493,51 @@ class FileTile extends StatelessWidget {
                     Flexible(
                       child: GestureDetector(
                         onTap: ()async{
-                          final status = await Permission.storage.request();
-                          if (status.isGranted) {
-                            final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-                            final String downloadsPath = downloadsDirectory.path;
+                          if (Platform.isAndroid) {
+                            final status = await Permission.storage.request();
+                            if (status.isGranted) {
+                              final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+                              final String downloadsPath = downloadsDirectory.path;
 
-                            FlutterDownloader.enqueue(
-                              url: messageUrl,
-                              savedDir: downloadsPath,
-                              showNotification: true, // show download progress in status bar (for Android)
-                              openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-                            );
+                              //final externalDir = await context.getExternalFilesDir();
+                              // print("messageUrl = " + messageUrl);
+
+                              FlutterDownloader.enqueue(
+                                url: messageUrl,
+                                savedDir: downloadsPath,
+                                showNotification: true, // show download progress in status bar (for Android)
+                                openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+                                fileName: 'download',
+                              );
+                            } else {
+                              print("Permission denied");
+                            }
                           } else {
-                            print("Permission denied");
+                            //  is ios, we doesn't support ios until this feature has been added
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return new AlertDialog(
+                                    title: const Text('Notification'),
+                                    content: new Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text("IOS not supported for file download"),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        textColor: Theme.of(context).primaryColor,
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
+                                  );
+                                }
+                            );
                           }
                           //html.window.open(message, 'PlaceholderName');
                           // downloadFile(messageUrl);
@@ -1596,21 +1628,51 @@ class FileTile extends StatelessWidget {
                     Flexible(
                       child: GestureDetector(
                         onTap: ()async{
-                          final status = await Permission.storage.request();
-                          if (status.isGranted) {
-                            final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-                            final String downloadsPath = downloadsDirectory.path;
+                          if (Platform.isAndroid) {
+                            final status = await Permission.storage.request();
+                            if (status.isGranted) {
+                              final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+                              final String downloadsPath = downloadsDirectory.path;
 
-                            //final externalDir = await context.getExternalFilesDir();
+                              //final externalDir = await context.getExternalFilesDir();
+                              // print("messageUrl = " + messageUrl);
 
-                            FlutterDownloader.enqueue(
-                              url: messageUrl,
-                              savedDir: downloadsPath,
-                              showNotification: true, // show download progress in status bar (for Android)
-                              openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-                            );
+                              FlutterDownloader.enqueue(
+                                url: messageUrl,
+                                savedDir: downloadsPath,
+                                showNotification: true, // show download progress in status bar (for Android)
+                                openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+                                fileName: 'download',
+                              );
+                            } else {
+                              print("Permission denied");
+                            }
                           } else {
-                            print("Permission denied");
+                            //  is ios, we doesn't support ios until this feature has been added
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return new AlertDialog(
+                                    title: const Text('Notification'),
+                                    content: new Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text("IOS not supported for file download"),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        textColor: Theme.of(context).primaryColor,
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
+                                  );
+                                }
+                            );
                           }
                           //html.window.open(message, 'PlaceholderName');
                           // downloadFile(messageUrl);
@@ -1699,13 +1761,13 @@ class FileTile extends StatelessWidget {
   }
 }
 
-downloadFile(String fileUrl) async {
-  final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-  final String downloadsPath = downloadsDirectory.path;
-  await FlutterDownloader.enqueue(
-    url: fileUrl,
-    savedDir: downloadsPath,
-    showNotification: true, // show download progress in status bar (for Android)
-    openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-  );
-}
+// downloadFile(String fileUrl) async {
+//   final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+//   final String downloadsPath = downloadsDirectory.path;
+//   await FlutterDownloader.enqueue(
+//     url: fileUrl,
+//     savedDir: downloadsPath,
+//     showNotification: true, // show download progress in status bar (for Android)
+//     openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+//   );
+// }
