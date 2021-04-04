@@ -341,12 +341,12 @@ class _SignUpPageState extends State<SignUpPage> {
         },
         child: SafeArea(
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             key: _scaffoldKey,
             body: isLoading
                 ? Container(child: LoadingScreen(themeOrange))
                 : Scaffold(
-                    resizeToAvoidBottomPadding: false,
+                    resizeToAvoidBottomInset: false,
                     backgroundColor: themeOrange,
                     body: SingleChildScrollView(
                       child: Column(

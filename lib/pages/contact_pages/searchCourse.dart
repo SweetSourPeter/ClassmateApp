@@ -39,7 +39,7 @@ class _SearchCourseState extends State<SearchCourse> {
       body: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomPadding: true,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: Colors.white,

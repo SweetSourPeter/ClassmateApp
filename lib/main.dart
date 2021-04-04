@@ -15,10 +15,17 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  //initialize for download plugin
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(
+      debug: true // optional: set false to disable printing logs to console
+  );
 
   runApp(MyApp());
 }

@@ -78,7 +78,7 @@ class _SecondPageState extends State<SecondPage>
         child: Form(
           key: formKey,
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             backgroundColor: themeOrange,
             body: SingleChildScrollView(
               child: Column(

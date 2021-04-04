@@ -184,7 +184,7 @@ class _EmailVerifySentState extends State<EmailVerifySent> {
         },
         child: Scaffold(
           backgroundColor: themeOrange,
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,

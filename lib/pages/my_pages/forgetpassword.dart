@@ -230,7 +230,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           },
           child: Scaffold(
             backgroundColor: themeOrange,
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             body: isLoading
                 ? LoadingScreen(themeOrange)
                 : SingleChildScrollView(

@@ -23,6 +23,13 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:jitsi_meet/feature_flag/feature_flag.dart';
+import 'package:universal_html/prefer_universal/html.dart' as html;
+// import 'dart:html' as html;
+// import 'package:firebase/firebase.dart' as fb;
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -48,6 +55,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   File _imageFile;
+  File _file;
   String _uploadedFileURL;
   final _picker = ImagePicker();
   bool showStickerKeyboard;
@@ -61,6 +69,9 @@ class _ChatScreenState extends State<ChatScreen> {
   List<String> friendCourse = List<String>();
   ScrollController _controller;
   FocusNode myFocusNode = FocusNode();
+  String _link;
+  String messageUrl;
+  String fileName;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -103,29 +114,67 @@ class _ChatScreenState extends State<ChatScreen> {
                     displayWeek = false;
                   }
 
-                  return snapshot.data.documents[index].data()['messageType'] ==
-                          'text'
-                      ? MessageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage)
-                      : ImageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                        );
+                  if (snapshot.data.documents[index].data()['messageType'] == 'text') {
+                    return MessageTile(
+                        snapshot.data.documents[index].data()['message'],
+                        snapshot.data.documents[index].data()['sendBy'] ==
+                            myEmail,
+                        DateTime.fromMillisecondsSinceEpoch(
+                            snapshot.data.documents[index].data()['time'])
+                            .toString(),
+                        displayTime,
+                        displayWeek,
+                        lastMessage);
+                  } else if (snapshot.data.documents[index].data()['messageType'] == 'image') {
+                    return ImageTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,);
+                  } else {
+                    return FileTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      _link = snapshot.data.documents[index].data()['message'],
+                      fileName = snapshot.data.documents[index].data()['fileName'],
+                    );
+                  }
+
+                  // return snapshot.data.documents[index].data()['messageType'] ==
+                  //         'text'
+                  //     ? MessageTile(
+                  //         snapshot.data.documents[index].data()['message'],
+                  //         snapshot.data.documents[index].data()['sendBy'] ==
+                  //             myEmail,
+                  //         DateTime.fromMillisecondsSinceEpoch(
+                  //                 snapshot.data.documents[index].data()['time'])
+                  //             .toString(),
+                  //         displayTime,
+                  //         displayWeek,
+                  //         lastMessage)
+                  //     : ImageTile(
+                  //         snapshot.data.documents[index].data()['message'],
+                  //         snapshot.data.documents[index].data()['sendBy'] ==
+                  //             myEmail,
+                  //         DateTime.fromMillisecondsSinceEpoch(
+                  //                 snapshot.data.documents[index].data()['time'])
+                  //             .toString(),
+                  //         displayTime,
+                  //         displayWeek,
+                  //         lastMessage,
+                  //       );
                 })
             : Container();
       },
@@ -219,6 +268,39 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  sendFile(myEmail) {
+    if (_link.isNotEmpty) {
+      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> messageMap = {
+        'message': _link,
+        'fileName': fileName,
+        'messageUrl': _link,
+        'messageType': 'file',
+        'sendBy': myEmail,
+        'time': lastMessageTime,
+      };
+      // print(widget.chatRoomId);
+      databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+      databaseMethods.setLastestMessage(
+          widget.chatRoomId, messageController.text, lastMessageTime);
+      databaseMethods
+          .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
+          .then((value) {
+        final unreadNumber = value.data()[widget.friendEmail
+            .substring(0, widget.friendEmail.indexOf('@')) +
+            'unread'] +
+            1;
+        databaseMethods.setUnreadNumber(
+            widget.chatRoomId, widget.friendEmail, unreadNumber);
+      });
+
+      _controller.jumpTo(_controller.position.minScrollExtent);
+      messageController.text = '';
+      _link = '';
+      fileName = '';
+    }
+  }
+
   Future _pickImage(ImageSource source, myEmail, context, currentUser) async {
     PickedFile selected = await _picker.getImage(source: source);
 
@@ -252,6 +334,42 @@ class _ChatScreenState extends State<ChatScreen> {
 //    ));
   }
 
+  Future<void> _uploadNonImage(myEmail, File f, {String fName}) async {
+    // fName = f.name;
+    // fName = basename(f.path);
+    // fb.StorageReference storageRef = fb.storage().ref('images/$fName');
+    //
+    // fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(f).future;
+    //
+    // Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+    // print(imageUri);
+    //
+    // //_uploadedFileURL = imageUri.toString();
+    // _link = imageUri.toString();
+    // messageUrl = _link;
+    // fileName = fName;
+    // //print('file name of this file is' + fileName);
+    //
+    // sendFile(myEmail);
+    //return imageUri;
+
+    fileName = basename(f.path);
+    firebase_storage.Reference firebaseStorageRef =
+    firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask =
+    firebaseStorageRef.putFile(f);
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+      setState(() {
+        _uploadedFileURL = downloadUrl;
+        // print('picture uploaded');
+        // print(_uploadedFileURL);
+        sendFile(myEmail);
+      });
+    });
+  }
+
+
   Future _uploadFile(myEmail) async {
     String fileName = basename(_imageFile.path);
     firebase_storage.Reference firebaseStorageRef =
@@ -268,6 +386,23 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     });
   }
+
+  Future _pickFile(myEmail) async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    if(result != null) {
+      setState(() {
+        _file = File(result.files.single.path);
+      });
+    } else {
+      // User canceled the picker
+    }
+
+    if (result != null) {
+      _uploadNonImage(myEmail, _file);
+    }
+  }
+
 
   Future<void> _showImageConfirmDialog(context, myEmail) async {
     return showDialog<void>(
@@ -879,6 +1014,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                                 Container(
                                   height: 64,
+                                  width: 65,
+                                  child: IconButton(
+                                      icon: Image.asset(
+                                        'assets/images/photo_library.png',
+                                      ),
+                                      onPressed: () => _pickImage(
+                                          ImageSource.gallery,
+                                          currentUser.email,
+                                          context,
+                                          currentUser)),
+                                ),
+                                Container(
+                                  height: 64,
                                   width: 55,
                                   color: Colors.white,
                                 ),
@@ -1261,4 +1409,303 @@ class ImageTile extends StatelessWidget {
       ],
     );
   }
+}
+
+class FileTile extends StatelessWidget {
+  final String message;
+  final bool isSendByMe;
+  final String currentTime;
+  final bool displayTime;
+  final bool displayWeek;
+  final bool lastMessage;
+  final String messageUrl;
+  final String fileName;
+
+  FileTile(this.message, this.isSendByMe, this.currentTime, this.displayTime,
+      this.displayWeek, this.lastMessage, this.messageUrl, this.fileName);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        displayWeek
+            ? displayTime
+            ? Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              DateFormat('EEEE')
+                  .format(DateTime.parse(currentTime))
+                  .substring(0, 3) +
+                  ', ' +
+                  DateFormat('MMMM')
+                      .format(DateTime.parse(currentTime))
+                      .substring(0, 3) +
+                  ' ' +
+                  DateFormat('d').format(DateTime.parse(currentTime)),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        )
+            : Container()
+            : displayTime
+            ? Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              currentTime.substring(0, currentTime.length - 13),
+              style: GoogleFonts.openSans(
+                fontSize: 14,
+                color: const Color(0xff949494),
+              ),
+            ),
+          ),
+        )
+            : Container(),
+        // Message Box
+        isSendByMe
+            ? Container(
+          padding: EdgeInsets.only(top: 20, right: 25),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: ()async{
+                          final status = await Permission.storage.request();
+                          if (status.isGranted) {
+                            final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+                            final String downloadsPath = downloadsDirectory.path;
+
+                            FlutterDownloader.enqueue(
+                              url: messageUrl,
+                              savedDir: downloadsPath,
+                              showNotification: true, // show download progress in status bar (for Android)
+                              openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+                            );
+                          } else {
+                            print("Permission denied");
+                          }
+                          //html.window.open(message, 'PlaceholderName');
+                          // downloadFile(messageUrl);
+                        },
+                        // onTap: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => PreviewImage(
+                        //         imageUrl: message,
+                        //       ),
+                        //     ),
+                        //   );
+                        // },
+                        child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Stack(
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 130,
+                                        height: 80,
+                                        color: const Color(0xff00838f),
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.insert_drive_file,
+                                            color: const Color(0xfff9fbe7),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                              'file: ' + fileName,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: const Color(0xfff9fbe7),
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                      width: 130,
+                                      height: 40,
+                                      color: const Color(0xff26c6da),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.file_download,
+                                          color: const Color(0xfff9fbe7),
+                                        ),
+                                        //onPressed: () => downloadFile(message.fileUrl)
+                                      )
+                                  )
+                                ],
+                              ),
+                            )
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+            : Container(
+          padding: EdgeInsets.only(top: 20, left: 25),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Message and Time
+              Container(
+                width: 350,
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: ()async{
+                          final status = await Permission.storage.request();
+                          if (status.isGranted) {
+                            final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+                            final String downloadsPath = downloadsDirectory.path;
+
+                            //final externalDir = await context.getExternalFilesDir();
+
+                            FlutterDownloader.enqueue(
+                              url: messageUrl,
+                              savedDir: downloadsPath,
+                              showNotification: true, // show download progress in status bar (for Android)
+                              openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+                            );
+                          } else {
+                            print("Permission denied");
+                          }
+                          //html.window.open(message, 'PlaceholderName');
+                          // downloadFile(messageUrl);
+                        },
+                        // onTap: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => PreviewImage(
+                        //         imageUrl: message,
+                        //       ),
+                        //     ),
+                        //   );
+                        // },
+
+                        child: Container(
+                            margin: EdgeInsets.only(right: 10),  //do i need this margin with border radius on next line? maybe should delete this
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Stack(
+                                    alignment: AlignmentDirectional.center,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 130,
+                                        height: 80,
+                                        color: const Color(0xff00838f),
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.insert_drive_file,
+                                            color: const Color(0xff949494),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                              'file',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: const Color(0xff949494),
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                      height: 40,
+                                      color: const Color(0xff00838f),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.file_download,
+                                          color: const Color(0xfff9fbe7),
+                                        ),
+                                        //onPressed: () => downloadFile(message.fileUrl)
+                                      )
+                                  )
+                                ],
+                              ),
+                            )
+                        ),
+                      ),
+                    ),
+                    Text(
+                      currentTime.substring(11, currentTime.length - 7),
+                      style: GoogleFonts.openSans(
+                        fontSize: 12,
+                        color: const Color(0xff949494),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: lastMessage ? 20 : 0,
+        )
+      ],
+    );
+  }
+}
+
+downloadFile(String fileUrl) async {
+  final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+  final String downloadsPath = downloadsDirectory.path;
+  await FlutterDownloader.enqueue(
+    url: fileUrl,
+    savedDir: downloadsPath,
+    showNotification: true, // show download progress in status bar (for Android)
+    openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+  );
 }
