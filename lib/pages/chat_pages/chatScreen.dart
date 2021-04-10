@@ -818,7 +818,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         width: 28,
                                       ),
                                       onTap: () {
-                                        sendMessage(currentUser.email);
+                                        sendMessage(currentUser);
                                       },
                                     )
                                   : showFunctions
