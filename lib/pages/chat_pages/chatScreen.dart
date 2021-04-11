@@ -999,19 +999,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                             currentUser);
                                       }),
                                 ),
-                                Container(
-                                  height: 64,
-                                  width: 65,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/photo_library.png',
-                                      ),
-                                      onPressed: () => _pickImage(
-                                          ImageSource.gallery,
-                                          currentUser.email,
-                                          context,
-                                          currentUser)),
-                                ),
+                                // Container(
+                                //   height: 64,
+                                //   width: 65,
+                                //   child: IconButton(
+                                //       icon: Image.asset(
+                                //         'assets/images/photo_library.png',
+                                //       ),
+                                //       onPressed: () => _pickImage(
+                                //           ImageSource.gallery,
+                                //           currentUser.email,
+                                //           context,
+                                //           currentUser)),
+                                // ),
                                 Container(
                                   height: 64,
                                   width: 65,
