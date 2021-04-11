@@ -22,7 +22,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String _selectedSchool;
   List<String> _schools = [
     "Boston University",
-    "pennsylvania state university",
+    "University of California, Santa Barbara",
+    "Pennsylvania State University",
   ];
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -343,7 +344,7 @@ class _SignUpPageState extends State<SignUpPage> {
             body: isLoading
                 ? Container(child: Center(child: CircularProgressIndicator()))
                 : Scaffold(
-              resizeToAvoidBottomInset: false,
+                    resizeToAvoidBottomInset: false,
                     backgroundColor: themeOrange,
                     body: SingleChildScrollView(
                       child: Column(
