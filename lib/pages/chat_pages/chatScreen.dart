@@ -1386,7 +1386,7 @@ class FileTile extends StatelessWidget {
                                         height: 5,
                                       ),
                                       Text(
-                                        'file',
+                                        'file' + fileName,
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: const Color(0xff949494),
