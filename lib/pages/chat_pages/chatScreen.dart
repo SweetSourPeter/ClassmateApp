@@ -30,6 +30,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -999,19 +1000,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                             currentUser);
                                       }),
                                 ),
-                                // Container(
-                                //   height: 64,
-                                //   width: 65,
-                                //   child: IconButton(
-                                //       icon: Image.asset(
-                                //         'assets/images/photo_library.png',
-                                //       ),
-                                //       onPressed: () => _pickImage(
-                                //           ImageSource.gallery,
-                                //           currentUser.email,
-                                //           context,
-                                //           currentUser)),
-                                // ),
                                 Container(
                                   height: 64,
                                   width: 65,
@@ -1492,66 +1480,6 @@ class FileTile extends StatelessWidget {
                     ),
                     Flexible(
                       child: GestureDetector(
-                        onTap: ()async{
-                          if (Platform.isAndroid) {
-                            final status = await Permission.storage.request();
-                            if (status.isGranted) {
-                              final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-                              final String downloadsPath = downloadsDirectory.path;
-
-                              //final externalDir = await context.getExternalFilesDir();
-                              // print("messageUrl = " + messageUrl);
-
-                              FlutterDownloader.enqueue(
-                                url: messageUrl,
-                                savedDir: downloadsPath,
-                                showNotification: true, // show download progress in status bar (for Android)
-                                openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-                                fileName: 'download',
-                              );
-                            } else {
-                              print("Permission denied");
-                            }
-                          } else {
-                            //  is ios, we doesn't support ios until this feature has been added
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return new AlertDialog(
-                                    title: const Text('Notification'),
-                                    content: new Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text("IOS not supported for file download"),
-                                      ],
-                                    ),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        textColor: Theme.of(context).primaryColor,
-                                        child: const Text('Close'),
-                                      ),
-                                    ],
-                                  );
-                                }
-                            );
-                          }
-                          //html.window.open(message, 'PlaceholderName');
-                          // downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
                         child: Container(
                             margin: EdgeInsets.only(left: 10),
                             child: ClipRRect(
@@ -1591,14 +1519,30 @@ class FileTile extends StatelessWidget {
                                       width: 130,
                                       height: 40,
                                       color: const Color(0xff26c6da),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
-                                        ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.file_download,
+                                              color: const Color(0xfff9fbe7),
+                                            ),
+                                            onPressed: ()async{
+                                              showDownloadDialog(context, messageUrl, fileName);
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.open_in_browser,
+                                              color: const Color(0xfff9fbe7),
+                                            ),
+                                            onPressed: ()async{
+                                              showAlertDialog(context, messageUrl);
+                                            },
+                                          ),
+                                        ],
                                       )
-                                  )
+                                  ),
                                 ],
                               ),
                             )
@@ -1627,67 +1571,6 @@ class FileTile extends StatelessWidget {
                   children: [
                     Flexible(
                       child: GestureDetector(
-                        onTap: ()async{
-                          if (Platform.isAndroid) {
-                            final status = await Permission.storage.request();
-                            if (status.isGranted) {
-                              final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-                              final String downloadsPath = downloadsDirectory.path;
-
-                              //final externalDir = await context.getExternalFilesDir();
-                              // print("messageUrl = " + messageUrl);
-
-                              FlutterDownloader.enqueue(
-                                url: messageUrl,
-                                savedDir: downloadsPath,
-                                showNotification: true, // show download progress in status bar (for Android)
-                                openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-                                fileName: 'download',
-                              );
-                            } else {
-                              print("Permission denied");
-                            }
-                          } else {
-                            //  is ios, we doesn't support ios until this feature has been added
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return new AlertDialog(
-                                    title: const Text('Notification'),
-                                    content: new Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text("IOS not supported for file download"),
-                                      ],
-                                    ),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        textColor: Theme.of(context).primaryColor,
-                                        child: const Text('Close'),
-                                      ),
-                                    ],
-                                  );
-                                }
-                            );
-                          }
-                          //html.window.open(message, 'PlaceholderName');
-                          // downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-
                         child: Container(
                             margin: EdgeInsets.only(right: 10),  //do i need this margin with border radius on next line? maybe should delete this
                             child: ClipRRect(
@@ -1713,7 +1596,7 @@ class FileTile extends StatelessWidget {
                                             height: 5,
                                           ),
                                           Text(
-                                              'file',
+                                              'file' + fileName,
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 color: const Color(0xff949494),
@@ -1724,16 +1607,33 @@ class FileTile extends StatelessWidget {
                                     ],
                                   ),
                                   Container(
+                                      width: 130,
                                       height: 40,
-                                      color: const Color(0xff00838f),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
-                                        ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
+                                      color: const Color(0xff26c6da),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.file_download,
+                                              color: const Color(0xfff9fbe7),
+                                            ),
+                                            onPressed: ()async{
+                                              showDownloadDialog(context, messageUrl, fileName);
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.open_in_browser,
+                                              color: const Color(0xfff9fbe7),
+                                            ),
+                                            onPressed: ()async{
+                                              showAlertDialog(context, messageUrl);
+                                            },
+                                          ),
+                                        ],
                                       )
-                                  )
+                                  ),
                                 ],
                               ),
                             )
@@ -1761,13 +1661,110 @@ class FileTile extends StatelessWidget {
   }
 }
 
-// downloadFile(String fileUrl) async {
-//   final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-//   final String downloadsPath = downloadsDirectory.path;
-//   await FlutterDownloader.enqueue(
-//     url: fileUrl,
-//     savedDir: downloadsPath,
-//     showNotification: true, // show download progress in status bar (for Android)
-//     openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-//   );
-// }
+showDownloadDialog(BuildContext context, String messageUrl, String fileName) {
+  // set up the buttons
+  Widget cancelButton = FlatButton(
+    child: Text("Cancel"),
+    onPressed:  () {Navigator.of(context).pop();},
+  );
+  Widget continueButton = FlatButton(
+    child: Text("Continue"),
+    onPressed:  ()async {
+      Navigator.of(context).pop();
+      if (Platform.isAndroid) {
+        final status = await Permission.storage.request();
+        if (status.isGranted) {
+          final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+          final String downloadsPath = downloadsDirectory.path;
+
+          FlutterDownloader.enqueue(
+            url: messageUrl,
+            savedDir: downloadsPath,
+            showNotification: true, // show download progress in status bar (for Android)
+            openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+            fileName: fileName,
+          );
+        } else {
+          print("Permission denied");
+        }
+      } else {
+        //  is ios, we doesn't support ios until this feature has been added
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return new AlertDialog(
+                title: const Text('Notification'),
+                content: new Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("IOS not supported for file download"),
+                  ],
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    textColor: Theme.of(context).primaryColor,
+                    child: const Text('Close'),
+                  ),
+                ],
+              );
+            }
+        );
+      }
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Download File"),
+    content: Text("Are you sure to download this file?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showAlertDialog(BuildContext context, String messageUrl) {
+  // set up the buttons
+  Widget cancelButton = FlatButton(
+    child: Text("Cancel"),
+    onPressed:  () {Navigator.of(context).pop();},
+  );
+  Widget continueButton = FlatButton(
+    child: Text("Continue"),
+    onPressed:  () {
+      launch(messageUrl);
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Previewing External File"),
+    content: Text("Are you sure to open this file in browser?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
