@@ -310,7 +310,7 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
-    sendLink(myEmail, myName) {
+    sendFile(myEmail, myName) {
       if (_link.isNotEmpty) {
         final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
         Map<String, dynamic> messageMap = {
@@ -388,7 +388,7 @@ class _GroupChatState extends State<GroupChat> {
       messageUrl = _link;
       fileName = f.name;
 
-      sendLink(myEmail, myName);
+      sendFile(myEmail, myName);
       //return imageUri;
     }
 
