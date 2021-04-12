@@ -338,24 +338,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _uploadNonImage(myEmail, File f, {String fName}) async {
-    // fName = f.name;
-    // fName = basename(f.path);
-    // fb.StorageReference storageRef = fb.storage().ref('images/$fName');
-    //
-    // fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(f).future;
-    //
-    // Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
-    // print(imageUri);
-    //
-    // //_uploadedFileURL = imageUri.toString();
-    // _link = imageUri.toString();
-    // messageUrl = _link;
-    // fileName = fName;
-    // //print('file name of this file is' + fileName);
-    //
-    // sendFile(myEmail);
-    //return imageUri;
-
     fileName = basename(f.path);
     firebase_storage.Reference firebaseStorageRef =
         firebase_storage.FirebaseStorage.instance.ref().child(fileName);
@@ -1599,16 +1581,16 @@ class FileTile extends StatelessWidget {
                                                 Icon(
                                                   Icons.insert_drive_file,
                                                   color:
-                                                      const Color(0xff949494),
+                                                      const Color(0xfff9fbe7),
                                                 ),
                                                 SizedBox(
                                                   height: 5,
                                                 ),
-                                                Text('file' + fileName,
+                                                Text('file: ' + fileName,
                                                     style: TextStyle(
                                                       fontSize: 20,
                                                       color: const Color(
-                                                          0xff949494),
+                                                          0xfff9fbe7),
                                                     )),
                                               ],
                                             ),

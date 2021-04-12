@@ -24,6 +24,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:app_test/widgets/LinkWellModified.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -41,6 +46,10 @@ class GroupChat extends StatefulWidget {
 
 class _GroupChatState extends State<GroupChat> {
   File _imageFile;
+  File _file;
+  String _link;
+  String messageUrl;
+  String fileName;
   String _uploadedFileURL;
   final _picker = ImagePicker();
   bool showStickerKeyboard;
@@ -111,40 +120,61 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
-                  return snapshot.data.documents[index].data()['messageType'] ==
-                          'text'
-                      ? MessageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          sender == myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          displayName,
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
-                              1.0,
-                        )
-                      : ImageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          sender == myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          displayName,
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
-                              1.0,
-                        );
+                  if (snapshot.data.documents[index].data()['messageType'] ==
+                      'text') {
+                    return MessageTile(
+                      snapshot.data.documents[index].data()['message'],
+                      sender == myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      snapshot.data.documents[index].data()['senderName'],
+                      snapshot.data.documents[index].data()['senderID'],
+                      displayName,
+                      snapshot.data.documents[index].data()['profileColor'] ??
+                          1.0,
+                    );
+                  } else if (snapshot.data.documents[index]
+                          .data()['messageType'] ==
+                      'image') {
+                    return ImageTile(
+                      snapshot.data.documents[index].data()['message'],
+                      sender == myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      snapshot.data.documents[index].data()['senderName'],
+                      snapshot.data.documents[index].data()['senderID'],
+                      displayName,
+                      snapshot.data.documents[index].data()['profileColor'] ??
+                          1.0,
+                    );
+                  } else {
+                    return FileTile(
+                      snapshot.data.documents[index].data()['message'],
+                      sender == myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      snapshot.data.documents[index].data()['senderName'],
+                      snapshot.data.documents[index].data()['senderID'],
+                      displayName,
+                      snapshot.data.documents[index].data()['profileColor'] ??
+                          1.0,
+                      _link = snapshot.data.documents[index].data()['message'],
+                      fileName =
+                          snapshot.data.documents[index].data()['fileName'],
+                    );
+                  }
                 })
             : Container();
       },
@@ -181,8 +211,8 @@ class _GroupChatState extends State<GroupChat> {
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
       // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
       // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -208,7 +238,8 @@ class _GroupChatState extends State<GroupChat> {
     };
 
     databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+        widget.courseId, currentUser.userID);
     // _controller.jumpTo(_controller.position.minScrollExtent);
     // messageController.text = '';
   }
@@ -227,15 +258,40 @@ class _GroupChatState extends State<GroupChat> {
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
 
       _controller.jumpTo(_controller.position.minScrollExtent);
       _uploadedFileURL = '';
     }
   }
 
-  Future _uploadFile(UserData currentUser) async {
+  sendFile(UserData currentUser) {
+    if (_link.isNotEmpty) {
+      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> messageMap = {
+        'message': _link,
+        'fileName': fileName,
+        'messageUrl': _link,
+        'messageType': 'file',
+        'sendBy': currentUser.email,
+        'senderName': currentUser.userName,
+        'time': lastMessageTime,
+        'senderID': currentUser.userID,
+        'profileColor': currentUser.profileColor
+      };
+
+      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
+
+      _controller.jumpTo(_controller.position.minScrollExtent);
+      _link = '';
+      fileName = '';
+    }
+  }
+
+  Future _uploadImage(UserData currentUser) async {
     String fileName = basename(_imageFile.path);
     firebase_storage.Reference firebaseStorageRef =
         firebase_storage.FirebaseStorage.instance.ref().child(fileName);
@@ -245,9 +301,22 @@ class _GroupChatState extends State<GroupChat> {
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
         _uploadedFileURL = downloadUrl;
-        // print('picture uploaded');
-        // print(_uploadedFileURL);
         sendImage(currentUser);
+      });
+    });
+  }
+
+  Future<void> _uploadNonImage(UserData currentUser, File f,
+      {String fName}) async {
+    fileName = basename(f.path);
+    firebase_storage.Reference firebaseStorageRef =
+        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask = firebaseStorageRef.putFile(f);
+    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+      setState(() {
+        _uploadedFileURL = downloadUrl;
+        sendFile(currentUser);
       });
     });
   }
@@ -260,6 +329,22 @@ class _GroupChatState extends State<GroupChat> {
     });
 
     _showImageConfirmDialog(context, currentUser);
+  }
+
+  Future _pickFile(UserData currentUser) async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        _file = File(result.files.single.path);
+      });
+    } else {
+      // User canceled the picker
+    }
+
+    if (result != null) {
+      _uploadNonImage(currentUser, _file);
+    }
   }
 
   Future<void> _showImageConfirmDialog(context, currentUser) async {
@@ -289,7 +374,7 @@ class _GroupChatState extends State<GroupChat> {
             TextButton(
               child: Text('send'),
               onPressed: () {
-                _uploadFile(currentUser);
+                _uploadImage(currentUser);
                 Navigator.of(context).pop();
               },
             ),
@@ -1210,4 +1295,467 @@ class ImageTile extends StatelessWidget {
       ],
     );
   }
+}
+
+class FileTile extends StatelessWidget {
+  final String message;
+  final bool isSendByMe;
+  final String currentTime;
+  final bool displayTime;
+  final bool displayWeek;
+  final bool lastMessage;
+  final String senderName;
+  final String senderID;
+  final bool displayName;
+  final double profileColor;
+  final String messageUrl;
+  final String fileName;
+
+  FileTile(
+      this.message,
+      this.isSendByMe,
+      this.currentTime,
+      this.displayTime,
+      this.displayWeek,
+      this.lastMessage,
+      this.senderName,
+      this.senderID,
+      this.displayName,
+      this.profileColor,
+      this.messageUrl,
+      this.fileName);
+
+  @override
+  Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+
+    return Column(
+      children: [
+        displayWeek
+            ? displayTime
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
+            : displayTime
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
+        // Message Box
+        isSendByMe
+            ? Container(
+                padding: EdgeInsets.only(top: 20, right: 25),
+                alignment: Alignment.centerRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.file_download,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showDownloadDialog(context,
+                                                        messageUrl, fileName);
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.open_in_browser,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showAlertDialog(
+                                                        context, messageUrl);
+                                                  },
+                                                ),
+                                              ],
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                padding: EdgeInsets.only(top: 20, left: 25),
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Sender's name
+                    displayName
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return MultiProvider(
+                                      providers: [
+                                        Provider<UserData>.value(
+                                          value: userdata,
+                                        ),
+                                        Provider<List<CourseInfo>>.value(
+                                          value: currentCourse,
+                                        ),
+                                      ],
+                                      child: FriendProfile(
+                                        userID:
+                                            senderID, // to be modified to friend's ID
+                                      ),
+                                    );
+                                  }));
+                                },
+                                child: Text(
+                                  senderName ?? ' ',
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        listProfileColor[profileColor.toInt()],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(right: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xff949494),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xff949494),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.file_download,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showDownloadDialog(context,
+                                                        messageUrl, fileName);
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.open_in_browser,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showAlertDialog(
+                                                        context, messageUrl);
+                                                  },
+                                                ),
+                                              ],
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        SizedBox(
+          height: lastMessage ? 20 : 0,
+        )
+      ],
+    );
+  }
+}
+
+showDownloadDialog(BuildContext context, String messageUrl, String fileName) {
+  // set up the buttons
+  Widget cancelButton = FlatButton(
+    child: Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = FlatButton(
+    child: Text("Continue"),
+    onPressed: () async {
+      Navigator.of(context).pop();
+      if (Platform.isAndroid) {
+        final status = await Permission.storage.request();
+        if (status.isGranted) {
+          final Directory downloadsDirectory =
+              await DownloadsPathProvider.downloadsDirectory;
+          final String downloadsPath = downloadsDirectory.path;
+
+          FlutterDownloader.enqueue(
+            url: messageUrl,
+            savedDir: downloadsPath,
+            showNotification:
+                true, // show download progress in status bar (for Android)
+            openFileFromNotification:
+                true, // click on notification to open downloaded file (for Android)
+            fileName: fileName,
+          );
+        } else {
+          print("Permission denied");
+        }
+      } else {
+        //  is ios, we doesn't support ios until this feature has been added
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return new AlertDialog(
+                title: const Text('Notification'),
+                content: new Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("IOS not supported for file download"),
+                  ],
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    textColor: Theme.of(context).primaryColor,
+                    child: const Text('Close'),
+                  ),
+                ],
+              );
+            });
+      }
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Download File"),
+    content: Text("Are you sure to download this file?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showAlertDialog(BuildContext context, String messageUrl) {
+  // set up the buttons
+  Widget cancelButton = FlatButton(
+    child: Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = FlatButton(
+    child: Text("Continue"),
+    onPressed: () {
+      launch(messageUrl);
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Previewing External File"),
+    content: Text("Are you sure to open this file in browser?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
