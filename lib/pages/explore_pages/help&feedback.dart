@@ -102,6 +102,9 @@ class _HelpFeedbackState extends State<HelpFeedback> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
             topLineBar(),
             SizedBox(
               height: 10,
@@ -147,6 +150,9 @@ class _HelpFeedbackState extends State<HelpFeedback> {
     return SingleChildScrollView(
         child: Column(
       children: [
+        SizedBox(
+          height: 10,
+        ),
         topLineBar(),
         SizedBox(
           height: 10,
@@ -268,6 +274,9 @@ class _HelpFeedbackState extends State<HelpFeedback> {
     return SingleChildScrollView(
         child: Column(
       children: [
+        SizedBox(
+          height: 10,
+        ),
         topLineBar(),
         SizedBox(
           height: 10,
@@ -306,6 +315,9 @@ class _HelpFeedbackState extends State<HelpFeedback> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
             topLineBar(),
             SizedBox(
               height: 10,
@@ -405,6 +417,9 @@ class _HelpFeedbackState extends State<HelpFeedback> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
             topLineBar(),
             SizedBox(
               height: 10,
