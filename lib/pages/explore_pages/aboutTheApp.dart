@@ -39,7 +39,7 @@ class AboutTheAPP extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(height: mediaQuery.height * 0.1),
-                  LogoWidget(),
+                  LogoWidget(140, 156),
                   Text(
                     'Meechu',
                     style: largeTitleTextStyleBold(Colors.white, 26),

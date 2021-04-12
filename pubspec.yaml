@@ -39,7 +39,8 @@ dependencies:
   image_picker: ^0.6.7+7
   cached_network_image: ^2.3.2+1
   emoji_picker: ^0.0.2
-  flutter_svg: ^0.18.0 #Help us to use SVG in our app
+  # flutter_svg: ^0.18.0 #Help us to use SVG in our app
+  flutter_svg: ^0.19.3
   animations: ^1.1.0 #Help us to use animation easily also develop by flutter team
   provider: ^4.3.1 #Help keeping user status
   curved_navigation_bar: ^0.3.7 #navigation curved bottom bar
@@ -97,6 +98,7 @@ flutter:
     - assets/images/
     - assets/courseimage/
     - assets/icon/
+    - assets/webImage/
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

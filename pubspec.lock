@@ -182,7 +182,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.0"
+    version: "5.2.1"
   file_picker:
     dependency: "direct main"
     description:
@@ -348,7 +348,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.1"
+    version: "0.19.3"
   flutter_tags:
     dependency: "direct main"
     description:
@@ -533,7 +533,7 @@ packages:
       name: nested
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "0.0.4"
   octo_image:
     dependency: transitive
     description:
@@ -631,7 +631,7 @@ packages:
       name: platform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "2.2.1"
   plugin_platform_interface:
     dependency: transitive
     description:

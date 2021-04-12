@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   openStartPage() async {
     await Future.delayed(
-      Duration(seconds: 3),
+      Duration(seconds: 1),
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Center(
             child: Transform.scale(
               scale: 1.2,
-              child: LogoWidget(),
+              child: LogoWidget(140, 156),
             ),
           ),
         ],

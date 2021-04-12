@@ -119,7 +119,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
               child: Column(
                 children: <Widget>[
                   TweenAnimationBuilder(
-                    child: LogoWidget(),
+                    child: LogoWidget(140, 156),
                     duration: Duration(milliseconds: 1000),
                     curve: Curves.elasticOut,
                     tween: _scaleHolder == 0.0
