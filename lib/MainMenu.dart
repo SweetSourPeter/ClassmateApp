@@ -173,23 +173,23 @@ class _MainMenuState extends State<MainMenu> {
                           ),
                         ),
                       ),
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: 300),
-                        left: (isMenuOpen) ? 10 : sidebarSize - 20,
-                        // left: (isMenuOpen) ? 10 : 100,
-                        top: 5,
-                        child: IconButton(
-                          enableFeedback: true,
-                          icon: Icon(
-                            Icons.chevron_left,
-                            color: Colors.black,
-                            size: 40,
-                          ),
-                          onPressed: () {
-                            setMenuOpenState(false);
-                          },
-                        ),
-                      )
+                      // AnimatedPositioned(
+                      //   duration: Duration(milliseconds: 300),
+                      //   left: (isMenuOpen) ? 10 : sidebarSize - 20,
+                      //   // left: (isMenuOpen) ? 10 : 100,
+                      //   top: 5,
+                      //   child: IconButton(
+                      //     enableFeedback: true,
+                      //     icon: Icon(
+                      //       Icons.chevron_left,
+                      //       color: Colors.black,
+                      //       size: 40,
+                      //     ),
+                      //     onPressed: () {
+                      //       setMenuOpenState(false);
+                      //     },
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
