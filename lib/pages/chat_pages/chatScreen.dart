@@ -23,9 +23,6 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:jitsi_meet/feature_flag/feature_flag.dart';
-import 'package:universal_html/prefer_universal/html.dart' as html;
-// import 'dart:html' as html;
-// import 'package:firebase/firebase.dart' as fb;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
@@ -115,41 +112,46 @@ class _ChatScreenState extends State<ChatScreen> {
                     displayWeek = false;
                   }
 
-                  if (snapshot.data.documents[index].data()['messageType'] == 'text') {
+                  if (snapshot.data.documents[index].data()['messageType'] ==
+                      'text') {
                     return MessageTile(
                         snapshot.data.documents[index].data()['message'],
                         snapshot.data.documents[index].data()['sendBy'] ==
                             myEmail,
                         DateTime.fromMillisecondsSinceEpoch(
-                            snapshot.data.documents[index].data()['time'])
+                                snapshot.data.documents[index].data()['time'])
                             .toString(),
                         displayTime,
                         displayWeek,
                         lastMessage);
-                  } else if (snapshot.data.documents[index].data()['messageType'] == 'image') {
+                  } else if (snapshot.data.documents[index]
+                          .data()['messageType'] ==
+                      'image') {
                     return ImageTile(
                       snapshot.data.documents[index].data()['message'],
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
-                      lastMessage,);
+                      lastMessage,
+                    );
                   } else {
                     return FileTile(
                       snapshot.data.documents[index].data()['message'],
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       _link = snapshot.data.documents[index].data()['message'],
-                      fileName = snapshot.data.documents[index].data()['fileName'],
+                      fileName =
+                          snapshot.data.documents[index].data()['fileName'],
                     );
                   }
 
@@ -288,8 +290,8 @@ class _ChatScreenState extends State<ChatScreen> {
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
           .then((value) {
         final unreadNumber = value.data()[widget.friendEmail
-            .substring(0, widget.friendEmail.indexOf('@')) +
-            'unread'] +
+                    .substring(0, widget.friendEmail.indexOf('@')) +
+                'unread'] +
             1;
         databaseMethods.setUnreadNumber(
             widget.chatRoomId, widget.friendEmail, unreadNumber);
@@ -356,9 +358,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
     fileName = basename(f.path);
     firebase_storage.Reference firebaseStorageRef =
-    firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-    firebase_storage.UploadTask uploadTask =
-    firebaseStorageRef.putFile(f);
+        firebase_storage.FirebaseStorage.instance.ref().child(fileName);
+    firebase_storage.UploadTask uploadTask = firebaseStorageRef.putFile(f);
     firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
       setState(() {
@@ -369,7 +370,6 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     });
   }
-
 
   Future _uploadFile(myEmail) async {
     String fileName = basename(_imageFile.path);
@@ -391,7 +391,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future _pickFile(myEmail) async {
     FilePickerResult result = await FilePicker.platform.pickFiles();
 
-    if(result != null) {
+    if (result != null) {
       setState(() {
         _file = File(result.files.single.path);
       });
@@ -403,7 +403,6 @@ class _ChatScreenState extends State<ChatScreen> {
       _uploadNonImage(myEmail, _file);
     }
   }
-
 
   Future<void> _showImageConfirmDialog(context, myEmail) async {
     return showDialog<void>(
@@ -1418,241 +1417,253 @@ class FileTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              DateFormat('EEEE')
-                  .format(DateTime.parse(currentTime))
-                  .substring(0, 3) +
-                  ', ' +
-                  DateFormat('MMMM')
-                      .format(DateTime.parse(currentTime))
-                      .substring(0, 3) +
-                  ' ' +
-                  DateFormat('d').format(DateTime.parse(currentTime)),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container()
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
             : displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              currentTime.substring(0, currentTime.length - 13),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container(),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
         isSendByMe
             ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: GestureDetector(
-                        child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 130,
-                                        height: 80,
-                                        color: const Color(0xff00838f),
-                                      ),
-                                      Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.insert_drive_file,
-                                            color: const Color(0xfff9fbe7),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                              'file: ' + fileName,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: const Color(0xfff9fbe7),
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.file_download,
-                                              color: const Color(0xfff9fbe7),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                          Flexible(
+                            child: GestureDetector(
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
                                             ),
-                                            onPressed: ()async{
-                                              showDownloadDialog(context, messageUrl, fileName);
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.open_in_browser,
-                                              color: const Color(0xfff9fbe7),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
                                             ),
-                                            onPressed: ()async{
-                                              showAlertDialog(context, messageUrl);
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ],
-                              ),
-                            )
-                        ),
+                                          ],
+                                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.file_download,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showDownloadDialog(context,
+                                                        messageUrl, fileName);
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.open_in_browser,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showAlertDialog(
+                                                        context, messageUrl);
+                                                  },
+                                                ),
+                                              ],
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
             : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, left: 25),
                 alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: GestureDetector(
-                        child: Container(
-                            margin: EdgeInsets.only(right: 10),  //do i need this margin with border radius on next line? maybe should delete this
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 130,
-                                        height: 80,
-                                        color: const Color(0xff00838f),
-                                      ),
-                                      Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.insert_drive_file,
-                                            color: const Color(0xff949494),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                              'file' + fileName,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: const Color(0xff949494),
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.file_download,
-                                              color: const Color(0xfff9fbe7),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              child: Container(
+                                  margin: EdgeInsets.only(
+                                      right:
+                                          10), //do i need this margin with border radius on next line? maybe should delete this
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
                                             ),
-                                            onPressed: ()async{
-                                              showDownloadDialog(context, messageUrl, fileName);
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.open_in_browser,
-                                              color: const Color(0xfff9fbe7),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xff949494),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xff949494),
+                                                    )),
+                                              ],
                                             ),
-                                            onPressed: ()async{
-                                              showAlertDialog(context, messageUrl);
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ],
-                              ),
-                            )
-                        ),
-                      ),
-                    ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                                          ],
+                                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.file_download,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showDownloadDialog(context,
+                                                        messageUrl, fileName);
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.open_in_browser,
+                                                    color:
+                                                        const Color(0xfff9fbe7),
+                                                  ),
+                                                  onPressed: () async {
+                                                    showAlertDialog(
+                                                        context, messageUrl);
+                                                  },
+                                                ),
+                                              ],
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )
@@ -1665,23 +1676,28 @@ showDownloadDialog(BuildContext context, String messageUrl, String fileName) {
   // set up the buttons
   Widget cancelButton = FlatButton(
     child: Text("Cancel"),
-    onPressed:  () {Navigator.of(context).pop();},
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
   );
   Widget continueButton = FlatButton(
     child: Text("Continue"),
-    onPressed:  ()async {
+    onPressed: () async {
       Navigator.of(context).pop();
       if (Platform.isAndroid) {
         final status = await Permission.storage.request();
         if (status.isGranted) {
-          final Directory downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+          final Directory downloadsDirectory =
+              await DownloadsPathProvider.downloadsDirectory;
           final String downloadsPath = downloadsDirectory.path;
 
           FlutterDownloader.enqueue(
             url: messageUrl,
             savedDir: downloadsPath,
-            showNotification: true, // show download progress in status bar (for Android)
-            openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+            showNotification:
+                true, // show download progress in status bar (for Android)
+            openFileFromNotification:
+                true, // click on notification to open downloaded file (for Android)
             fileName: fileName,
           );
         } else {
@@ -1711,8 +1727,7 @@ showDownloadDialog(BuildContext context, String messageUrl, String fileName) {
                   ),
                 ],
               );
-            }
-        );
+            });
       }
     },
   );
@@ -1740,11 +1755,13 @@ showAlertDialog(BuildContext context, String messageUrl) {
   // set up the buttons
   Widget cancelButton = FlatButton(
     child: Text("Cancel"),
-    onPressed:  () {Navigator.of(context).pop();},
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
   );
   Widget continueButton = FlatButton(
     child: Text("Continue"),
-    onPressed:  () {
+    onPressed: () {
       launch(messageUrl);
       Navigator.of(context).pop();
     },
