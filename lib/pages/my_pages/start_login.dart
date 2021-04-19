@@ -118,7 +118,7 @@ class _StartLoginPageState extends State<StartLoginPage> {
                   top: _currentIndex == null || _currentIndex == 1
                       ? _height * 0.11
                       : _height * 0.000,
-                  left: _width / 2 + (156 / 2), //logo widget width/2
+                  left: _width / 2 - (156 / 2), //logo widget width/2
                   child: TweenAnimationBuilder(
                     child: LogoWidget(140, 156),
                     duration: Duration(milliseconds: 300),
