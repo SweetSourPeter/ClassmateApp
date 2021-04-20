@@ -798,12 +798,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   } else {}
                                 }
                                 setState(() {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                    showTextKeyboard = false;
-                                  }
+                                  showFunctions = !showFunctions;
                                 });
                                 Timer(
                                     Duration(milliseconds: 30),

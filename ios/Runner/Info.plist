@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>notification</key>
-	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -31,25 +29,28 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>Meechu would like to access your calendar for setting events</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Meechu would like to access your camera for image capture</string>
+	<string>Meechu would like to access your camera to record your face for video meeting in chat</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Meechu would like to access your contact for finding friends</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Meechu would like to access your location for finding friends around you</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Meechu would like to access your location for finding friends around you</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Meechu would like to access your microphone to record your voice for video meeting in chat</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Meechu would like to access your motion for more interactions</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Meechu would like to access your photo library for image storage</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Meechu would like to access your speech recognition</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) MyApp needs access to your camera for meetings.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>$(PRODUCT_NAME) MyApp needs access to your microphone for meetings.</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
@@ -65,5 +66,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>notification</key>
+	<string></string>
 </dict>
 </plist>
