@@ -161,19 +161,22 @@ class _EnterInviteCodeState extends State<EnterInviteCode> {
                   Navigator.pop(context);
                 });
               } else {
-                if (value.invitedUserID
-                    .contains(userIDTextEditingController.text)) {
+                print('here 1');
+                print(value.invitedUserID);
+                if (value.invitedUserID.contains(userdata.userID)) {
                   //TODO if the user ID has been used
                   _toastInfo('You have used this code before');
                 } else {
                   print('object valid every thing');
                   var inviteUserTemp = value.invitedUserID;
                   if (value.invitedUserID == null) {
+                    print('invite id is null');
                     inviteUserTemp = [userdata.userID];
                   } else {
-                    inviteUserTemp = value.blockedUserID;
-
+                    print('add more id');
+                    print(inviteUserTemp);
                     inviteUserTemp.add(userdata.userID);
+                    print(inviteUserTemp);
                   }
                   await databaseMethods
                       .updateUserInvite(userIDTextEditingController.text,

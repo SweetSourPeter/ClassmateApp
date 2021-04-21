@@ -46,7 +46,7 @@ class Wrapper extends StatelessWidget {
             Widget selectStartPage() {
               print('wiget select called');
               if (snapshot.data[0].email == snapshot.data[0].userName) {
-                return StartPage(initialPageNumber: 1);
+                return StartPage(initialPageNumber: 0);
               } else if (snapshot.data[0].profileColor == null) {
                 return StartPage(
                   initialPageNumber: 2,
