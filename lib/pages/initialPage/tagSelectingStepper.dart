@@ -335,7 +335,7 @@ class _TagSelectingState extends State<TagSelecting> {
                           Navigator.pop(context);
                         } else if (allTags.length >= 5) {
                           await userTagProvider.addTagsToContact(context);
-                          widget.pageController.animateToPage(3,
+                          widget.pageController.animateToPage(4,
                               duration: Duration(milliseconds: 800),
                               curve: Curves.easeInCubic);
                         } else {

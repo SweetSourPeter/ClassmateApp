@@ -181,7 +181,7 @@ class _SecondPageState extends State<SecondPage>
                                   user.userID, _nikname);
                               Navigator.pop(context);
                             } else {
-                              widget.pageController.animateToPage(1,
+                              widget.pageController.animateToPage(2,
                                   duration: Duration(milliseconds: 800),
                                   curve: Curves.easeInCubic);
                               databaseMethods.updateUserName(

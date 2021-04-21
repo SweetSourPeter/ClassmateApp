@@ -242,7 +242,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       },
                       child: Container(
                           child: Text(
-                        'find friend',
+                        'search friend',
                         textAlign: TextAlign.left,
                         style: GoogleFonts.openSans(
                           color: themeOrange,
@@ -293,7 +293,7 @@ class ChatRoomsTile extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = mediaQuery.width * 1.0;
-    
+
     // print('heree');
     return GestureDetector(
       onTap: () {

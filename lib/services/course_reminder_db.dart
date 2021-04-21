@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,6 +47,30 @@ class CourseReminderDatabase {
       print(e.toString());
     });
     //also update in the api
+  }
+
+  Future<double> getCourseReminderNumbers(String userID) async {
+    print('remove course reminder called....');
+    // double temp;
+    // FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(userID)
+    //     .collection('userCourseReminder')
+    //     .get()
+    //     .then((value) {
+    //   print('aaaaaaaaaaaaaa');
+    //   print(value.docs.length.toDouble());
+    //   temp = value.docs.length.toDouble();
+    // });
+    // print(temp);
+    // return temp;
+    int temp = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('userCourseReminder')
+        .snapshots()
+        .length;
+    return temp.toDouble();
   }
 
   //delete course reminder for user

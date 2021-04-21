@@ -8,11 +8,44 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DatabaseMethods {
   Stream<UserData> userDetails(String userID) {
     print('userDetails called');
+    print('--------------------');
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
         .snapshots()
         .map((snapshot) => UserData.fromFirestore(snapshot.data(), userID));
+
+    //   FirebaseFirestore.instance
+    //       .collection('users')
+    //       .doc(userID)
+    //       .snapshots()
+    //       .map((snapshot) {
+    // UserData temp = UserData.fromFirestore(snapshot.data(), userID);
+    // getNumberOfChargeNumber(snapshot.data()['courseID']).then((value) {
+    //   temp.myChargeNumber = value.docs.length.toDouble();
+    //   print(temp.myChargeNumber);
+    // }).then((value) {});
+    // return temp;
+    // });
+
+    // => UserData.fromFirestore(snapshot.data(), userID));
+    // .map((snapshot) {
+    //       UserData temp = UserData.fromFirestore(), userID);
+    //       // CourseInfo temp = CourseInfo.fromFirestore(document.data());
+    //       getNumberOfChargeNumber(snapshot.data()['courseID'])
+    //           .then((value) {
+    //         temp.myChargeNumber = value.docs.length.toDouble();
+    //       }).then((value) {});
+    //       return temp;
+    //     }).toList());
+  }
+
+  getNumberOfChargeNumber(String userID) async {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('userCourseReminder')
+        .get();
   }
 //  Future<UserTags> getAllTage(String userID) async {
 //     //used to remove a single Tag from the user
@@ -35,7 +68,6 @@ class DatabaseMethods {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
     DocumentSnapshot doc = await docRef.get();
-    print(doc.data()['tags']);
     var userData = UserData(
       email: doc.data()['email'],
       school: doc.data()['school'],
@@ -43,7 +75,9 @@ class DatabaseMethods {
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
       profileColor: doc.data()['profileColor'],
+      // myChargeNumber: doc.data()['myChargeNumber'] ?? '',
       agreedToTerms: doc.data()['agreedToTerms'],
+      invitedUserID: doc.data()['invitedUserID'],
       blockedUserID: doc.data()['blockedUser'],
       userTags: doc.data()['tags'] == null
           ? null
@@ -323,6 +357,20 @@ class DatabaseMethods {
     });
   }
 
+//user invite
+  Future<void> updateUserInvite(
+      String userID, List<String> invitedUserID) async {
+    print('objsadfasdfect');
+    //used to remove a single Tag from the user
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('users').doc(userID);
+    docRef.update({
+      'invitedUserID': invitedUserID,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
   //-------User report save to satabase---------
   Future<void> saveReports(String reports, String badUserID,
       String badUserEmail, String goodUserID) {
@@ -552,7 +600,8 @@ class DatabaseMethods {
         .update({'unread': (unread + 1)});
   }
 
-  addOneToUnreadGroupChatNumberForOtherMembers(String courseId, String myId) async {
+  addOneToUnreadGroupChatNumberForOtherMembers(
+      String courseId, String myId) async {
     List<String> listOfUserId = [];
     await getUserIdOfOtherMembersInCourse(courseId).then((value) {
       listOfUserId = value;
@@ -667,6 +716,20 @@ class DatabaseMethods {
         FirebaseFirestore.instance.collection('users').doc(userID);
     docRef.update({
       'agreedToTerms': agreedToTerms,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future<void> changeUserChargeNumber(
+      String userID, double myCurrentChargeNumber, double addValue) async {
+    //used to remove a single Tag from the user
+    // add value can be + or -
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('users').doc(userID);
+    print(myCurrentChargeNumber + addValue);
+    docRef.update({
+      'myChargeNumber': (myCurrentChargeNumber + addValue),
     }).catchError((e) {
       print(e.toString());
     });

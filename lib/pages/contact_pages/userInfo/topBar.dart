@@ -107,7 +107,6 @@ class _TopBarState extends State<TopBar> {
                                   var blockedUserTemp =
                                       currentUser.blockedUserID;
                                   if (currentUser.blockedUserID == null) {
-                                    print('1');
                                     blockedUserTemp = [widget.userID];
                                   } else {
                                     blockedUserTemp = currentUser.blockedUserID;

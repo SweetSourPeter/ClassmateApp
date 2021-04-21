@@ -1,12 +1,14 @@
+import 'dart:ffi';
+import 'package:app_test/services/database.dart';
+
 import 'package:app_test/models/user.dart';
 import 'package:app_test/models/userTags.dart';
-import 'package:app_test/pages/initialPage/start_page.dart';
+import 'package:app_test/pages/my_pages/enterInviteCode.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/pages/edit_pages/editHomePage.dart';
 import 'package:app_test/pages/explore_pages/seatNotifyDashboard.dart';
 import 'package:app_test/pages/explore_pages/aboutTheApp.dart';
 import 'package:app_test/pages/explore_pages/help&feedback.dart';
-import 'package:app_test/pages/chat_pages/confirmImage.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import '../../models/constant.dart';
-import 'package:flutter/services.dart';
 
 class MyAccount extends StatefulWidget {
   final GlobalKey key;
@@ -192,7 +193,73 @@ class _MyAccountState extends State<MyAccount> {
                 child: Column(
                   children: <Widget>[
                     ButtonLink(
-                      text: "Setting",
+                      text: "Open Seat Alert",
+                      iconData: Icons.notifications_outlined,
+                      textSize: 14,
+                      height: (menuContainerHeight) / 6,
+                      onTap: () {
+                        showBottomPopSheet(
+                            context,
+                            MultiProvider(
+                              providers: [
+                                Provider<UserData>.value(
+                                  value: userdata,
+                                ),
+                                Provider<UserTags>.value(
+                                  value: userTags,
+                                ),
+                                // Provider<Future<double>>(
+                                //     create: (context) =>
+                                //         CourseReminderDatabase()
+                                //             .getCourseReminderNumbers(
+                                //                 userdata.userID)), //
+                              ],
+                              child: SeatNotifyDashboard(),
+                            ));
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           SeatNotifyDashboard(
+                        //             userID: userdata.userID,
+                        //             userSchool:
+                        //                 userdata.school,
+                        //             userEmail:
+                        //                 userdata.email,
+                        //           )),
+                        // );
+                      },
+                    ),
+                    Divider(
+                        height: 0,
+                        thickness: 1,
+                        indent: 50,
+                        endIndent: 30,
+                        color: dividerColor),
+                    ButtonLink(
+                      text: "Enter Invite Code",
+                      iconData: Icons.sports_handball_rounded,
+                      textSize: 14,
+                      height: (menuContainerHeight) / 6,
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MultiProvider(providers: [
+                            StreamProvider(
+                                create: (context) => DatabaseMethods()
+                                    .userDetails(userdata.userID)),
+                          ], child: EnterInviteCode());
+                        }));
+                      },
+                    ),
+                    Divider(
+                        height: 0,
+                        thickness: 1,
+                        indent: 50,
+                        endIndent: 30,
+                        color: dividerColor),
+                    ButtonLink(
+                      text: "Settings",
                       iconData: Icons.settings_outlined,
                       textSize: 14,
                       height: (menuContainerHeight) / 6,
@@ -208,39 +275,6 @@ class _MyAccountState extends State<MyAccount> {
                             )
                           ], child: EditHomePage());
                         }));
-                      },
-                    ),
-                    Divider(
-                        height: 0,
-                        thickness: 1,
-                        indent: 50,
-                        endIndent: 30,
-                        color: dividerColor),
-                    ButtonLink(
-                      text: "Seats Notification",
-                      iconData: Icons.notifications_outlined,
-                      textSize: 14,
-                      height: (menuContainerHeight) / 6,
-                      onTap: () {
-                        showBottomPopSheet(
-                            context,
-                            SeatNotifyDashboard(
-                              userID: userdata.userID,
-                              userSchool: userdata.school,
-                              userEmail: userdata.email,
-                            ));
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) =>
-                        //           SeatNotifyDashboard(
-                        //             userID: userdata.userID,
-                        //             userSchool:
-                        //                 userdata.school,
-                        //             userEmail:
-                        //                 userdata.email,
-                        //           )),
-                        // );
                       },
                     ),
                     Divider(

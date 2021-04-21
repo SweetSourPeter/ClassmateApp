@@ -30,6 +30,7 @@ class ThirdPage extends StatefulWidget {
 class _ThirdPageState extends State<ThirdPage>
     with AutomaticKeepAliveClientMixin {
   PageController _pageController;
+
   DatabaseMethods databaseMethods = new DatabaseMethods();
   //double _offset = 0;
   double _currentindex = 0;
@@ -257,7 +258,7 @@ class _ThirdPageState extends State<ThirdPage>
                     databaseMethods
                         .updateUserProfileColor(user.userID, _currentindex)
                         .then((value) {
-                      widget.pageController.animateToPage(2,
+                      widget.pageController.animateToPage(3,
                           duration: Duration(milliseconds: 800),
                           curve: Curves.easeInCubic);
                     });
@@ -270,7 +271,7 @@ class _ThirdPageState extends State<ThirdPage>
                       .then((value) {
                     widget.isEdit
                         ? Navigator.pop(context)
-                        : widget.pageController.animateToPage(2,
+                        : widget.pageController.animateToPage(3,
                             duration: Duration(milliseconds: 800),
                             curve: Curves.easeInCubic);
                   });

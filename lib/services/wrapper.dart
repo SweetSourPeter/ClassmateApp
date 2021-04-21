@@ -46,21 +46,21 @@ class Wrapper extends StatelessWidget {
             Widget selectStartPage() {
               print('wiget select called');
               if (snapshot.data[0].email == snapshot.data[0].userName) {
-                return StartPage(initialPageNumber: 0);
+                return StartPage(initialPageNumber: 1);
               } else if (snapshot.data[0].profileColor == null) {
                 return StartPage(
-                  initialPageNumber: 1,
+                  initialPageNumber: 2,
                   userNameIn: snapshot.data[0].userName,
                 );
               } else if (snapshot.data[0].userTags == null) {
                 return StartPage(
-                  initialPageNumber: 2,
+                  initialPageNumber: 3,
                   userNameIn: snapshot.data[0].userName,
                 );
               } else if (snapshot.data[0].agreedToTerms == null ||
                   snapshot.data[0].agreedToTerms == false) {
                 return StartPage(
-                  initialPageNumber: 3,
+                  initialPageNumber: 4,
                   userNameIn: snapshot.data[0].userName,
                 );
               }

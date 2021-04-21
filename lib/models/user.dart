@@ -32,6 +32,8 @@ class UserData {
   final String school;
   final String userImageUrl;
   final double profileColor;
+  double myChargeNumber;
+  final List invitedUserID;
   final List blockedUserID;
   final bool agreedToTerms;
   final UserTags userTags;
@@ -44,6 +46,8 @@ class UserData {
     this.school,
     this.userImageUrl,
     this.profileColor,
+    this.myChargeNumber,
+    this.invitedUserID,
     this.blockedUserID,
     this.agreedToTerms,
     this.userTags,
@@ -61,6 +65,7 @@ class UserData {
       'school': school,
       'userImageUrl': userImageUrl,
       'profileColor': profileColor,
+      'myChargeNumber': myChargeNumber,
       'blockedUser': blockedUserID,
       'agreedToTerms': agreedToTerms,
       'userTags': userTags,
@@ -73,8 +78,10 @@ class UserData {
         school = firestore['school'] ?? '',
         email = firestore['email'] ?? '',
         profileColor = firestore['profileColor'] ?? '',
+        myChargeNumber = firestore['myChargeNumber'] ?? 0.0,
         userName = firestore['userName'] ?? '',
         agreedToTerms = firestore['agreedToTerms'] ?? null,
+        invitedUserID = firestore['invitedUserID'] ?? null,
         blockedUserID = firestore['blockedUser'] ?? null,
         userTags = firestore['tags'] == null
             ? null
@@ -87,8 +94,10 @@ class UserData {
         school = firestore['school'],
         email = firestore['email'],
         profileColor = firestore['profileColor'],
+        myChargeNumber = firestore['myChargeNumber'] ?? 0.0,
         userName = firestore['userName'],
         agreedToTerms = firestore['agreedToTerms'] ?? null,
+        invitedUserID = firestore['invitedUserID'] ?? null,
         blockedUserID = firestore['blockedUser'],
         userTags = firestore['tags'] == null
             ? null
