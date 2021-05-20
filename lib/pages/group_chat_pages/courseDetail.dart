@@ -77,7 +77,9 @@ class _CourseDetailState extends State<CourseDetail> {
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         if (members == null) {
-          return SimpleLoadingScreen(Colors.white);
+
+          return ShimmerLoadingScreen(Colors.white);
+
         } else {
           final memberName = members[index][0];
 
