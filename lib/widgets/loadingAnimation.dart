@@ -61,3 +61,25 @@ class ShimmerLoadingScreen extends StatelessWidget {
     );
   }
 }
+
+class PictureLoadingScreen extends StatelessWidget {
+  PictureLoadingScreen(this.backgroundColor);
+  final Color backgroundColor;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //color: backgroundColor,
+      child: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  'assets/icon/catPaw2.png'
+              ),
+              //fit: BoxFit.fill
+            ),
+            shape: BoxShape.circle
+        ),
+      ),
+    );
+  }
+}

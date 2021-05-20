@@ -78,7 +78,7 @@ class _CourseDetailState extends State<CourseDetail> {
       return List.generate(numberOfMembers, (index) {
         if (members == null) {
 
-          return ShimmerLoadingScreen(Colors.white);
+          return PictureLoadingScreen(Colors.white);
 
         } else {
           final memberName = members[index][0];
