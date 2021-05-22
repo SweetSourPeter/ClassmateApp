@@ -10,6 +10,7 @@ import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/splash_screen.dart';
+import 'package:app_test/web_initial_pages/generate_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -83,7 +84,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           highlightColor: themeOrange, // color for scroll bar
         ),
-        home: WebWrapper(),
+        initialRoute: '/',
+        onGenerateRoute: RouteGenerator.generateRoute,
+        //home: WebWrapper(),
       ),
     );
   }
