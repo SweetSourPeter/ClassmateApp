@@ -19,9 +19,10 @@ class NavPage extends StatelessWidget {
           return DesktopNavPage();
         } else if (constraints.maxWidth > 800 && constraints.maxWidth < 1200) {
           return DesktopNavPage();
-        } else {
-          //TODO: create a mobile nav page?? Necessary?
+        } else if (constraints.maxWidth > 360){
           return MobileNavPage();
+        } else {
+          return MobileSmallNavPage();
         }
       },
     );
@@ -237,6 +238,99 @@ class MobileNavPage extends StatelessWidget {
                         //     style: TextStyle(color: Colors.white, fontSize: 50),
                         //   ),
                         // ),
+                      ),
+                    ]
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+
+  void _scrollToIndex(int index) {
+    controller.animateToPage(index,
+        duration: Duration(seconds: 2), curve: Curves.fastLinearToSlowEaseIn);
+  }
+}
+
+class MobileSmallNavPage extends StatelessWidget {
+  var list = ["Download", "Why Meechu?", "Support"];
+
+  PageController controller = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFFFF7D40), //#FF7D40
+                  Color(0xFFFF844B), //#FF844B
+                  Color(0xFFFFDAC9), //#FFDAC9
+                ]),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LogoWidget(60, 65),
+                        AutoSizeText(
+                          "MEECHU",
+                          style: largeTitleTextStyleBold(Colors.white, 22),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(3, (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        _scrollToIndex(index);
+                      },
+                      child: Container(
+                        child: AutoSizeText(
+
+                          list[index],
+                          style: GoogleFonts.openSans(
+                            textStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Expanded(
+                child: PageView(
+                    scrollDirection: Axis.vertical,
+                    pageSnapping: false,
+                    controller: controller,
+                    children: <Widget>[
+                      SingleChildScrollView(
+                        child: DownloadLanding(),
+                      ),
+                      SingleChildScrollView(
+                        child: WhyLanding(),
+                      ),
+                      SingleChildScrollView(
+                        child: SupportLanding(),
                       ),
                     ]
                 ),

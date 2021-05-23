@@ -179,6 +179,94 @@ class DownloadLanding extends StatelessWidget {
     ];
   }
 
+  //----------------------mobile--------------------------
+  mobileSmallPageChildren(double width) {
+    return <Widget>[
+      Container(
+        width: width,
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: width,
+              child: Expanded(
+                child: AutoSizeText(
+                  "Your Classmate Finder",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.montserrat(
+                    textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 45.0),
+              child: AutoSizeText(
+                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 17.0, color: Colors.white),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  child: MaterialButton(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 22, horizontal: 0.05 * width),
+                    color: Color(0xFF4F413C),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(50.0))),
+                    onPressed: () {
+                      _launchURL(
+                          'https://apps.apple.com/us/app/meechu-classmates-chat/id1548409920');
+                    },
+                    child: AutoSizeText(
+                      "Download for iPhone",
+                      style: TextStyle(fontSize: 12.0, color: Colors.white),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  child: MaterialButton(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 22, horizontal: 0.05 * width),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(50.0))),
+                    onPressed: () {
+                      _launchURL(
+                          'https://play.google.com/store/apps/details?id=com.nacc.android');
+                    },
+                    child: AutoSizeText(
+                      "Download for Android",
+                      style: TextStyle(fontSize: 12.0, color: themeOrange),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.only(bottom: (80)),
+        child: Image.asset(
+          'assets/webImage/web_intro.png',
+          width: width,
+        ),
+      ),
+    ];
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -188,9 +276,13 @@ class DownloadLanding extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: desktopPageChildren(constraints.biggest.width),
           );
-        } else {
+        } else if (constraints.maxWidth > 360) {
           return Column(
             children: mobilePageChildren(constraints.biggest.width),
+          );
+        } else {
+          return Column(
+            children: mobileSmallPageChildren(constraints.biggest.width),
           );
         }
       },

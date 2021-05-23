@@ -9,32 +9,21 @@ class SupportLanding extends StatelessWidget {
       Container(
           padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
           width: width,
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment
                 .spaceEvenly, //Center Column contents horizontally,
             children: [
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
                     child: AutoSizeText(
-                      "Contact us through WeChat:",
+                      "Contact us through WeChat: Search WeChat 北美课友",
                       maxLines: 1,
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: AutoSizeText(
-                      "Search WeChat 北美课友",
-                      maxLines: 1,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -50,42 +39,32 @@ class SupportLanding extends StatelessWidget {
                   ),
                 ],
               ),
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: AutoSizeText(
-                      "Contact us through email:",
+                      "Contact us through email: naclassmates@gmail.com",
                       maxLines: 1,
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  Container(
-                    child: AutoSizeText(
-                      "naclassmates@gmail.com",
-                      maxLines: 1,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 20, bottom: 20),
-                      child: Icon(
-                        Icons.email_outlined,
-                        color: Colors.white,
-                        size: 90,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   child: Padding(
+                  //     padding: EdgeInsets.only(top: 20, bottom: 20),
+                  //     child: Icon(
+                  //       Icons.email_outlined,
+                  //       color: Colors.white,
+                  //       size: 90,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ],
@@ -126,7 +105,6 @@ class SupportLanding extends StatelessWidget {
                 Container(
                   child: AutoSizeText(
                     "Contact us through WeChat 北美课友",
-                    maxLines: 1,
                     style: GoogleFonts.montserrat(
                       textStyle: TextStyle(
                           color: Colors.white,
@@ -212,6 +190,116 @@ class SupportLanding extends StatelessWidget {
     ];
   }
 
+//----------------------mobile2--------------------------
+  mobile2PageChildren(double width) {
+    return <Widget>[
+      Container(
+        width: width,
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: AutoSizeText(
+                    "Contact us through WeChat",
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Container(
+                  child: AutoSizeText(
+                    "北美课友",
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Image.asset(
+                      'assets/webImage/wechat.png',
+                      width: 50,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: AutoSizeText(
+                    "Contact us through email:",
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  child: AutoSizeText(
+                    "naclassmates@gmail.com",
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                  width: width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: AutoSizeText(
+                            "\u00a9 Copyright 2021: NACC",
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 5,
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -221,9 +309,13 @@ class SupportLanding extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: desktopPageChildren(constraints.biggest.width),
           );
-        } else {
+        } else if (constraints.maxWidth > 350) {
           return Column(
             children: mobilePageChildren(constraints.biggest.width),
+          );
+        } else {
+          return Column(
+            children: mobile2PageChildren(constraints.biggest.width),
           );
         }
       },
