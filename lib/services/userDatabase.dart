@@ -32,7 +32,7 @@ class UserDatabaseService {
   // }
 
   // user data from snapshots
-  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
+  UserData _userDataFromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     return UserData(
       userID: userID,
       userName: snapshot.data()['userName'],

@@ -8,10 +8,15 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/edit_pages/editNameModel.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
+import 'package:app_test/pages/my_pages/notification_page.dart';
 
 class EditHomePage extends StatefulWidget {
   @override
@@ -20,6 +25,9 @@ class EditHomePage extends StatefulWidget {
 
 class _EditHomePageState extends State<EditHomePage> {
   AuthMethods authMethods = new AuthMethods();
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
   String nickName;
   double userProfileColor;
@@ -35,19 +43,61 @@ class _EditHomePageState extends State<EditHomePage> {
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
-    final databaseMehods = DatabaseMethods();
+    final databaseMethods = DatabaseMethods();
     // List<String> tags = (userTags.college == null ? [] : userTags.college) +
     //     (userTags.interest == null ? [] : userTags.interest) +
     //     (userTags.language == null ? [] : userTags.language) +
-    //     (userTags.strudyHabits == null ? [] : userTags.strudyHabits);
+    //     (userTags.studyHabits == null ? [] : userTags.studyHabits);
     void resetInfo() {
-      databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
+      databaseMethods.getUserDetailsByID(userdata.userID).then((value) {
         setState(() {
           nickName = value.userName;
           userProfileColor = value.profileColor;
         });
       });
     }
+
+    // void registerNotification(UserData currentUser) async {
+    //   // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   //   RemoteNotification notification = message.notification;
+    //   //   AndroidNotification android = message.notification?.android;
+    //   //   // showNotification(notification);
+    //   // });
+    //
+    //   messaging.getToken().then((token) {
+    //     print('token: $token');
+    //     FirebaseFirestore.instance
+    //         .collection('users')
+    //         .doc(currentUser.userID)
+    //         .update({'pushToken': token});
+    //   }).catchError((err) {
+    //     Fluttertoast.showToast(msg: err.message.toString());
+    //   });
+    // }
+    //
+    // void configLocalNotification() async {
+    //   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    //   final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings();
+    //   final InitializationSettings initializationSettings = InitializationSettings(
+    //       android: initializationSettingsAndroid,
+    //       iOS: initializationSettingsIOS);
+    //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    // }
+    //
+    // void requestNotificationPermission() async {
+    //   NotificationSettings settings = await messaging.requestPermission(
+    //     alert: true,
+    //     badge: true,
+    //     sound: true,
+    //   );
+    //
+    //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    //     registerNotification(userdata);
+    //     configLocalNotification();
+    //   } else {
+    //     print('User declined notification permission, so notification is not registered');
+    //   }
+    // }
 
     resetInfo();
     // TODO: implement build
@@ -206,6 +256,27 @@ class _EditHomePageState extends State<EditHomePage> {
                                     valueChanged: (index) => {}),
                               );
                               setState(() {});
+                            },
+                          ),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: dividerColor,
+                          ),
+                          ButtonLink(
+                            text: "Notification",
+                            editText: '',
+                            textSize: 14,
+                            height: (menuContainerHeight) / 8,
+                            user: userdata,
+                            isEdit: true,
+                            onTap: () {
+                              // requestNotificationPermission();
+                              // showBottomPopSheet(
+                              //   context,
+                              //   NotificationPage(),
+                              // );
+                              // setState(() {});
                             },
                           ),
                           Divider(

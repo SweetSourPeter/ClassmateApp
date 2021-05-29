@@ -203,21 +203,21 @@ class _SearchChatState extends State<SearchChat> {
                         ),
                       )
                     ])));
-                for (var i = 0; i < snapshot.data.documents.length; i++) {
-                  if (snapshot.data.documents[i].get('messageType') == 'text' &&
-                      snapshot.data.documents[i]
+                for (var i = 0; i < snapshot.data.docs.length; i++) {
+                  if (snapshot.data.docs[i].get('messageType') == 'text' &&
+                      snapshot.data.docs[i]
                           .get('message')
                           .contains(searchTextEditingController.text)) {
                     children.add(searchTile(
-                        userEmail: snapshot.data.documents[i].get('sendBy'),
-                        message: snapshot.data.documents[i].get('message'),
+                        userEmail: snapshot.data.docs[i].get('sendBy'),
+                        message: snapshot.data.docs[i].get('message'),
                         imageURL:
                             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
                         userData: currentUser,
                         searchWord: searchTextEditingController.text,
                         messageIndex: i,
                         messageTime: DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[i].data()['time'])
+                                snapshot.data.docs[i].data()['time'])
                             .toString(),
                         friendProfileColor: widget.friendProfileColor,
                         context: context));

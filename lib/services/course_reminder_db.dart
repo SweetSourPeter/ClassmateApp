@@ -108,7 +108,7 @@ class CourseReminderDatabase {
     String section,
   ) {
     return http.post(
-      colectURL,
+      Uri.parse(colectURL),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -132,7 +132,7 @@ class CourseReminderDatabase {
     String section,
   ) {
     return http.post(
-      deleteURL,
+      Uri.parse(deleteURL),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -258,7 +258,7 @@ class _EnterInviteCodeStartPageState extends State<EnterInviteCodeStartPage> {
           bottom: false,
           child: Scaffold(
             backgroundColor: themeOrange,
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             body: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -289,11 +289,13 @@ class _EnterInviteCodeStartPageState extends State<EnterInviteCodeStartPage> {
                     //   overflow: TextOverflow.ellipsis,
                     // ),
                     expanded: _getRules(),
-                    tapBodyToCollapse: true,
-                    // ignore: deprecated_member_use
-                    tapHeaderToExpand: true,
-                    // ignore: deprecated_member_use
-                    hasIcon: false,
+                    theme: ExpandableThemeData(
+                      tapBodyToCollapse: true,
+                      // ignore: deprecated_member_use
+                      tapHeaderToExpand: true,
+                      // ignore: deprecated_member_use
+                      hasIcon: false,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),

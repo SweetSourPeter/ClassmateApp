@@ -65,9 +65,9 @@ class DatabaseMethods {
     //     .snapshots()
     //     .map((snapshot) => UserData.fromFirestore(snapshot.data, userID));
 
-    DocumentReference docRef =
+    DocumentReference<Map<String, dynamic>> docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
-    DocumentSnapshot doc = await docRef.get();
+    DocumentSnapshot<Map<String, dynamic>> doc = await docRef.get();
     var userData = UserData(
       email: doc.data()['email'],
       school: doc.data()['school'],
@@ -158,7 +158,7 @@ class DatabaseMethods {
     });
   }
 
-  getCourseInfoByid(String courseId, String school) async {
+  getCourseInfoById(String courseId, String school) async {
     return FirebaseFirestore.instance
         .collection('courses')
         .where("school", isEqualTo: school.toUpperCase())
@@ -409,9 +409,9 @@ class DatabaseMethods {
     //used to remove a single Tag from the user
     //tag category includes: major, interest, language, studyHabits, other
 
-    DocumentReference docRef =
+    DocumentReference<Map<String, dynamic>> docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
-    DocumentSnapshot doc = await docRef.get();
+    DocumentSnapshot<Map<String, dynamic>> doc = await docRef.get();
     List tags = doc.data()['tags'];
     if (tags.contains(tagCategory.contains(removeTag))) {
       docRef.update({
@@ -667,7 +667,7 @@ class DatabaseMethods {
         .update({'unread': 1});
   }
 
-  setLastestMessage(
+  setLatestMessage(
       String chatRoomId, String latestMessage, int lastMessageTime) async {
     FirebaseFirestore.instance.collection('chatroom').doc(chatRoomId).update({
       'latestMessage': latestMessage,
@@ -680,9 +680,9 @@ class DatabaseMethods {
   Future<UserTags> getAllTage(String userID) async {
     //used to remove a single Tag from the user
 
-    DocumentReference docRef =
+    DocumentReference<Map<String, dynamic>> docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
-    DocumentSnapshot doc = await docRef.get();
+    DocumentSnapshot<Map<String, dynamic>> doc = await docRef.get();
     return UserTags.fromFirestoreTags(doc.data()['tags']);
   }
 

@@ -24,7 +24,6 @@ bool isLoading = false;
 
 //Auth and Database instance created
 AuthMethods authMethods = new AuthMethods();
-// DatabaseMehods databaseMehods = new DatabaseMehods();
 
 TextEditingController emailTextEditingController = new TextEditingController();
 TextEditingController passwordTextEditingController =
@@ -195,9 +194,9 @@ class _SignInState extends State<SignIn> {
                     controller: passwordTextEditingController,
                     obscureText: true,
                     validator: (val) {
-                      return val.length > 6
+                      return val.length >= 6
                           ? null
-                          : "Please provoid valid password format";
+                          : "Please provide valid password format";
                     },
                     decoration: textFieldInputDecoration(
                       _height * 0.036,
@@ -269,12 +268,12 @@ class _SignInState extends State<SignIn> {
 
       child: SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           body: isLoading
               ? Container(child: LoadingScreen(themeOrange))
               : Scaffold(
-                  resizeToAvoidBottomPadding: false,
+                  resizeToAvoidBottomInset: false,
                   backgroundColor: themeOrange,
                   body: SingleChildScrollView(
                     child: Column(

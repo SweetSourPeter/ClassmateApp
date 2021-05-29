@@ -4,10 +4,10 @@ import 'package:app_test/models/user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 
 class Helper {
   const Helper(this.value);
@@ -54,13 +54,27 @@ TextSpan linkwellFunc(
 
   _joinMeeting(String chatRoomId) async {
     try {
-      FeatureFlag featureFlag = FeatureFlag();
-      featureFlag.welcomePageEnabled = false;
-      featureFlag.resolution = FeatureFlagVideoResolution
-          .MD_RESOLUTION; // Limit video resolution to 360p
+      Map<FeatureFlagEnum, bool> featureFlags = {
+        FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      };
+      // Here is an example, disabling features for each platform
+      if (Platform.isAndroid) {
+        // Disable ConnectionService usage on Android to avoid issues (see README)
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (Platform.isIOS) {
+        // Disable PIP on iOS as it looks weird
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+
+      // old version jitsi meet
+      // FeatureFlag featureFlag = FeatureFlag();
+      // featureFlag.welcomePageEnabled = false;
+      // not sure how to use this in new version
+      // featureFlagEnum.RESOLUTION = FeatureFlagVideoResolution
+      //     .MD_RESOLUTION; // Limit video resolution to 360p
 
       var options = JitsiMeetingOptions()
-        ..room = chatRoomId // Required, spaces will be trimmed
+        ..serverURL = chatRoomId // Required, spaces will be trimmed
         // ..serverURL = "https://na-cc.com"
         ..subject = chatRoomId
         ..userDisplayName = currentUser.userName
@@ -69,7 +83,7 @@ TextSpan linkwellFunc(
         ..audioOnly = true
         ..audioMuted = true
         ..videoMuted = true
-        ..featureFlag = featureFlag;
+        ..featureFlags.addAll(featureFlags);
 
       await JitsiMeet.joinMeeting(options).then((value) {});
     } catch (error) {

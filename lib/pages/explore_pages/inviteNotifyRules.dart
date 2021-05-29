@@ -108,7 +108,7 @@ class InviteNotifyRules extends StatelessWidget {
     }
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       backgroundColor: riceColor,
       appBar: AppBar(
         leading: Container(
