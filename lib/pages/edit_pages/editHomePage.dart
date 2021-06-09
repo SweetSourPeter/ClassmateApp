@@ -18,6 +18,10 @@ import 'package:provider/provider.dart';
 import '../../models/constant.dart';
 import 'package:app_test/pages/my_pages/notification_page.dart';
 
+import 'package:app_test/pages/my_pages/sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app_test/pages/initialPage/emailResend_page.dart';
+
 class EditHomePage extends StatefulWidget {
   @override
   _EditHomePageState createState() => _EditHomePageState();
@@ -35,6 +39,20 @@ class _EditHomePageState extends State<EditHomePage> {
   void initState() {
     super.initState();
     nickName = 'loading';
+  }
+
+  String emailVerifiedStatus() {
+    var emailStatus;
+    if (FirebaseAuth.instance.currentUser != null){
+      if (FirebaseAuth.instance.currentUser.emailVerified) {
+        emailStatus = 'Verified';
+        return emailStatus;
+      }else{
+        emailStatus = 'Unverified';
+        return emailStatus;
+      }
+    }
+    return '';        //Bug may exist
   }
 
   @override
@@ -284,6 +302,34 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
+
+                          ButtonLink(
+                            text: "Email Status",
+                            textSize: 14,
+                            height: (menuContainerHeight) / 8,
+                            isEdit: true,
+                            editText: emailVerifiedStatus(),
+                            onTap: () {
+                              if (emailVerifiedStatus() == 'Verified'){
+                                return null;
+                              }
+                              showBottomPopSheet(
+                                  context,
+                                  EmailResendPage(
+                                    pageController:
+                                    PageController(initialPage: 0),
+                                    isEdit: true,
+                                    valueChanged: (index) => {},
+                                  ));
+                              setState(() {});
+                            },
+                          ),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: dividerColor,
+                          ),
+
                           Expanded(
                             child: Container(),
                           ),

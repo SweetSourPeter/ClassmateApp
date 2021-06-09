@@ -88,7 +88,7 @@ class _EmailResendPageState extends State<EmailResendPage>
         child: Form(
           key: formKey,
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             backgroundColor: themeOrange,
             body: SingleChildScrollView(
               child: Column(
