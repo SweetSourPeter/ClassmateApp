@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app_test/pages/initialPage/emailResend_page.dart';
 
@@ -52,14 +53,14 @@ class _EditHomePageState extends State<EditHomePage> {
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
-    final databaseMehods = DatabaseMethods();
+    final databaseMethods = DatabaseMethods();
 
     // List<String> tags = (userTags.college == null ? [] : userTags.college) +
     //     (userTags.interest == null ? [] : userTags.interest) +
     //     (userTags.language == null ? [] : userTags.language) +
     //     (userTags.strudyHabits == null ? [] : userTags.strudyHabits);
     void resetInfo() {
-      databaseMehods.getUserDetailsByID(userdata.userID).then((value) {
+      databaseMethods.getUserDetailsByID(userdata.userID).then((value) {
         setState(() {
           nickName = value.userName;
           userProfileColor = value.profileColor;
