@@ -3,6 +3,7 @@ import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/initialPage/second_page.dart';
 import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
+import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app_test/pages/initialPage/emailResend_page.dart';
 
 class EditHomePage extends StatefulWidget {
   @override
@@ -20,13 +23,27 @@ class EditHomePage extends StatefulWidget {
 
 class _EditHomePageState extends State<EditHomePage> {
   AuthMethods authMethods = new AuthMethods();
-
   String nickName;
   double userProfileColor;
+
   @override
   void initState() {
     super.initState();
     nickName = 'loading';
+  }
+
+  String emailVerifiedStatus() {
+    var emailStatus;
+    if (FirebaseAuth.instance.currentUser != null){
+      if (FirebaseAuth.instance.currentUser.emailVerified) {
+        emailStatus = 'Verified';
+        return emailStatus;
+      }else{
+        emailStatus = 'Unverified';
+        return emailStatus;
+      }
+    }
+    return '';        //Bug may exist
   }
 
   @override
@@ -36,6 +53,7 @@ class _EditHomePageState extends State<EditHomePage> {
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
     final databaseMehods = DatabaseMethods();
+
     // List<String> tags = (userTags.college == null ? [] : userTags.college) +
     //     (userTags.interest == null ? [] : userTags.interest) +
     //     (userTags.language == null ? [] : userTags.language) +
@@ -45,6 +63,7 @@ class _EditHomePageState extends State<EditHomePage> {
         setState(() {
           nickName = value.userName;
           userProfileColor = value.profileColor;
+
         });
       });
     }
@@ -122,6 +141,7 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
+
                           ButtonLink(
                             text: "Tags",
                             editText: 'College, Interest...',
@@ -182,9 +202,9 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
+
                           ButtonLink(
                             text: "Avatar",
-                            editText: '',
                             userName: nickName,
                             iconData: Icons.edit,
                             textSize: 14,
@@ -213,6 +233,34 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
+
+                          ButtonLink(
+                            text: "Email Status",
+                            textSize: 14,
+                            height: (menuContainerHeight) / 8,
+                            isEdit: true,
+                            editText: emailVerifiedStatus(),
+                            onTap: () {
+                              if (emailVerifiedStatus() == 'Verified'){
+                                return null;
+                              }
+                              showBottomPopSheet(
+                                context,
+                                EmailResendPage(
+                                  pageController:
+                                  PageController(initialPage: 0),
+                                  isEdit: true,
+                                  valueChanged: (index) => {},
+                                ));
+                              setState(() {});
+                            },
+                          ),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: dividerColor,
+                          ),
+
                           Expanded(
                             child: Container(),
                           ),
@@ -221,6 +269,7 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
+
                           ButtonLink(
                             onTap: () {
                               authMethods.signOut().then((value) {
