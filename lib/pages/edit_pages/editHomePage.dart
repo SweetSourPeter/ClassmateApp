@@ -3,20 +3,20 @@ import 'package:app_test/models/userTags.dart';
 import 'package:app_test/pages/initialPage/second_page.dart';
 import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
-import 'package:app_test/pages/my_pages/sign_in.dart';
 import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/pages/edit_pages/editNameModel.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
-
 import 'package:app_test/pages/my_pages/notification_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:app_test/pages/initialPage/emailResend_page.dart';
 
 class EditHomePage extends StatefulWidget {
   @override
@@ -29,28 +29,12 @@ class _EditHomePageState extends State<EditHomePage> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-
   String nickName;
   double userProfileColor;
-
   @override
   void initState() {
     super.initState();
     nickName = 'loading';
-  }
-
-  String emailVerifiedStatus() {
-    var emailStatus;
-    if (FirebaseAuth.instance.currentUser != null){
-      if (FirebaseAuth.instance.currentUser.emailVerified) {
-        emailStatus = 'Verified';
-        return emailStatus;
-      }else{
-        emailStatus = 'Unverified';
-        return emailStatus;
-      }
-    }
-    return '';        //Bug may exist
   }
 
   @override
@@ -60,20 +44,60 @@ class _EditHomePageState extends State<EditHomePage> {
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
     final databaseMethods = DatabaseMethods();
-
     // List<String> tags = (userTags.college == null ? [] : userTags.college) +
     //     (userTags.interest == null ? [] : userTags.interest) +
     //     (userTags.language == null ? [] : userTags.language) +
-    //     (userTags.strudyHabits == null ? [] : userTags.strudyHabits);
+    //     (userTags.studyHabits == null ? [] : userTags.studyHabits);
     void resetInfo() {
       databaseMethods.getUserDetailsByID(userdata.userID).then((value) {
         setState(() {
           nickName = value.userName;
           userProfileColor = value.profileColor;
-
         });
       });
     }
+
+    // void registerNotification(UserData currentUser) async {
+    //   // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   //   RemoteNotification notification = message.notification;
+    //   //   AndroidNotification android = message.notification?.android;
+    //   //   // showNotification(notification);
+    //   // });
+    //
+    //   messaging.getToken().then((token) {
+    //     print('token: $token');
+    //     FirebaseFirestore.instance
+    //         .collection('users')
+    //         .doc(currentUser.userID)
+    //         .update({'pushToken': token});
+    //   }).catchError((err) {
+    //     Fluttertoast.showToast(msg: err.message.toString());
+    //   });
+    // }
+    //
+    // void configLocalNotification() async {
+    //   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    //   final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings();
+    //   final InitializationSettings initializationSettings = InitializationSettings(
+    //       android: initializationSettingsAndroid,
+    //       iOS: initializationSettingsIOS);
+    //   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    // }
+    //
+    // void requestNotificationPermission() async {
+    //   NotificationSettings settings = await messaging.requestPermission(
+    //     alert: true,
+    //     badge: true,
+    //     sound: true,
+    //   );
+    //
+    //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    //     registerNotification(userdata);
+    //     configLocalNotification();
+    //   } else {
+    //     print('User declined notification permission, so notification is not registered');
+    //   }
+    // }
 
     resetInfo();
     // TODO: implement build
@@ -132,14 +156,14 @@ class _EditHomePageState extends State<EditHomePage> {
                                   context,
                                   SecondPage(
                                     pageController:
-                                        PageController(initialPage: 0),
+                                    PageController(initialPage: 0),
                                     isEdit: true,
                                     valueChanged: (index) => {},
                                   )
-                                  // EditNameModel(
-                                  //     userName: nickName,
-                                  //     userId: userdata.userID)
-                                  );
+                                // EditNameModel(
+                                //     userName: nickName,
+                                //     userId: userdata.userID)
+                              );
                               setState(() {});
                             },
                           ),
@@ -148,7 +172,6 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
-
                           ButtonLink(
                             text: "Tags",
                             editText: 'College, Interest...',
@@ -161,28 +184,28 @@ class _EditHomePageState extends State<EditHomePage> {
                                   context,
                                   TagSelecting(
                                       currentTags: (userdata.userTags.college ==
-                                                  null
-                                              ? []
+                                          null
+                                          ? []
                                               : userdata.userTags.college
-                                                  .cast<dynamic>()) +
-                                          (userdata.userTags.interest == null
-                                              ? []
+                                              .cast<dynamic>()) +
+                                      (userdata.userTags.interest == null
+                                      ? []
                                               : userdata.userTags.interest
-                                                  .cast<dynamic>()) +
-                                          (userdata.userTags.language == null
-                                              ? []
-                                              : userdata.userTags.language
-                                                  .cast<String>()) +
-                                          (userdata.userTags.strudyHabits ==
-                                                  null
-                                              ? []
-                                              : userdata.userTags.strudyHabits
-                                                  .cast<String>()),
-                                      buttonColor: listProfileColor[
-                                          userProfileColor.toInt()],
-                                      pageController:
-                                          PageController(initialPage: 0),
-                                      isEdit: true));
+                                          .cast<dynamic>()) +
+                                  (userdata.userTags.language == null
+                                  ? []
+                                          : userdata.userTags.language
+                                      .cast<String>()) +
+                              (userdata.userTags.strudyHabits ==
+                              null
+                              ? []
+                                  : userdata.userTags.strudyHabits
+                                  .cast<String>()),
+                              buttonColor: listProfileColor[
+                              userProfileColor.toInt()],
+                              pageController:
+                              PageController(initialPage: 0),
+                              isEdit: true));
                               //   setState(() {
                               //     print(userTagProvider.college);
                               //     tags = (userTagProvider.college == null
@@ -209,9 +232,9 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
-
                           ButtonLink(
                             text: "Avatar",
+                            editText: '',
                             userName: nickName,
                             iconData: Icons.edit,
                             textSize: 14,
@@ -224,11 +247,11 @@ class _EditHomePageState extends State<EditHomePage> {
                               showBottomPopSheet(
                                 context,
                                 ThirdPage(
-                                    // buttonColor: Colors.amber,
+                                  // buttonColor: Colors.amber,
                                     userName: userdata.userName,
                                     initialIndex: userProfileColor.toInt(),
                                     pageController:
-                                        PageController(initialPage: 3),
+                                    PageController(initialPage: 3),
                                     isEdit: true,
                                     valueChanged: (index) => {}),
                               );
@@ -240,7 +263,6 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
-
                           ButtonLink(
                             text: "Notification",
                             editText: '',
@@ -249,12 +271,12 @@ class _EditHomePageState extends State<EditHomePage> {
                             user: userdata,
                             isEdit: true,
                             onTap: () {
-                            // requestNotificationPermission();
-                            // showBottomPopSheet(
-                            //   context,
-                            //   NotificationPage(),
-                            // );
-                            // setState(() {});
+                              // requestNotificationPermission();
+                              // showBottomPopSheet(
+                              //   context,
+                              //   NotificationPage(),
+                              // );
+                              // setState(() {});
                             },
                           ),
                           Divider(
@@ -262,34 +284,6 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
-
-                          ButtonLink(
-                            text: "Email Status",
-                            textSize: 14,
-                            height: (menuContainerHeight) / 8,
-                            isEdit: true,
-                            editText: emailVerifiedStatus(),
-                            onTap: () {
-                              if (emailVerifiedStatus() == 'Verified'){
-                                return null;
-                              }
-                              showBottomPopSheet(
-                                context,
-                                EmailResendPage(
-                                  pageController:
-                                  PageController(initialPage: 0),
-                                  isEdit: true,
-                                  valueChanged: (index) => {},
-                                ));
-                              setState(() {});
-                            },
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-
                           Expanded(
                             child: Container(),
                           ),
@@ -298,7 +292,6 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
-
                           ButtonLink(
                             onTap: () {
                               authMethods.signOut().then((value) {
