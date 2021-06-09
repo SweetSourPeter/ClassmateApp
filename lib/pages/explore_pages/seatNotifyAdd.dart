@@ -40,7 +40,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
     double _width = MediaQuery.of(context).size.width;
     final userdata = Provider.of<UserData>(context);
     DatabaseMethods databaseMethods = DatabaseMethods();
-    final courseReminderDatabaseMehods = CourseReminderDatabase();
+    final courseReminderDatabaseMethods = CourseReminderDatabase();
     var uuid = Uuid();
     _toastInfo(String info) {
       Fluttertoast.showToast(
@@ -92,7 +92,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
               setState(() {
                 loading = true;
               });
-              var response = await courseReminderDatabaseMehods.createReminder(
+              var response = await courseReminderDatabaseMethods.createReminder(
                 currentSelectedValue,
                 userdata.email,
                 collegeTextEditingController.text,
@@ -115,7 +115,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
                     .changeUserChargeNumber(
                         userdata.userID, userdata.myChargeNumber, 1.0)
                     .then((value) async {
-                  courseReminderDatabaseMehods.saveUserReminder(
+                  courseReminderDatabaseMethods.saveUserReminder(
                     userdata.school,
                     currentSelectedValue,
                     userdata.email,
@@ -340,7 +340,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
                               //     String reminderID = uuid.v4();
                               //     //TODO create class in database
                               //     if (formKey.currentState.validate()) {
-                              //       databaseMehods.saveUserReminder(
+                              //       databaseMethods.saveUserReminder(
                               //         widget.userSchool,
                               //         currentSelectedValue,
                               //         widget.userEmail,
@@ -352,7 +352,7 @@ class _SeatsNotificationState extends State<SeatsNotification> {
                               //         widget.userID,
                               //         reminderID,
                               //       );
-                              //       var response = await databaseMehods.createReminder(
+                              //       var response = await databaseMethods.createReminder(
                               //         currentSelectedValue,
                               //         widget.userEmail,
                               //         collegeTextEditingController.text,

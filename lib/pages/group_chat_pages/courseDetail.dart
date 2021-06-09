@@ -42,15 +42,15 @@ class _CourseDetailState extends State<CourseDetail> {
   void initState() {
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data()['myCourseName'];
-        courseSection = value.documents[0].data()['section'];
-        courseTerm = value.documents[0].data()['term'];
+        courseName = value.docs[0].data()['myCourseName'];
+        courseSection = value.docs[0].data()['section'];
+        courseTerm = value.docs[0].data()['term'];
       });
     });
     print('here');
     databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
       setState(() {
-        numberOfMembers = value.documents.length;
+        numberOfMembers = value.docs.length;
       });
     });
 

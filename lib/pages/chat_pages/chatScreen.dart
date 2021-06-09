@@ -17,7 +17,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emoji_picker/emoji_picker.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
@@ -75,15 +75,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 reverse: true,
                 controller: _controller,
                 padding: EdgeInsets.all(0),
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data()['time']);
-                  if (index == snapshot.data.documents.length - 1) {
+                      snapshot.data.docs[index].data()['time']);
+                  if (index == snapshot.data.docs.length - 1) {
                     displayTime = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index + 1].data()['time']);
+                        snapshot.data.docs[index + 1].data()['time']);
                     final difference = current.difference(prev).inDays;
                     if (difference >= 1) {
                       displayTime = true;
@@ -104,24 +104,24 @@ class _ChatScreenState extends State<ChatScreen> {
                     displayWeek = false;
                   }
 
-                  return snapshot.data.documents[index].data()['messageType'] ==
+                  return snapshot.data.docs[index].data()['messageType'] ==
                           'text'
                       ? MessageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
+                          snapshot.data.docs[index].data()['message'],
+                          snapshot.data.docs[index].data()['sendBy'] ==
                               myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
+                                  snapshot.data.docs[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage)
                       : ImageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
+                          snapshot.data.docs[index].data()['message'],
+                          snapshot.data.docs[index].data()['sendBy'] ==
                               myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
+                                  snapshot.data.docs[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
@@ -146,7 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
       };
       // print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-      databaseMethods.setLastestMessage(
+      databaseMethods.setLatestMessage(
           widget.chatRoomId, messageController.text, lastMessageTime);
       databaseMethods
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
@@ -176,7 +176,7 @@ class _ChatScreenState extends State<ChatScreen> {
     };
     // print(widget.chatRoomId);
     databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-    databaseMethods.setLastestMessage(
+    databaseMethods.setLatestMessage(
         widget.chatRoomId, 'Your are invited to a video call', lastMessageTime);
     databaseMethods
         .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
@@ -204,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
       };
 
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-      databaseMethods.setLastestMessage(
+      databaseMethods.setLatestMessage(
           widget.chatRoomId, '[image]', lastMessageTime);
       databaseMethods
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
@@ -334,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     friendCoursesFuture = databaseMethods.getFriendCourses(widget.friendEmail);
     friendCoursesFuture.then((value) {
-      value.documents.forEach((element) {
+      value.docs.forEach((element) {
         setState(() {
           friendCourse.add(element.data()['myCourseName']);
         });
@@ -370,11 +370,26 @@ class _ChatScreenState extends State<ChatScreen> {
       String chatRoomId = getChatRoomId(currentUser.email, widget.friendEmail)
           .replaceAll(RegExp("@[a-zA-Z0-9]+\.[a-zA-Z]+"), '');
       print(chatRoomId);
+      
       try {
-        FeatureFlag featureFlag = FeatureFlag();
-        featureFlag.welcomePageEnabled = false;
-        featureFlag.resolution = FeatureFlagVideoResolution
-            .MD_RESOLUTION; // Limit video resolution to 360p
+        Map<FeatureFlagEnum, bool> featureFlags = {
+          FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+        };
+        // Here is an example, disabling features for each platform
+        if (Platform.isAndroid) {
+          // Disable ConnectionService usage on Android to avoid issues (see README)
+          featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+        } else if (Platform.isIOS) {
+          // Disable PIP on iOS as it looks weird
+          featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+        }
+
+        // old version jitsi meet
+        // FeatureFlag featureFlag = FeatureFlag();
+        // featureFlag.welcomePageEnabled = false;
+        // not sure how to use this in new version
+        // featureFlagEnum.RESOLUTION = FeatureFlagVideoResolution
+        //     .MD_RESOLUTION; // Limit video resolution to 360p
 
         var options = JitsiMeetingOptions()
           ..room = chatRoomId // Required, spaces will be trimmed
@@ -386,7 +401,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ..audioOnly = true
           ..audioMuted = true
           ..videoMuted = true
-          ..featureFlag = featureFlag;
+          ..featureFlags.addAll(featureFlags);
 
         await JitsiMeet.joinMeeting(options).then((value) {
           if (value.isSuccess) {
@@ -830,13 +845,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   showStickerKeyboard
                       ? AnimatedContainer(
                           duration: Duration(milliseconds: 80),
+                          height: 200,
                           // showStickerKeyboard ? 400 : 0,
                           child: EmojiPicker(
-                            rows: 4,
-                            columns: 7,
-                            buttonMode: ButtonMode.MATERIAL,
-                            numRecommended: 10,
-                            onEmojiSelected: (emoji, category) {
+                            config: const Config(
+                              // rows: 4,
+                              columns: 7,
+                              buttonMode: ButtonMode.MATERIAL,
+                              // numRecommended: 10,
+                            ),
+                            onEmojiSelected: (Category category, Emoji emoji) {
                               setState(() {
                                 messageController.text =
                                     messageController.text + emoji.emoji;

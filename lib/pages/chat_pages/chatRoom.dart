@@ -35,7 +35,7 @@ class _ChatRoomState extends State<ChatRoom> {
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -48,11 +48,11 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.docs.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   final userList =
-                      snapshot.data.documents[index].data()['users'];
+                      snapshot.data.docs[index].data()['users'];
 
                   if (userList[1] == widget.myData.email) {
                     friendName = userList[4];
@@ -67,9 +67,9 @@ class _ChatRoomState extends State<ChatRoom> {
                   }
 
                   latestMessage =
-                      snapshot.data.documents[index].data()['latestMessage'];
+                      snapshot.data.docs[index].data()['latestMessage'];
                   lastMessageTime = DateTime.fromMillisecondsSinceEpoch(snapshot
-                          .data.documents[index]
+                          .data.docs[index]
                           .data()['lastMessageTime'])
                       .toString();
 
@@ -80,18 +80,18 @@ class _ChatRoomState extends State<ChatRoom> {
                           children: [
                             ChatRoomsTile(
                                 friendID: friendID,
-                                userName: snapshot.data.documents[index]
+                                userName: snapshot.data.docs[index]
                                     .data()['chatRoomId']
                                     .toString()
                                     .replaceAll("_", "")
                                     .replaceAll(currentUser.email, ""),
-                                chatRoomId: snapshot.data.documents[index]
+                                chatRoomId: snapshot.data.docs[index]
                                     .data()["chatRoomId"],
                                 friendName: friendName,
                                 latestMessage: latestMessage,
                                 lastMessageTime: lastMessageTime,
                                 friendEmail: friendEmail,
-                                unreadNumber: snapshot.data.documents[index]
+                                unreadNumber: snapshot.data.docs[index]
                                     .data()[widget.myData.email.substring(
                                         0, widget.myData.email.indexOf('@')) +
                                     'unread'],
@@ -110,30 +110,47 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
-    getUserInfoGetChats(widget.myData.email);
     super.initState();
-    registerNotification(widget.myData);
-    configLocalNotification();
+    getUserInfoGetChats(widget.myData.email);
+    requestNotificationPermission();
   }
 
-  void registerNotification(UserData currentUser) {
-    firebaseMessaging.requestNotificationPermissions();
+  void requestNotificationPermission() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
-    firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
-      print('onMessage: $message');
-      Platform.isAndroid
-          ? showNotification(message['notification'])
-          : showNotification(message['aps']['alert']);
-      return;
-    }, onResume: (Map<String, dynamic> message) {
-      print('onResume: $message');
-      return;
-    }, onLaunch: (Map<String, dynamic> message) {
-      print('onLaunch: $message');
-      return;
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      registerNotification(widget.myData);
+      configLocalNotification();
+    } else {
+      print('User declined notification permission, so notification is not registered');
+    }
+  }
+
+  void registerNotification(UserData currentUser) async {
+    // firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
+    //   print('onMessage: $message');
+    //   Platform.isAndroid
+    //       ? showNotification(message['notification'])
+    //       : showNotification(message['aps']['alert']);
+    //   return;
+    // }, onResume: (Map<String, dynamic> message) {
+    //   print('onResume: $message');
+    //   return;
+    // }, onLaunch: (Map<String, dynamic> message) {
+    //   print('onLaunch: $message');
+    //   return;
+    // });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      showNotification(notification);
     });
 
-    firebaseMessaging.getToken().then((token) {
+    messaging.getToken().then((token) {
       print('token: $token');
       FirebaseFirestore.instance
           .collection('users')
@@ -144,16 +161,16 @@ class _ChatRoomState extends State<ChatRoom> {
     });
   }
 
-  void configLocalNotification() {
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  void configLocalNotification() async {
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings();
+    final InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void showNotification(message) async {
+  void showNotification(RemoteNotification message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       Platform.isAndroid ? 'com.nacc.android' : 'com.na-cc.ios',
       'Meechu Notification',
@@ -168,17 +185,9 @@ class _ChatRoomState extends State<ChatRoom> {
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
 
-    print(message);
-//    print(message['body'].toString());
-//    print(json.encode(message));
-
-    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
-        message['body'].toString(), platformChannelSpecifics,
-        payload: json.encode(message));
-
-//    await flutterLocalNotificationsPlugin.show(
-//        0, 'plain title', 'plain body', platformChannelSpecifics,
-//        payload: 'item x');
+    await flutterLocalNotificationsPlugin.show(0, message.title,
+        message.body, platformChannelSpecifics,
+        payload: message.toString());
   }
 
   getUserInfoGetChats(myEmail) async {

@@ -18,7 +18,7 @@ class ReportUser extends StatefulWidget {
 }
 
 class _ReportUserState extends State<ReportUser> {
-  DatabaseMethods databaseMehods = new DatabaseMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
 
   var pageIndex = 0;
 
@@ -32,7 +32,7 @@ class _ReportUserState extends State<ReportUser> {
   void saveReportData(String reports, String badUserID, String badUserEmail,
       String goodUserID) {
     //TODO change bad user ID
-    databaseMehods.saveReports(reports, badUserID, badUserEmail, goodUserID);
+    databaseMethods.saveReports(reports, badUserID, badUserEmail, goodUserID);
   }
 
   TextEditingController reportTextEditingController =

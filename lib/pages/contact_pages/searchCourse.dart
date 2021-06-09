@@ -28,7 +28,7 @@ class _SearchCourseState extends State<SearchCourse> {
       new TextEditingController();
   TextEditingController field = TextEditingController();
   String pasteValue = '';
-  QuerySnapshot searchSnapshot;
+  QuerySnapshot<Map<String, dynamic>> searchSnapshot;
   var _selectedSemester = 'Spring';
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _SearchCourseState extends State<SearchCourse> {
       body: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomPadding: true,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: Colors.white,
@@ -397,7 +397,7 @@ class _SearchCourseState extends State<SearchCourse> {
     final userdata = Provider.of<UserData>(context, listen: false);
     print('URL SEARCH START');
     print(courseId);
-    var temp = await databaseMethods.getCourseInfoByid(
+    var temp = await databaseMethods.getCourseInfoById(
       courseId,
       userdata.school.toUpperCase(),
     );

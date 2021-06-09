@@ -43,6 +43,7 @@ InputDecoration buildInputDecorationPinky(
 InputDecoration textFieldInputDecoration(
     double height, String hintText, double boarderRadius) {
   return InputDecoration(
+    errorMaxLines: 2,
     fillColor: Color(0xFFFF9B6B).withOpacity(1),
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),

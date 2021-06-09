@@ -182,27 +182,27 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         ),
                       )
                     ])));
-                for (var i = 0; i < snapshot.data.documents.length; i++) {
-                  if (snapshot.data.documents[i].data()['messageType'] ==
+                for (var i = 0; i < snapshot.data.docs.length; i++) {
+                  if (snapshot.data.docs[i].data()['messageType'] ==
                           'text' &&
-                      snapshot.data.documents[i]
+                      snapshot.data.docs[i]
                           .data()['message']
                           .contains(searchTextEditingController.text)) {
                     children.add(
                       searchTile(
                         userName:
-                            snapshot.data.documents[i].data()['senderName'],
-                        message: snapshot.data.documents[i].data()['message'],
+                            snapshot.data.docs[i].data()['senderName'],
+                        message: snapshot.data.docs[i].data()['message'],
                         imageURL:
                             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
                         userData: currentUser,
                         searchWord: searchTextEditingController.text,
                         messageIndex: i,
                         messageTime: DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[i].data()['time'])
+                                snapshot.data.docs[i].data()['time'])
                             .toString(),
                         profileColor:
-                            snapshot.data.documents[i].data()['profileColor'],
+                            snapshot.data.docs[i].data()['profileColor'],
                         context: context,
                       ),
                     );

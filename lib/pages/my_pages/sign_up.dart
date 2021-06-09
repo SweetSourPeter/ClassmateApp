@@ -42,7 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
   AuthMethods authMethods = new AuthMethods();
   //final authMethods = FirebaseAuth.instance;
 
-  DatabaseMethods databaseMehods = new DatabaseMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   // TextEditingController usernameTextEditingController =
@@ -339,9 +339,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: passwordTextEditingController,
                       obscureText: true,
                       validator: (val) {
-                        return val.length > 6
+                        return val.length >= 6
                             ? null
-                            : "Please provoid password with at least 6 words";
+                            : "Please provide password with at least 6 characters";
                       },
                       decoration: textFieldInputDecoration(
                           _height * 0.036, 'Password', 11),
@@ -402,12 +402,12 @@ class _SignUpPageState extends State<SignUpPage> {
         },
         child: SafeArea(
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             key: _scaffoldKey,
             body: isLoading
                 ? Container(child: LoadingScreen(themeOrange))
                 : Scaffold(
-                    resizeToAvoidBottomPadding: false,
+                    resizeToAvoidBottomInset: false,
                     backgroundColor: themeOrange,
                     body: SingleChildScrollView(
                       child: Column(

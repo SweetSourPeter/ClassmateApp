@@ -34,8 +34,8 @@ class _SearchUsersState extends State<SearchUsers> {
   String pasteValue = '';
   bool haveUserSearched = false;
   // FocusNode _focus = new FocusNode();
-  QuerySnapshot searchSnapshot;
-  DocumentSnapshot searchURLsnapshot;
+  QuerySnapshot<Map<String, dynamic>> searchSnapshot;
+  DocumentSnapshot<Map<String, dynamic>> searchURLSnapshot;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
   // @override
@@ -245,8 +245,8 @@ class _SearchUsersState extends State<SearchUsers> {
     var temp = await databaseMethods.getUsersById(pastedUserID);
     // if (temp == null) return;
     setState(() {
-      searchURLsnapshot = temp;
-      if (searchURLsnapshot != null) {
+      searchURLSnapshot = temp;
+      if (searchURLSnapshot != null) {
         if ((pastedUserID.isNotEmpty)) {
           searchBegain = true;
         }
@@ -283,17 +283,17 @@ class _SearchUsersState extends State<SearchUsers> {
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
       return SearchTile(
-        school: searchURLsnapshot.data()['school'] ?? '',
-        userID: searchURLsnapshot.id ?? '',
+        school: searchURLSnapshot.data()['school'] ?? '',
+        userID: searchURLSnapshot.id ?? '',
         userName:
             // "peter",
-            searchURLsnapshot.data()['userName'] ?? '',
+            searchURLSnapshot.data()['userName'] ?? '',
         userEmail:
             // "731957665@qq.com",
-            searchURLsnapshot.data()['email'] ?? '',
+            searchURLSnapshot.data()['email'] ?? '',
         userProfileColor:
             // 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
-            searchURLsnapshot.data()['profileColor'].toDouble() ?? 0.0,
+            searchURLSnapshot.data()['profileColor'].toDouble() ?? 0.0,
       );
     } else if (pasteValue.isNotEmpty &&
         !pasteValue.startsWith('https://na-cc.com/')) {

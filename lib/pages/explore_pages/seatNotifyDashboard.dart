@@ -28,14 +28,14 @@ class SeatNotifyDashboard extends StatefulWidget {
 
 class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
   String subtitle;
-  // final databaseMehods = CourseReminderDatabase();
+  // final databaseMethods = CourseReminderDatabase();
   List<String> fileLocation = [
     'assets/icon/catPaw1.png',
     'assets/icon/catPaw3.png',
     'assets/icon/catPaw2.png',
     'assets/icon/catPaw4.png',
   ];
-  CourseReminderDatabase courseReminderDatabaseMehods =
+  CourseReminderDatabase courseReminderDatabaseMethods =
       CourseReminderDatabase();
   bool loading = false;
   bool close = false;
@@ -51,8 +51,8 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
     print('--------------------');
     print(userdata.myChargeNumber);
     Stream<List<Map<String, dynamic>>> data =
-        courseReminderDatabaseMehods.getUserReminderLists(userdata.userID);
-    double modal_height = MediaQuery.of(context).size.height - 60;
+        courseReminderDatabaseMethods.getUserReminderLists(userdata.userID);
+    double modelHeight = MediaQuery.of(context).size.height - 60;
     _toastInfo(String info) {
       Fluttertoast.showToast(
         msg: info,
@@ -149,7 +149,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                 // bottomRight: Radius.circular(30.0),
               ),
             ),
-            height: modal_height,
+            height: modelHeight,
             child: Padding(
               padding: EdgeInsets.only(top: 30),
               child: Scaffold(
@@ -238,7 +238,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                                                                 .myChargeNumber,
                                                             -1.0)
                                                         .then((value) async {
-                                                      courseReminderDatabaseMehods
+                                                      courseReminderDatabaseMethods
                                                           .deleteCourseReminder(
                                                               snapshot.data[
                                                                       index][
@@ -246,7 +246,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                                                               userdata.userID);
 
                                                       var response =
-                                                          await courseReminderDatabaseMehods
+                                                          await courseReminderDatabaseMethods
                                                               .deleteReminder(
                                                         snapshot.data[index]
                                                             ['semester'],

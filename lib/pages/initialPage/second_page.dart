@@ -25,6 +25,7 @@ class _SecondPageState extends State<SecondPage>
   final formKey = GlobalKey<FormState>();
   TextEditingController nameTextEditingController = new TextEditingController();
   String _nikname = '';
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
@@ -74,11 +75,11 @@ class _SecondPageState extends State<SecondPage>
       height: widget.isEdit ? (_height * 0.9) : _height,
       color: widget.isEdit ? null : themeOrange,
       child: Padding(
-        padding: EdgeInsets.only(top: widget.isEdit ? (22) : 0),
+        padding: EdgeInsets.only(top: widget.isEdit ? (10) : 0),
         child: Form(
           key: formKey,
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             backgroundColor: themeOrange,
             body: SingleChildScrollView(
               child: Column(
