@@ -344,6 +344,8 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
     _joinMeeting() async {
       String chatRoomId = widget.courseId;
       print(chatRoomId);
@@ -680,7 +682,7 @@ class _GroupChatState extends State<GroupChat> {
                   showStickerKeyboard
                       ? AnimatedContainer(
                           duration: Duration(milliseconds: 80),
-                          height: 200,
+                          height: _height*0.35,
                           // showStickerKeyboard ? 400 : 0,
                           child: EmojiPicker(
                             config: const Config(

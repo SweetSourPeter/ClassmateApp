@@ -272,11 +272,11 @@ class _EditHomePageState extends State<EditHomePage> {
                             isEdit: true,
                             onTap: () {
                               // requestNotificationPermission();
-                              // showBottomPopSheet(
-                              //   context,
-                              //   NotificationPage(),
-                              // );
-                              // setState(() {});
+                              showBottomPopSheet(
+                                context,
+                                NotificationPage(),
+                              );
+                              setState(() {});
                             },
                           ),
                           Divider(

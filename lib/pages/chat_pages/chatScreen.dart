@@ -845,7 +845,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   showStickerKeyboard
                       ? AnimatedContainer(
                           duration: Duration(milliseconds: 80),
-                          height: 200,
+                          height: _height*0.35,
                           // showStickerKeyboard ? 400 : 0,
                           child: EmojiPicker(
                             config: const Config(
