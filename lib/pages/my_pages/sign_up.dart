@@ -174,7 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
           borderRadius: BorderRadius.circular(40),
         ),
         height: _height * 0.06,
-        width: _width * 0.75,
+        width: _width * 0.35,
         child: RaisedButton(
           hoverElevation: 0,
           highlightColor: Color(0xFFFF9B6B),

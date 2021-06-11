@@ -48,6 +48,7 @@ class GroupChat extends StatefulWidget {
 }
 
 class _GroupChatState extends State<GroupChat> {
+  String courseIDTemp;
   html.File _imageFile;
   html.File _file;
   String _uploadedFileURL;
@@ -110,38 +111,39 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
-                  if (snapshot.data.documents[index].data()['messageType'] == 'text') {
+                  if (snapshot.data.documents[index].data()['messageType'] ==
+                      'text') {
                     return MessageTile(
                       snapshot.data.documents[index].data()['message'],
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       snapshot.data.documents[index].data()['senderName'],
                       snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index]
-                          .data()['profileColor'] ??
+                      snapshot.data.documents[index].data()['profileColor'] ??
                           1.0,
                     );
-                  } else if (snapshot.data.documents[index].data()['messageType'] == 'image') {
+                  } else if (snapshot.data.documents[index]
+                          .data()['messageType'] ==
+                      'image') {
                     return ImageTile(
                       snapshot.data.documents[index].data()['message'],
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       snapshot.data.documents[index].data()['senderName'],
                       snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index]
-                          .data()['profileColor'] ??
+                      snapshot.data.documents[index].data()['profileColor'] ??
                           1.0,
                     );
                   } else {
@@ -150,18 +152,18 @@ class _GroupChatState extends State<GroupChat> {
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       snapshot.data.documents[index].data()['senderName'],
                       snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index]
-                          .data()['profileColor'] ??
+                      snapshot.data.documents[index].data()['profileColor'] ??
                           1.0,
                       _link = snapshot.data.documents[index].data()['message'],
-                      fileName = snapshot.data.documents[index].data()['fileName'],
+                      fileName =
+                          snapshot.data.documents[index].data()['fileName'],
                     );
                   }
 
@@ -223,6 +225,12 @@ class _GroupChatState extends State<GroupChat> {
 
   @override
   void initState() {
+    getdata();
+    super.initState();
+  }
+
+  void getdata() {
+    courseIDTemp = widget.courseId;
     databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
       setState(() {
         chatMessageStream = value;
@@ -248,11 +256,11 @@ class _GroupChatState extends State<GroupChat> {
     showFunctions = false;
     _controller =
         ScrollController(initialScrollOffset: widget.initialChat * 40);
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (courseIDTemp != widget.courseId) getdata();
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
@@ -440,345 +448,369 @@ class _GroupChatState extends State<GroupChat> {
     // }
 
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: const Color(0xffF9F6F1),
-      body: Center(
-          child: Container(
-        width: MediaQuery.of(context).size.width,
-        child: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
+        child: courseIDTemp != widget.courseId
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Scaffold(
+                backgroundColor: const Color(0xffF9F6F1),
+                body: Center(
+                    child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: GestureDetector(
+                    onTap: () {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
 
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-            setState(() {
-              showStickerKeyboard = false;
-              showTextKeyboard = false;
-              showFunctions = false;
-            });
-          },
-          child: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                height: 73.68,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Container(
-                        // height: 17.96,
-                        // width: 10.26,
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/arrow-back.png',
-                            height: 17.96,
-                            width: 10.26,
-                          ),
-                          // iconSize: 30.0,
-                          color: const Color(0xFFFF7E40),
-                          onPressed: () {
-                            // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                            databaseMethods.setUnreadGroupChatNumberToZero(
-                                widget.courseId, currentUser.userID);
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            (courseName ?? '') + (courseSection ?? ''),
-                            style: GoogleFonts.montserrat(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                              numberOfMembers > 1
-                                  ? numberOfMembers.toString() + ' ' + 'people'
-                                  : numberOfMembers.toString() + ' ' + 'person',
-                              style: GoogleFonts.openSans(
-                                color: Color(0xff949494),
-                                fontSize: 14,
-                              )),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: Container(
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/group_more.png',
-                            height: 32.44,
-                            width: 41.46,
-                          ),
-                          // iconSize: 10.0,
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return MultiProvider(
-                                providers: [
-                                  Provider<UserData>.value(
-                                    value: currentUser,
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                      setState(() {
+                        showStickerKeyboard = false;
+                        showTextKeyboard = false;
+                        showFunctions = false;
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          color: Colors.white,
+                          height: 73.68,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Container(
+                                  // height: 17.96,
+                                  // width: 10.26,
+                                  child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/arrow-back.png',
+                                      height: 17.96,
+                                      width: 10.26,
+                                    ),
+                                    // iconSize: 30.0,
+                                    color: const Color(0xFFFF7E40),
+                                    onPressed: () {
+                                      // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                                      databaseMethods
+                                          .setUnreadGroupChatNumberToZero(
+                                              widget.courseId,
+                                              currentUser.userID);
+                                      Navigator.of(context).pop();
+                                    },
                                   ),
-                                  Provider<List<CourseInfo>>.value(
-                                    value: currentCourse,
-                                  ),
-                                ],
-                                child: CourseDetail(
-                                  courseId: widget.courseId,
-                                  myEmail: widget.myEmail,
-                                  myName: widget.myName,
                                 ),
-                              );
-                            }));
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(child: chatMessageList(currentUser.email)),
-              Container(
-                  decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              )),
-              Container(
-                alignment: Alignment.center,
-                height: 74.0,
-                width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Color(0xffF9F6F1),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: TextField(
-                          onTap: () {
-                            setState(() {
-                              showStickerKeyboard = false;
-                              showTextKeyboard = true;
-                              showFunctions = false;
-                            });
-                            Timer(
-                                Duration(milliseconds: 160),
-                                () => _controller.jumpTo(
-                                    _controller.position.minScrollExtent));
-                          },
-                          controller: messageController,
-                          style: GoogleFonts.openSans(
-                            fontSize: 16,
-                            color: Colors.black,
+                              ),
+                              Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      (courseName ?? '') +
+                                          (courseSection ?? ''),
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                        numberOfMembers > 1
+                                            ? numberOfMembers.toString() +
+                                                ' ' +
+                                                'people'
+                                            : numberOfMembers.toString() +
+                                                ' ' +
+                                                'person',
+                                        style: GoogleFonts.openSans(
+                                          color: Color(0xff949494),
+                                          fontSize: 14,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: Container(
+                                  child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/group_more.png',
+                                      height: 32.44,
+                                      width: 41.46,
+                                    ),
+                                    // iconSize: 10.0,
+                                    onPressed: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return MultiProvider(
+                                          providers: [
+                                            Provider<UserData>.value(
+                                              value: currentUser,
+                                            ),
+                                            Provider<List<CourseInfo>>.value(
+                                              value: currentCourse,
+                                            ),
+                                          ],
+                                          child: CourseDetail(
+                                            courseId: widget.courseId,
+                                            myEmail: widget.myEmail,
+                                            myName: widget.myName,
+                                          ),
+                                        );
+                                      }));
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 15.0),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                          ),
-                          textInputAction: TextInputAction.send,
-                          onSubmitted: (value) {
-                            sendMessage(
-                                currentUser.email, currentUser.userName);
-                          },
                         ),
-                      ),
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 14.0),
-                      child: GestureDetector(
-                          child: showStickerKeyboard
-                              ? Image.asset('assets/images/messageSend.png',
-                                  width: 28, height: 28)
-                              // : showFunctions
-                              // ? Image.asset(
-                              // 'assets/images/plus_on_click.png',
-                              // width: 28,
-                              // height: 28)
-                              : Image.asset('assets/images/plus_on_click.png',
-                                  width: 28, height: 28),
-                          // ? Image.asset('assets/images/emoji_on_click.png',
-                          //     width: 29, height: 27.83)
-                          // : Image.asset('assets/images/emoji.png',
-                          //     width: 29, height: 27.83),
-                          onTap: () {
-                            if (showTextKeyboard) {
-                              setState(() {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();
-                                  showTextKeyboard = false;
-                                }
-                              });
-                            } else {
-                              // if (showFunctions) {
-                              //   setState(() {
-                              //     showFunctions = false;
-                              //   });
-                              // } else {}
-                            }
-                            setState(() {
-                              showStickerKeyboard = !showStickerKeyboard;
-                            });
-                            Timer(
-                                Duration(milliseconds: 30),
-                                () => _controller.jumpTo(
-                                    _controller.position.minScrollExtent));
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 25.0),
-                      // child: GestureDetector(
-                      //     onTap: () {
-                      //       if ((messageController.text != '' ||
-                      //           messageController.text.isNotEmpty)) {
-                      //         sendMessage(
-                      //             currentUser.email, currentUser.userName);
-                      //       } else {
-                      //         if (showTextKeyboard) {
-                      //           setState(() {
-                      //             FocusScopeNode currentFocus =
-                      //                 FocusScope.of(context);
-                      //             if (!currentFocus.hasPrimaryFocus) {
-                      //               currentFocus.unfocus();
-                      //               showTextKeyboard = false;
-                      //             }
-                      //           });
-                      //         } else {
-                      //           if (showStickerKeyboard) {
-                      //             setState(() {
-                      //               showStickerKeyboard = false;
-                      //             });
-                      //           } else {}
-                      //         }
-                      //         setState(() {
-                      //           showFunctions = !showFunctions;
-                      //         });
-                      //         Timer(
-                      //             Duration(milliseconds: 30),
-                      //             () => _controller.jumpTo(
-                      //                 _controller.position.minScrollExtent));
-                      //       }
-                      //     },
-                      //     child: (messageController.text != '' ||
-                      //             messageController.text.isNotEmpty)
-                      //         ? Image.asset('assets/images/messageSend.png',
-                      //             width: 28, height: 28)
-                      //         : showFunctions
-                      //             ? Image.asset(
-                      //                 'assets/images/plus_on_click.png',
-                      //                 width: 28,
-                      //                 height: 28)
-                      //             : Image.asset(
-                      //                 'assets/images/plus_on_click.png',
-                      //                 width: 28,
-                      //                 height: 28)),
-                    )
-                  ],
-                ),
-              ),
-              showStickerKeyboard
-                  //     ? AnimatedContainer(
-                  //         duration: Duration(milliseconds: 80),
-                  //         // showStickerKeyboard ? 400 : 0,
-                  //         child: EmojiPicker(
-                  //           rows: 4,
-                  //           columns: 7,
-                  //           buttonMode: ButtonMode.MATERIAL,
-                  //           numRecommended: 10,
-                  //           onEmojiSelected: (emoji, category) {
-                  //             setState(() {
-                  //               messageController.text =
-                  //                   messageController.text + emoji.emoji;
-                  //             });
-                  //           },
-                  //         ),
-                  //       )
-                  //     : Container(),
-                  // showFunctions
-                  ? AnimatedContainer(
-                      duration: Duration(milliseconds: 80),
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(left: 50, right: 50),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 64,
-                              width: 65,
-                              child: IconButton(
-                                  icon: Image.asset('assets/images/camera.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.camera,
-                                      currentUser.email,
-                                      currentUser.userName)),
+                        Expanded(child: chatMessageList(currentUser.email)),
+                        Container(
+                            decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset:
+                                  Offset(0, 3), // changes position of shadow
                             ),
-                            Container(
-                              height: 64,
-                              width: 65,
-                              child: IconButton(
-                                  icon: Image.asset(
-                                      'assets/images/photo_library.png'),
-                                  onPressed: () => _pickFile(
-                                      //ImageSource.gallery,
-                                      currentUser.email,
-                                      currentUser.userName)),
-                            ),
-                            // Container(
-                            //   height: 64,
-                            //   width: 55,
-                            //   color: Colors.white,
-                            // ),
-                            Container(
-                              height: 64,
-                              width: 55,
-                              color: Colors.white,
-                            )
                           ],
+                        )),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 74.0,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffF9F6F1),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: TextField(
+                                    onTap: () {
+                                      setState(() {
+                                        showStickerKeyboard = false;
+                                        showTextKeyboard = true;
+                                        showFunctions = false;
+                                      });
+                                      Timer(
+                                          Duration(milliseconds: 160),
+                                          () => _controller.jumpTo(_controller
+                                              .position.minScrollExtent));
+                                    },
+                                    controller: messageController,
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.only(left: 15.0),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(35),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(35),
+                                      ),
+                                    ),
+                                    textInputAction: TextInputAction.send,
+                                    onSubmitted: (value) {
+                                      sendMessage(currentUser.email,
+                                          currentUser.userName);
+                                    },
+                                  ),
+                                ),
+                              )),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 14.0),
+                                child: GestureDetector(
+                                    child: showStickerKeyboard
+                                        ? Image.asset(
+                                            'assets/images/messageSend.png',
+                                            width: 28,
+                                            height: 28)
+                                        // : showFunctions
+                                        // ? Image.asset(
+                                        // 'assets/images/plus_on_click.png',
+                                        // width: 28,
+                                        // height: 28)
+                                        : Image.asset(
+                                            'assets/images/plus_on_click.png',
+                                            width: 28,
+                                            height: 28),
+                                    // ? Image.asset('assets/images/emoji_on_click.png',
+                                    //     width: 29, height: 27.83)
+                                    // : Image.asset('assets/images/emoji.png',
+                                    //     width: 29, height: 27.83),
+                                    onTap: () {
+                                      if (showTextKeyboard) {
+                                        setState(() {
+                                          FocusScopeNode currentFocus =
+                                              FocusScope.of(context);
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                            showTextKeyboard = false;
+                                          }
+                                        });
+                                      } else {
+                                        // if (showFunctions) {
+                                        //   setState(() {
+                                        //     showFunctions = false;
+                                        //   });
+                                        // } else {}
+                                      }
+                                      setState(() {
+                                        showStickerKeyboard =
+                                            !showStickerKeyboard;
+                                      });
+                                      Timer(
+                                          Duration(milliseconds: 30),
+                                          () => _controller.jumpTo(_controller
+                                              .position.minScrollExtent));
+                                    }),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, right: 25.0),
+                                // child: GestureDetector(
+                                //     onTap: () {
+                                //       if ((messageController.text != '' ||
+                                //           messageController.text.isNotEmpty)) {
+                                //         sendMessage(
+                                //             currentUser.email, currentUser.userName);
+                                //       } else {
+                                //         if (showTextKeyboard) {
+                                //           setState(() {
+                                //             FocusScopeNode currentFocus =
+                                //                 FocusScope.of(context);
+                                //             if (!currentFocus.hasPrimaryFocus) {
+                                //               currentFocus.unfocus();
+                                //               showTextKeyboard = false;
+                                //             }
+                                //           });
+                                //         } else {
+                                //           if (showStickerKeyboard) {
+                                //             setState(() {
+                                //               showStickerKeyboard = false;
+                                //             });
+                                //           } else {}
+                                //         }
+                                //         setState(() {
+                                //           showFunctions = !showFunctions;
+                                //         });
+                                //         Timer(
+                                //             Duration(milliseconds: 30),
+                                //             () => _controller.jumpTo(
+                                //                 _controller.position.minScrollExtent));
+                                //       }
+                                //     },
+                                //     child: (messageController.text != '' ||
+                                //             messageController.text.isNotEmpty)
+                                //         ? Image.asset('assets/images/messageSend.png',
+                                //             width: 28, height: 28)
+                                //         : showFunctions
+                                //             ? Image.asset(
+                                //                 'assets/images/plus_on_click.png',
+                                //                 width: 28,
+                                //                 height: 28)
+                                //             : Image.asset(
+                                //                 'assets/images/plus_on_click.png',
+                                //                 width: 28,
+                                //                 height: 28)),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  : Container(),
-            ],
-          ),
-        ),
-      )),
-    ));
+                        showStickerKeyboard
+                            //     ? AnimatedContainer(
+                            //         duration: Duration(milliseconds: 80),
+                            //         // showStickerKeyboard ? 400 : 0,
+                            //         child: EmojiPicker(
+                            //           rows: 4,
+                            //           columns: 7,
+                            //           buttonMode: ButtonMode.MATERIAL,
+                            //           numRecommended: 10,
+                            //           onEmojiSelected: (emoji, category) {
+                            //             setState(() {
+                            //               messageController.text =
+                            //                   messageController.text + emoji.emoji;
+                            //             });
+                            //           },
+                            //         ),
+                            //       )
+                            //     : Container(),
+                            // showFunctions
+                            ? AnimatedContainer(
+                                duration: Duration(milliseconds: 80),
+                                height: 80,
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.white,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 50, right: 50),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                                'assets/images/camera.png'),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.camera,
+                                                currentUser.email,
+                                                currentUser.userName)),
+                                      ),
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                                'assets/images/photo_library.png'),
+                                            onPressed: () => _pickFile(
+                                                //ImageSource.gallery,
+                                                currentUser.email,
+                                                currentUser.userName)),
+                                      ),
+                                      // Container(
+                                      //   height: 64,
+                                      //   width: 55,
+                                      //   color: Colors.white,
+                                      // ),
+                                      Container(
+                                        height: 64,
+                                        width: 55,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                  ),
+                )),
+              ));
   }
 }
 
@@ -1263,274 +1295,274 @@ class FileTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              DateFormat('EEEE')
-                  .format(DateTime.parse(currentTime))
-                  .substring(0, 3) +
-                  ', ' +
-                  DateFormat('MMMM')
-                      .format(DateTime.parse(currentTime))
-                      .substring(0, 3) +
-                  ' ' +
-                  DateFormat('d').format(DateTime.parse(currentTime)),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container()
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
             : displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              currentTime.substring(0, currentTime.length - 13),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container(),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
         isSendByMe
             ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          html.window.open(messageUrl, 'PlaceholderName');
-                          //downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 130,
-                                        height: 80,
-                                        color: const Color(0xff00838f),
-                                      ),
-                                      Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.insert_drive_file,
-                                            color: const Color(0xfff9fbe7),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                              'file: ' + fileName,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: const Color(0xfff9fbe7),
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                html.window.open(messageUrl, 'PlaceholderName');
+                                //downloadFile(messageUrl);
+                              },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => PreviewImage(
+                              //         imageUrl: message,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
-                                      )
-                                  )
-                                ],
-                              ),
-                            )
-                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.file_download,
+                                                color: const Color(0xfff9fbe7),
+                                              ),
+                                              //onPressed: () => downloadFile(message.fileUrl)
+                                            ))
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
             : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Sender's name
-
-              Container(
+                padding: EdgeInsets.only(top: 20, left: 25),
                 alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return MultiProvider(
-                              providers: [
-                                Provider<UserData>.value(
-                                  value: userdata,
-                                ),
-                                Provider<List<CourseInfo>>.value(
-                                  value: currentCourse,
-                                ),
-                              ],
-                              child: FriendProfile(
-                                userID:
-                                senderID, // to be modified to friend's ID
-                              ),
-                            );
-                          }));
-                    },
-                    child: Text(
-                      senderName ?? ' ',
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: listProfileColor[profileColor.toInt()],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Message and Time
-              Container(
-                width: 350,
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          html.window.open(messageUrl, 'PlaceholderName');
-                          //downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-                        child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 130,
-                                        height: 80,
-                                        color: const Color(0xff00838f),
-                                      ),
-                                      Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.insert_drive_file,
-                                            color: const Color(0xfff9fbe7),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                              'file: ' + fileName,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: const Color(0xfff9fbe7),
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                    // Sender's name
+
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
                                   ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
-                                        ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
-                                      )
-                                  )
+                                  Provider<List<CourseInfo>>.value(
+                                    value: currentCourse,
+                                  ),
                                 ],
-                              ),
-                            )
+                                child: FriendProfile(
+                                  userID:
+                                      senderID, // to be modified to friend's ID
+                                ),
+                              );
+                            }));
+                          },
+                          child: Text(
+                            senderName ?? ' ',
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: listProfileColor[profileColor.toInt()],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                html.window.open(messageUrl, 'PlaceholderName');
+                                //downloadFile(messageUrl);
+                              },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => PreviewImage(
+                              //         imageUrl: message,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
+                              child: Container(
+                                  margin: EdgeInsets.only(right: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.file_download,
+                                                color: const Color(0xfff9fbe7),
+                                              ),
+                                              //onPressed: () => downloadFile(message.fileUrl)
+                                            ))
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )

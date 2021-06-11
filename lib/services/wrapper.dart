@@ -1,3 +1,4 @@
+import 'package:app_test/WebMainMenu.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/MainMenu.dart';
@@ -77,7 +78,7 @@ class Wrapper extends StatelessWidget {
                       ],
                       child: (snapshot.data[0].profileColor == null)
                           ? StartPage()
-                          : MainMenu()
+                          : WebMainMenu()
                       // FriendProfile(
                       //   userID: user.userID, // to be modified to friend's ID
                       // ),

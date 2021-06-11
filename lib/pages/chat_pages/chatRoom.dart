@@ -29,7 +29,9 @@ class _ChatRoomState extends State<ChatRoom> {
   String latestMessage;
   String lastMessageTime;
   DatabaseMethods databaseMethods = new DatabaseMethods();
-
+  Widget rightMenu = Container(
+    color: Colors.white,
+  );
   Widget chatRoomsList(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
@@ -70,6 +72,11 @@ class _ChatRoomState extends State<ChatRoom> {
                       : Column(
                           children: [
                             ChatRoomsTile(
+                                valueChanged: (index) {
+                                  setState(() {
+                                    rightMenu = index;
+                                  });
+                                },
                                 friendID: friendID,
                                 userName: snapshot.data.documents[index]
                                     .data()['chatRoomId']
@@ -89,7 +96,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                 friendProfileColor: friendProfileColor),
                             Divider(
                               thickness: 1,
-                              indent: _width * 0.25,
+                              indent: _width * 0.14,
                             ),
                           ],
                         );
@@ -120,73 +127,87 @@ class _ChatRoomState extends State<ChatRoom> {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                  top: 40, left: 40, bottom: _height * 0.064, right: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Text(
-                      'Chats',
-                      textAlign: TextAlign.left,
-                      style: largeTitleTextStyleBold(Colors.black, 26),
-                    ),
+    Widget leftMenu = Container(
+      width: 450,
+      color: Colors.white,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+                top: 40, left: 40, bottom: _height * 0.064, right: 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Text(
+                    'Chats',
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
-                  // Expanded(child: Container()),
-                  GestureDetector(
-                      onTap: () {
-                        //search for users
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return MultiProvider(
-                            providers: [
-                              Provider<UserData>.value(
-                                value: currentUser,
-                              ),
-                              Provider<List<CourseInfo>>.value(
-                                value: currentCourse,
-                              ),
-                              // 这个需要的话直接uncomment
-                              // Provider<List<CourseInfo>>.value(
-                              //   value: course,F
-                              // ),
-                              // final courseProvider = Provider.of<CourseProvider>(context);
-                              // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                              // 不需要pass到push里面，直接复制上面这行即可
-                            ],
-                            child: SearchUsers(),
-                          );
-                        }));
-                      },
-                      child: Container(
-                          child: Text(
-                        'search friend',
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.openSans(
-                          color: themeOrange,
-                          fontSize: 16,
-                        ),
-                      )))
-                ],
-              ),
+                ),
+
+                // Expanded(child: Container()),
+                GestureDetector(
+                    onTap: () {
+                      //search for users
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return MultiProvider(
+                          providers: [
+                            Provider<UserData>.value(
+                              value: currentUser,
+                            ),
+                            Provider<List<CourseInfo>>.value(
+                              value: currentCourse,
+                            ),
+                            // 这个需要的话直接uncomment
+                            // Provider<List<CourseInfo>>.value(
+                            //   value: course,F
+                            // ),
+                            // final courseProvider = Provider.of<CourseProvider>(context);
+                            // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                            // 不需要pass到push里面，直接复制上面这行即可
+                          ],
+                          child: SearchUsers(),
+                        );
+                      }));
+                    },
+                    child: Container(
+                        child: Text(
+                      'search friend',
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.openSans(
+                        color: themeOrange,
+                        fontSize: 16,
+                      ),
+                    )))
+              ],
             ),
-            Expanded(
-              child: chatRoomsList(context),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: chatRoomsList(context),
+          ),
+        ],
+      ),
+    );
+    return Scaffold(
+      body: Row(
+        children: [
+          leftMenu,
+          Expanded(
+            child: rightMenu,
+          )
+        ],
       ),
     );
   }
 }
 
 class ChatRoomsTile extends StatelessWidget {
+  final ValueChanged<Widget> valueChanged;
   final String userName;
   final String chatRoomId;
   final String friendName;
@@ -198,6 +219,7 @@ class ChatRoomsTile extends StatelessWidget {
   final double friendProfileColor;
 
   ChatRoomsTile({
+    this.valueChanged,
     this.userName,
     @required this.chatRoomId,
     this.friendName,
@@ -220,36 +242,46 @@ class ChatRoomsTile extends StatelessWidget {
     //print('heree');
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return MultiProvider(
-            providers: [
-              Provider<UserData>.value(
-                value: currentUser,
-              ),
-              Provider<List<CourseInfo>>.value(
-                value: currentCourse,
-              ),
-            ],
-            child: ChatScreen(
-                chatRoomId: chatRoomId,
-                friendName: friendName,
-                friendEmail: friendEmail,
-                initialChat: 0,
-                myEmail: currentUser.email,
-                friendID: friendID,
-                friendProfileColor: friendProfileColor),
-          );
-        }));
+        valueChanged(
+          ChatScreen(
+              chatRoomId: chatRoomId,
+              friendName: friendName,
+              friendEmail: friendEmail,
+              initialChat: 0,
+              myEmail: currentUser.email,
+              friendID: friendID,
+              friendProfileColor: friendProfileColor),
+        );
+        // Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //   return MultiProvider(
+        //     providers: [
+        //       Provider<UserData>.value(
+        //         value: currentUser,
+        //       ),
+        //       Provider<List<CourseInfo>>.value(
+        //         value: currentCourse,
+        //       ),
+        //     ],
+        //     child: ChatScreen(
+        //         chatRoomId: chatRoomId,
+        //         friendName: friendName,
+        //         friendEmail: friendEmail,
+        //         initialChat: 0,
+        //         myEmail: currentUser.email,
+        //         friendID: friendID,
+        //         friendProfileColor: friendProfileColor),
+        //   );
+        // }));
       },
       child: Container(
         height: _height * 0.087,
         margin: EdgeInsets.only(
           top: _height * 0.006,
           bottom: _height * 0.006,
-          right: _width * 0.03,
+          right: _width * 0.02,
         ),
         padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.03,
+          horizontal: _width * 0.02,
         ),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -258,117 +290,111 @@ class ChatRoomsTile extends StatelessWidget {
             bottomRight: Radius.circular(20.0),
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: _width * 0.175,
-                    width: _width * 0.175,
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor:
-                              listProfileColor[friendProfileColor.toInt()],
-                          radius: sidebarSize / 10,
-                          child: Container(
-                            child: Text(
-                              // 单个字22，双子18
-                              friendName.split(' ').length >= 2
-                                  ? friendName.split(' ')[0][0].toUpperCase() +
-                                      friendName
-                                          .split(' ')[
-                                              friendName.split(' ').length - 1]
-                                              [0]
-                                          .toUpperCase()
-                                  : friendName[0].toUpperCase(),
-                              style: GoogleFonts.montserrat(
-                                  fontSize: friendName.split(' ').length >= 2
-                                      ? 19
-                                      : 22,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: _width * 0.18,
+                  width: _width * 0.18,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor:
+                            listProfileColor[friendProfileColor.toInt()],
+                        radius: sidebarSize / 10,
+                        child: Container(
+                          child: Text(
+                            // 单个字22，双子18
+                            friendName.split(' ').length >= 2
+                                ? friendName.split(' ')[0][0].toUpperCase() +
+                                    friendName
+                                        .split(' ')[
+                                            friendName.split(' ').length - 1][0]
+                                        .toUpperCase()
+                                : friendName[0].toUpperCase(),
+                            style: GoogleFonts.montserrat(
+                                fontSize:
+                                    friendName.split(' ').length >= 2 ? 19 : 22,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
-                        unreadNumber > 0 &&
-                                (currentUser.blockedUserID != null &&
-                                    !currentUser.blockedUserID
-                                        .contains(friendID))
-                            ? Positioned(
-                                right: 0,
-                                top: 0,
-                                child: new Container(
-                                  alignment: Alignment.topCenter,
-                                  width: 18,
-                                  height: 18,
-                                  decoration: new BoxDecoration(
-                                    color: const Color(0xffFF1717),
-                                    borderRadius: BorderRadius.circular(32),
-                                  ),
-                                  child: new Text(
-                                    unreadNumber < 100
-                                        ? unreadNumber.toString()
-                                        : '...',
-                                    style: GoogleFonts.openSans(
-                                        fontSize: 12, color: Colors.white),
-                                  ),
-                                ))
-                            : Container(),
+                      ),
+                      unreadNumber > 0 &&
+                              (currentUser.blockedUserID != null &&
+                                  !currentUser.blockedUserID.contains(friendID))
+                          ? Positioned(
+                              right: 0,
+                              top: 0,
+                              child: new Container(
+                                alignment: Alignment.topCenter,
+                                width: 18,
+                                height: 18,
+                                decoration: new BoxDecoration(
+                                  color: const Color(0xffFF1717),
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                                child: new Text(
+                                  unreadNumber < 100
+                                      ? unreadNumber.toString()
+                                      : '...',
+                                  style: GoogleFonts.openSans(
+                                      fontSize: 12, color: Colors.white),
+                                ),
+                              ))
+                          : Container(),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: _width * 0.2,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: _width * 0.02, top: _height * 0.005),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AutoSizeText(
+                          friendName,
+                          style: GoogleFonts.montserrat(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xffFF7E40)),
+                        ),
+                        SizedBox(
+                          height: _height * 0.009,
+                        ),
+                        Container(
+                          child: AutoSizeText(latestMessage,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.openSans(
+                                  fontSize: 15.5, color: Colors.black)),
+                        )
                       ],
                     ),
                   ),
-                  Container(
-                    width: _width * 0.6 - 15,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: _width * 0.04, top: _height * 0.005),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AutoSizeText(
-                            friendName,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xffFF7E40)),
-                          ),
-                          SizedBox(
-                            height: _height * 0.009,
-                          ),
-                          Container(
-                            child: AutoSizeText(latestMessage,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.openSans(
-                                    fontSize: 15.5, color: Colors.black)),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Spacer(),
-              Container(
-                child: Padding(
-                  padding: EdgeInsets.only(top: _height * 0.0049),
-                  child: Container(
-                    child: AutoSizeText(
-                      lastMessageTime.substring(11, lastMessageTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 14,
-                        color: const Color(0xff949494),
-                      ),
+                )
+              ],
+            ),
+            Spacer(),
+            Container(
+              child: Padding(
+                padding: EdgeInsets.only(top: _height * 0.0049),
+                child: Container(
+                  child: AutoSizeText(
+                    lastMessageTime.substring(11, lastMessageTime.length - 7),
+                    style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      color: const Color(0xff949494),
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
