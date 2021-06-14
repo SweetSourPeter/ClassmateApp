@@ -186,7 +186,7 @@ class _EditHomePageState extends State<EditHomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Wrapper(false)),
+                                        builder: (context) => Wrapper(false, false, "0")),
                                   );
                                 });
                               },

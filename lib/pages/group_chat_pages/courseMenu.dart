@@ -300,26 +300,48 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                       ],
                       child: GestureDetector(
                         // TODO: navigate to course forum using routing
-                        onTap: () => ExtendedNavigator.of(context).push(
-                          Routes.multiProvider(id: course[index].courseID),
-                          arguments: MultiProviderArguments(
-                            providers: [
-                              Provider<UserData>.value(
-                                value: userdata,
-                              ),
-                              Provider<List<CourseInfo>>.value(
-                                value: course,
-                              ),
-                            ],
-                            child: GroupChat(
-                              courseId: course[index].courseID,
-                              myEmail: userdata.email,
-                              myName: userdata.userName,
-                              initialChat: 0,
-                            ),
-                          ),
-                        ),
-
+                        // onTap: () => ExtendedNavigator.of(context).push(
+                        //   Routes.multiProvider(id: course[index].courseID),
+                        //   arguments: MultiProviderArguments(
+                        //     providers: [
+                        //       Provider<UserData>.value(
+                        //         value: userdata,
+                        //       ),
+                        //       Provider<List<CourseInfo>>.value(
+                        //         value: course,
+                        //       ),
+                        //     ],
+                        //     child: GroupChat(
+                        //       courseId: course[index].courseID,
+                        //       myEmail: userdata.email,
+                        //       myName: userdata.userName,
+                        //       initialChat: 0,
+                        //     ),
+                        //   ),
+                        // ),
+                        onTap: () {
+                          //TODO navigate into course fourm
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return MultiProvider(
+                                  providers: [
+                                    Provider<UserData>.value(
+                                      value: userdata,
+                                    ),
+                                    Provider<List<CourseInfo>>.value(
+                                      value: course,
+                                    ),
+                                  ],
+                                  child: GroupChat(
+                                    courseId: course[index].courseID,
+                                    myEmail: userdata.email,
+                                    myName: userdata.userName,
+                                    initialChat: 0,
+                                  ),
+                                );
+                              }));
+                        },
                         child: Container(
                             margin: EdgeInsets.only(
                               bottom: 0.02 * _height,

@@ -11,6 +11,7 @@ import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/routes/AuthGuard.dart';
 import 'package:app_test/routes/router.gr.dart';
 import 'package:app_test/unknown_pages/unknown_page.dart';
+import 'package:app_test/web_initial_pages/web_whole.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -96,15 +97,15 @@ class MyApp extends StatelessWidget {
           print("setting uri is");
           print(settingsUri);
           // final courseID = settingsUri.queryParameters['id'];
-          final user = Provider.of<User>(context);
-          final userdata = Provider.of<user_replaced.UserData>(context);
-          final course = Provider.of<List<CourseInfo>>(context);
+          final user = AuthMethods().user;
+          print("user");
+          print(user);
 
           //user didn't log in, go to home page
           if (user == null) {
             return MaterialPageRoute(
                 builder: (context) {
-                  return Wrapper(false);
+                  return NavPage();
                 }
             );
           } else {
@@ -112,7 +113,7 @@ class MyApp extends StatelessWidget {
             if (settingsUri.pathSegments.length == 0) {
               return MaterialPageRoute(
                   builder: (context) {
-                    return Wrapper(false);
+                    return Wrapper(false, false, "0");
                   }
               );
             }
@@ -140,22 +141,25 @@ class MyApp extends StatelessWidget {
               //call multiprovider with correct arguments
               return MaterialPageRoute(
                   builder: (context) {
-                    return MultiProvider(
-                      providers: [
-                        Provider<user_replaced.UserData>.value(
-                          value: userdata,
-                        ),
-                        Provider<List<CourseInfo>>.value(
-                          value: course,
-                        ),
-                      ],
-                      child: GroupChat(
-                        courseId: classid,
-                        myEmail: userdata.email,
-                        myName: userdata.userName,
-                        initialChat: 0,
-                      ),
-                    );
+                    return Wrapper(false, true, classid);
+                    // final userdata = Provider.of<user_replaced.UserData>(context);
+                    // final course = Provider.of<List<CourseInfo>>(context);
+                    // return MultiProvider(
+                    //   providers: [
+                    //     Provider<user_replaced.UserData>.value(
+                    //       value: userdata,
+                    //     ),
+                    //     Provider<List<CourseInfo>>.value(
+                    //       value: course,
+                    //     ),
+                    //   ],
+                    //   child: GroupChat(
+                    //     courseId: classid,
+                    //     myEmail: userdata.email,
+                    //     myName: userdata.userName,
+                    //     initialChat: 0,
+                    //   ),
+                    // );
                   }
               );
             }
@@ -168,17 +172,15 @@ class MyApp extends StatelessWidget {
           );
         },
 
-        routes: ,
-
-        builder: ExtendedNavigator(
-          key: _exNavigatorKey,
-          router: ModularRouter(),
-          initialRoute: Routes.navPage,
-          // builder: (_, extendedNav) => Theme(
-          //   data: themeOrange(),
-          //   child: extendedNav,
-          // ),
-        ),
+        // builder: ExtendedNavigator(
+        //   key: _exNavigatorKey,
+        //   router: ModularRouter(),
+        //   initialRoute: Routes.navPage,
+        //   // builder: (_, extendedNav) => Theme(
+        //   //   data: themeOrange(),
+        //   //   child: extendedNav,
+        //   // ),
+        // ),
       ),
     );
   }

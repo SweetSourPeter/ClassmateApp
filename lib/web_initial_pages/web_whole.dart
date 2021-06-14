@@ -109,7 +109,7 @@ class DesktopNavPage extends StatelessWidget {
                     //     ),
                     //   );
                     // },
-                    onPressed: () => _navigateToStart(context),
+                    onPressed: () => Wrapper(false, false, "0"),
                     child: AutoSizeText(
                       "Open Meechu in Browser",
                       style: GoogleFonts.montserrat(
@@ -349,9 +349,9 @@ class MobileSmallNavPage extends StatelessWidget {
   }
 }
 
-void _navigateToStart(BuildContext context) {
-  ExtendedNavigator.of(context).push(
-    Routes.wrapper,
-    arguments: WrapperArguments(reset: false),
-  );
-}
+// void _navigateToStart(BuildContext context) {
+//   ExtendedNavigator.of(context).push(
+//     Routes.wrapper,
+//     arguments: WrapperArguments(reset: false),
+//   );
+// }
