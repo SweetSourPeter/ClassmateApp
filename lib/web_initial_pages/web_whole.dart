@@ -1,3 +1,5 @@
+import 'package:app_test/routes/router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -97,16 +99,17 @@ class DesktopNavPage extends StatelessWidget {
                         vertical: 11, horizontal: 0.03 * _width),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Wrapper(false);
-                          },
-                        ),
-                      );
-                    },
+                    // onPressed: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) {
+                    //         return Wrapper(false);
+                    //       },
+                    //     ),
+                    //   );
+                    // },
+                    onPressed: () => _navigateToStart(context),
                     child: AutoSizeText(
                       "Open Meechu in Browser",
                       style: GoogleFonts.montserrat(
@@ -344,4 +347,11 @@ class MobileSmallNavPage extends StatelessWidget {
     controller.animateToPage(index,
         duration: Duration(seconds: 2), curve: Curves.fastLinearToSlowEaseIn);
   }
+}
+
+void _navigateToStart(BuildContext context) {
+  ExtendedNavigator.of(context).push(
+    Routes.wrapper,
+    arguments: WrapperArguments(reset: false),
+  );
 }

@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:app_test/routes/router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({Key key, this.course, this.userData}) : super(key: key);
@@ -297,28 +299,27 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                             }),
                       ],
                       child: GestureDetector(
-                        onTap: () {
-                          //TODO navigate into course fourm
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return MultiProvider(
-                              providers: [
-                                Provider<UserData>.value(
-                                  value: userdata,
-                                ),
-                                Provider<List<CourseInfo>>.value(
-                                  value: course,
-                                ),
-                              ],
-                              child: GroupChat(
-                                courseId: course[index].courseID,
-                                myEmail: userdata.email,
-                                myName: userdata.userName,
-                                initialChat: 0,
+                        // TODO: navigate to course forum using routing
+                        onTap: () => ExtendedNavigator.of(context).push(
+                          Routes.multiProvider(id: course[index].courseID),
+                          arguments: MultiProviderArguments(
+                            providers: [
+                              Provider<UserData>.value(
+                                value: userdata,
                               ),
-                            );
-                          }));
-                        },
+                              Provider<List<CourseInfo>>.value(
+                                value: course,
+                              ),
+                            ],
+                            child: GroupChat(
+                              courseId: course[index].courseID,
+                              myEmail: userdata.email,
+                              myName: userdata.userName,
+                              initialChat: 0,
+                            ),
+                          ),
+                        ),
+
                         child: Container(
                             margin: EdgeInsets.only(
                               bottom: 0.02 * _height,
@@ -558,3 +559,80 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     }
   }
 }
+
+// class CourseRouteInformationParser
+//     extends RouteInformationParser<CourseRoutePath> {
+//   @override
+//   Future<CourseRoutePath> parseRouteInformation(
+//       RouteInformation routeInformation) async {
+//     final uri = Uri.parse(routeInformation.location);
+//
+//     // Handle '/'
+//     if (uri.pathSegments.length == 0) return CourseRoutePath.home();
+//
+//     // Handle '/course/:id'
+//     if (uri.pathSegments.length == 2) {
+//       if (uri.pathSegments.first != 'course') return CourseRoutePath.unknown();
+//       final classid = uri.pathSegments.elementAt(1);
+//       if (classid == null) return CourseRoutePath.unknown();
+//       return CourseRoutePath.details(classid);
+//     }
+//
+//     //Handle unknown Routes
+//     return CourseRoutePath.unknown();
+//   }
+//
+//   @override
+//   RouteInformation restoreRouteInformation(CourseRoutePath path) {
+//     if (path.isUnknown) return RouteInformation(location: '/404');
+//     if (path.isHomePage) return RouteInformation(location: '/');
+//     if (path.isCoursePage)
+//       return RouteInformation(location: '/course/${path.classid}');
+//
+//     return null;
+//   }
+// }
+//
+//
+// class CourseRouterDelegate extends RouterDelegate<CourseRoutePath> with ChangeNotifier, PopNavigatorRouterDelegateMixin<CourseRoutePath>{
+//
+//   bool show404 = false;
+//   String course;
+//
+//   @override
+//   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
+//
+//   @override
+//   CourseRoutePath get currentConfiguration {
+//     if (show404) return CourseRoutePath.unknown();
+//     if (course == null) return CourseRoutePath.home();
+//     return CourseRoutePath.details();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiProvider(
+//       providers: [
+//         Provider<UserData>.value(
+//           value: userdata,
+//         ),
+//         Provider<List<CourseInfo>>.value(
+//           value: course,
+//         ),
+//       ],
+//       child: GroupChat(
+//         courseId: course[index].courseID,
+//         myEmail: userdata.email,
+//         myName: userdata.userName,
+//         initialChat: 0,
+//       ),
+//     );
+//   }
+//
+//   @override
+//   Future<void> setNewRoutePath(CourseRoutePath configuration) {
+//     // TODO: implement setNewRoutePath
+//     throw UnimplementedError();
+//   }
+//
+// }

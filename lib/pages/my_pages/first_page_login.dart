@@ -3,6 +3,8 @@ import 'package:app_test/pages/utils/animation_item.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:app_test/routes/router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 
 class FirstPageLogin extends StatefulWidget {
   final PageController pageController;
@@ -166,6 +168,7 @@ class _FirstPageLoginState extends State<FirstPageLogin> {
                                         borderRadius:
                                             BorderRadius.circular(40)),
                                     onPressed: () {
+                                      // _navigateToSignup(context);
                                       widget.pageController.animateToPage(2,
                                           duration: Duration(milliseconds: 800),
                                           curve: Curves.easeInCubic);
