@@ -100,7 +100,7 @@ class MyApp extends StatelessWidget {
           // final courseID = settingsUri.queryParameters['id'];
           final user = AuthMethods().user;
           print("user");
-          print(user);
+          print(user.isEmpty);
 
           //user didn't log in, go to home page
           if (user.isEmpty == null) {
@@ -112,8 +112,8 @@ class MyApp extends StatelessWidget {
             // Handle '/'
             if (settingsUri.pathSegments.length == 0) {
               return MaterialPageRoute(builder: (context) {
-                // return NavPage();
-                return Wrapper(false, false, "0");
+                return NavPage();
+                // return Wrapper(false, false, "0");
               });
             }
 

@@ -1,4 +1,3 @@
-
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
@@ -37,7 +36,7 @@ class _RedirectPageState extends State<RedirectPage> {
         myEmail: userdata.email,
         myName: userdata.userName,
         initialChat: 0,
-        isRedirect: false,
+        isRedirect: true,
       ),
     );
   }

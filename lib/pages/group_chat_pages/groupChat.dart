@@ -115,38 +115,39 @@ class _GroupChatState extends State<GroupChat> {
                     displayWeek = false;
                   }
 
-                  if (snapshot.data.documents[index].data()['messageType'] == 'text') {
+                  if (snapshot.data.documents[index].data()['messageType'] ==
+                      'text') {
                     return MessageTile(
                       snapshot.data.documents[index].data()['message'],
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       snapshot.data.documents[index].data()['senderName'],
                       snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index]
-                          .data()['profileColor'] ??
+                      snapshot.data.documents[index].data()['profileColor'] ??
                           1.0,
                     );
-                  } else if (snapshot.data.documents[index].data()['messageType'] == 'image') {
+                  } else if (snapshot.data.documents[index]
+                          .data()['messageType'] ==
+                      'image') {
                     return ImageTile(
                       snapshot.data.documents[index].data()['message'],
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       snapshot.data.documents[index].data()['senderName'],
                       snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index]
-                          .data()['profileColor'] ??
+                      snapshot.data.documents[index].data()['profileColor'] ??
                           1.0,
                     );
                   } else {
@@ -155,18 +156,18 @@ class _GroupChatState extends State<GroupChat> {
                       snapshot.data.documents[index].data()['sendBy'] ==
                           myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time'])
+                              snapshot.data.documents[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
                       snapshot.data.documents[index].data()['senderName'],
                       snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index]
-                          .data()['profileColor'] ??
+                      snapshot.data.documents[index].data()['profileColor'] ??
                           1.0,
                       _link = snapshot.data.documents[index].data()['message'],
-                      fileName = snapshot.data.documents[index].data()['fileName'],
+                      fileName =
+                          snapshot.data.documents[index].data()['fileName'],
                     );
                   }
 
@@ -413,7 +414,6 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
-
     return SafeArea(
         child: Scaffold(
       backgroundColor: const Color(0xffF9F6F1),
@@ -459,9 +459,14 @@ class _GroupChatState extends State<GroupChat> {
                             // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
                             databaseMethods.setUnreadGroupChatNumberToZero(
                                 widget.courseId, currentUser.userID);
-                            if (widget.isRedirect == false) {Navigator.of(context).pop();}
-                            else {
-                              Navigator.pushNamed(context,'/');
+                            if (widget.isRedirect == false) {
+                              Navigator.of(context).pop();
+                            } else {
+                              // Navigator.pushNamed(context,'/');
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return Wrapper(false, false, "0");
+                              }));
                             }
                             // Navigator.of(context).pop();
                           },
@@ -1242,274 +1247,274 @@ class FileTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              DateFormat('EEEE')
-                  .format(DateTime.parse(currentTime))
-                  .substring(0, 3) +
-                  ', ' +
-                  DateFormat('MMMM')
-                      .format(DateTime.parse(currentTime))
-                      .substring(0, 3) +
-                  ' ' +
-                  DateFormat('d').format(DateTime.parse(currentTime)),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container()
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
             : displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              currentTime.substring(0, currentTime.length - 13),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container(),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
         isSendByMe
             ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          html.window.open(messageUrl, 'PlaceholderName');
-                          //downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 130,
-                                        height: 80,
-                                        color: const Color(0xff00838f),
-                                      ),
-                                      Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.insert_drive_file,
-                                            color: const Color(0xfff9fbe7),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                              'file: ' + fileName,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: const Color(0xfff9fbe7),
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                html.window.open(messageUrl, 'PlaceholderName');
+                                //downloadFile(messageUrl);
+                              },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => PreviewImage(
+                              //         imageUrl: message,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
-                                      )
-                                  )
-                                ],
-                              ),
-                            )
-                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.file_download,
+                                                color: const Color(0xfff9fbe7),
+                                              ),
+                                              //onPressed: () => downloadFile(message.fileUrl)
+                                            ))
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
             : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Sender's name
-
-              Container(
+                padding: EdgeInsets.only(top: 20, left: 25),
                 alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return MultiProvider(
-                              providers: [
-                                Provider<UserData>.value(
-                                  value: userdata,
-                                ),
-                                Provider<List<CourseInfo>>.value(
-                                  value: currentCourse,
-                                ),
-                              ],
-                              child: FriendProfile(
-                                userID:
-                                senderID, // to be modified to friend's ID
-                              ),
-                            );
-                          }));
-                    },
-                    child: Text(
-                      senderName ?? ' ',
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: listProfileColor[profileColor.toInt()],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Message and Time
-              Container(
-                width: 350,
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          html.window.open(messageUrl, 'PlaceholderName');
-                          //downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-                        child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 130,
-                                        height: 80,
-                                        color: const Color(0xff00838f),
-                                      ),
-                                      Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.insert_drive_file,
-                                            color: const Color(0xfff9fbe7),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                              'file: ' + fileName,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: const Color(0xfff9fbe7),
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                    // Sender's name
+
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: userdata,
                                   ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
-                                        ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
-                                      )
-                                  )
+                                  Provider<List<CourseInfo>>.value(
+                                    value: currentCourse,
+                                  ),
                                 ],
-                              ),
-                            )
+                                child: FriendProfile(
+                                  userID:
+                                      senderID, // to be modified to friend's ID
+                                ),
+                              );
+                            }));
+                          },
+                          child: Text(
+                            senderName ?? ' ',
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: listProfileColor[profileColor.toInt()],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                html.window.open(messageUrl, 'PlaceholderName');
+                                //downloadFile(messageUrl);
+                              },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => PreviewImage(
+                              //         imageUrl: message,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
+                              child: Container(
+                                  margin: EdgeInsets.only(right: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.file_download,
+                                                color: const Color(0xfff9fbe7),
+                                              ),
+                                              //onPressed: () => downloadFile(message.fileUrl)
+                                            ))
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )

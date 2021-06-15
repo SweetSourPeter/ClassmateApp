@@ -35,13 +35,9 @@ class Wrapper extends StatelessWidget {
     print('wrapper called');
     if (user == null) {
       print('user Is null');
+      // return NavPage();
       return StartLoginPage();
-      // StartLoginPage();
-    }
-    // else if (user == null) {
-    //   return NavPage();
-    // }
-    else if (this.needRedirect == true) {
+    } else if (this.needRedirect == true) {
       Future<UserData> userData =
           databaseMethods.getUserDetailsByID(user.userID);
 
