@@ -58,18 +58,19 @@ class _EditHomePageState extends State<EditHomePage> {
                 elevation: 0,
                 title: Text(
                   'Setting',
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
                 ),
                 backgroundColor: riceColor,
-                leading: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.navigate_before,
-                      color: themeOrange,
-                      size: 38,
-                    )),
+                // leading: GestureDetector(
+                //     onTap: () {
+                //       Navigator.pop(context);
+                //     },
+                //     child: Icon(
+                //       Icons.navigate_before,
+                //       color: themeOrange,
+                //       size: 38,
+                //     )),
               ),
               body: Container(
                 color: riceColor,

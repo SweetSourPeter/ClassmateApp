@@ -152,28 +152,31 @@ class _ChatRoomState extends State<ChatRoom> {
                 // Expanded(child: Container()),
                 GestureDetector(
                     onTap: () {
+                      setState(() {
+                        rightMenu = SearchUsers();
+                      });
                       //search for users
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return MultiProvider(
-                          providers: [
-                            Provider<UserData>.value(
-                              value: currentUser,
-                            ),
-                            Provider<List<CourseInfo>>.value(
-                              value: currentCourse,
-                            ),
-                            // 这个需要的话直接uncomment
-                            // Provider<List<CourseInfo>>.value(
-                            //   value: course,F
-                            // ),
-                            // final courseProvider = Provider.of<CourseProvider>(context);
-                            // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                            // 不需要pass到push里面，直接复制上面这行即可
-                          ],
-                          child: SearchUsers(),
-                        );
-                      }));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) {
+                      //   return MultiProvider(
+                      //     providers: [
+                      //       Provider<UserData>.value(
+                      //         value: currentUser,
+                      //       ),
+                      //       Provider<List<CourseInfo>>.value(
+                      //         value: currentCourse,
+                      //       ),
+                      //       // 这个需要的话直接uncomment
+                      //       // Provider<List<CourseInfo>>.value(
+                      //       //   value: course,F
+                      //       // ),
+                      //       // final courseProvider = Provider.of<CourseProvider>(context);
+                      //       // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                      //       // 不需要pass到push里面，直接复制上面这行即可
+                      //     ],
+                      //     child: SearchUsers(),
+                      //   );
+                      // }));
                     },
                     child: Container(
                         child: Text(

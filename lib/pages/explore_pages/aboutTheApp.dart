@@ -15,24 +15,24 @@ class AboutTheAPP extends StatelessWidget {
         child: Container(
           child: Scaffold(
               backgroundColor: themeOrange,
-              appBar: AppBar(
-                leading: Container(
-                  padding: EdgeInsets.only(left: kDefaultPadding),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                // centerTitle: true,
-                elevation: 0.0,
-                backgroundColor: themeOrange,
-                // title: Text("Create Course"),
-              ),
+              // appBar: AppBar(
+              //   // leading: Container(
+              //   //   padding: EdgeInsets.only(left: kDefaultPadding),
+              //   //   child: GestureDetector(
+              //   //     onTap: () {
+              //   //       Navigator.pop(context);
+              //   //     },
+              //   //     child: Icon(
+              //   //       Icons.arrow_back_ios,
+              //   //       color: Colors.white,
+              //   //     ),
+              //   //   ),
+              //   // ),
+              //   // centerTitle: true,
+              //   elevation: 0.0,
+              //   backgroundColor: themeOrange,
+              //   // title: Text("Create Course"),
+              // ),
               body: Center(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

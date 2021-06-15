@@ -105,10 +105,6 @@ class _HelpFeedbackState extends State<HelpFeedback> {
             SizedBox(
               height: 10,
             ),
-            topLineBar(),
-            SizedBox(
-              height: 10,
-            ),
             Container(
                 alignment: Alignment.center,
                 child: Icon(
@@ -153,7 +149,6 @@ class _HelpFeedbackState extends State<HelpFeedback> {
         SizedBox(
           height: 10,
         ),
-        topLineBar(),
         SizedBox(
           height: 10,
         ),
@@ -277,10 +272,6 @@ class _HelpFeedbackState extends State<HelpFeedback> {
         SizedBox(
           height: 10,
         ),
-        topLineBar(),
-        SizedBox(
-          height: 10,
-        ),
         Divider(),
         ListTile(
           leading: GestureDetector(
@@ -315,10 +306,6 @@ class _HelpFeedbackState extends State<HelpFeedback> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            topLineBar(),
             SizedBox(
               height: 10,
             ),
@@ -417,10 +404,6 @@ class _HelpFeedbackState extends State<HelpFeedback> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            topLineBar(),
             SizedBox(
               height: 10,
             ),

@@ -35,174 +35,164 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
   Widget build(BuildContext context) {
     Stream<List<Map<String, dynamic>>> data =
         databaseMehods.getUserReminderLists(widget.userID);
-    double modal_height = MediaQuery.of(context).size.height - 60;
+    double modal_height = MediaQuery.of(context).size.height;
 
     return Container(
-        decoration: BoxDecoration(
-          color: riceColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(30.0),
-            // bottomLeft: Radius.circular(30.0),
-            // bottomRight: Radius.circular(30.0),
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   color: riceColor,
+        //   borderRadius: BorderRadius.only(
+        //     topLeft: Radius.circular(30.0),
+        //     topRight: Radius.circular(30.0),
+        //     // bottomLeft: Radius.circular(30.0),
+        //     // bottomRight: Radius.circular(30.0),
+        //   ),
+        // ),
         height: modal_height,
-        child: Padding(
-          padding: EdgeInsets.only(top: 30),
-          child: Container(
-            color: riceColor,
-            child:
-                // RefreshIndicator(
-                // key: refreshKey,
-                // onRefresh: () async {
-                //   await refreshList();
-                // },
-                // child:
-                Column(
-              children: [
-                topLineBar(),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 22,
-                    ),
-                    child: Container(
-                      child: Text(
-                        'Your notify list',
-                        textAlign: TextAlign.center,
-                        style: largeTitleTextStyleBold(Colors.black, 28),
-                      ),
+        child: Container(
+          color: riceColor,
+          child:
+              // RefreshIndicator(
+              // key: refreshKey,
+              // onRefresh: () async {
+              //   await refreshList();
+              // },
+              // child:
+              Column(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 22,
+                  ),
+                  child: Container(
+                    child: Text(
+                      'Your notify list',
+                      textAlign: TextAlign.center,
+                      style: largeTitleTextStyleBold(Colors.black, 28),
                     ),
                   ),
                 ),
-                StreamBuilder(
-                    stream: data,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError)
-                        return Center(
-                          child: Text("Error"),
-                        );
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Loading();
-                        default:
-                          return !snapshot.hasData
-                              ? Center(
-                                  child:
-                                      Text("You dont have a notification list"),
-                                )
-                              : ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data.length,
-                                  itemBuilder: (context, index) {
-                                    return FocusedMenuHolder(
-                                      blurSize: 4,
-                                      menuOffset: 8,
-                                      menuItemExtent: 45,
-                                      menuWidth: getRealWidth(
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .width) *
-                                          0.80,
-                                      menuBoxDecoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15.0))),
-                                      onPressed: () {
-                                        //press on the item
-                                      },
-                                      menuItems: <FocusedMenuItem>[
-                                        FocusedMenuItem(
-                                            title: Text(
-                                              'Delete',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            trailingIcon: Icon(Icons.delete),
-                                            backgroundColor: Colors.redAccent,
-                                            onPressed: () async {
-                                              print('delete reminder called');
-                                              print(snapshot.data[index]
-                                                      ['reminderID']
-                                                  .toString());
-                                              databaseMehods
-                                                  .deleteCourseReminder(
-                                                      snapshot.data[index]
-                                                          ['reminderID'],
-                                                      widget.userID);
+              ),
+              StreamBuilder(
+                  stream: data,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError)
+                      return Center(
+                        child: Text("Error"),
+                      );
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Loading();
+                      default:
+                        return !snapshot.hasData
+                            ? Center(
+                                child:
+                                    Text("You dont have a notification list"),
+                              )
+                            : ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (context, index) {
+                                  return FocusedMenuHolder(
+                                    blurSize: 4,
+                                    menuOffset: 8,
+                                    menuItemExtent: 45,
+                                    menuWidth: getRealWidth(
+                                            MediaQuery.of(context).size.width) *
+                                        0.80,
+                                    menuBoxDecoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15.0))),
+                                    onPressed: () {
+                                      //press on the item
+                                    },
+                                    menuItems: <FocusedMenuItem>[
+                                      FocusedMenuItem(
+                                          title: Text(
+                                            'Delete',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          trailingIcon: Icon(Icons.delete),
+                                          backgroundColor: Colors.redAccent,
+                                          onPressed: () async {
+                                            print('delete reminder called');
+                                            print(snapshot.data[index]
+                                                    ['reminderID']
+                                                .toString());
+                                            databaseMehods.deleteCourseReminder(
+                                                snapshot.data[index]
+                                                    ['reminderID'],
+                                                widget.userID);
 
-                                              var response =
-                                                  await databaseMehods
-                                                      .deleteReminder(
-                                                snapshot.data[index]
-                                                    ['semester'],
-                                                widget.userEmail,
-                                                snapshot.data[index]['college'],
-                                                snapshot.data[index]
-                                                    ['department'],
-                                                snapshot.data[index]['course'],
-                                                snapshot.data[index]['section'],
-                                              );
-                                              print(
-                                                  'Response status: ${response.statusCode}');
-                                              print(
-                                                  'Response body: ${response.body}');
-                                              if (response.statusCode == 202) {
-                                                Navigator.pop(context);
-                                              } else {
-                                                setState(() {
-                                                  subtitle = response.body;
-                                                });
-                                              }
-                                            }),
-                                      ],
-                                      child: ListTile(
-                                        title: buildCard(
-                                          context,
-                                          //  '37', 'a',
-                                          // Timestamp.now(), 'a',
-                                          snapshot.data[index]['college'] +
-                                              ' ' +
+                                            var response = await databaseMehods
+                                                .deleteReminder(
+                                              snapshot.data[index]['semester'],
+                                              widget.userEmail,
+                                              snapshot.data[index]['college'],
                                               snapshot.data[index]
-                                                  ['department'] +
+                                                  ['department'],
                                               snapshot.data[index]['course'],
-                                          snapshot.data[index]['section'],
-                                          snapshot.data[index]['submitTime'],
-                                          snapshot.data[index]['semester'],
-                                          fileLocation[index % 4],
-                                        ),
+                                              snapshot.data[index]['section'],
+                                            );
+                                            print(
+                                                'Response status: ${response.statusCode}');
+                                            print(
+                                                'Response body: ${response.body}');
+                                            if (response.statusCode == 202) {
+                                              Navigator.pop(context);
+                                            } else {
+                                              setState(() {
+                                                subtitle = response.body;
+                                              });
+                                            }
+                                          }),
+                                    ],
+                                    child: ListTile(
+                                      title: buildCard(
+                                        context,
+                                        //  '37', 'a',
+                                        // Timestamp.now(), 'a',
+                                        snapshot.data[index]['college'] +
+                                            ' ' +
+                                            snapshot.data[index]['department'] +
+                                            snapshot.data[index]['course'],
+                                        snapshot.data[index]['section'],
+                                        snapshot.data[index]['submitTime'],
+                                        snapshot.data[index]['semester'],
+                                        fileLocation[index % 4],
                                       ),
-                                    );
-                                  },
-                                );
-                      }
-                    }),
-                SizedBox(
-                  height: 18,
+                                    ),
+                                  );
+                                },
+                              );
+                    }
+                  }),
+              SizedBox(
+                height: 18,
+              ),
+              GestureDetector(
+                child: Icon(
+                  Icons.add_circle_outline_sharp,
+                  size: 38,
+                  color: themeOrange,
                 ),
-                GestureDetector(
-                  child: Icon(
-                    Icons.add_circle_outline_sharp,
-                    size: 38,
-                    color: themeOrange,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SeatsNotification(
-                                userID: widget.userID,
-                                userSchool: widget.userSchool,
-                                userEmail: widget.userEmail,
-                              )),
-                    );
-                  },
-                )
-              ],
-            ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SeatsNotification(
+                              userID: widget.userID,
+                              userSchool: widget.userSchool,
+                              userEmail: widget.userEmail,
+                            )),
+                  );
+                },
+              )
+            ],
           ),
         ));
   }
