@@ -4,6 +4,7 @@ import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,12 +36,14 @@ class GroupChat extends StatefulWidget {
   final double initialChat;
   final String myEmail;
   final String myName;
+  final bool isRedirect;
 
   GroupChat({
     this.courseId,
     this.initialChat,
     this.myEmail,
     this.myName,
+    this.isRedirect,
   });
 
   @override
@@ -73,10 +76,12 @@ class _GroupChatState extends State<GroupChat> {
   Future friendCoursesFuture;
 
   Widget chatMessageList(String myEmail) {
+    print("myEmail");
+    print(myEmail);
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context, snapshot) {
-        return snapshot.hasData
+        return (widget.myEmail != null && snapshot.hasData)
             ? ListView.builder(
                 reverse: true,
                 controller: _controller,
@@ -255,7 +260,6 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
-    Size mediaQuery = MediaQuery.of(context).size;
 
     sendMessage(myEmail, myName) {
       if (messageController.text.isNotEmpty) {
@@ -339,23 +343,6 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
-    // Future _uploadFile(myEmail, myName) async {
-    //   String fileName = basename(_imageFile.path);
-    //   firebase_storage.Reference firebaseStorageRef =
-    //       firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-    //   firebase_storage.UploadTask uploadTask =
-    //       firebaseStorageRef.putFile(_imageFile);
-    //   firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
-    //   taskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-    //     setState(() {
-    //       _uploadedFileURL = downloadUrl;
-    //       print('picture uploaded');
-    //       print(_uploadedFileURL);
-    //       sendImage(myEmail, myName);
-    //     });
-    //   });
-    // }
-
     Future<void> _uploadFile(myEmail, myName, html.File image,
         {String imageName}) async {
       imageName = image.name;
@@ -426,18 +413,6 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
-    // Future _pickImage(ImageSource source, myEmail, myName) async {
-    //   PickedFile selected = await _picker.getImage(source: source);
-    //
-    //   setState(() {
-    //     _imageFile = File(selected.path);
-    //   });
-    //
-    //   if (selected != null) {
-    //     _uploadFile(myEmail, myName);
-    //     print('Image Path $_imageFile');
-    //   }
-    // }
 
     return SafeArea(
         child: Scaffold(
@@ -484,7 +459,11 @@ class _GroupChatState extends State<GroupChat> {
                             // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
                             databaseMethods.setUnreadGroupChatNumberToZero(
                                 widget.courseId, currentUser.userID);
-                            Navigator.of(context).pop();
+                            if (widget.isRedirect == false) {Navigator.of(context).pop();}
+                            else {
+                              Navigator.pushNamed(context,'/');
+                            }
+                            // Navigator.of(context).pop();
                           },
                         ),
                       ),

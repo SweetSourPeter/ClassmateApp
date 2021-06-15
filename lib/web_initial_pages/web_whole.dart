@@ -99,17 +99,17 @@ class DesktopNavPage extends StatelessWidget {
                         vertical: 11, horizontal: 0.03 * _width),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    // onPressed: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) {
-                    //         return Wrapper(false);
-                    //       },
-                    //     ),
-                    //   );
-                    // },
-                    onPressed: () => Wrapper(false, false, "0"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Wrapper(true, false, "0");
+                          },
+                        ),
+                      );
+                    },
+                    // onPressed: () => Wrapper(false, false, "0"),
                     child: AutoSizeText(
                       "Open Meechu in Browser",
                       style: GoogleFonts.montserrat(

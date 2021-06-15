@@ -74,9 +74,10 @@ class MyApp extends StatelessWidget {
   //     },
   //   );
   // }
-  final _exNavigatorKey = GlobalKey<ExtendedNavigatorState>();
+  // final _exNavigatorKey = GlobalKey<ExtendedNavigatorState>();
   @override
   Widget build(BuildContext context) {
+    setErrorBuilder();
     return MultiProvider(
       providers: [
         StreamProvider(create: (context) => AuthMethods().user), //Login user
@@ -102,74 +103,47 @@ class MyApp extends StatelessWidget {
           print(user);
 
           //user didn't log in, go to home page
-          if (user == null) {
-            return MaterialPageRoute(
-                builder: (context) {
-                  return NavPage();
-                }
-            );
+          if (user.isEmpty == null) {
+            return MaterialPageRoute(builder: (context) {
+              return NavPage();
+            });
           } else {
+            // the user are logged in
             // Handle '/'
             if (settingsUri.pathSegments.length == 0) {
-              return MaterialPageRoute(
-                  builder: (context) {
-                    return Wrapper(false, false, "0");
-                  }
-              );
+              return MaterialPageRoute(builder: (context) {
+                // return NavPage();
+                return Wrapper(false, false, "0");
+              });
             }
 
             // Handle '/course/:id'
             if (settingsUri.pathSegments.length == 2) {
               if (settingsUri.pathSegments.first != 'course') {
-                return MaterialPageRoute(
-                    builder: (context) {
-                      return UnknownPage();
-                    }
-                );
+                return MaterialPageRoute(builder: (context) {
+                  return UnknownPage();
+                });
               }
 
               final classid = settingsUri.pathSegments.elementAt(1);
               //user didn't input courseid, thus go back to homepage
               if (classid == null) {
-                return MaterialPageRoute(
-                  builder: (context) {
-                    return UnknownPage();
-                  }
-                );
+                return MaterialPageRoute(builder: (context) {
+                  return UnknownPage();
+                });
               }
 
               //call multiprovider with correct arguments
-              return MaterialPageRoute(
-                  builder: (context) {
-                    return Wrapper(false, true, classid);
-                    // final userdata = Provider.of<user_replaced.UserData>(context);
-                    // final course = Provider.of<List<CourseInfo>>(context);
-                    // return MultiProvider(
-                    //   providers: [
-                    //     Provider<user_replaced.UserData>.value(
-                    //       value: userdata,
-                    //     ),
-                    //     Provider<List<CourseInfo>>.value(
-                    //       value: course,
-                    //     ),
-                    //   ],
-                    //   child: GroupChat(
-                    //     courseId: classid,
-                    //     myEmail: userdata.email,
-                    //     myName: userdata.userName,
-                    //     initialChat: 0,
-                    //   ),
-                    // );
-                  }
-              );
+              return MaterialPageRoute(builder: (context) {
+                setErrorBuilder();
+                return Wrapper(false, true, classid);
+              });
             }
           }
           //Handle other unknown Routes
-          return MaterialPageRoute(
-              builder: (context) {
-                return UnknownPage();
-              }
-          );
+          return MaterialPageRoute(builder: (context) {
+            return UnknownPage();
+          });
         },
 
         // builder: ExtendedNavigator(
@@ -217,4 +191,13 @@ class MyApp extends StatelessWidget {
   //             }
   //           );
   // }
+}
+
+void setErrorBuilder() {
+  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+    return Center(
+        child: CircularProgressIndicator(
+      backgroundColor: themeOrange,
+    ));
+  };
 }

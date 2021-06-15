@@ -338,6 +338,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                     myEmail: userdata.email,
                                     myName: userdata.userName,
                                     initialChat: 0,
+                                    isRedirect: false,
                                   ),
                                 );
                               }));

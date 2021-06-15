@@ -249,6 +249,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
               initialChat: messageIndex.toDouble(),
               myEmail: widget.myEmail,
               myName: widget.myName,
+              isRedirect: false,
             ),
           );
         }));
