@@ -22,23 +22,25 @@ class _RedirectPageState extends State<RedirectPage> {
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
-    return MultiProvider(
-      providers: [
-        Provider<UserData>.value(
-          value: userdata,
-        ),
-        Provider<List<CourseInfo>>.value(
-          value: course,
-        ),
-      ],
-      child: GroupChat(
-        courseId: widget.courseId,
-        myEmail: userdata.email,
-        myName: userdata.userName,
-        initialChat: 0,
-        isRedirect: true,
-      ),
-    );
+    return (userdata == null && course == null)
+        ? Container()
+        : MultiProvider(
+            providers: [
+              Provider<UserData>.value(
+                value: userdata,
+              ),
+              Provider<List<CourseInfo>>.value(
+                value: course,
+              ),
+            ],
+            child: GroupChat(
+              courseId: widget.courseId,
+              myEmail: userdata.email,
+              myName: userdata.userName,
+              initialChat: 0,
+              isRedirect: true,
+            ),
+          );
   }
 }
 

@@ -28,8 +28,6 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    print("user 1111");
-    print(user);
     // AuthMethods
     authMethods = new AuthMethods();
     print('wrapper called');
