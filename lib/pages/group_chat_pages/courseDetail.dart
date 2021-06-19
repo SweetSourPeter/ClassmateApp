@@ -13,6 +13,7 @@ import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
 import 'package:flutter/services.dart';
+import './Choose_GroupLeader.dart';
 
 class CourseDetail extends StatefulWidget {
   final String courseId;
@@ -78,7 +79,7 @@ class _CourseDetailState extends State<CourseDetail> {
       return List.generate(numberOfMembers, (index) {
         if (members == null) {
 
-          return ShimmerLoadingScreen(Colors.white);
+          return PictureLoadingScreen(Colors.white);
 
         } else {
           final memberName = members[index][0];
@@ -247,7 +248,7 @@ class _CourseDetailState extends State<CourseDetail> {
                         Container(
                           padding: EdgeInsets.only(
                               right: 20, left: 20, top: 20, bottom: 30),
-                          margin: EdgeInsets.only(top: 25),
+                          margin: EdgeInsets.only(top: 10),
                           color: Colors.white,
                           child: Column(children: <Widget>[
                             Container(
@@ -322,7 +323,7 @@ class _CourseDetailState extends State<CourseDetail> {
                           ]),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 25),
+                          margin: EdgeInsets.only(top: 10),
                           width: double.infinity,
                           child: Column(
                             children: [
@@ -401,28 +402,69 @@ class _CourseDetailState extends State<CourseDetail> {
                             ],
                           ),
                         ),
-                        // Container(
-                        //     margin: EdgeInsets.only(top: 25),
-                        //     child: Column(
-                        //       children: [
-                        //         Divider(
-                        //           height: 0,
-                        //           thickness: 1,
-                        //         ),
-                        //         // ButtonLink(
-                        //         //     text: "Clear Chat",
-                        //         //     iconData: Icons.cleaning_services,
-                        //         //     textSize: 18,
-                        //         //     height: 50,
-                        //         //     isSimple: true),
-                        //         Divider(
-                        //           height: 0,
-                        //           thickness: 1,
-                        //         )
-                        //       ],
-                        //     )),
+
                         Container(
-                          margin: EdgeInsets.only(top: 25),
+                            margin: EdgeInsets.only(top: 10),
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width,
+                                    color: Colors.white,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(left: 21.0),
+                                          child: Text(
+                                            "Administrator Transfer",
+                                            style: GoogleFonts.montserrat(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(right: 21.0),
+                                          child: Image.asset(
+                                              'assets/images/arrow-forward.png',
+                                              height: 9.02,
+                                              width: 4.86,
+                                              color: const Color(0xFF949494)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                          return MultiProvider(
+                                            providers: [
+                                              Provider<UserData>.value(
+                                                value: currentUser,
+                                              ),
+
+                                            ],
+                                            child: ChooseGroupLeader(
+                                              courseId: widget.courseId,
+                                              myEmail: widget.myEmail,
+                                              myName: widget.myName,
+                                            ),
+                                          );
+                                        }));
+                                  },
+                                ),
+                              ],
+                            ),
+                        ),
+
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
                           child: Column(
                             children: [
                               // Divider(

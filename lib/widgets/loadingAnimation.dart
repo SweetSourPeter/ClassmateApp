@@ -73,7 +73,7 @@ class PictureLoadingScreen extends StatelessWidget {
         decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
-                  'assets/icon/catPaw2.png'
+                  'assets/images/GroupChatLoading.png'
               ),
               //fit: BoxFit.fill
             ),
