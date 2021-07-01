@@ -71,7 +71,7 @@ class _MainMenuState extends State<MainMenu> {
         : SafeArea(
             child: Center(
                 child: Container(
-            width: MediaQuery.of(context).size.width,//maxWidth,
+            width: MediaQuery.of(context).size.width, //maxWidth,
             child: Scaffold(
               backgroundColor: themeOrange,
               body: SafeArea(
@@ -259,7 +259,8 @@ class _MainMenuState extends State<MainMenu> {
                 width: _height * 0.035,
                 child: Image.asset('assets/icon/navigationBar1Open.png'))
             : Container(
-                height: MediaQuery.of(context).size.height/3, //_height * 0.035,
+                height:
+                    MediaQuery.of(context).size.height / 3, //_height * 0.035,
                 width: _height * 0.035,
                 child: Image.asset('assets/icon/navigationBar1Close.png')),
         _currentIndex == 1

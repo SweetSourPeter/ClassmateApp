@@ -482,26 +482,26 @@ class _GroupChatState extends State<GroupChat> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8),
                                 child: Container(
-                                  // height: 17.96,
-                                  // width: 10.26,
-                                  child: IconButton(
-                                    icon: Image.asset(
-                                      'assets/images/arrow-back.png',
-                                      height: 17.96,
-                                      width: 10.26,
+                                    // height: 17.96,
+                                    // width: 10.26,
+                                    // child: IconButton(
+                                    //   icon: Image.asset(
+                                    //     'assets/images/arrow-back.png',
+                                    //     height: 17.96,
+                                    //     width: 10.26,
+                                    //   ),
+                                    //   // iconSize: 30.0,
+                                    //   color: const Color(0xFFFF7E40),
+                                    //   onPressed: () {
+                                    //     // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                                    //     databaseMethods
+                                    //         .setUnreadGroupChatNumberToZero(
+                                    //             widget.courseId,
+                                    //             currentUser.userID);
+                                    //     Navigator.of(context).pop();
+                                    //   },
+                                    // ),
                                     ),
-                                    // iconSize: 30.0,
-                                    color: const Color(0xFFFF7E40),
-                                    onPressed: () {
-                                      // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                                      databaseMethods
-                                          .setUnreadGroupChatNumberToZero(
-                                              widget.courseId,
-                                              currentUser.userID);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ),
                               ),
                               Container(
                                 child: Column(

@@ -1,5 +1,6 @@
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/models/courseInfo.dart';
+import 'package:app_test/pages/chat_pages/chatRoom.dart';
 import 'package:app_test/pages/chat_pages/chatScreen.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/contactProvider.dart';
@@ -15,6 +16,13 @@ import 'package:app_test/models/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class SearchUsers extends StatefulWidget {
+  final ValueChanged<int> valueChanged;
+  ValueChanged<Widget> widgetChanged;
+  SearchUsers({
+    Key key,
+    this.valueChanged,
+    this.widgetChanged,
+  }) : super(key: key);
   @override
   _SearchUsersState createState() => _SearchUsersState();
 }
@@ -57,14 +65,15 @@ class _SearchUsersState extends State<SearchUsers> {
     currentFocus.unfocus();
   }
 
+  bool cancel = false;
   TextEditingController searchTextEditingController =
       new TextEditingController();
+  Widget thisScreen = Container();
   @override
   Widget build(BuildContext context) {
     // dev.debugger();
     final currentCourse = Provider.of<List<CourseInfo>>(context);
     final user = Provider.of<UserData>(context);
-    print(user.userName);
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     return Scaffold(
@@ -94,132 +103,141 @@ class _SearchUsersState extends State<SearchUsers> {
   }
 
   Container buildContainerBody(FocusScopeNode currentFocus) {
+    final currentUser = Provider.of<UserData>(context, listen: false);
     return Container(
       color: Colors.white,
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: themeOrange,
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Focus(
-                    // onFocusChange: (focus) => showCanclChange(),
-                    child: TextField(
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (value) {
-                        if (searchTextEditingController.text.isNotEmpty) {
-                          initiateSearch();
-                        }
-                      },
-                      // focusNode: _focus,
-                      controller: searchTextEditingController,
-                      textAlign: TextAlign.left,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        suffixIcon: searchTextEditingController.text.isEmpty
-                            ? null
-                            : IconButton(
-                                icon: Icon(
-                                  Icons.cancel,
-                                  color: Color(0xffFF7E40),
-                                  // size: 30,
-                                ),
-                                // Image.asset(
-                                //   'assets/images/cross.png',
-                                //   // color: Color(0xffFF7E40),
-                                //   height: 19,
-                                //   width: 19,
-                                // ),
-                                onPressed: () {
-                                  // initiateSearch();
-                                  clearSearchTextInput(currentFocus);
-                                }),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Color(0xFFFFCDB6),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        // prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        hintText: 'Search email...',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20),
-                          // borderSide: BorderSide.none
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20),
-                          // borderSide: BorderSide.none
-                        ),
-                        contentPadding: EdgeInsets.all(10),
-                        hintStyle: TextStyle(color: Colors.grey), // KEY PROP
-                      ),
-                    ),
-                  )),
-                  // showCancel
-                  Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Cancel',
+      child: Container(
+        width: 450,
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                color: themeOrange,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Focus(
+                      // onFocusChange: (focus) => showCanclChange(),
+                      child: TextField(
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (value) {
+                          if (searchTextEditingController.text.isNotEmpty) {
+                            initiateSearch();
+                          }
+                        },
+                        // focusNode: _focus,
+                        controller: searchTextEditingController,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          suffixIcon: searchTextEditingController.text.isEmpty
+                              ? null
+                              : IconButton(
+                                  icon: Icon(
+                                    Icons.cancel,
+                                    color: Color(0xffFF7E40),
+                                    // size: 30,
+                                  ),
+                                  // Image.asset(
+                                  //   'assets/images/cross.png',
+                                  //   // color: Color(0xffFF7E40),
+                                  //   height: 19,
+                                  //   width: 19,
+                                  // ),
+                                  onPressed: () {
+                                    // initiateSearch();
+                                    clearSearchTextInput(currentFocus);
+                                  }),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Color(0xFFFFCDB6),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                          // prefixIcon: Icon(Icons.search, color: Colors.grey),
+                          hintText: 'Search email...',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                            // borderSide: BorderSide.none
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                            // borderSide: BorderSide.none
+                          ),
+                          contentPadding: EdgeInsets.all(10),
+                          hintStyle: TextStyle(color: Colors.grey), // KEY PROP
+                        ),
+                      ),
+                    )),
+                    // showCancel
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          // setState(() {
+                          //   cancel = true;
+                          // });
+                          widget.valueChanged(0);
+                          // Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Cancel',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            // RichText(
-            //   text: TextSpan(
-            //     style: TextStyle(color: Colors.grey, fontSize: 15.0),
-            //     children: <TextSpan>[
-            //       TextSpan(text: 'I have User Profile '),
-            //       TextSpan(
-            //           text: 'URL',
-            //           style: TextStyle(color: Colors.blue),
-            //           recognizer: TapGestureRecognizer()
-            //             ..onTap = () async {
-            //               FlutterClipboard.paste().then((value) async {
-            //                 setState(() {
-            //                   field.text = value;
-            //                   pasteValue = value;
-            //                 });
-            //                 print('Clipboard Text: $pasteValue');
-            //                 if (pasteValue.startsWith('https://na-cc.com/')) {
-            //                   searchBegain = true;
-            //                   var splitTemp = pasteValue.split('/');
-            //                   print(splitTemp[4]);
-            //                   await initiateURLSearch(splitTemp[4]);
-            //                 }
-            //                 // searchBegain
-            //                 //     ? showBottomPopSheet(
-            //                 //         context, searchList(context, course))
-            //                 //     : CircularProgressIndicator();
-            //               });
-            //             }),
-            //     ],
-            //   ),
-            // ),
-            searchList(),
-            SizedBox(
-              height: 20,
-            )
-          ],
+              SizedBox(
+                height: 10,
+              ),
+              // RichText(
+              //   text: TextSpan(
+              //     style: TextStyle(color: Colors.grey, fontSize: 15.0),
+              //     children: <TextSpan>[
+              //       TextSpan(text: 'I have User Profile '),
+              //       TextSpan(
+              //           text: 'URL',
+              //           style: TextStyle(color: Colors.blue),
+              //           recognizer: TapGestureRecognizer()
+              //             ..onTap = () async {
+              //               FlutterClipboard.paste().then((value) async {
+              //                 setState(() {
+              //                   field.text = value;
+              //                   pasteValue = value;
+              //                 });
+              //                 print('Clipboard Text: $pasteValue');
+              //                 if (pasteValue.startsWith('https://na-cc.com/')) {
+              //                   searchBegain = true;
+              //                   var splitTemp = pasteValue.split('/');
+              //                   print(splitTemp[4]);
+              //                   await initiateURLSearch(splitTemp[4]);
+              //                 }
+              //                 // searchBegain
+              //                 //     ? showBottomPopSheet(
+              //                 //         context, searchList(context, course))
+              //                 //     : CircularProgressIndicator();
+              //               });
+              //             }),
+              //     ],
+              //   ),
+              // ),
+              searchList(),
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -283,6 +301,12 @@ class _SearchUsersState extends State<SearchUsers> {
           });
     } else if (searchBegain && pasteValue.startsWith('https://na-cc.com/')) {
       return SearchTile(
+        widgetChanged: (value) {
+          widget.widgetChanged(value);
+        },
+        indexChanged: (index) {
+          widget.valueChanged(index);
+        },
         school: searchURLsnapshot.data()['school'] ?? '',
         userID: searchURLsnapshot.id ?? '',
         userName:
@@ -337,6 +361,8 @@ class _SearchUsersState extends State<SearchUsers> {
 //searchTile for searchList
 
 class SearchTile extends StatelessWidget {
+  ValueChanged<Widget> widgetChanged;
+  ValueChanged<int> indexChanged;
   final UserDatabaseService userDatabaseService = UserDatabaseService();
   final DatabaseMethods databaseMethods = DatabaseMethods();
   final String school;
@@ -346,6 +372,8 @@ class SearchTile extends StatelessWidget {
   final double userProfileColor;
   SearchTile(
       {this.school,
+      this.indexChanged,
+      this.widgetChanged,
       this.userID,
       this.userName,
       this.userEmail,
@@ -360,6 +388,7 @@ class SearchTile extends StatelessWidget {
     }
   }
 
+  Widget thisScreen = Container();
   // a function to create chat room
   createChatRoomAndStartConversation(String userName, String userEmail,
       String userID, double userProfileColor, context) {
@@ -402,28 +431,45 @@ class SearchTile extends StatelessWidget {
       };
 
       databaseMethods.addChatMessages(chatRoomId, messageMap);
-
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return MultiProvider(
-          providers: [
-            Provider<UserData>.value(
-              value: currentUser,
-            ),
-            Provider<List<CourseInfo>>.value(
-              value: currentCourse,
-            ),
-          ],
-          child: ChatScreen(
-            friendID: userID,
-            chatRoomId: chatRoomId,
-            friendEmail: userEmail,
-            friendName: userName,
-            initialChat: 0,
-            friendProfileColor: userProfileColor,
-            myEmail: currentUser.email,
-          ),
-        );
-      }));
+      UserData friendDetail = UserData(
+        userID: userID,
+        email: userEmail,
+        userName: userName,
+        profileColor: userProfileColor,
+      );
+      indexChanged(0);
+      widgetChanged(
+        ChatScreen(
+          friendID: userID,
+          chatRoomId: chatRoomId,
+          friendEmail: userEmail,
+          friendName: userName,
+          initialChat: 0,
+          friendProfileColor: userProfileColor,
+          myEmail: currentUser.email,
+        ),
+      );
+      // Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //   return MultiProvider(
+      //     providers: [
+      //       Provider<UserData>.value(
+      //         value: currentUser,
+      //       ),
+      //       Provider<List<CourseInfo>>.value(
+      //         value: currentCourse,
+      //       ),
+      //     ],
+      //     child: ChatScreen(
+      //       friendID: userID,
+      //       chatRoomId: chatRoomId,
+      //       friendEmail: userEmail,
+      //       friendName: userName,
+      //       initialChat: 0,
+      //       friendProfileColor: userProfileColor,
+      //       myEmail: currentUser.email,
+      //     ),
+      //   );
+      // }));
     } else {
       print('This is your account!');
     }
@@ -432,7 +478,8 @@ class SearchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    // double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = 450;
     final contactProvider = Provider.of<ContactProvider>(context);
     final userdata = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);

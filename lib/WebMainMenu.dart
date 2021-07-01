@@ -6,7 +6,6 @@ import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/widgets/my_account.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/group_chat_pages/courseMenu.dart';
@@ -14,7 +13,6 @@ import 'pages/group_chat_pages/courseMenu.dart';
 List<List<String>> fileLocation = [
   ['assets/icon/navigationBar1Open.png', 'assets/icon/navigationBar1Close.png'],
   ['assets/icon/navigationBar2Open.png', 'assets/icon/navigationBar2Close.png'],
-  ['assets/images/search_white.png', 'assets/images/search.png'],
   ['assets/icon/navigationBar3Open.png', 'assets/icon/navigationBar3Close.png'],
 ];
 
@@ -68,11 +66,9 @@ class _WebMainMenuState extends State<WebMainMenu> {
                               myName: userdata.userName,
                               myEmail: userdata.email,
                             )
-                          : _currentIndex == 2
-                              ? SearchUsers()
-                              : MyAccount(
-                                  // key: globalKey,
-                                  ),
+                          : MyAccount(
+                              // key: globalKey,
+                              ),
                 ),
                 Container(
                   // margin: EdgeInsets.all(8.0),
