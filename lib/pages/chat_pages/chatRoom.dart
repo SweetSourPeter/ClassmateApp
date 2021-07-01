@@ -21,6 +21,7 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
+  int screenNum = 0; // 0 = chatroom, 1 = search user
   Stream chatRooms;
   String friendName;
   String friendEmail;
@@ -124,78 +125,90 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<UserData>(context, listen: false);
-    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
     Widget leftMenu = Container(
       width: 450,
       color: Colors.white,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.only(
-                top: 40, left: 40, bottom: _height * 0.064, right: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: (screenNum == 0)
+          ? Column(
               children: [
                 Container(
-                  child: Text(
-                    'Chats',
-                    textAlign: TextAlign.left,
-                    style: GoogleFonts.montserrat(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                  padding: EdgeInsets.only(
+                      top: 40, left: 40, bottom: _height * 0.064, right: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Text(
+                          'Chats',
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.montserrat(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      // Expanded(child: Container()),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              screenNum = 1;
+                            });
+                            //search for users
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //   return MultiProvider(
+                            //     providers: [
+                            //       Provider<UserData>.value(
+                            //         value: currentUser,
+                            //       ),
+                            //       Provider<List<CourseInfo>>.value(
+                            //         value: currentCourse,
+                            //       ),
+                            //       // 这个需要的话直接uncomment
+                            //       // Provider<List<CourseInfo>>.value(
+                            //       //   value: course,F
+                            //       // ),
+                            //       // final courseProvider = Provider.of<CourseProvider>(context);
+                            //       // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                            //       // 不需要pass到push里面，直接复制上面这行即可
+                            //     ],
+                            //     child: SearchUsers(),
+                            //   );
+                            // }));
+                          },
+                          child: Container(
+                              child: Text(
+                            'search friend',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.openSans(
+                              color: themeOrange,
+                              fontSize: 16,
+                            ),
+                          )))
+                    ],
                   ),
                 ),
-
-                // Expanded(child: Container()),
-                GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        rightMenu = SearchUsers();
-                      });
-                      //search for users
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) {
-                      //   return MultiProvider(
-                      //     providers: [
-                      //       Provider<UserData>.value(
-                      //         value: currentUser,
-                      //       ),
-                      //       Provider<List<CourseInfo>>.value(
-                      //         value: currentCourse,
-                      //       ),
-                      //       // 这个需要的话直接uncomment
-                      //       // Provider<List<CourseInfo>>.value(
-                      //       //   value: course,F
-                      //       // ),
-                      //       // final courseProvider = Provider.of<CourseProvider>(context);
-                      //       // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                      //       // 不需要pass到push里面，直接复制上面这行即可
-                      //     ],
-                      //     child: SearchUsers(),
-                      //   );
-                      // }));
-                    },
-                    child: Container(
-                        child: Text(
-                      'search friend',
-                      textAlign: TextAlign.left,
-                      style: GoogleFonts.openSans(
-                        color: themeOrange,
-                        fontSize: 16,
-                      ),
-                    )))
+                Expanded(
+                  child: chatRoomsList(context),
+                ),
               ],
+            )
+          : SearchUsers(
+              valueChanged: (index) {
+                setState(() {
+                  screenNum = index;
+                });
+              },
+              widgetChanged: (value) {
+                setState(() {
+                  rightMenu = value;
+                });
+              },
             ),
-          ),
-          Expanded(
-            child: chatRoomsList(context),
-          ),
-        ],
-      ),
     );
+
     return Scaffold(
       body: Row(
         children: [
