@@ -12,6 +12,9 @@ import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import "package:collection/collection.dart";
 
 
+
+
+
 class ChooseGroupLeader extends StatefulWidget {
   final String courseId;
   final String myEmail;
@@ -76,6 +79,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
     }
 
     members.sort((a,b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
+    print(members[0][0][0]);
     // var groupmember = groupBy(members,(obj) =>obj['a']);
     // print(groupmember);
     var size = MediaQuery.of(context).size.width;
@@ -88,47 +92,101 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
         final memberName = members[index][0];
 
         return Container(
-          padding: EdgeInsets.only(left: 20),
 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                //  Visibility(
+                //    visible: true,
+                //    child: Padding(
+                //     padding: EdgeInsets.only(bottom: 20),
+                //     child: Container(
+                //       width: double.infinity,
+                //       height: 20,
+                //       color: Colors.white,
+                //       child: Text(members != null ? (members[2][0][0] != members[index][0][0] ? members[index][0][0].toUpperCase():'' ) : '',)
+                //     ),
+                // ),
+                //  ),
+                if (members == null) Text(''),
+                if (index == 0) Visibility(
+                  visible: true,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Container(
+                        width: double.infinity,
+                        height: 20,
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 40),
+                          child: Text(
+                              members[index][0][0].toUpperCase(),
+                              style: GoogleFonts.montserrat(
+                                  color: const Color(0xFFFF7E40), fontSize: 15),
+                          ),
+                        )
+                    ),
+                  ),
+                )
+                else if (members[index - 1][0][0] != members[index][0][0]) Visibility(
+                  visible: true,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Container(
+                        width: double.infinity,
+                        height: 20,
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 40),
+                          child: Text(
+                              members[index][0][0].toUpperCase(),
+                              style: GoogleFonts.montserrat(
+                                  color: const Color(0xFFFF7E40), fontSize: 15),
+                          ),
+                        )
+                    ),
+                  ),
+                ),
 
                 Row(
                   children: [
                     // User profile photo
-                    CircleAvatar(
-                      backgroundColor: listProfileColor[
-                      members != null ? members[index][2].toInt() : 1],
-                      radius: 30,
-                      child: Container(
-                        child: Text(
-                          memberName.split(' ').length >= 2
-                              ? memberName.split(' ')[0][0].toUpperCase() +
-                              memberName
-                                  .split(' ')[
-                              memberName.split(' ').length - 1][0]
-                                  .toUpperCase()
-                              : memberName[0].toUpperCase(),
-                          style: GoogleFonts.montserrat(
-                              fontSize:
-                              memberName.split(' ').length >= 2 ? 14 : 15,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                    Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: CircleAvatar(
+                        backgroundColor: listProfileColor[
+                        members != null ? members[index][2].toInt() : 1],
+                        radius: 30,
+                        child: Container(
+                          child: Text(
+                            memberName.split(' ').length >= 2
+                                ? memberName.split(' ')[0][0].toUpperCase() +
+                                memberName
+                                    .split(' ')[
+                                memberName.split(' ').length - 1][0]
+                                    .toUpperCase()
+                                : memberName[0].toUpperCase(),
+                            style: GoogleFonts.montserrat(
+                                fontSize:
+                                memberName.split(' ').length >= 2 ? 14 : 15,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     ),
 
                 // User name
-                Container(
-                  padding: EdgeInsets.only(left: 100),
+                    Container(
+                      padding: EdgeInsets.only(left: 100),
                       child: Text(
                         members != null ? members[index][0] : '',
                         style: GoogleFonts.montserrat(
                             color: Colors.black, fontSize: 20),),
-                ),
+                    ),
                   ],
                 ),
+
                 const Divider(
                   height: 30,
                   thickness: 1,
@@ -246,7 +304,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                       minWidth: 250,
                       height: 50,
                       child: RaisedButton(
-                        child: Text('Continue', style: TextStyle(fontSize: 16,color: Colors.white)),
+                        child: Text('Confirm', style: TextStyle(fontSize: 16,color: Colors.white)),
                         //textColor: Colors.white,
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
@@ -257,7 +315,6 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                       ),
                     ),
                   ),
-
 
                 ],
               )),
