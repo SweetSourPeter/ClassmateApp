@@ -242,7 +242,7 @@ class ChatRoomsTile extends StatelessWidget {
         }));
       },
       child: Container(
-        height: _height * 0.087,
+        height: 70,
         margin: EdgeInsets.only(
           top: _height * 0.006,
           bottom: _height * 0.006,
