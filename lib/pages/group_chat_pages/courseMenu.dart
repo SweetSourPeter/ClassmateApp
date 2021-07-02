@@ -323,11 +323,11 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                             margin: EdgeInsets.only(
                               bottom: 0.02 * _height,
                               top: 0.02 * _height,
-                              left: 0.101 * _width,
-                              right: 0.101 * _width,
+                              left: 0.08 * _width,
+                              right: 0.08 * _width,
                             ),
                             width: 0.792 * _width,
-                            height: 0.15 * _height,
+                            height: 120,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
