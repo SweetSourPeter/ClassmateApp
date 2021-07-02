@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "meechu-flutter",
     "public": "build/web",
     "ignore": [
       "firebase.json",

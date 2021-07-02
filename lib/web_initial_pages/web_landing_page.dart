@@ -334,13 +334,13 @@ class LandingPage extends StatelessWidget {
   mobilePageChildren(double width) {
     return <Widget>[
       Container(
-        width: width,
+        width: width * 0.9,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: width,
+              width: width * 0.9,
               child: Expanded(
                 child: AutoSizeText(
                   "Your Classmate Finder",
@@ -359,7 +359,7 @@ class LandingPage extends StatelessWidget {
               child: AutoSizeText(
                 "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12.0, color: Colors.white),
+                style: TextStyle(fontSize: 9.0, color: Colors.white),
               ),
             ),
             Row(
