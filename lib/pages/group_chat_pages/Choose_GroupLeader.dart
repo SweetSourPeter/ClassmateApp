@@ -4,7 +4,6 @@ import 'package:app_test/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
-import './groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/providers/courseProvider.dart';
@@ -12,14 +11,10 @@ import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import "package:collection/collection.dart";
 
 
-
-
-
 class ChooseGroupLeader extends StatefulWidget {
   final String courseId;
   final String myEmail;
   final String myName;
-
 
   ChooseGroupLeader({this.courseId, this.myEmail, this.myName});
 
@@ -30,9 +25,7 @@ class ChooseGroupLeader extends StatefulWidget {
 class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   bool showTextKeyboard;
   TextEditingController searchTextEditingController = TextEditingController();
-  Stream chatMessageStream;
   DatabaseMethods databaseMethods = new DatabaseMethods();
-  bool isSwitched = false;
   int numberOfMembers = 0;
   String courseName;
   String courseSection;
@@ -40,7 +33,8 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   List<List<dynamic>> members;
 
   bool pressAttention = false;
-
+  String adminName;
+  String adminId;
 
   @override
   void initState() {
@@ -49,6 +43,8 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
         courseName = value.docs[0].data()['myCourseName'];
         courseSection = value.docs[0].data()['section'];
         courseTerm = value.docs[0].data()['term'];
+        adminName = value.docs[0].data()['AdminName'];
+        adminId = value.docs[0].data()['AdminId'];
       });
     });
 
@@ -74,40 +70,33 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
 
   @override
   Widget build(BuildContext context) {
+    print('here is the adminName ---->$adminName');
+
     if (members == null) {
-      return SimpleLoadingScreen(Colors.white);
+      return LoadingScreen(Colors.white);
     }
 
     members.sort((a,b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
-    print(members[0][0][0]);
+    //print(members[0][0][0]);
     // var groupmember = groupBy(members,(obj) =>obj['a']);
     // print(groupmember);
     var size = MediaQuery.of(context).size.width;
     double gridWidth = (size - 40 - 4 * 15) / 10;
-    double gridRatio = gridWidth / (gridWidth + 10);
-    final currentUser = Provider.of<UserData>(context, listen: false);
+    // double gridRatio = gridWidth / (gridWidth + 10);
+    // final currentUser = Provider.of<UserData>(context, listen: false);
 
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         final memberName = members[index][0];
+
+        print(members[0][1]);
 
         return Container(
 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                //  Visibility(
-                //    visible: true,
-                //    child: Padding(
-                //     padding: EdgeInsets.only(bottom: 20),
-                //     child: Container(
-                //       width: double.infinity,
-                //       height: 20,
-                //       color: Colors.white,
-                //       child: Text(members != null ? (members[2][0][0] != members[index][0][0] ? members[index][0][0].toUpperCase():'' ) : '',)
-                //     ),
-                // ),
-                //  ),
+
                 if (members == null) Text(''),
                 if (index == 0) Visibility(
                   visible: true,
@@ -148,43 +137,52 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                   ),
                 ),
 
-                Row(
-                  children: [
-                    // User profile photo
-                    Container(
-                      padding: EdgeInsets.only(left: 20),
-                      child: CircleAvatar(
-                        backgroundColor: listProfileColor[
-                        members != null ? members[index][2].toInt() : 1],
-                        radius: 30,
-                        child: Container(
-                          child: Text(
-                            memberName.split(' ').length >= 2
-                                ? memberName.split(' ')[0][0].toUpperCase() +
-                                memberName
-                                    .split(' ')[
-                                memberName.split(' ').length - 1][0]
-                                    .toUpperCase()
-                                : memberName[0].toUpperCase(),
-                            style: GoogleFonts.montserrat(
-                                fontSize:
-                                memberName.split(' ').length >= 2 ? 14 : 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: ()=> {
+                    databaseMethods.updateAdminName(widget.courseId,members[index][0]),
+                    databaseMethods.updateAdminId(widget.courseId, members[index][1])
+                  },
+                  child: Container(
+                    child: Row(
+                      children: [
+                        // User profile photo
+                        Container(
+                          padding: EdgeInsets.only(left: 20),
+                          child: CircleAvatar(
+                            backgroundColor: listProfileColor[
+                            members != null ? members[index][2].toInt() : 1],
+                            radius: 30,
+                            child: Container(
+                              child: Text(
+                                memberName.split(' ').length >= 2
+                                    ? memberName.split(' ')[0][0].toUpperCase() +
+                                    memberName
+                                        .split(' ')[
+                                    memberName.split(' ').length - 1][0]
+                                        .toUpperCase()
+                                    : memberName[0].toUpperCase(),
+                                style: GoogleFonts.montserrat(
+                                    fontSize:
+                                    memberName.split(' ').length >= 2 ? 14 : 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+
+                    // User name
+                        Container(
+                          padding: EdgeInsets.only(left: 100),
+                          child: Text(
+                            members != null ? members[index][0] : '',
+                            style: GoogleFonts.montserrat(
+                                color: Colors.black, fontSize: 20),),
+                        ),
+                      ],
                     ),
 
-                // User name
-                    Container(
-                      padding: EdgeInsets.only(left: 100),
-                      child: Text(
-                        members != null ? members[index][0] : '',
-                        style: GoogleFonts.montserrat(
-                            color: Colors.black, fontSize: 20),),
-                    ),
-                  ],
+                  ),
                 ),
 
                 const Divider(

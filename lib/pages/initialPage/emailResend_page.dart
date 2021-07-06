@@ -7,7 +7,6 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/services/auth.dart';
-import 'package:app_test/services/auth.dart';
 
 class EmailResendPage extends StatefulWidget {
   final PageController pageController;
