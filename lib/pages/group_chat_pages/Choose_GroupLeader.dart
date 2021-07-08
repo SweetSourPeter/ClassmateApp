@@ -15,9 +15,10 @@ class ChooseGroupLeader extends StatefulWidget {
   final String courseId;
   final String myEmail;
   final String myName;
-
-  ChooseGroupLeader({this.courseId, this.myEmail, this.myName});
-
+  final List<List<dynamic>> groupMembers;
+  final String adminName;
+  final String adminId;
+  ChooseGroupLeader({this.courseId, this.myEmail, this.myName, this.groupMembers, this.adminName, this.adminId});
   @override
   _ChooseGroupLeaderState createState() => _ChooseGroupLeaderState();
 }
@@ -31,38 +32,18 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   String courseSection;
   String courseTerm;
   List<List<dynamic>> members;
-
-  bool pressAttention = false;
   String adminName;
   String adminId;
 
+  bool pressAttention = false;
+
+
   @override
   void initState() {
-    databaseMethods.getCourseInfo(widget.courseId).then((value) {
-      setState(() {
-        courseName = value.docs[0].data()['myCourseName'];
-        courseSection = value.docs[0].data()['section'];
-        courseTerm = value.docs[0].data()['term'];
-        adminName = value.docs[0].data()['AdminName'];
-        adminId = value.docs[0].data()['AdminId'];
-      });
-    });
-
-    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
-      setState(() {
-        numberOfMembers = value.docs.length;
-      });
-    });
-
-    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-      // if (this.mounted) {
-      //   return;
-      // }
-      setState(() {
-        members = value;
-      });
-    });
-
+    adminId = widget.adminId;
+    adminName = widget.adminName;
+    members = widget.groupMembers;
+    numberOfMembers = widget.groupMembers.length;
     showTextKeyboard = false;
     super.initState();
   }
@@ -70,33 +51,17 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
 
   @override
   Widget build(BuildContext context) {
-    print('here is the adminName ---->$adminName');
-
-    if (members == null) {
-      return LoadingScreen(Colors.white);
-    }
-
-    members.sort((a,b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
-    //print(members[0][0][0]);
-    // var groupmember = groupBy(members,(obj) =>obj['a']);
-    // print(groupmember);
     var size = MediaQuery.of(context).size.width;
     double gridWidth = (size - 40 - 4 * 15) / 10;
-    // double gridRatio = gridWidth / (gridWidth + 10);
-    // final currentUser = Provider.of<UserData>(context, listen: false);
 
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         final memberName = members[index][0];
 
-        print(members[0][1]);
-
         return Container(
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-
                 if (members == null) Text(''),
                 if (index == 0) Visibility(
                   visible: true,
@@ -243,6 +208,8 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
+
+
                         Padding(
                           padding: EdgeInsets.only(right: 40),
                         ),
@@ -307,9 +274,10 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
-
-                        color: pressAttention ? Colors.grey : Color(0xFFFF7E40),
-                        onPressed: () => setState(() => pressAttention = !pressAttention),
+                        color: Color(0xFFFF7E40),
+                        onPressed: () {Navigator.of(context).pop();},
+                        // color: pressAttention ? Colors.grey : Color(0xFFFF7E40),
+                        // onPressed: () => setState(() => pressAttention = !pressAttention),
                       ),
                     ),
                   ),

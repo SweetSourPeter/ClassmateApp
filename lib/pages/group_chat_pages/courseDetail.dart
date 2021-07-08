@@ -31,11 +31,13 @@ class CourseDetail extends StatefulWidget {
 }
 
 class _CourseDetailState extends State<CourseDetail> {
-  bool isSwitched = false;
+  //bool isSwitched = false;
   int numberOfMembers = 0;
   String courseName;
   String courseSection;
   String courseTerm;
+  String adminName;
+  String adminId;
   List<List<dynamic>> members;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
@@ -46,6 +48,8 @@ class _CourseDetailState extends State<CourseDetail> {
         courseName = value.docs[0].data()['myCourseName'];
         courseSection = value.docs[0].data()['section'];
         courseTerm = value.docs[0].data()['term'];
+        adminName = value.docs[0].data()['AdminName'];
+        adminId = value.docs[0].data()['AdminId'];
       });
     });
     print('here');
@@ -75,13 +79,14 @@ class _CourseDetailState extends State<CourseDetail> {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final courseProvider = Provider.of<CourseProvider>(context);
     final course = Provider.of<List<CourseInfo>>(context);
+    String myId = currentUser.userID;
+
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         if (members == null) {
-
           return PictureLoadingScreen(Colors.white);
-
         } else {
+          members.sort((a,b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
           final memberName = members[index][0];
 
           return Container(
@@ -403,64 +408,79 @@ class _CourseDetailState extends State<CourseDetail> {
                           ),
                         ),
 
-                        Container(
-                            margin: EdgeInsets.only(top: 10),
-                            width: double.infinity,
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    height: 50,
-                                    width: MediaQuery.of(context).size.width,
-                                    color: Colors.white,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                          const EdgeInsets.only(left: 21.0),
-                                          child: Text(
-                                            "Administrator Transfer",
-                                            style: GoogleFonts.montserrat(
-                                              fontSize: 14,
+                        if (myId == adminId) Visibility(
+                          visible: true,
+                          child: Container(
+                              margin: EdgeInsets.only(top: 10),
+                              width: double.infinity,
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      height: 50,
+                                      width: MediaQuery.of(context).size.width,
+                                      color: Colors.white,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.only(left: 21.0),
+                                            child: Text(
+                                              "Administrator Transfer",
+                                              style: GoogleFonts.montserrat(
+                                                fontSize: 14,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                          const EdgeInsets.only(right: 21.0),
-                                          child: Image.asset(
-                                              'assets/images/arrow-forward.png',
-                                              height: 9.02,
-                                              width: 4.86,
-                                              color: const Color(0xFF949494)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                          return MultiProvider(
-                                            providers: [
-                                              Provider<UserData>.value(
-                                                value: currentUser,
-                                              ),
 
-                                            ],
-                                            child: ChooseGroupLeader(
-                                              courseId: widget.courseId,
-                                              myEmail: widget.myEmail,
-                                              myName: widget.myName,
-                                            ),
-                                          );
-                                        }));
-                                  },
-                                ),
-                              ],
-                            ),
+                                          Padding(
+                                              padding:
+                                              const EdgeInsets.only(right: 30.0),
+                                              child: Text(adminName)
+                                          ),
+
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.only(right: 21.0),
+                                            child: Image.asset(
+                                                'assets/images/arrow-forward.png',
+                                                height: 9.02,
+                                                width: 4.86,
+                                                color: const Color(0xFF949494)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      if (members == null){
+                                        return null;
+                                      }
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                            return MultiProvider(
+                                              providers: [
+                                                Provider<UserData>.value(
+                                                  value: currentUser,
+                                                ),
+                                              ],
+                                              child: ChooseGroupLeader(
+                                                adminId: adminId,
+                                                adminName: adminName,
+                                                groupMembers: members,
+                                                courseId: widget.courseId,
+                                                myEmail: widget.myEmail,
+                                                myName: widget.myName,
+                                              ),
+                                            );
+                                          }));
+                                    },
+                                  ),
+                                ],
+                              ),
+                          ),
                         ),
 
                         Container(

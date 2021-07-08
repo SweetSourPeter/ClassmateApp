@@ -527,6 +527,7 @@ class DatabaseMethods {
         });
       }
     }
+
     return listOfNumber;
   }
 
@@ -581,6 +582,7 @@ class DatabaseMethods {
         });
       }
     }
+
     return listOfUnread;
   }
 
