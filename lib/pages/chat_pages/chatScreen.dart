@@ -23,7 +23,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -59,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool displayWeek;
   bool showFunctions;
   bool lastMessage;
-  List<String> friendCourse = List<String>();
+  List<String> friendCourse = [];
   ScrollController _controller;
   FocusNode myFocusNode = FocusNode();
 
@@ -364,8 +363,7 @@ class _ChatScreenState extends State<ChatScreen> {
     double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
-    Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = _width * 0.05;
     _joinMeeting() async {
       String chatRoomId = getChatRoomId(currentUser.email, widget.friendEmail)
           .replaceAll(RegExp("@[a-zA-Z0-9]+\.[a-zA-Z]+"), '');
@@ -405,12 +403,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
         await JitsiMeet.joinMeeting(options).then((value) {
           if (value.isSuccess) {
-            print('sendithere');
             sendInviteMeetMessage(
                 currentUser.email, chatRoomId, currentUser.userName);
           }
-          print('respsdgfadsgasdgasdgasdg');
-          print(value.isSuccess);
         });
       } catch (error) {
         debugPrint("error: $error");
@@ -440,22 +435,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   Container(
                     color: Colors.white,
-                    height: 73,
+                    height: _height*0.10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 20),
+                          padding: EdgeInsets.only(left: sidebarSize*0.55),
                           child: Container(
-                            height: 40,
-                            width: 40,
                             child: IconButton(
                               icon: Image.asset(
                                 'assets/images/arrow-back.png',
+                                height: 17.96,
+                                width: 10.26,
                               ),
                               // iconSize: 30.0,
-                              color: const Color(0xFFFFB811),
+                              color: const Color(0xFFFF7E40),
                               onPressed: () {
                                 databaseMethods.setUnreadNumber(
                                     widget.chatRoomId, widget.myEmail, 0);
@@ -505,7 +500,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   child: CircleAvatar(
                                     backgroundColor: listProfileColor[
                                         widget.friendProfileColor.toInt()],
-                                    radius: sidebarSize / 20,
+                                    radius: sidebarSize,
                                     child: Container(
                                       child: Text(
                                         (widget.friendName.split(' ').length >=
@@ -574,23 +569,22 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                         ),
-                        Spacer(),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 0.0),
+                        //   child: IconButton(
+                        //     icon: Icon(
+                        //       Icons.phone,
+                        //       size: 26,
+                        //       color: Color(0xffFF7E40),
+                        //     ),
+                        //     // iconSize: 10.0,
+                        //     onPressed: () {
+                        //       _joinMeeting();
+                        //     },
+                        //   ),
+                        // ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.phone,
-                              size: 26,
-                              color: Color(0xffFF7E40),
-                            ),
-                            // iconSize: 10.0,
-                            onPressed: () {
-                              _joinMeeting();
-                            },
-                          ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
+                            padding: EdgeInsets.only(right: sidebarSize*0.55),
                             child: Container(
                               child: IconButton(
                                 icon: Image.asset(
@@ -867,7 +861,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? AnimatedContainer(
                           duration: Duration(milliseconds: 80),
                           height: 80,
-                          width: mediaQuery.width,
+                          width: _width,
                           color: Colors.white,
                           child: Container(
                             padding: EdgeInsets.only(left: 50, right: 50),
@@ -876,8 +870,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: 64,
-                                  width: 65,
+                                  height: _height*0.095,
+                                  width: _width*0.16,
                                   child: IconButton(
                                       icon: Image.asset(
                                         'assets/images/camera.png',
@@ -891,8 +885,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                       }),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 65,
+                                  height: _height*0.095,
+                                  width: _width*0.16,
                                   child: IconButton(
                                       icon: Image.asset(
                                         'assets/images/photo_library.png',
@@ -904,13 +898,42 @@ class _ChatScreenState extends State<ChatScreen> {
                                           currentUser)),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 55,
-                                  color: Colors.white,
+                                  height: _height*0.095,
+                                  width: _width*0.16,
+                                  child: IconButton(
+                                    icon: Icon(
+                                        Icons.phone,
+                                        // size: 26,
+                                        color: Color(0xffFF7E40)
+                                    ),
+                                    // iconSize: 10.0,
+                                    onPressed: () {
+                                      showCupertinoDialog(
+                                        context: context,
+                                        builder: (_) => CupertinoAlertDialog(
+                                          content: Text('Join the call?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                _joinMeeting();
+                                                Navigator.pop(context, 'Yes');
+                                              },
+                                              child: const Text('Yes'),
+                                            ),
+                                          ],
+                                        ),
+                                        barrierDismissible: true
+                                      );
+                                    },
+                                  ),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 55,
+                                  height: _height*0.095,
+                                  width: _width*0.16,
                                   color: Colors.white,
                                 )
                               ],

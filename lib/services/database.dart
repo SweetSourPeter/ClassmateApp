@@ -449,12 +449,20 @@ class DatabaseMethods {
         .snapshots();
   }
 
-  getGroupChatMessages(String chatRoomId) async {
+  getGroupChatMessages(String courseId) async {
     return FirebaseFirestore.instance
         .collection('courses')
-        .doc(chatRoomId)
+        .doc(courseId)
         .collection('chats')
         .orderBy('time', descending: true)
+        .snapshots();
+  }
+
+  getGroupChatMembers(String courseId) async {
+    return FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('users')
         .snapshots();
   }
 
@@ -730,6 +738,31 @@ class DatabaseMethods {
     print(myCurrentChargeNumber + addValue);
     docRef.update({
       'myChargeNumber': (myCurrentChargeNumber + addValue),
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getGroupNotice(String courseId) async {
+    Map<String, dynamic> ret = {
+      'groupNoticeText': 'Group notice not set yet!',
+      'noticeTime': 'date and time unavailable'
+    };
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .get()
+        .then((value) {
+            ret['groupNoticeText'] = value.data()['groupNoticeText'];
+            ret['noticeTime'] = value.data()['noticeTime'];
+        });
+    return ret;
+  }
+
+  setGroupNotice(String courseId, String groupNoticeText, int noticeTime) async {
+    FirebaseFirestore.instance.collection('courses').doc(courseId).update({
+      'groupNoticeText': groupNoticeText,
+      'noticeTime': noticeTime
     }).catchError((e) {
       print(e.toString());
     });

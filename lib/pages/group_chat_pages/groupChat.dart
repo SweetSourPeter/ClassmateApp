@@ -1,20 +1,17 @@
 import 'package:app_test/models/courseInfo.dart';
-import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
+import 'package:app_test/pages/group_chat_pages/atPeople.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_test/models/constant.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
-import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -24,6 +21,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:app_test/widgets/LinkWellModified.dart';
+import 'package:diff_match_patch/diff_match_patch.dart';
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -57,7 +55,8 @@ class _GroupChatState extends State<GroupChat> {
   String courseTerm;
   int numberOfMembers = 0;
   FocusNode myFocusNode = FocusNode();
-  bool displayName = true;
+  bool displayName;
+  String previousText;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -75,8 +74,7 @@ class _GroupChatState extends State<GroupChat> {
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.docs[index].data()['time']);
-                  String sender =
-                      snapshot.data.docs[index].data()['sendBy'];
+                  String sender = snapshot.data.docs[index].data()['sendBy'];
                   if (index == snapshot.data.docs.length - 1) {
                     displayTime = true;
                     displayName = true;
@@ -125,8 +123,7 @@ class _GroupChatState extends State<GroupChat> {
                           snapshot.data.docs[index].data()['senderName'],
                           snapshot.data.docs[index].data()['senderID'],
                           displayName,
-                          snapshot.data.docs[index]
-                                  .data()['profileColor'] ??
+                          snapshot.data.docs[index].data()['profileColor'] ??
                               1.0,
                         )
                       : ImageTile(
@@ -141,8 +138,7 @@ class _GroupChatState extends State<GroupChat> {
                           snapshot.data.docs[index].data()['senderName'],
                           snapshot.data.docs[index].data()['senderID'],
                           displayName,
-                          snapshot.data.docs[index]
-                                  .data()['profileColor'] ??
+                          snapshot.data.docs[index].data()['profileColor'] ??
                               1.0,
                         );
                 })
@@ -181,9 +177,9 @@ class _GroupChatState extends State<GroupChat> {
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
-      // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
+      // databaseMethods.setLatestMessage(widget.courseId, messageController.text, lastMessageTime);
       // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
       //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
@@ -208,7 +204,8 @@ class _GroupChatState extends State<GroupChat> {
     };
 
     databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+        widget.courseId, currentUser.userID);
     // _controller.jumpTo(_controller.position.minScrollExtent);
     // messageController.text = '';
   }
@@ -227,8 +224,8 @@ class _GroupChatState extends State<GroupChat> {
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
 
       _controller.jumpTo(_controller.position.minScrollExtent);
       _uploadedFileURL = '';
@@ -301,6 +298,7 @@ class _GroupChatState extends State<GroupChat> {
 
   @override
   void initState() {
+    super.initState();
     databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
       setState(() {
         chatMessageStream = value;
@@ -329,7 +327,8 @@ class _GroupChatState extends State<GroupChat> {
     showFunctions = false;
     _controller =
         ScrollController(initialScrollOffset: widget.initialChat * 40);
-    super.initState();
+    displayName = true;
+    previousText = '';
   }
 
   getChatRoomId(String a, String b) {
@@ -344,8 +343,9 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
+    final sidebarSize = _width * 0.05;
     _joinMeeting() async {
       String chatRoomId = widget.courseId;
       print(chatRoomId);
@@ -383,11 +383,8 @@ class _GroupChatState extends State<GroupChat> {
 
         await JitsiMeet.joinMeeting(options).then((value) {
           if (value.isSuccess) {
-            print('sendithere');
             sendInviteMeetMessage(chatRoomId, currentUser);
           }
-          print('respsdgfadsgasdgasdgasdg');
-          print(value.isSuccess);
         });
       } catch (error) {
         debugPrint("error: $error");
@@ -417,13 +414,13 @@ class _GroupChatState extends State<GroupChat> {
                 children: [
                   Container(
                     color: Colors.white,
-                    height: 73.68,
+                    height: _height * 0.10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 20),
+                          padding: EdgeInsets.only(left: sidebarSize * 0.55),
                           child: Container(
                             // height: 17.96,
                             // width: 10.26,
@@ -470,23 +467,22 @@ class _GroupChatState extends State<GroupChat> {
                             ],
                           ),
                         ),
-                        Spacer(),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 0.0),
+                        //   child: IconButton(
+                        //     icon: Icon(
+                        //       Icons.phone,
+                        //       size: 26,
+                        //       color: Color(0xffFF7E40),
+                        //     ),
+                        //     // iconSize: 10.0,
+                        //     onPressed: () {
+                        //       _joinMeeting();
+                        //     },
+                        //   ),
+                        // ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.phone,
-                              size: 26,
-                              color: Color(0xffFF7E40),
-                            ),
-                            // iconSize: 10.0,
-                            onPressed: () {
-                              _joinMeeting();
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
+                          padding: EdgeInsets.only(right: sidebarSize * 0.55),
                           child: Container(
                             child: IconButton(
                               icon: Image.asset(
@@ -553,10 +549,63 @@ class _GroupChatState extends State<GroupChat> {
                           ),
                           child: TextField(
                             keyboardType: TextInputType.multiline,
-                            minLines:
-                                1, //Normal textInputField will be displayed
-                            maxLines:
-                                4, // when user presses enter it will adapt to it
+                            minLines: 1,
+                            //Normal textInputField will be displayed
+                            maxLines: 4,
+                            // when user presses enter it will adapt to it
+                            onChanged: (text) async {
+                              if(diff(previousText, text).length == 2) {
+                                print(diff(previousText, text)[1].text);
+                                if(diff(previousText, text)[1].operation != -1 && diff(previousText, text)[1].text == '@') {
+                                  String thePerson = await showModalBottomSheet(
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 10,
+                                            color: Colors.transparent,
+                                          ),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(30.0),
+                                            topRight: Radius.circular(30.0),
+                                            // bottomLeft: Radius.circular(30.0),
+                                            // bottomRight: Radius.circular(30.0),
+                                          )),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) {
+                                        return SafeArea(
+                                            bottom: false,
+                                            child: AtPeople(
+                                              courseId: widget.courseId,
+                                            ));
+                                      });
+                                  messageController.text += thePerson;
+                                }
+                              } else if (text == '@') {
+                                String thePerson = await showModalBottomSheet(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 10,
+                                          color: Colors.transparent,
+                                        ),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(30.0),
+                                          topRight: Radius.circular(30.0),
+                                          // bottomLeft: Radius.circular(30.0),
+                                          // bottomRight: Radius.circular(30.0),
+                                        )),
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) {
+                                      return SafeArea(
+                                          bottom: false,
+                                          child: AtPeople(
+                                            courseId: widget.courseId,
+                                          ));
+                                    });
+                                messageController.text += thePerson;
+                              }
+                              previousText = text;
+                            },
                             onTap: () {
                               setState(() {
                                 showStickerKeyboard = false;
@@ -682,7 +731,7 @@ class _GroupChatState extends State<GroupChat> {
                   showStickerKeyboard
                       ? AnimatedContainer(
                           duration: Duration(milliseconds: 80),
-                          height: _height*0.35,
+                          height: _height * 0.35,
                           // showStickerKeyboard ? 400 : 0,
                           child: EmojiPicker(
                             config: const Config(
@@ -713,8 +762,8 @@ class _GroupChatState extends State<GroupChat> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: 64,
-                                  width: 65,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
                                   child: IconButton(
                                       icon: Image.asset(
                                           'assets/images/camera.png'),
@@ -724,8 +773,8 @@ class _GroupChatState extends State<GroupChat> {
                                           context)),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 65,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
                                   child: IconButton(
                                       icon: Image.asset(
                                           'assets/images/photo_library.png'),
@@ -735,13 +784,42 @@ class _GroupChatState extends State<GroupChat> {
                                           context)),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 55,
-                                  color: Colors.white,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
+                                  child: IconButton(
+                                    icon: Icon(Icons.phone,
+                                        // size: 26,
+                                        color: Color(0xffFF7E40)),
+                                    // iconSize: 10.0,
+                                    onPressed: () {
+                                      showCupertinoDialog(
+                                          context: context,
+                                          builder: (_) => CupertinoAlertDialog(
+                                                content: Text('Join the call?'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      _joinMeeting();
+                                                      Navigator.pop(
+                                                          context, 'Yes');
+                                                    },
+                                                    child: const Text('Yes'),
+                                                  ),
+                                                ],
+                                              ),
+                                          barrierDismissible: true);
+                                    },
+                                  ),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 55,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
                                   color: Colors.white,
                                 )
                               ],
