@@ -1,6 +1,7 @@
 import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
+import 'package:app_test/pages/contact_pages/searchCourse.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
@@ -71,6 +72,7 @@ class _GroupChatState extends State<GroupChat> {
   String courseSection;
   String courseTerm;
   int numberOfMembers = 0;
+  bool haveCourse = false;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -81,132 +83,325 @@ class _GroupChatState extends State<GroupChat> {
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context, snapshot) {
-        return (widget.myEmail != null && snapshot.hasData)
-            ? ListView.builder(
-                reverse: true,
-                controller: _controller,
-                padding: EdgeInsets.all(0),
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data()['time']);
-                  if (index == snapshot.data.documents.length - 1) {
-                    displayTime = true;
-                  } else {
-                    DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index + 1].data()['time']);
-                    final difference = current.difference(prev).inDays;
-                    if (difference >= 1) {
+        // if (widget.isRedirect) {
+        if (true) {
+          final userdata = Provider.of<UserData>(context);
+          final course = Provider.of<List<CourseInfo>>(context);
+          print("course");
+          print(course.first.courseID);
+          print("courseID");
+          print(widget.courseId);
+
+          // haveCourse = false;
+
+          course.forEach((element) {
+            if (element.courseID.toString() == widget.courseId.toString()) {
+              haveCourse = true;
+              print("haveCourse should be true");
+            }
+          });
+
+          if (haveCourse == true) {
+            return (widget.myEmail != null && snapshot.hasData)
+                ? ListView.builder(
+                    reverse: true,
+                    controller: _controller,
+                    padding: EdgeInsets.all(0),
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) {
+                      DateTime current = DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index].data()['time']);
+                      if (index == snapshot.data.documents.length - 1) {
+                        displayTime = true;
+                      } else {
+                        DateTime prev = DateTime.fromMillisecondsSinceEpoch(
+                            snapshot.data.documents[index + 1].data()['time']);
+                        final difference = current.difference(prev).inDays;
+                        if (difference >= 1) {
+                          displayTime = true;
+                        } else {
+                          displayTime = false;
+                        }
+                      }
+
+                      if (index == 0) {
+                        lastMessage = true;
+                      } else {
+                        lastMessage = false;
+                      }
+
+                      if (DateTime.now().difference(current).inDays <= 7) {
+                        displayWeek = true;
+                      } else {
+                        displayWeek = false;
+                      }
+
+                      if (snapshot.data.documents[index]
+                              .data()['messageType'] ==
+                          'text') {
+                        return MessageTile(
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
+                              myEmail,
+                          DateTime.fromMillisecondsSinceEpoch(
+                                  snapshot.data.documents[index].data()['time'])
+                              .toString(),
+                          displayTime,
+                          displayWeek,
+                          lastMessage,
+                          snapshot.data.documents[index].data()['senderName'],
+                          snapshot.data.documents[index].data()['senderID'],
+                          snapshot.data.documents[index]
+                                  .data()['profileColor'] ??
+                              1.0,
+                        );
+                      } else if (snapshot.data.documents[index]
+                              .data()['messageType'] ==
+                          'image') {
+                        return ImageTile(
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
+                              myEmail,
+                          DateTime.fromMillisecondsSinceEpoch(
+                                  snapshot.data.documents[index].data()['time'])
+                              .toString(),
+                          displayTime,
+                          displayWeek,
+                          lastMessage,
+                          snapshot.data.documents[index].data()['senderName'],
+                          snapshot.data.documents[index].data()['senderID'],
+                          snapshot.data.documents[index]
+                                  .data()['profileColor'] ??
+                              1.0,
+                        );
+                      } else {
+                        return FileTile(
+                          snapshot.data.documents[index].data()['message'],
+                          snapshot.data.documents[index].data()['sendBy'] ==
+                              myEmail,
+                          DateTime.fromMillisecondsSinceEpoch(
+                                  snapshot.data.documents[index].data()['time'])
+                              .toString(),
+                          displayTime,
+                          displayWeek,
+                          lastMessage,
+                          snapshot.data.documents[index].data()['senderName'],
+                          snapshot.data.documents[index].data()['senderID'],
+                          snapshot.data.documents[index]
+                                  .data()['profileColor'] ??
+                              1.0,
+                          _link =
+                              snapshot.data.documents[index].data()['message'],
+                          fileName =
+                              snapshot.data.documents[index].data()['fileName'],
+                        );
+                      }
+
+                      // return snapshot.data.documents[index].data()['messageType'] ==
+                      //         'text'
+                      //     ? MessageTile(
+                      //         snapshot.data.documents[index].data()['message'],
+                      //         snapshot.data.documents[index].data()['sendBy'] ==
+                      //             myEmail,
+                      //         DateTime.fromMillisecondsSinceEpoch(
+                      //                 snapshot.data.documents[index].data()['time'])
+                      //             .toString(),
+                      //         displayTime,
+                      //         displayWeek,
+                      //         lastMessage,
+                      //         snapshot.data.documents[index].data()['senderName'],
+                      //         snapshot.data.documents[index].data()['senderID'],
+                      //         snapshot.data.documents[index]
+                      //                 .data()['profileColor'] ??
+                      //             1.0,
+                      //       )
+                      //     : ImageTile(
+                      //         snapshot.data.documents[index].data()['message'],
+                      //         snapshot.data.documents[index].data()['sendBy'] ==
+                      //             myEmail,
+                      //         DateTime.fromMillisecondsSinceEpoch(
+                      //                 snapshot.data.documents[index].data()['time'])
+                      //             .toString(),
+                      //         displayTime,
+                      //         displayWeek,
+                      //         lastMessage,
+                      //         snapshot.data.documents[index].data()['senderName'],
+                      //         snapshot.data.documents[index].data()['senderID'],
+                      //         snapshot.data.documents[index]
+                      //                 .data()['profileColor'] ??
+                      //             1.0,
+                      //       );
+                    })
+                : Container();
+          } else {
+            return AlertDialog(
+              title: Text("Alert"),
+              content: Text("Not enrolled in this course yet!"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Wrapper(false, false, "0");
+                      },
+                    ),
+                  ),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MultiProvider(
+                            providers: [
+                              Provider<UserData>.value(
+                                value: userdata,
+                              ),
+                              Provider<List<CourseInfo>>.value(value: course)
+                            ],
+                            child: SearchCourse(),
+                          );
+                        },
+                      ),
+                    )
+                  },
+                  child: const Text('Enroll'),
+                )
+              ],
+            );
+          }
+        } else {
+          return (widget.myEmail != null && snapshot.hasData)
+              ? ListView.builder(
+                  reverse: true,
+                  controller: _controller,
+                  padding: EdgeInsets.all(0),
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    DateTime current = DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.documents[index].data()['time']);
+                    if (index == snapshot.data.documents.length - 1) {
                       displayTime = true;
                     } else {
-                      displayTime = false;
+                      DateTime prev = DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.documents[index + 1].data()['time']);
+                      final difference = current.difference(prev).inDays;
+                      if (difference >= 1) {
+                        displayTime = true;
+                      } else {
+                        displayTime = false;
+                      }
                     }
-                  }
 
-                  if (index == 0) {
-                    lastMessage = true;
-                  } else {
-                    lastMessage = false;
-                  }
+                    if (index == 0) {
+                      lastMessage = true;
+                    } else {
+                      lastMessage = false;
+                    }
 
-                  if (DateTime.now().difference(current).inDays <= 7) {
-                    displayWeek = true;
-                  } else {
-                    displayWeek = false;
-                  }
+                    if (DateTime.now().difference(current).inDays <= 7) {
+                      displayWeek = true;
+                    } else {
+                      displayWeek = false;
+                    }
 
-                  if (snapshot.data.documents[index].data()['messageType'] ==
-                      'text') {
-                    return MessageTile(
-                      snapshot.data.documents[index].data()['message'],
-                      snapshot.data.documents[index].data()['sendBy'] ==
-                          myEmail,
-                      DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[index].data()['time'])
-                          .toString(),
-                      displayTime,
-                      displayWeek,
-                      lastMessage,
-                      snapshot.data.documents[index].data()['senderName'],
-                      snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index].data()['profileColor'] ??
-                          1.0,
-                    );
-                  } else if (snapshot.data.documents[index]
-                          .data()['messageType'] ==
-                      'image') {
-                    return ImageTile(
-                      snapshot.data.documents[index].data()['message'],
-                      snapshot.data.documents[index].data()['sendBy'] ==
-                          myEmail,
-                      DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[index].data()['time'])
-                          .toString(),
-                      displayTime,
-                      displayWeek,
-                      lastMessage,
-                      snapshot.data.documents[index].data()['senderName'],
-                      snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index].data()['profileColor'] ??
-                          1.0,
-                    );
-                  } else {
-                    return FileTile(
-                      snapshot.data.documents[index].data()['message'],
-                      snapshot.data.documents[index].data()['sendBy'] ==
-                          myEmail,
-                      DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[index].data()['time'])
-                          .toString(),
-                      displayTime,
-                      displayWeek,
-                      lastMessage,
-                      snapshot.data.documents[index].data()['senderName'],
-                      snapshot.data.documents[index].data()['senderID'],
-                      snapshot.data.documents[index].data()['profileColor'] ??
-                          1.0,
-                      _link = snapshot.data.documents[index].data()['message'],
-                      fileName =
-                          snapshot.data.documents[index].data()['fileName'],
-                    );
-                  }
+                    if (snapshot.data.documents[index].data()['messageType'] ==
+                        'text') {
+                      return MessageTile(
+                        snapshot.data.documents[index].data()['message'],
+                        snapshot.data.documents[index].data()['sendBy'] ==
+                            myEmail,
+                        DateTime.fromMillisecondsSinceEpoch(
+                                snapshot.data.documents[index].data()['time'])
+                            .toString(),
+                        displayTime,
+                        displayWeek,
+                        lastMessage,
+                        snapshot.data.documents[index].data()['senderName'],
+                        snapshot.data.documents[index].data()['senderID'],
+                        snapshot.data.documents[index].data()['profileColor'] ??
+                            1.0,
+                      );
+                    } else if (snapshot.data.documents[index]
+                            .data()['messageType'] ==
+                        'image') {
+                      return ImageTile(
+                        snapshot.data.documents[index].data()['message'],
+                        snapshot.data.documents[index].data()['sendBy'] ==
+                            myEmail,
+                        DateTime.fromMillisecondsSinceEpoch(
+                                snapshot.data.documents[index].data()['time'])
+                            .toString(),
+                        displayTime,
+                        displayWeek,
+                        lastMessage,
+                        snapshot.data.documents[index].data()['senderName'],
+                        snapshot.data.documents[index].data()['senderID'],
+                        snapshot.data.documents[index].data()['profileColor'] ??
+                            1.0,
+                      );
+                    } else {
+                      return FileTile(
+                        snapshot.data.documents[index].data()['message'],
+                        snapshot.data.documents[index].data()['sendBy'] ==
+                            myEmail,
+                        DateTime.fromMillisecondsSinceEpoch(
+                                snapshot.data.documents[index].data()['time'])
+                            .toString(),
+                        displayTime,
+                        displayWeek,
+                        lastMessage,
+                        snapshot.data.documents[index].data()['senderName'],
+                        snapshot.data.documents[index].data()['senderID'],
+                        snapshot.data.documents[index].data()['profileColor'] ??
+                            1.0,
+                        _link =
+                            snapshot.data.documents[index].data()['message'],
+                        fileName =
+                            snapshot.data.documents[index].data()['fileName'],
+                      );
+                    }
 
-                  // return snapshot.data.documents[index].data()['messageType'] ==
-                  //         'text'
-                  //     ? MessageTile(
-                  //         snapshot.data.documents[index].data()['message'],
-                  //         snapshot.data.documents[index].data()['sendBy'] ==
-                  //             myEmail,
-                  //         DateTime.fromMillisecondsSinceEpoch(
-                  //                 snapshot.data.documents[index].data()['time'])
-                  //             .toString(),
-                  //         displayTime,
-                  //         displayWeek,
-                  //         lastMessage,
-                  //         snapshot.data.documents[index].data()['senderName'],
-                  //         snapshot.data.documents[index].data()['senderID'],
-                  //         snapshot.data.documents[index]
-                  //                 .data()['profileColor'] ??
-                  //             1.0,
-                  //       )
-                  //     : ImageTile(
-                  //         snapshot.data.documents[index].data()['message'],
-                  //         snapshot.data.documents[index].data()['sendBy'] ==
-                  //             myEmail,
-                  //         DateTime.fromMillisecondsSinceEpoch(
-                  //                 snapshot.data.documents[index].data()['time'])
-                  //             .toString(),
-                  //         displayTime,
-                  //         displayWeek,
-                  //         lastMessage,
-                  //         snapshot.data.documents[index].data()['senderName'],
-                  //         snapshot.data.documents[index].data()['senderID'],
-                  //         snapshot.data.documents[index]
-                  //                 .data()['profileColor'] ??
-                  //             1.0,
-                  //       );
-                })
-            : Container();
+                    // return snapshot.data.documents[index].data()['messageType'] ==
+                    //         'text'
+                    //     ? MessageTile(
+                    //         snapshot.data.documents[index].data()['message'],
+                    //         snapshot.data.documents[index].data()['sendBy'] ==
+                    //             myEmail,
+                    //         DateTime.fromMillisecondsSinceEpoch(
+                    //                 snapshot.data.documents[index].data()['time'])
+                    //             .toString(),
+                    //         displayTime,
+                    //         displayWeek,
+                    //         lastMessage,
+                    //         snapshot.data.documents[index].data()['senderName'],
+                    //         snapshot.data.documents[index].data()['senderID'],
+                    //         snapshot.data.documents[index]
+                    //                 .data()['profileColor'] ??
+                    //             1.0,
+                    //       )
+                    //     : ImageTile(
+                    //         snapshot.data.documents[index].data()['message'],
+                    //         snapshot.data.documents[index].data()['sendBy'] ==
+                    //             myEmail,
+                    //         DateTime.fromMillisecondsSinceEpoch(
+                    //                 snapshot.data.documents[index].data()['time'])
+                    //             .toString(),
+                    //         displayTime,
+                    //         displayWeek,
+                    //         lastMessage,
+                    //         snapshot.data.documents[index].data()['senderName'],
+                    //         snapshot.data.documents[index].data()['senderID'],
+                    //         snapshot.data.documents[index]
+                    //                 .data()['profileColor'] ??
+                    //             1.0,
+                    //       );
+                  })
+              : Container();
+        }
       },
     );
   }
@@ -1522,3 +1717,7 @@ class FileTile extends StatelessWidget {
     );
   }
 }
+
+// enroll (course_info) {
+//   for
+// }
