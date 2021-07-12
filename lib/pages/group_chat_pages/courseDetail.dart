@@ -14,17 +14,20 @@ import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
 import 'package:flutter/services.dart';
 
+import 'chooseGroupLeader.dart';
 import 'groupNotice.dart';
 
 class CourseDetail extends StatefulWidget {
   final String courseId;
   final String myEmail;
   final String myName;
+  final List<List<dynamic>> members;
 
   CourseDetail({
     this.courseId,
     this.myEmail,
     this.myName,
+    this.members
   });
 
   @override
@@ -38,8 +41,10 @@ class _CourseDetailState extends State<CourseDetail> {
   String courseSection;
   String courseTerm;
   String groupNoticeText;
-  List<List<dynamic>> members;
   DatabaseMethods databaseMethods = new DatabaseMethods();
+  String adminId;
+  String adminName;
+  List<List<dynamic>> memberInfo = [];
 
   @override
   void initState() {
@@ -50,23 +55,30 @@ class _CourseDetailState extends State<CourseDetail> {
         courseSection = value.docs[0].data()['section'];
         courseTerm = value.docs[0].data()['term'];
         groupNoticeText = value.docs[0].data()['groupNoticeText'];
+        adminId = value.docs[0].data()['adminId'];
+      });
+
+      databaseMethods.getUserDetailsByID(value.docs[0].data()['adminId']).then((info) {
+        setState(() {
+          adminName = info.userName;
+        });
       });
     });
 
-    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
-      setState(() {
-        numberOfMembers = value.docs.length;
-      });
-    });
+    // databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+    //   setState(() {
+    //     numberOfMembers = value.docs.length;
+    //   });
+    // });
 
-    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-      // if (this.mounted) {
-      //   return;
-      // }
-      setState(() {
-        members = value;
-      });
-    });
+    // databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+    //   setState(() {
+    //     members = value;
+    //   });
+    // });
+
+    memberInfo = widget.members;
+    numberOfMembers = memberInfo.length;
   }
 
   @override
@@ -81,10 +93,10 @@ class _CourseDetailState extends State<CourseDetail> {
     final course = Provider.of<List<CourseInfo>>(context);
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
-        if (members == null) {
+        if (memberInfo == null) {
           return SimpleLoadingScreen(Colors.white);
         } else {
-          final memberName = members[index][0];
+          final memberName = memberInfo[index][0];
 
           return Container(
             child: Column(
@@ -101,7 +113,7 @@ class _CourseDetailState extends State<CourseDetail> {
                           Provider<List<CourseInfo>>.value(value: course),
                         ],
                         child: FriendProfile(
-                          userID: members[index]
+                          userID: memberInfo[index]
                               [1], // to be modified to friend's ID
                         ),
                       );
@@ -109,7 +121,7 @@ class _CourseDetailState extends State<CourseDetail> {
                   },
                   child: CircleAvatar(
                     backgroundColor: listProfileColor[
-                        members != null ? members[index][2].toInt() : 1],
+                    memberInfo != null ? memberInfo[index][2].toInt() : 1],
                     radius: radius,
                     child: Container(
                       child: Text(
@@ -132,7 +144,7 @@ class _CourseDetailState extends State<CourseDetail> {
                 Container(
                   margin: EdgeInsets.only(top: 0),
                   child: Text(
-                    members != null ? members[index][0] : '',
+                    memberInfo != null ? memberInfo[index][0] : '',
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.montserrat(
                         color: Colors.black, fontSize: 15),
@@ -397,9 +409,13 @@ class _CourseDetailState extends State<CourseDetail> {
                                 //     textSize: 18,
                                 //     height: 50,
                                 //     isSwitch: true),
-                                Divider(
-                                  height: 0,
-                                  thickness: 1,
+                                Container(
+                                  margin:
+                                  EdgeInsets.only(left: sidebarSize),
+                                  child: Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                  ),
                                 ),
                                 GestureDetector(
                                   child: Container(
@@ -489,6 +505,87 @@ class _CourseDetailState extends State<CourseDetail> {
                                       });
                                     });
                                   },
+                                ),
+                                Container(
+                                  margin:
+                                  EdgeInsets.only(left: sidebarSize),
+                                  child: Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                  ),
+                                ),
+                                if (currentUser.userID == adminId) Visibility(
+                                  visible: true,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            height: 50,
+                                            width: MediaQuery.of(context).size.width,
+                                            color: Colors.white,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(left: 21.0),
+                                                  child: Text(
+                                                    "Administrator Transfer",
+                                                    style: GoogleFonts.montserrat(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                Padding(
+                                                    padding:
+                                                    const EdgeInsets.only(right: 30.0),
+                                                    child: Text(adminName == null ? 'Loading...' : adminName)
+                                                ),
+
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(right: 21.0),
+                                                  child: Image.asset(
+                                                      'assets/images/arrow-forward.png',
+                                                      height: 9.02,
+                                                      width: 4.86,
+                                                      color: const Color(0xFF949494)),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            if (memberInfo == null){
+                                              return null;
+                                            }
+                                            Navigator.push(context,
+                                                MaterialPageRoute(builder: (context) {
+                                                  return MultiProvider(
+                                                    providers: [
+                                                      Provider<UserData>.value(
+                                                        value: currentUser,
+                                                      ),
+                                                    ],
+                                                    child: ChooseGroupLeader(
+                                                      adminId: adminId,
+                                                      adminName: adminName,
+                                                      groupMembers: memberInfo,
+                                                      courseId: widget.courseId,
+                                                      myEmail: widget.myEmail,
+                                                      myName: widget.myName,
+                                                    ),
+                                                  );
+                                                }));
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

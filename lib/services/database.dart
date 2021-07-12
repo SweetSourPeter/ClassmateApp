@@ -74,7 +74,7 @@ class DatabaseMethods {
       userID: doc.data()[userID],
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
-      profileColor: doc.data()['profileColor'],
+      profileColor: doc.data()['profileColor'].toDouble(),
       // myChargeNumber: doc.data()['myChargeNumber'] ?? '',
       agreedToTerms: doc.data()['agreedToTerms'],
       invitedUserID: doc.data()['invitedUserID'],
@@ -540,6 +540,8 @@ class DatabaseMethods {
       }
     });
 
+    members.sort((a, b) => a[0].toString().toUpperCase().compareTo(b[0].toString().toUpperCase()));
+
     return members;
   }
 
@@ -763,6 +765,16 @@ class DatabaseMethods {
     FirebaseFirestore.instance.collection('courses').doc(courseId).update({
       'groupNoticeText': groupNoticeText,
       'noticeTime': noticeTime
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  updateAdminId(String courseId, String adminId) async {
+    DocumentReference docRef =
+    FirebaseFirestore.instance.collection('courses').doc(courseId);
+    docRef.update({
+      'adminId': adminId,
     }).catchError((e) {
       print(e.toString());
     });

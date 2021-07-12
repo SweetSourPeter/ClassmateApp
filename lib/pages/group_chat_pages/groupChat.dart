@@ -3,6 +3,7 @@ import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/group_chat_pages/atPeople.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
+import 'package:app_test/pages/group_chat_pages/groupNotice.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,7 @@ class _GroupChatState extends State<GroupChat> {
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
+  List<List<dynamic>> members = [];
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
@@ -126,6 +128,13 @@ class _GroupChatState extends State<GroupChat> {
                           snapshot.data.docs[index].data()['profileColor'] ??
                               1.0,
                         )
+                      : snapshot.data.docs[index].data()['messageType'] ==
+                      'groupNotice'
+                      ? GroupNoticeTile(
+                    snapshot.data.docs[index].data()['message'],
+                    lastMessage,
+                    widget.courseId
+                  )
                       : ImageTile(
                           snapshot.data.docs[index].data()['message'],
                           sender == myEmail,
@@ -322,6 +331,12 @@ class _GroupChatState extends State<GroupChat> {
       });
     });
 
+    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        members = value;
+      });
+    });
+
     showStickerKeyboard = false;
     showTextKeyboard = false;
     showFunctions = false;
@@ -507,6 +522,7 @@ class _GroupChatState extends State<GroupChat> {
                                       courseId: widget.courseId,
                                       myEmail: widget.myEmail,
                                       myName: widget.myName,
+                                      members: members
                                     ),
                                   );
                                 }));
@@ -600,9 +616,12 @@ class _GroupChatState extends State<GroupChat> {
                                           bottom: false,
                                           child: AtPeople(
                                             courseId: widget.courseId,
+                                            members: members,
                                           ));
                                     });
-                                messageController.text += thePerson;
+
+                                if (thePerson != null)
+                                  messageController.text += thePerson;
                               }
                               previousText = text;
                             },
@@ -756,72 +775,138 @@ class _GroupChatState extends State<GroupChat> {
                           width: MediaQuery.of(context).size.width,
                           color: Colors.white,
                           child: Container(
-                            padding: EdgeInsets.only(left: 50, right: 50),
+                            padding: EdgeInsets.only(left: sidebarSize*2.45, right: sidebarSize*2.45),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: _height * 0.095,
+                                  height: _height * 0.12,
                                   width: _width * 0.16,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                          'assets/images/camera.png'),
-                                      onPressed: () => _pickImage(
-                                          ImageSource.camera,
-                                          currentUser,
-                                          context)),
-                                ),
-                                Container(
-                                  height: _height * 0.095,
-                                  width: _width * 0.16,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                          'assets/images/photo_library.png'),
-                                      onPressed: () => _pickImage(
-                                          ImageSource.gallery,
-                                          currentUser,
-                                          context)),
-                                ),
-                                Container(
-                                  height: _height * 0.095,
-                                  width: _width * 0.16,
-                                  child: IconButton(
-                                    icon: Icon(Icons.phone,
-                                        // size: 26,
-                                        color: Color(0xffFF7E40)),
-                                    // iconSize: 10.0,
-                                    onPressed: () {
-                                      showCupertinoDialog(
-                                          context: context,
-                                          builder: (_) => CupertinoAlertDialog(
-                                                content: Text('Join the call?'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            context, 'Cancel'),
-                                                    child: const Text('Cancel'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      _joinMeeting();
-                                                      Navigator.pop(
-                                                          context, 'Yes');
-                                                    },
-                                                    child: const Text('Yes'),
-                                                  ),
-                                                ],
-                                              ),
-                                          barrierDismissible: true);
-                                    },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width*0.13,
+                                        height:_width*0.13,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/camera.png',
+                                            ),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.camera,
+                                                currentUser,
+                                                context)),
+                                      ),
+                                      Text(
+                                        'Camera',
+                                        style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
                                 Container(
-                                  height: _height * 0.095,
+                                  height: _height * 0.12,
                                   width: _width * 0.16,
-                                  color: Colors.white,
-                                )
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width*0.13,
+                                        height:_width*0.13,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                                'assets/images/photo_library.png'),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.gallery,
+                                                currentUser,
+                                                context)),
+                                      ),
+                                      Text(
+                                        'Album',
+                                        style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: _height * 0.12,
+                                  width: _width * 0.16,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width*0.13,
+                                        height:_width*0.13,
+                                        child: IconButton(
+                                          icon: Image.asset(
+                                              'assets/images/video-call.png'),
+                                          // iconSize: 10.0,
+                                          onPressed: () {
+                                            showCupertinoDialog(
+                                                context: context,
+                                                builder: (_) => CupertinoAlertDialog(
+                                                      content: Text(
+                                                        'Join the call?',
+                                                        style: GoogleFonts.montserrat(
+                                                            fontWeight: FontWeight.w400,
+                                                            fontSize: 16
+                                                        ),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context, 'Cancel'),
+                                                          child: Text(
+                                                            'Cancel',
+                                                            style: GoogleFonts.montserrat(
+                                                                fontWeight: FontWeight.w400,
+                                                                fontSize: 16
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            _joinMeeting();
+                                                            Navigator.pop(
+                                                                context, 'Yes');
+                                                          },
+                                                          child: Text(
+                                                            'Yes',
+                                                            style: GoogleFonts.montserrat(
+                                                                fontWeight: FontWeight.w400,
+                                                                fontSize: 16
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                barrierDismissible: true);
+                                          },
+                                        ),
+                                      ),
+                                      Text(
+                                        'Call',
+                                        style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                // Container(
+                                //   height: _height * 0.095,
+                                //   width: _width * 0.16,
+                                //   color: Colors.white,
+                                // )
                               ],
                             ),
                           ),
@@ -1305,6 +1390,99 @@ class ImageTile extends StatelessWidget {
           height: lastMessage ? 20 : 0,
         )
       ],
+    );
+  }
+}
+
+class GroupNoticeTile extends StatelessWidget {
+  final String message;
+  final bool lastMessage;
+  final String courseId;
+
+  GroupNoticeTile(this.message, this.lastMessage, this.courseId);
+
+  @override
+  Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
+    double sidebarSize = _width * 0.05;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) {
+              return MultiProvider(
+                providers: [
+                  Provider<UserData>.value(
+                    value: userdata,
+                  ),
+                  Provider<List<CourseInfo>>.value(
+                    value: currentCourse,
+                  ),
+                ],
+                child: GroupNotice(
+                  courseId: courseId
+                ),
+              );
+            }));
+      },
+      child: Padding(
+        padding: EdgeInsets.only(left: sidebarSize*1.2, right: sidebarSize*1.2, top: sidebarSize),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: Colors.white,
+                width: _width - sidebarSize*1.6,
+                padding: EdgeInsets.only(left: sidebarSize*0.8, right: sidebarSize*0.2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Group Notice',
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16
+                      ),
+                    ),
+                    IconButton(
+                      icon: Image.asset(
+                        'assets/images/arrow-forward.png',
+                        height: 17.96,
+                        width: 10.26,
+                      ),
+                      // iconSize: 30.0,
+                      color: const Color(0xFFFF7E40),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                width: _width - sidebarSize*1.6,
+                padding: EdgeInsets.only(left: sidebarSize*0.8, right: sidebarSize*0.8, bottom: sidebarSize),
+                child: Text(
+                  message,
+                  maxLines: 7,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(
+                    color: Color(0xff949494),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: lastMessage ? 20 : 0,
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

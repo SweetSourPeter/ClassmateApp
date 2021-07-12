@@ -9,9 +9,11 @@ import 'package:provider/provider.dart';
 
 class AtPeople extends StatefulWidget {
   final String courseId;
+  final List<List<dynamic>> members;
 
   AtPeople({
     this.courseId,
+    this.members,
   });
 
   @override
@@ -22,17 +24,19 @@ class _AtPeopleState extends State<AtPeople> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   bool isSearching;
   TextEditingController searchTextEditingController = TextEditingController();
-  Stream memberStream;
+  // Stream memberStream;
+  List<List<dynamic>> memberInfo = [];
 
   @override
   void initState() {
     super.initState();
     isSearching = false;
-    databaseMethods.getGroupChatMembers(widget.courseId).then((value) {
-      setState(() {
-        memberStream = value;
-      });
-    });
+    // databaseMethods.getGroupChatMembers(widget.courseId).then((value) {
+    //   setState(() {
+    //     memberStream = value;
+    //   });
+    // });
+    memberInfo = widget.members;
   }
 
   @override
@@ -160,57 +164,78 @@ class _AtPeopleState extends State<AtPeople> {
   }
 
   Widget memberList() {
-    return StreamBuilder(
-      stream: memberStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          double _height = MediaQuery.of(context).size.height;
-          double _width = MediaQuery.of(context).size.width;
-          double sidebarSize = _width * 0.05;
-          final children = <Widget>[];
+    if (memberInfo != null) {
+      double _height = MediaQuery.of(context).size.height;
+      double _width = MediaQuery.of(context).size.width;
+      double sidebarSize = _width * 0.05;
+      final children = <Widget>[];
 
-          children.add(Container(
-            padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Color(0xFFFF7E40),
-                  radius: sidebarSize,
+      children.add(Container(
+        padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Color(0xFFFF7E40),
+              radius: sidebarSize,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: sidebarSize*0.9),
+              child: Text(
+                'Everyone',
+                style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14
                 ),
-                Container(
-                  padding: EdgeInsets.only(left: sidebarSize*0.9),
+              ),
+            ),
+          ],
+        ),
+      ));
+
+      String prev = '';
+      String current = '';
+
+      for (var i = 0; i < memberInfo.length; i++) {
+        current = memberInfo[i][0][0].toString().toUpperCase();
+        if (current != prev) {
+          children.add(
+            Padding(
+              padding: EdgeInsets.only(top: sidebarSize*0.6),
+              child: Container(
+                color: Color(0xffF9F6F1),
+                child: Padding(
+                  padding: EdgeInsets.only(left: sidebarSize*1.7),
                   child: Text(
-                    'Everyone',
+                    current,
                     style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14
+                      color: Color(0xffFF7E40),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16
                     ),
                   ),
                 ),
-              ],
-            ),
-          ));
-
-          for (var i = 0; i < snapshot.data.docs.length; i++) {
-              children.add(
-                  MemberTile(
-                    snapshot.data.docs[i].data()['userID'],
-                    1.0
-                  )
-              );
-          }
-
-          return ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: children.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return children[index];
-              });
+              ),
+            )
+          );
         }
-        return Container();
-      },
-    );
+        children.add(
+            MemberTile(
+                memberInfo[i][0],
+                memberInfo[i][2]
+            )
+        );
+        prev = memberInfo[i][0][0].toString().toUpperCase();
+      }
+
+      return ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: children.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return children[index];
+          });
+    }
+    return Container();
   }
 }
 
@@ -239,6 +264,22 @@ class MemberTile extends StatelessWidget {
             CircleAvatar(
               backgroundColor: listProfileColor[memberProfileColor.toInt()],
               radius: sidebarSize,
+              child: Container(
+                child: Text(
+                  memberName.split(' ').length >= 2
+                      ? memberName.split(' ')[0][0].toUpperCase() +
+                      memberName
+                          .split(' ')[
+                      memberName.split(' ').length - 1][0]
+                          .toUpperCase()
+                      : memberName[0].toUpperCase(),
+                  style: GoogleFonts.montserrat(
+                      fontSize:
+                      memberName.split(' ').length >= 2 ? 14 : 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
             Container(
               padding: EdgeInsets.only(left: sidebarSize*0.9),

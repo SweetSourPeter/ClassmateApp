@@ -870,72 +870,134 @@ class _ChatScreenState extends State<ChatScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: _height*0.095,
+                                  height: _height*0.12,
                                   width: _width*0.16,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/camera.png',
-                                      ),
-                                      onPressed: () {
-                                        _pickImage(
-                                            ImageSource.camera,
-                                            currentUser.email,
-                                            context,
-                                            currentUser);
-                                      }),
-                                ),
-                                Container(
-                                  height: _height*0.095,
-                                  width: _width*0.16,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/photo_library.png',
-                                      ),
-                                      onPressed: () => _pickImage(
-                                          ImageSource.gallery,
-                                          currentUser.email,
-                                          context,
-                                          currentUser)),
-                                ),
-                                Container(
-                                  height: _height*0.095,
-                                  width: _width*0.16,
-                                  child: IconButton(
-                                    icon: Icon(
-                                        Icons.phone,
-                                        // size: 26,
-                                        color: Color(0xffFF7E40)
-                                    ),
-                                    // iconSize: 10.0,
-                                    onPressed: () {
-                                      showCupertinoDialog(
-                                        context: context,
-                                        builder: (_) => CupertinoAlertDialog(
-                                          content: Text('Join the call?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                                              child: const Text('Cancel'),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width*0.13,
+                                        height:_width*0.13,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/camera.png',
                                             ),
-                                            TextButton(
-                                              onPressed: () {
-                                                _joinMeeting();
-                                                Navigator.pop(context, 'Yes');
-                                              },
-                                              child: const Text('Yes'),
-                                            ),
-                                          ],
+                                            onPressed: () {
+                                              _pickImage(
+                                                  ImageSource.camera,
+                                                  currentUser.email,
+                                                  context,
+                                                  currentUser);
+                                            }),
+                                      ),
+                                      Text(
+                                        'Camera',
+                                        style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12
                                         ),
-                                        barrierDismissible: true
-                                      );
-                                    },
+                                      )
+                                    ],
                                   ),
                                 ),
                                 Container(
-                                  height: _height*0.095,
+                                  height: _height*0.12,
                                   width: _width*0.16,
-                                  color: Colors.white,
-                                )
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width*0.13,
+                                        height:_width*0.13,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/photo_library.png',
+                                            ),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.gallery,
+                                                currentUser.email,
+                                                context,
+                                                currentUser)),
+                                      ),
+                                      Text(
+                                        'Album',
+                                        style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: _height*0.12,
+                                  width: _width*0.16,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width*0.13,
+                                        height:_width*0.13,
+                                        child: IconButton(
+                                          icon: Image.asset(
+                                              'assets/images/video-call.png'),
+                                          // iconSize: 10.0,
+                                          onPressed: () {
+                                            showCupertinoDialog(
+                                              context: context,
+                                              builder: (_) => CupertinoAlertDialog(
+                                                content: Text(
+                                                  'Join the call?',
+                                                  style: GoogleFonts.montserrat(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                    child: Text(
+                                                      'Cancel',
+                                                      style: GoogleFonts.montserrat(
+                                                          fontWeight: FontWeight.w400,
+                                                          fontSize: 16
+                                                      )
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      _joinMeeting();
+                                                      Navigator.pop(context, 'Yes');
+                                                    },
+                                                    child: Text(
+                                                      'Yes',
+                                                      style: GoogleFonts.montserrat(
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 16
+                                                    ),
+                                                  )),
+                                                ],
+                                              ),
+                                              barrierDismissible: true
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      Text(
+                                        'Call',
+                                        style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                // Container(
+                                //   height: _height*0.095,
+                                //   width: _width*0.16,
+                                //   color: Colors.white,
+                                // )
                               ],
                             ),
                           ),

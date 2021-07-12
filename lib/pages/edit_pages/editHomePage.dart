@@ -16,7 +16,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
-import 'package:app_test/pages/my_pages/notification_page.dart';
+// import 'package:app_test/pages/my_pages/notification_page.dart';
 
 class EditHomePage extends StatefulWidget {
   @override
@@ -263,27 +263,27 @@ class _EditHomePageState extends State<EditHomePage> {
                             thickness: 1,
                             color: dividerColor,
                           ),
-                          ButtonLink(
-                            text: "Notification",
-                            editText: '',
-                            textSize: 14,
-                            height: (menuContainerHeight) / 8,
-                            user: userdata,
-                            isEdit: true,
-                            onTap: () {
-                              // requestNotificationPermission();
-                              showBottomPopSheet(
-                                context,
-                                NotificationPage(),
-                              );
-                              setState(() {});
-                            },
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
+                          // ButtonLink(
+                          //   text: "Notification",
+                          //   editText: '',
+                          //   textSize: 14,
+                          //   height: (menuContainerHeight) / 8,
+                          //   user: userdata,
+                          //   isEdit: true,
+                          //   onTap: () {
+                          //     // requestNotificationPermission();
+                          //     showBottomPopSheet(
+                          //       context,
+                          //       NotificationPage(),
+                          //     );
+                          //     setState(() {});
+                          //   },
+                          // ),
+                          // Divider(
+                          //   height: 0,
+                          //   thickness: 1,
+                          //   color: dividerColor,
+                          // ),
                           Expanded(
                             child: Container(),
                           ),
