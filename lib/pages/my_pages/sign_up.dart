@@ -81,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
           .then((val) {
         // Navigator.pushReplacement(
         //     context, MaterialPageRoute(builder: (context) => StartPage()));
-        authMethods.sendVerifyEmail();
+        //authMethods.sendVerifyEmail();
         //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyScreen()));
 
         print('auth method finish');

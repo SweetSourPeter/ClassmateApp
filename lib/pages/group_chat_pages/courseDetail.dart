@@ -38,7 +38,7 @@ class _CourseDetailState extends State<CourseDetail> {
   String courseTerm;
   String adminName;
   String adminId;
-  List<List<dynamic>> members;
+  List<dynamic> members;
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
   @override
@@ -68,6 +68,10 @@ class _CourseDetailState extends State<CourseDetail> {
       });
     });
 
+    // if (adminName == null){
+    //   databaseMethods.createEmptyAdminNameId(widget.courseId);
+    // }
+
     super.initState();
   }
 
@@ -79,7 +83,6 @@ class _CourseDetailState extends State<CourseDetail> {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final courseProvider = Provider.of<CourseProvider>(context);
     final course = Provider.of<List<CourseInfo>>(context);
-    String myId = currentUser.userID;
 
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
@@ -408,7 +411,8 @@ class _CourseDetailState extends State<CourseDetail> {
                           ),
                         ),
 
-                        if (myId == adminId) Visibility(
+                        // if (currentUser.userID != adminId)
+                          Visibility(
                           visible: true,
                           child: Container(
                               margin: EdgeInsets.only(top: 10),
@@ -436,12 +440,11 @@ class _CourseDetailState extends State<CourseDetail> {
                                             ),
                                           ),
 
-                                          Padding(
-                                              padding:
-                                              const EdgeInsets.only(right: 30.0),
-                                              child: Text(adminName)
-                                          ),
-
+                                          // Padding(
+                                          //     padding:
+                                          //     const EdgeInsets.only(right: 30.0),
+                                          //     child: Text(adminName)
+                                          // ),
                                           Padding(
                                             padding:
                                             const EdgeInsets.only(right: 21.0),
@@ -467,8 +470,6 @@ class _CourseDetailState extends State<CourseDetail> {
                                                 ),
                                               ],
                                               child: ChooseGroupLeader(
-                                                adminId: adminId,
-                                                adminName: adminName,
                                                 groupMembers: members,
                                                 courseId: widget.courseId,
                                                 myEmail: widget.myEmail,
