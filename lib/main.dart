@@ -89,6 +89,7 @@ class MyApp extends StatelessWidget {
             create: (context) => UserTagsProvider()), //tag Provider
       ],
       child: MaterialApp(
+        title: "Meechu",
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           highlightColor: themeOrange, // color for scroll bar

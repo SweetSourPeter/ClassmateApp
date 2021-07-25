@@ -271,7 +271,7 @@ class _SignInState extends State<SignIn> {
           body: isLoading
               ? Container(child: Center(child: CircularProgressIndicator()))
               : Scaffold(
-            resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: false,
                   backgroundColor: themeOrange,
                   body: SingleChildScrollView(
                     child: Column(

@@ -7,6 +7,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/modals.dart';
 
 class SeatNotifyDashboard extends StatefulWidget {
@@ -36,6 +37,14 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
     Stream<List<Map<String, dynamic>>> data =
         databaseMehods.getUserReminderLists(widget.userID);
     double modal_height = MediaQuery.of(context).size.height - 60;
+    _toastInfo(String info) {
+      Fluttertoast.showToast(
+        msg: info,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIosWeb: 3,
+        gravity: ToastGravity.CENTER,
+      );
+    }
 
     return Container(
         decoration: BoxDecoration(
@@ -190,15 +199,16 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                     color: themeOrange,
                   ),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SeatsNotification(
-                                userID: widget.userID,
-                                userSchool: widget.userSchool,
-                                userEmail: widget.userEmail,
-                              )),
-                    );
+                    _toastInfo('This feature is only available in Mobile App');
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => SeatsNotification(
+                    //             userID: widget.userID,
+                    //             userSchool: widget.userSchool,
+                    //             userEmail: widget.userEmail,
+                    //           )),
+                    // );
                   },
                 )
               ],

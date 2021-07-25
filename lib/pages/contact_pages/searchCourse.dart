@@ -421,7 +421,7 @@ class _SearchCourseState extends State<SearchCourse> {
     double _width = getRealWidth(MediaQuery.of(context).size.width);
     double _height = MediaQuery.of(context).size.height;
     final userdata = Provider.of<UserData>(context, listen: false);
-
+    final GlobalKey _textKey = new GlobalKey();
     print('SearchList create');
     return searchBegain && searchSnapshot.docs.isNotEmpty
         ? Padding(
@@ -547,13 +547,14 @@ class _SearchCourseState extends State<SearchCourse> {
                           ],
                         )),
                     Container(
-                        height: _width * 0.4,
-                        width: _width * 0.4,
+                        height: _height * 0.6 * 0.25 * 0.9,
+                        width: _height * 0.6 * 0.25 * 0.9,
                         child: FittedBox(
                           child: Image.asset('assets/icon/failToFind.png'),
                           fit: BoxFit.fill,
                         )),
                     RichText(
+                      key: _textKey,
                       text: TextSpan(
                         style: TextStyle(color: Colors.grey, fontSize: 15.0),
                         children: <TextSpan>[

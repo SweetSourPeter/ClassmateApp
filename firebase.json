@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "meechu-flutter",
+    "site": "nacc-app",
     "public": "build/web",
     "ignore": [
       "firebase.json",

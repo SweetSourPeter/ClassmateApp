@@ -21,7 +21,7 @@ class NavPage extends StatelessWidget {
           return DesktopNavPage();
         } else if (constraints.maxWidth > 800 && constraints.maxWidth < 1200) {
           return DesktopNavPage();
-        } else if (constraints.maxWidth > 360){
+        } else if (constraints.maxWidth > 360) {
           return MobileNavPage();
         } else {
           return MobileSmallNavPage();
@@ -111,7 +111,7 @@ class DesktopNavPage extends StatelessWidget {
                     },
                     // onPressed: () => Wrapper(false, false, "0"),
                     child: AutoSizeText(
-                      "Open Meechu in Browser",
+                      "Open Meechu in Browser(Beta)",
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                             color: themeOrange, fontWeight: FontWeight.bold),
@@ -141,8 +141,7 @@ class DesktopNavPage extends StatelessWidget {
                         //   ),
                         // ),
                       ),
-                    ]
-                    ),
+                    ]),
               ),
             ],
           )),
@@ -242,8 +241,7 @@ class MobileNavPage extends StatelessWidget {
                         //   ),
                         // ),
                       ),
-                    ]
-                ),
+                    ]),
               ),
             ],
           )),
@@ -298,7 +296,7 @@ class MobileSmallNavPage extends StatelessWidget {
                 ],
               ),
               Container(
-                child: Column(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(3, (index) {
                     return GestureDetector(
@@ -306,8 +304,8 @@ class MobileSmallNavPage extends StatelessWidget {
                         _scrollToIndex(index);
                       },
                       child: Container(
+                        margin: EdgeInsets.all(6),
                         child: AutoSizeText(
-
                           list[index],
                           style: GoogleFonts.openSans(
                             textStyle: TextStyle(
@@ -335,8 +333,7 @@ class MobileSmallNavPage extends StatelessWidget {
                       SingleChildScrollView(
                         child: SupportLanding(),
                       ),
-                    ]
-                ),
+                    ]),
               ),
             ],
           )),

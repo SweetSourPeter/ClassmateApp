@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "nacc-app"
+    "default": "nacc-app",
+    "staging": "nacc-app"
   }
 }

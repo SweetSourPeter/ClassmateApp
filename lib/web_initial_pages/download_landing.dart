@@ -1,4 +1,5 @@
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/services/wrapper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +37,7 @@ class DownloadLanding extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 68.0),
               child: AutoSizeText(
-                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
+                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu makes learning easier for you!",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16.0, color: Colors.white),
               ),
@@ -83,7 +84,6 @@ class DownloadLanding extends StatelessWidget {
           ],
         ),
       ),
-
       Padding(
         padding: EdgeInsets.only(bottom: (96 / 1920 * width)),
         child: Image.asset(
@@ -99,32 +99,28 @@ class DownloadLanding extends StatelessWidget {
     return <Widget>[
       Container(
         width: width,
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+        padding: EdgeInsets.fromLTRB(0, 45, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
               width: width,
-              child: Expanded(
-                child: AutoSizeText(
-                  "Your Classmate Finder",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+              child: AutoSizeText(
+                "Your Classmate Finder",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 45.0),
+              padding: const EdgeInsets.only(top: 45.0, bottom: 20),
               child: AutoSizeText(
-                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
+                "Meet your classmates online, study together with others. \n Meechu make learning easier for you!",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 17.0, color: Colors.white),
+                style: TextStyle(fontSize: 14.0, color: Colors.white),
               ),
             ),
             Row(
@@ -165,15 +161,18 @@ class DownloadLanding extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
       Padding(
-        padding: EdgeInsets.only(bottom: (80)),
-        child: Image.asset(
-          'assets/webImage/web_intro.png',
+        padding: EdgeInsets.only(bottom: (0)),
+        child: Container(
           width: width,
+          child: Image.asset(
+            'assets/webImage/web_intro.png',
+            width: width,
+          ),
         ),
       ),
     ];
@@ -184,32 +183,28 @@ class DownloadLanding extends StatelessWidget {
     return <Widget>[
       Container(
         width: width,
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
               width: width,
-              child: Expanded(
-                child: AutoSizeText(
-                  "Your Classmate Finder",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+              child: AutoSizeText(
+                "Your Classmate Finder",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 45.0),
+              padding: const EdgeInsets.symmetric(vertical: 25.0),
               child: AutoSizeText(
-                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
+                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu makes learning easier for you!",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 17.0, color: Colors.white),
+                style: TextStyle(fontSize: 10.0, color: Colors.white),
               ),
             ),
             Column(
@@ -234,7 +229,7 @@ class DownloadLanding extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: MaterialButton(
                     padding: EdgeInsets.symmetric(
                         vertical: 22, horizontal: 0.05 * width),
@@ -257,7 +252,7 @@ class DownloadLanding extends StatelessWidget {
         ),
       ),
       Padding(
-        padding: EdgeInsets.only(bottom: (80)),
+        padding: EdgeInsets.only(bottom: (0)),
         child: Image.asset(
           'assets/webImage/web_intro.png',
           width: width,
@@ -265,7 +260,6 @@ class DownloadLanding extends StatelessWidget {
       ),
     ];
   }
-
 
   @override
   Widget build(BuildContext context) {

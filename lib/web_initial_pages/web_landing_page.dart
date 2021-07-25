@@ -35,7 +35,7 @@ class LandingPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 68.0),
               child: AutoSizeText(
-                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
+                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu makes learning easier for you!",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16.0, color: Colors.white),
               ),
@@ -357,7 +357,7 @@ class LandingPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 45.0),
               child: AutoSizeText(
-                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu make learning easier for you!",
+                "Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu makes learning easier for you!",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12.0, color: Colors.white),
               ),
