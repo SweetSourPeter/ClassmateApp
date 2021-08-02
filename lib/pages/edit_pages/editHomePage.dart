@@ -302,34 +302,6 @@ class _EditHomePageState extends State<EditHomePage> {
                           //   thickness: 1,
                           //   color: dividerColor,
                           // ),
-                          //
-                          // ButtonLink(
-                          //   text: "Email Status",
-                          //   textSize: 14,
-                          //   height: (menuContainerHeight) / 8,
-                          //   isEdit: true,
-                          //   editText: emailVerifiedStatus(),
-                          //   onTap: () {
-                          //     if (emailVerifiedStatus() == 'Verified'){
-                          //       return null;
-                          //     }
-                          //     showBottomPopSheet(
-                          //         context,
-                          //         EmailResendPage(
-                          //           pageController:
-                          //           PageController(initialPage: 0),
-                          //           isEdit: true,
-                          //           valueChanged: (index) => {},
-                          //         ));
-                          //     setState(() {});
-                          //   },
-                          // ),
-                          // Divider(
-                          //   height: 0,
-                          //   thickness: 1,
-                          //   color: dividerColor,
-                          // ),
-
                           Expanded(
                             child: Container(),
                           ),
