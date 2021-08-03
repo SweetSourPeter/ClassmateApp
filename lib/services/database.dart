@@ -106,6 +106,18 @@ class DatabaseMethods {
     // return query.docs.first.id;
   }
 
+  // getUsersByUsernameInCourse(String username) async {
+  //   return FirebaseFirestore.instance
+  //       .collection('users')
+  //       .where(
+  //         "userName",
+  //         isGreaterThanOrEqualTo: username,
+  //         isLessThan: username.substring(0, username.length - 1) +
+  //         String.fromCharCode(username.codeUnitAt((username.length - 1)) + 1),
+  //       )
+  //       .get();
+  // }
+
   getUsersByEmail(String email) async {
     return await FirebaseFirestore.instance
         .collection("users")
@@ -497,6 +509,34 @@ class DatabaseMethods {
         .get();
   }
 
+  // createEmptyAdminNameId(String courseId) async {
+  //
+  //   DocumentReference docRef =
+  //   FirebaseFirestore.instance.collection('courses').doc(courseId);
+  //   docRef.update({'adminName':''});
+  // }
+  //
+  // updateAdminName(String courseId, String adminName) async {
+  //   print(adminName);
+  //   DocumentReference docRef =
+  //   FirebaseFirestore.instance.collection('courses').doc(courseId);
+  //   docRef.update({
+  //     'AdminName': adminName,
+  //   }).catchError((e) {
+  //     print(e.toString());
+  //   });
+  // }
+
+  updateAdminId(String courseId, String adminId) async {
+    DocumentReference docRef =
+    FirebaseFirestore.instance.collection('courses').doc(courseId);
+    docRef.update({
+      'adminId': adminId,
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
   getNumberOfMembersInCourse(String courseId) async {
     return FirebaseFirestore.instance
         .collection('courses')
@@ -518,26 +558,46 @@ class DatabaseMethods {
   }
 
   getInfoOfMembersInCourse(String courseId) async {
-    List<List<dynamic>> members = [];
+    // List<List<dynamic>> members = [];
+    // await FirebaseFirestore.instance
+    //     .collection('courses')
+    //     .doc(courseId)
+    //     .collection('users')
+    //     .get()
+    //     .then((value) async {
+    //   for (var i = 0; i < value.docs.length; i++) {
+    //     final tmpUserId = value.docs[i].data()['userID'];
+    //     await FirebaseFirestore.instance
+    //         .collection('users')
+    //         .doc(tmpUserId)
+    //         .get()
+    //         .then((value) {
+    //       final userName = value.data()['userName'];
+    //       final profileColor = value.data()['profileColor'].toDouble();
+    //       List<dynamic> userInfo = [userName, tmpUserId, profileColor];
+    //       members.add(userInfo);
+    //     });
+    //   }
+    // });
+    List<String> listOfUserIdInCourse = [];
+    await getUserIdOfOtherMembersInCourse(courseId).then((value) {
+      listOfUserIdInCourse = value;
+    });
+
+    List<dynamic> members = [];
     await FirebaseFirestore.instance
-        .collection('courses')
-        .doc(courseId)
         .collection('users')
         .get()
-        .then((value) async {
-      for (var i = 0; i < value.docs.length; i++) {
-        final tmpUserId = value.docs[i].data()['userID'];
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(tmpUserId)
-            .get()
-            .then((value) {
-          final userName = value.data()['userName'];
-          final profileColor = value.data()['profileColor'].toDouble();
+        .then((value) {
+      value.docs.forEach((element) {
+        if (listOfUserIdInCourse.contains(element.data()['UserID'])) {
+          final userName = element.data()['userName'];
+          final tmpUserId = element.data()['UserID'];
+          final profileColor = element.data()['profileColor'].toDouble();
           List<dynamic> userInfo = [userName, tmpUserId, profileColor];
           members.add(userInfo);
-        });
-      }
+        }
+      });
     });
 
     members.sort((a, b) => a[0].toString().toUpperCase().compareTo(b[0].toString().toUpperCase()));
@@ -570,6 +630,7 @@ class DatabaseMethods {
         });
       }
     }
+
     return listOfUnread;
   }
 
@@ -587,6 +648,55 @@ class DatabaseMethods {
     });
 
     return listOfUserId;
+  }
+
+  getUsersByUsernameInCourse(String username, String courseId) async {
+    List<String> listOfUserIdInCourse = [];
+    await getUserIdOfOtherMembersInCourse(courseId).then((value) {
+      listOfUserIdInCourse = value;
+    });
+
+    List<dynamic> foundUser = [];
+    //print(listOfUserId);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where(
+          "userName",
+          isGreaterThanOrEqualTo: username,
+          isLessThan: username.substring(0, username.length - 1) +
+              String.fromCharCode(username.codeUnitAt((username.length - 1)) + 1),
+        )
+        .get()
+        .then((value) {
+          value.docs.forEach((element) {
+            if (listOfUserIdInCourse.contains(element.data()['UserID'])) {
+              final userName = element.data()['userName'];
+              final userId = element.data()['UserID'];
+              final profileColor = element.data()['profileColor'].toInt();
+              List<dynamic> userInfo = [userName, userId, profileColor];
+              foundUser.add(userInfo);
+            }
+          });
+        });
+
+    return foundUser;
+    // List<String> listOfUserId = [];
+    // await FirebaseFirestore.instance
+    //     .collection('users')
+    //     .where(
+    //       "userName",
+    //       isGreaterThanOrEqualTo: username,
+    //       isLessThan: username.substring(0, username.length - 1) +
+    //           String.fromCharCode(username.codeUnitAt((username.length - 1)) + 1),
+    //     )
+    //     .get()
+    //     .then((value) {
+    //       value.docs.forEach((element) {
+    //         listOfUserId.add(element.data()['UserID']);
+    //   });
+    // });
+    // // print("here");
+    // print(listOfUserId);
   }
 
   getUserInfoInChatRoom(String chatRoomId) async {

@@ -13,6 +13,7 @@ import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
 import 'package:flutter/services.dart';
+import './Choose_GroupLeader.dart';
 
 import 'chooseGroupLeader.dart';
 import 'groupNotice.dart';
@@ -35,7 +36,7 @@ class CourseDetail extends StatefulWidget {
 }
 
 class _CourseDetailState extends State<CourseDetail> {
-  bool isSwitched = false;
+  //bool isSwitched = false;
   int numberOfMembers = 0;
   String courseName;
   String courseSection;
@@ -91,6 +92,7 @@ class _CourseDetailState extends State<CourseDetail> {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final courseProvider = Provider.of<CourseProvider>(context);
     final course = Provider.of<List<CourseInfo>>(context);
+
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         if (memberInfo == null) {
@@ -258,150 +260,151 @@ class _CourseDetailState extends State<CourseDetail> {
                     Container(
                       color: riceColor,
                       child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(
-                                right: 20, left: 20, top: 20, bottom: 30),
-                            margin: EdgeInsets.only(top: 25),
-                            color: Colors.white,
-                            child: Column(children: <Widget>[
-                              Container(
-                                height: 20,
-                                //color: Colors.black,
-                                child: Stack(children: <Widget>[
-                                  Positioned(
-                                    child: Text('Group Members',
-                                        style: GoogleFonts.montserrat(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14)),
-                                    top: 0,
-                                    left: 0,
-                                  ),
-                                  Positioned(
-                                      child: GestureDetector(
-                                        child: Row(
-                                          // Replace with a Row for horizontal icon + text
-                                          children: <Widget>[
-                                            Text(
-                                                numberOfMembers > 1
-                                                    ? numberOfMembers.toString() +
-                                                        ' ' +
-                                                        'people'
-                                                    : numberOfMembers.toString() +
-                                                        ' ' +
-                                                        'person',
-                                                style: GoogleFonts.openSans(
-                                                  color: Colors.black38,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.normal,
-                                                )),
-                                            // Container(
-                                            //   margin: EdgeInsets.only(top: 3),
-                                            //   child: Icon(
-                                            //     Icons.navigate_next,
-                                            //     color: Colors.black38,
-                                            //   ),
-                                            // )
-                                          ],
-                                        ),
-                                      ),
-                                      top: 0,
-                                      right: 0),
-                                ]),
-                              ),
-                              Container(
-                                //color: Colors.green,
-                                height: numberOfMembers <= 5
-                                    ? (gridWidth * 2 / gridRatio) + 10 + 20
-                                    : numberOfMembers <= 10
-                                        ? (gridWidth * 2 / gridRatio) * 2 +
-                                            10 +
-                                            30
-                                        : (gridWidth * 2 / gridRatio) * 3 +
-                                            10 +
-                                            40,
-                                padding: EdgeInsets.only(top: 30),
-                                child: Scrollbar(
-                                  thickness: 4,
-                                  child: GridView.count(
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    crossAxisSpacing: 15,
-                                    mainAxisSpacing: 10,
-                                    crossAxisCount: 5,
-                                    childAspectRatio: gridRatio,
-                                    children: _renderMemberInfo(gridWidth - 5),
+
+                          children: <Widget>[
+                      Container(
+                      padding: EdgeInsets.only(
+                          right: 20, left: 20, top: 20, bottom: 30),
+                      margin: EdgeInsets.only(top: 25),
+                      color: Colors.white,
+                      child: Column(children: <Widget>[
+                        Container(
+                          height: 20,
+                          //color: Colors.black,
+                          child: Stack(children: <Widget>[
+                            Positioned(
+                              child: Text('Group Members',
+                                  style: GoogleFonts.montserrat(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14)),
+                              top: 0,
+                              left: 0,
+                            ),
+                            Positioned(
+                                child: GestureDetector(
+                                  child: Row(
+                                    // Replace with a Row for horizontal icon + text
+                                    children: <Widget>[
+                                      Text(
+                                          numberOfMembers > 1
+                                              ? numberOfMembers.toString() +
+                                              ' ' +
+                                              'people'
+                                              : numberOfMembers.toString() +
+                                              ' ' +
+                                              'person',
+                                          style: GoogleFonts.openSans(
+                                            color: Colors.black38,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.normal,
+                                          )),
+                                      // Container(
+                                      //   margin: EdgeInsets.only(top: 3),
+                                      //   child: Icon(
+                                      //     Icons.navigate_next,
+                                      //     color: Colors.black38,
+                                      //   ),
+                                      // )
+                                    ],
                                   ),
                                 ),
-                              )
-                            ]),
+                                top: 0,
+                                right: 0),
+                          ]),
+                        ),
+                        Container(
+                          //color: Colors.green,
+                          height: numberOfMembers <= 5
+                              ? (gridWidth * 2 / gridRatio) + 10 + 20
+                              : numberOfMembers <= 10
+                              ? (gridWidth * 2 / gridRatio) * 2 +
+                              10 +
+                              30
+                              : (gridWidth * 2 / gridRatio) * 3 +
+                              10 +
+                              40,
+                          padding: EdgeInsets.only(top: 30),
+                          child: Scrollbar(
+                            thickness: 4,
+                            child: GridView.count(
+                              primary: false,
+                              shrinkWrap: true,
+                              crossAxisSpacing: 15,
+                              mainAxisSpacing: 10,
+                              crossAxisCount: 5,
+                              childAspectRatio: gridRatio,
+                              children: _renderMemberInfo(gridWidth - 5),
+                            ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 25),
-                            width: double.infinity,
-                            child: Column(
-                              children: [
-                                // Divider(
-                                //   height: 0,
-                                //   thickness: 1,
-                                // ),
-                                // ButtonLink(
-                                //   text: "Media, Links, and Docs",
-                                //   iconData: Icons.folder,
-                                //   textSize: 18,
-                                //   height: 50,
-                                // ),
-                                GestureDetector(
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    height: _height * 0.07,
-                                    width: _width,
-                                    color: Colors.white,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 21.0),
-                                          child: Text(
-                                            "Chat Search",
-                                            style: GoogleFonts.montserrat(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 21.0),
-                                          child: Image.asset(
-                                              'assets/images/arrow-forward.png',
-                                              height: 9.02,
-                                              width: 4.86,
-                                              color: const Color(0xFF949494)),
-                                        ),
-                                      ],
-                                    ),
+                        )
+                      ]),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 25),
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                      // Divider(
+                      //   height: 0,
+                      //   thickness: 1,
+                      // ),
+                      // ButtonLink(
+                      //   text: "Media, Links, and Docs",
+                      //   iconData: Icons.folder,
+                      //   textSize: 18,
+                      //   height: 50,
+                      // ),
+                      GestureDetector(
+                      child: Container(
+                      alignment: Alignment.centerLeft,
+                        height: _height * 0.07,
+                        width: _width,
+                        color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 21.0),
+                              child: Text(
+                                "Chat Search",
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(right: 21.0),
+                              child: Image.asset(
+                                  'assets/images/arrow-forward.png',
+                                  height: 9.02,
+                                  width: 4.86,
+                                  color: const Color(0xFF949494)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                              return MultiProvider(
+                                providers: [
+                                  Provider<UserData>.value(
+                                    value: currentUser,
                                   ),
-                                  onTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return MultiProvider(
-                                        providers: [
-                                          Provider<UserData>.value(
-                                            value: currentUser,
-                                          ),
-                                          Provider<List<CourseInfo>>.value(
-                                              value: course)
-                                        ],
-                                        child: SearchGroupChat(
-                                          courseId: widget.courseId,
-                                          myEmail: widget.myEmail,
-                                          myName: widget.myName,
-                                        ),
-                                      );
-                                    }));
-                                  },
+                                  Provider<List<CourseInfo>>.value(
+                                      value: course)
+                                ],
+                                child: SearchGroupChat(
+                                  courseId: widget.courseId,
+                                  myEmail: widget.myEmail,
+                                  myName: widget.myName,
+                                ),
+                              );
+                            }));
+                      },
                                 ),
                                 // ButtonLink(
                                 //     text: "Mute",

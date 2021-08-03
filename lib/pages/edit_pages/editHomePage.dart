@@ -18,6 +18,10 @@ import 'package:provider/provider.dart';
 import '../../models/constant.dart';
 // import 'package:app_test/pages/my_pages/notification_page.dart';
 
+import 'package:app_test/pages/my_pages/sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app_test/pages/initialPage/emailResend_page.dart';
+
 class EditHomePage extends StatefulWidget {
   @override
   _EditHomePageState createState() => _EditHomePageState();
@@ -35,6 +39,20 @@ class _EditHomePageState extends State<EditHomePage> {
   void initState() {
     super.initState();
     nickName = 'loading';
+  }
+
+  String emailVerifiedStatus() {
+    var emailStatus;
+    if (FirebaseAuth.instance.currentUser != null){
+      if (FirebaseAuth.instance.currentUser.emailVerified) {
+        emailStatus = 'Verified';
+        return emailStatus;
+      }else{
+        emailStatus = 'Unverified';
+        return emailStatus;
+      }
+    }
+    return '';        //Bug may exist
   }
 
   @override
@@ -156,14 +174,14 @@ class _EditHomePageState extends State<EditHomePage> {
                                   context,
                                   SecondPage(
                                     pageController:
-                                        PageController(initialPage: 0),
+                                    PageController(initialPage: 0),
                                     isEdit: true,
                                     valueChanged: (index) => {},
                                   )
-                                  // EditNameModel(
-                                  //     userName: nickName,
-                                  //     userId: userdata.userID)
-                                  );
+                                // EditNameModel(
+                                //     userName: nickName,
+                                //     userId: userdata.userID)
+                              );
                               setState(() {});
                             },
                           ),
@@ -184,28 +202,28 @@ class _EditHomePageState extends State<EditHomePage> {
                                   context,
                                   TagSelecting(
                                       currentTags: (userdata.userTags.college ==
-                                                  null
-                                              ? []
+                                          null
+                                          ? []
                                               : userdata.userTags.college
-                                                  .cast<dynamic>()) +
-                                          (userdata.userTags.interest == null
-                                              ? []
+                                              .cast<dynamic>()) +
+                                      (userdata.userTags.interest == null
+                                      ? []
                                               : userdata.userTags.interest
-                                                  .cast<dynamic>()) +
-                                          (userdata.userTags.language == null
-                                              ? []
-                                              : userdata.userTags.language
-                                                  .cast<String>()) +
-                                          (userdata.userTags.strudyHabits ==
-                                                  null
-                                              ? []
-                                              : userdata.userTags.strudyHabits
-                                                  .cast<String>()),
-                                      buttonColor: listProfileColor[
-                                          userProfileColor.toInt()],
-                                      pageController:
-                                          PageController(initialPage: 0),
-                                      isEdit: true));
+                                          .cast<dynamic>()) +
+                                  (userdata.userTags.language == null
+                                  ? []
+                                          : userdata.userTags.language
+                                      .cast<String>()) +
+                              (userdata.userTags.strudyHabits ==
+                              null
+                              ? []
+                                  : userdata.userTags.strudyHabits
+                                  .cast<String>()),
+                              buttonColor: listProfileColor[
+                              userProfileColor.toInt()],
+                              pageController:
+                              PageController(initialPage: 0),
+                              isEdit: true));
                               //   setState(() {
                               //     print(userTagProvider.college);
                               //     tags = (userTagProvider.college == null
@@ -247,11 +265,11 @@ class _EditHomePageState extends State<EditHomePage> {
                               showBottomPopSheet(
                                 context,
                                 ThirdPage(
-                                    // buttonColor: Colors.amber,
+                                  // buttonColor: Colors.amber,
                                     userName: userdata.userName,
                                     initialIndex: userProfileColor.toInt(),
                                     pageController:
-                                        PageController(initialPage: 3),
+                                    PageController(initialPage: 3),
                                     isEdit: true,
                                     valueChanged: (index) => {}),
                               );
