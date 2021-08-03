@@ -246,120 +246,54 @@ class _CourseDetailState extends State<CourseDetail> {
                       ],
                     ),
                   ),
-                  Container(
-                    color: riceColor,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(
-                              right: 20, left: 20, top: 20, bottom: 30),
-                          margin: EdgeInsets.only(top: 10),
-                          color: Colors.white,
-                          child: Column(children: <Widget>[
-                            Container(
-                              height: 20,
-                              //color: Colors.black,
-                              child: Stack(children: <Widget>[
-                                Positioned(
-                                  child: Text('Group Members',
-                                      style: GoogleFonts.montserrat(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14)),
-                                  top: 0,
-                                  left: 0,
-                                ),
-                                Positioned(
-                                    child: GestureDetector(
-                                      child: Row(
-                                        // Replace with a Row for horizontal icon + text
-                                        children: <Widget>[
-                                          Text(
-                                              numberOfMembers > 1
-                                                  ? numberOfMembers.toString() +
-                                                      ' ' +
-                                                      'people'
-                                                  : numberOfMembers.toString() +
-                                                      ' ' +
-                                                      'person',
-                                              style: GoogleFonts.openSans(
-                                                color: Colors.black38,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.normal,
-                                              )),
-                                          // Container(
-                                          //   margin: EdgeInsets.only(top: 3),
-                                          //   child: Icon(
-                                          //     Icons.navigate_next,
-                                          //     color: Colors.black38,
-                                          //   ),
-                                          // )
-                                        ],
-                                      ),
-                                    ),
-                                    top: 0,
-                                    right: 0),
-                              ]),
-                            ),
-                            Container(
-                              //color: Colors.green,
-                              height: numberOfMembers <= 5
-                                  ? (gridWidth * 2 / gridRatio) + 10 + 20
-                                  : numberOfMembers <= 10
-                                      ? (gridWidth * 2 / gridRatio) * 2 +
-                                          10 +
-                                          30
-                                      : (gridWidth * 2 / gridRatio) * 3 +
-                                          10 +
-                                          40,
-                              padding: EdgeInsets.only(top: 30),
-                              child: Scrollbar(
-                                thickness: 4,
-                                child: GridView.count(
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  crossAxisSpacing: 15,
-                                  mainAxisSpacing: 10,
-                                  crossAxisCount: 5,
-                                  childAspectRatio: gridRatio,
-                                  children: _renderMemberInfo(gridWidth - 5),
-                                ),
-                              ),
-                            )
-                          ]),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          width: double.infinity,
-                          child: Column(
-                            children: [
-                              // Divider(
-                              //   height: 0,
-                              //   thickness: 1,
-                              // ),
-                              // ButtonLink(
-                              //   text: "Media, Links, and Docs",
-                              //   iconData: Icons.folder,
-                              //   textSize: 18,
-                              //   height: 50,
-                              // ),
-                              GestureDetector(
-                                child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  color: Colors.white,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 21.0),
-                                        child: Text(
-                                          "Chat Search",
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14,
-                                          ),
+            Container(
+              color: riceColor,
+              child: Column(
+                  children: <Widget>[
+              Container(
+              padding: EdgeInsets.only(
+                  right: 20, left: 20, top: 20, bottom: 30),
+              margin: EdgeInsets.only(top: 25),
+              color: Colors.white,
+              child: Column(children: <Widget>[
+                Container(
+                height: 20,
+                //color: Colors.black,
+                child: Stack(children: <Widget>[
+                Positioned(
+                child: Text('Group Members',
+                    style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14)),
+                top: 0,
+                left: 0,
+              ),
+              Positioned(
+                child: GestureDetector(
+                  child: Row(
+                    // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Text(
+                          numberOfMembers > 1
+                              ? numberOfMembers.toString() +
+                              ' ' +
+                              'people'
+                              : numberOfMembers.toString() +
+                              ' ' +
+                              'person',
+                          style: GoogleFonts.openSans(
+                            color: Colors.black38,
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                          )),
+                      // Container(
+                      //   margin: EdgeInsets.only(top: 3),
+                      //   child: Icon(
+                      //     Icons.navigate_next,
+                      //     color: Colors.black38,
+                      //   ),
+                      // )
+                    ],
                                         ),
                                       ),
                                       Padding(
@@ -385,71 +319,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                         Provider<List<CourseInfo>>.value(
                                             value: course)
                                       ],
-                                      child: SearchGroupChat(
-                                        courseId: widget.courseId,
-                                        myEmail: widget.myEmail,
-                                        myName: widget.myName,
-                                      ),
-                                    );
-                                  }));
-                                },
-                              ),
-                              // ButtonLink(
-                              //     text: "Mute",
-                              //     iconData: Icons.notifications_off,
-                              //     textSize: 18,
-                              //     height: 50,
-                              //     isSwitch: true),
-                              // Divider(
-                              //                             //   height: 0,
-                              //                             //   thickness: 1,
-                              //                             // )
-                            ],
-                          ),
-                        ),
 
-                        // if (currentUser.userID != adminId)
-                          Visibility(
-                          visible: true,
-                          child: Container(
-                              margin: EdgeInsets.only(top: 10),
-                              width: double.infinity,
-                              child: Column(
-                                children: [
-                                  GestureDetector(
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      height: 50,
-                                      width: MediaQuery.of(context).size.width,
-                                      color: Colors.white,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(left: 21.0),
-                                            child: Text(
-                                              "Administrator Transfer",
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-
-                                          // Padding(
-                                          //     padding:
-                                          //     const EdgeInsets.only(right: 30.0),
-                                          //     child: Text(adminName)
-                                          // ),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(right: 21.0),
-                                            child: Image.asset(
-                                                'assets/images/arrow-forward.png',
-                                                height: 9.02,
-                                                width: 4.86,
-                                                color: const Color(0xFF949494)),
                                           ),
                                         ],
                                       ),
