@@ -392,7 +392,6 @@ class _CourseDetailState extends State<CourseDetail> {
                               );
                             }));
                       },
-
                                 ),
                                 onTap: () {
                                   showDialog<void>(
