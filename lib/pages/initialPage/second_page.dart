@@ -24,7 +24,7 @@ class _SecondPageState extends State<SecondPage>
   DatabaseMethods databaseMethods = new DatabaseMethods();
   final formKey = GlobalKey<FormState>();
   TextEditingController nameTextEditingController = new TextEditingController();
-  String _nikname = '';
+  String _nickname = '';
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _SecondPageState extends State<SecondPage>
                 height: widget.isEdit ? _height * 0.9 * 0.016 : _height * 0.016,
               ),
               Text(
-                'Your profile picture dispalys the first letters of your nick name',
+                'Your profile picture displays the first letters of your nick name',
                 style: simpleTextStyle(Colors.white, 14),
                 textAlign: TextAlign.center,
               ),
@@ -75,7 +75,7 @@ class _SecondPageState extends State<SecondPage>
       height: widget.isEdit ? (_height * 0.9) : _height,
       color: widget.isEdit ? null : themeOrange,
       child: Padding(
-        padding: EdgeInsets.only(top: widget.isEdit ? (10) : 0),
+        padding: EdgeInsets.only(top: widget.isEdit ? (25) : 0),
         child: Form(
           key: formKey,
           child: Scaffold(
@@ -136,9 +136,9 @@ class _SecondPageState extends State<SecondPage>
                           return null;
                         }
                       },
-                      onChanged: (texto) {
+                      onChanged: (change) {
                         setState(() {
-                          _nikname = texto;
+                          _nickname = change;
                         });
                       },
                       cursorColor: Colors.white,
@@ -168,26 +168,26 @@ class _SecondPageState extends State<SecondPage>
                         highlightColor: Color(0xDA6D39),
                         highlightElevation: 0,
                         elevation: 0,
-                        color: (_nikname.isNotEmpty &&
+                        color: (_nickname.isNotEmpty &&
                                 formKey.currentState.validate())
                             ? Colors.white
                             : Color(0xFFFF9B6B).withOpacity(1),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)),
                         onPressed: () {
-                          if (_nikname.length > 0 &&
+                          if (_nickname.length > 0 &&
                               formKey.currentState.validate()) {
                             if (widget.isEdit) {
                               databaseMethods.updateUserName(
-                                  user.userID, _nikname);
+                                  user.userID, _nickname);
                               Navigator.pop(context);
                             } else {
                               widget.pageController.animateToPage(2,
                                   duration: Duration(milliseconds: 800),
                                   curve: Curves.easeInCubic);
                               databaseMethods.updateUserName(
-                                  user.userID, _nikname);
-                              widget.valueChanged(_nikname);
+                                  user.userID, _nickname);
+                              widget.valueChanged(_nickname);
                             }
 
                             print('username saved');
@@ -196,7 +196,7 @@ class _SecondPageState extends State<SecondPage>
                         child: Text(
                           'Continue',
                           style: simpleTextSansStyleBold(
-                              (_nikname.isNotEmpty)
+                              (_nickname.isNotEmpty)
                                   ? themeOrange
                                   : Colors.white,
                               16),

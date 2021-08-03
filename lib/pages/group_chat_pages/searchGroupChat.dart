@@ -39,6 +39,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final _height = MediaQuery.of(context).size.height;
+    final _width = MediaQuery.of(context).size.width;
 
     return SafeArea(
       child: Scaffold(
@@ -55,7 +57,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
               children: [
                 Container(
                   color: const Color(0xffFF712D),
-                  height: 73,
+                  height: _height*0.10,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
