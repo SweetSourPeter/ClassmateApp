@@ -245,7 +245,6 @@ class _CourseDetailState extends State<CourseDetail> {
                         ),
                       ],
                     ),
-
             Container(
               color: riceColor,
               child: Column(
