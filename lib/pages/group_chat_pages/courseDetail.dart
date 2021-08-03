@@ -306,73 +306,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                             color: const Color(0xFF949494)),
                                       ),
                                     ],
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return MultiProvider(
-                                      providers: [
-                                        Provider<UserData>.value(
-                                          value: currentUser,
-                                        ),
-                                        Provider<List<CourseInfo>>.value(
-                                            value: course)
-                                      ],
 
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      if (members == null){
-                                        return null;
-                                      }
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                            return MultiProvider(
-                                              providers: [
-                                                Provider<UserData>.value(
-                                                  value: currentUser,
-                                                ),
-                                              ],
-                                              child: ChooseGroupLeader(
-                                                groupMembers: members,
-                                                courseId: widget.courseId,
-                                                myEmail: widget.myEmail,
-                                                myName: widget.myName,
-                                              ),
-                                            );
-                                          }));
-                                    },
-                                  ),
-                                ],
-                              ),
-                          ),
-                        ),
-
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: Column(
-                            children: [
-                              // Divider(
-                              //   height: 0,
-                              //   thickness: 1,
-                              // ),
-                              GestureDetector(
-                                child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  color: Colors.white,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 21.0),
-                                    child: Text(
-                                      "Exit Group",
-                                      style: GoogleFonts.montserrat(
-                                          fontSize: 14,
-                                          color: Color(0xffFF7E40)),
-                                    ),
                                   ),
                                 ),
                                 onTap: () {
