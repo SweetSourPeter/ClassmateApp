@@ -50,23 +50,25 @@ class _CourseDetailState extends State<CourseDetail> {
         adminId = value.docs[0].data()['adminId'];
       });
     });
+
     databaseMethods.getUserDetailsByID(value.docs[0].data()['adminId']).then((info) {
       setState(() {
         adminName = info.userName;
       });
     });
   });
-    // databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
-    //   setState(() {
-    //     numberOfMembers = value.docs.length;
-    //   });
-    // });
 
-    // databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-    //   setState(() {
-    //     members = value;
-    //   });
-    // });
+  // databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+  //   setState(() {
+  //     numberOfMembers = value.docs.length;
+  //   });
+  // });
+
+  // databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+  //   setState(() {
+  //     members = value;
+  //   });
+  // });
 
     memberInfo = widget.members;
     numberOfMembers = memberInfo.length;
