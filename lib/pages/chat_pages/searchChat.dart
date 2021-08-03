@@ -39,7 +39,6 @@ class _SearchChatState extends State<SearchChat> {
 
   @override
   void initState() {
-    super.initState();
     databaseMethods.getChatMessages(widget.chatRoomId).then((value) {
       setState(() {
         chatMessageStream = value;
@@ -47,13 +46,12 @@ class _SearchChatState extends State<SearchChat> {
     });
 
     isSearching = false;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
-    final _height = MediaQuery.of(context).size.height;
-    final _width = MediaQuery.of(context).size.width;
 
     return SafeArea(
       child: Scaffold(
@@ -70,7 +68,7 @@ class _SearchChatState extends State<SearchChat> {
               children: [
                 Container(
                   color: const Color(0xffFF712D),
-                  height: _height*0.10,
+                  height: 73,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [

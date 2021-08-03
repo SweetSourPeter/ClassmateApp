@@ -74,7 +74,7 @@ class DatabaseMethods {
       userID: doc.data()[userID],
       userName: doc.data()['userName'],
       userImageUrl: doc.data()['userImageUrl'],
-      profileColor: doc.data()['profileColor'].toDouble(),
+      profileColor: doc.data()['profileColor'],
       // myChargeNumber: doc.data()['myChargeNumber'] ?? '',
       agreedToTerms: doc.data()['agreedToTerms'],
       invitedUserID: doc.data()['invitedUserID'],
@@ -461,20 +461,12 @@ class DatabaseMethods {
         .snapshots();
   }
 
-  getGroupChatMessages(String courseId) async {
+  getGroupChatMessages(String chatRoomId) async {
     return FirebaseFirestore.instance
         .collection('courses')
-        .doc(courseId)
+        .doc(chatRoomId)
         .collection('chats')
         .orderBy('time', descending: true)
-        .snapshots();
-  }
-
-  getGroupChatMembers(String courseId) async {
-    return FirebaseFirestore.instance
-        .collection('courses')
-        .doc(courseId)
-        .collection('users')
         .snapshots();
   }
 
@@ -599,8 +591,6 @@ class DatabaseMethods {
         }
       });
     });
-
-    members.sort((a, b) => a[0].toString().toUpperCase().compareTo(b[0].toString().toUpperCase()));
 
     return members;
   }
@@ -850,41 +840,6 @@ class DatabaseMethods {
     print(myCurrentChargeNumber + addValue);
     docRef.update({
       'myChargeNumber': (myCurrentChargeNumber + addValue),
-    }).catchError((e) {
-      print(e.toString());
-    });
-  }
-
-  getGroupNotice(String courseId) async {
-    Map<String, dynamic> ret = {
-      'groupNoticeText': 'Group notice not set yet!',
-      'noticeTime': 'date and time unavailable'
-    };
-    await FirebaseFirestore.instance
-        .collection('courses')
-        .doc(courseId)
-        .get()
-        .then((value) {
-            ret['groupNoticeText'] = value.data()['groupNoticeText'];
-            ret['noticeTime'] = value.data()['noticeTime'];
-        });
-    return ret;
-  }
-
-  setGroupNotice(String courseId, String groupNoticeText, int noticeTime) async {
-    FirebaseFirestore.instance.collection('courses').doc(courseId).update({
-      'groupNoticeText': groupNoticeText,
-      'noticeTime': noticeTime
-    }).catchError((e) {
-      print(e.toString());
-    });
-  }
-
-  updateAdminId(String courseId, String adminId) async {
-    DocumentReference docRef =
-    FirebaseFirestore.instance.collection('courses').doc(courseId);
-    docRef.update({
-      'adminId': adminId,
     }).catchError((e) {
       print(e.toString());
     });

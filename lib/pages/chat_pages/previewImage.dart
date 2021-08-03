@@ -74,10 +74,6 @@ class _PreviewImageState extends State<PreviewImage> {
 
   @override
   Widget build(BuildContext context) {
-    final _height = MediaQuery.of(context).size.height;
-    final _width = MediaQuery.of(context).size.width;
-    final sidebarSize = _width*0.05;
-
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pop();
@@ -89,22 +85,22 @@ class _PreviewImageState extends State<PreviewImage> {
           children: [
             SafeArea(
               child: Container(
-                height: _height*0.10,
+                height: 73,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: sidebarSize*0.55),
+                      padding: const EdgeInsets.only(left: 8),
                       child: Container(
+                        height: 40,
+                        width: 40,
                         child: IconButton(
                           icon: Image.asset(
                             'assets/images/arrow-back.png',
-                            height: 17.96,
-                            width: 10.26,
                           ),
                           // iconSize: 30.0,
-                          color: const Color(0xFFFF7E40),
+                          color: const Color(0xFFFFB811),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -130,7 +126,7 @@ class _PreviewImageState extends State<PreviewImage> {
               ),
             ),
             Container(
-              height: _height*0.10,
+              height: 73,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,

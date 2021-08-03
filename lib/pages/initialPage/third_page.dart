@@ -96,7 +96,7 @@ class _ThirdPageState extends State<ThirdPage>
         children: <Widget>[
           widget.isEdit
               ? Padding(
-                  padding: EdgeInsets.fromLTRB(10, 25, 8, 0),
+                  padding: EdgeInsets.fromLTRB(10, 10, 8, 0),
                   child: ClipRRect(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(35.0),
