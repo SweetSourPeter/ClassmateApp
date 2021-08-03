@@ -50,27 +50,26 @@ class _CourseDetailState extends State<CourseDetail> {
         adminId = value.docs[0].data()['adminId'];
       });
     });
-    print('here');
-    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+    databaseMethods.getUserDetailsByID(value.docs[0].data()['adminId']).then((info) {
       setState(() {
-        numberOfMembers = value.docs.length;
+        adminName = info.userName;
       });
     });
+  });
+    // databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+    //   setState(() {
+    //     numberOfMembers = value.docs.length;
+    //   });
+    // });
 
-    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-      // if (this.mounted) {
-      //   return;
-      // }
-      setState(() {
-        members = value;
-      });
-    });
+    // databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+    //   setState(() {
+    //     members = value;
+    //   });
+    // });
 
-    // if (adminName == null){
-    //   databaseMethods.createEmptyAdminNameId(widget.courseId);
-    // }
-
-    super.initState();
+    memberInfo = widget.members;
+    numberOfMembers = memberInfo.length;
   }
 
   @override
@@ -84,11 +83,10 @@ class _CourseDetailState extends State<CourseDetail> {
 
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
-        if (members == null) {
-          return PictureLoadingScreen(Colors.white);
+        if (memberInfo == null) {
+          return SimpleLoadingScreen(Colors.white);
         } else {
-          members.sort((a,b) => a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
-          final memberName = members[index][0];
+          final memberName = memberInfo[index][0];
 
           return Container(
             child: Column(
