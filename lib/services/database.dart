@@ -527,16 +527,6 @@ class DatabaseMethods {
   //   });
   // }
 
-  updateAdminId(String courseId, String adminId) async {
-    DocumentReference docRef =
-    FirebaseFirestore.instance.collection('courses').doc(courseId);
-    docRef.update({
-      'adminId': adminId,
-    }).catchError((e) {
-      print(e.toString());
-    });
-  }
-
   getNumberOfMembersInCourse(String courseId) async {
     return FirebaseFirestore.instance
         .collection('courses')

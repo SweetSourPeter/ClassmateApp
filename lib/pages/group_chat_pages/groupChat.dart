@@ -61,7 +61,7 @@ class _GroupChatState extends State<GroupChat> {
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
-  List<List<dynamic>> members = [];
+  List<dynamic> members = [];
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
