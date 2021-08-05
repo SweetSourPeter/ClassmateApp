@@ -14,6 +14,7 @@ class CourseInfo {
   int userNumbers;
   String imageUrl; //not used
   List subChats;
+  String adminId;
 
   CourseInfo({
     this.term,
@@ -25,6 +26,7 @@ class CourseInfo {
     this.courseID,
     this.userNumbers,
     this.imageUrl,
+    this.adminId
   });
 
   Map<String, dynamic> toMapIntoUsers() {
@@ -46,6 +48,7 @@ class CourseInfo {
       'section': section,
       'courseID': courseID,
       'userNumbers': userNumbers,
+      'adminId': adminId,
       //       school: user.school,
       // term: term,
       // myCourseCollge: myCourseCollege,
@@ -66,7 +69,9 @@ class CourseInfo {
         myCourseName = firestore['myCourseName'],
         section = firestore['section'],
         courseID = firestore['courseID'],
+        adminId = firestore['adminId'],
         userNumbers = firestore['userNumbers'] ?? null;
+
 }
 
 //TEMP LIST FOR THE BUILDER

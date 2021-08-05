@@ -94,6 +94,7 @@ class CourseProvider with ChangeNotifier {
       section: courseSection.toUpperCase(),
       userNumbers: 1,
       courseID: courseId,
+      adminId: userId
     );
 
     databaseMethods.saveCourseToCourse(newCourseToCourse);
