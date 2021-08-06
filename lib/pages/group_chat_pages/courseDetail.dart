@@ -45,6 +45,7 @@ class _CourseDetailState extends State<CourseDetail> {
   String adminId;
   String adminName;
   List<dynamic> memberInfo;
+  String reloadAdminId;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _CourseDetailState extends State<CourseDetail> {
         adminId = value.docs[0].data()['adminId'];
       });
 
+      // Unused in this class
       databaseMethods.getUserDetailsByID(value.docs[0].data()['adminId']).then((info) {
         setState(() {
           adminName = info.userName;
@@ -68,6 +70,7 @@ class _CourseDetailState extends State<CourseDetail> {
     memberInfo = widget.members;
     numberOfMembers = memberInfo.length;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -560,6 +563,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                                       courseId: widget.courseId,
                                                       myEmail: widget.myEmail,
                                                       myName: widget.myName,
+                                                      adminCallback: (String val) => setState(()=>reloadAdminId=val),
                                                     ),
                                                   );
                                                 }));
@@ -617,52 +621,84 @@ class _CourseDetailState extends State<CourseDetail> {
                                     ),
                                   ),
                                   onTap: () {
-                                    showDialog<void>(
-                                      context: context,
-                                      barrierDismissible:
-                                          false, // user must tap button!
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: SingleChildScrollView(
-                                            child: ListBody(
-                                              children: <Widget>[
-                                                Text(
-                                                  'Are you sure you want to delete this course?',
+                                    if (currentUser.userID != reloadAdminId)
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible: false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Are you sure you want to delete this course?',
+                                                    style: simpleTextStyle(
+                                                        Colors.black, 16),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  'Yes',
                                                   style: simpleTextStyle(
-                                                      Colors.black, 16),
+                                                      Colors.black87, 16),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: Text(
-                                                'Yes',
-                                                style: simpleTextStyle(
-                                                    Colors.black87, 16),
+                                                onPressed: () {
+                                                  courseProvider.removeCourse(
+                                                      context, widget.courseId);
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                courseProvider.removeCourse(
-                                                    context, widget.courseId);
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: Text(
-                                                'Cancel',
-                                                style: simpleTextStyle(
-                                                    themeOrange, 16),
+                                              TextButton(
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: simpleTextStyle(
+                                                      themeOrange, 16),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    else
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible: false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'You are now the group leader, please choose a new leader before exiting',
+                                                    style: simpleTextStyle(
+                                                        Colors.black, 16),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: simpleTextStyle(
+                                                      themeOrange, 16),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                   },
                                 ),
                                 // Divider(

@@ -106,18 +106,6 @@ class DatabaseMethods {
     // return query.docs.first.id;
   }
 
-  // getUsersByUsernameInCourse(String username) async {
-  //   return FirebaseFirestore.instance
-  //       .collection('users')
-  //       .where(
-  //         "userName",
-  //         isGreaterThanOrEqualTo: username,
-  //         isLessThan: username.substring(0, username.length - 1) +
-  //         String.fromCharCode(username.codeUnitAt((username.length - 1)) + 1),
-  //       )
-  //       .get();
-  // }
-
   getUsersByEmail(String email) async {
     return await FirebaseFirestore.instance
         .collection("users")
@@ -509,24 +497,6 @@ class DatabaseMethods {
         .get();
   }
 
-  // createEmptyAdminNameId(String courseId) async {
-  //
-  //   DocumentReference docRef =
-  //   FirebaseFirestore.instance.collection('courses').doc(courseId);
-  //   docRef.update({'adminName':''});
-  // }
-  //
-  // updateAdminName(String courseId, String adminName) async {
-  //   print(adminName);
-  //   DocumentReference docRef =
-  //   FirebaseFirestore.instance.collection('courses').doc(courseId);
-  //   docRef.update({
-  //     'AdminName': adminName,
-  //   }).catchError((e) {
-  //     print(e.toString());
-  //   });
-  // }
-
   getNumberOfMembersInCourse(String courseId) async {
     return FirebaseFirestore.instance
         .collection('courses')
@@ -870,6 +840,7 @@ class DatabaseMethods {
     });
   }
 
+  //---------AdminTags---------
   updateAdminId(String courseId, String adminId) async {
     DocumentReference docRef =
     FirebaseFirestore.instance.collection('courses').doc(courseId);
@@ -879,4 +850,22 @@ class DatabaseMethods {
       print(e.toString());
     });
   }
+
+// createEmptyAdminNameId(String courseId) async {
+//
+//   DocumentReference docRef =
+//   FirebaseFirestore.instance.collection('courses').doc(courseId);
+//   docRef.update({'adminName':''});
+// }
+//
+// updateAdminName(String courseId, String adminName) async {
+//   print(adminName);
+//   DocumentReference docRef =
+//   FirebaseFirestore.instance.collection('courses').doc(courseId);
+//   docRef.update({
+//     'AdminName': adminName,
+//   }).catchError((e) {
+//     print(e.toString());
+//   });
+// }
 }

@@ -17,11 +17,13 @@ class ChooseGroupLeader extends StatefulWidget {
   final String myEmail;
   final String myName;
   final List<dynamic> groupMembers;
+  final Function(String) adminCallback;
   ChooseGroupLeader(
       {this.courseId,
         this.myEmail,
         this.myName,
-        this.groupMembers
+        this.groupMembers,
+        this.adminCallback
       });
   @override
   _ChooseGroupLeaderState createState() => _ChooseGroupLeaderState();
@@ -40,6 +42,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   bool onSelected;
   String newAdminId;
   List<dynamic> foundUser;
+  Function(String) sendAdminId;
 
 
   @override
@@ -51,6 +54,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
     isSearching = false;
     onSelected = false;
     newAdminId = '';
+    sendAdminId = widget.adminCallback;
   }
 
   initiateSearch() async {
@@ -557,8 +561,8 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                             if (onSelected == false){
                               return null;
                             }
-                            databaseMethods.updateAdminId(
-                                widget.courseId, newAdminId);
+                            databaseMethods.updateAdminId(widget.courseId, newAdminId);
+                            sendAdminId(newAdminId);
                             Navigator.of(context).pop();
                           },
                         ),
