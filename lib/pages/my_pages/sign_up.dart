@@ -1,3 +1,4 @@
+import 'package:app_test/models/collegeDomain.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/services/database.dart';
@@ -7,7 +8,12 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:app_test/pages/initialPage/start_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' show json;
+import 'package:validators/validators.dart';
 
 class SignUpPage extends StatefulWidget {
   final PageController pageController;
@@ -21,7 +27,8 @@ class SignUpPage extends StatefulWidget {
 
 // http://universities.hipolabs.com/search?name=University%20of%20California,%20Santa%20Barbara
 class _SignUpPageState extends State<SignUpPage> {
-  String _selectedSchool;
+  String _selectedSchool = '';
+  String schooldomain = '';
   List<String> _schools = [
     "Boston University",
     "University of California, Santa Barbara",
@@ -31,18 +38,26 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isLoading = false;
   bool emailExist = false;
   String errorMessage;
-
+  final TextEditingController _typeAheadController = TextEditingController();
   AuthMethods authMethods = new AuthMethods();
-
   DatabaseMethods databaseMethods = new DatabaseMethods();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  bool selectedFromSuggestions = false;
   // TextEditingController usernameTextEditingController =
   //     new TextEditingController();
   TextEditingController emailTextEditingController =
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+  List<CollegeDomain> _collegeDomain = [];
+  // @override
+  // Future<void> initState() async {
+  //   super.initState();
+
+  //   print(_collegeDomain);
+  //   // registerNotification(widget.myData);
+  // }
+
   _toastInfo(String info) {
     Fluttertoast.showToast(
       msg: info,
@@ -74,6 +89,7 @@ class _SignUpPageState extends State<SignUpPage> {
         isLoading = false;
         // Navigator.pop(context);
         // Navigator.push(
+
         //   context,
         //   MaterialPageRoute(builder: (context) => Wrapper(true)),
         // );
@@ -170,6 +186,19 @@ class _SignUpPageState extends State<SignUpPage> {
       );
     }
 
+    // Future<void> _getData(String collegePrefix) async {
+    //   var url = 'http://universities.hipolabs.com/search?name=' + collegePrefix;
+    //   http.get(Uri.parse(url)).then((data) {
+    //     return json.decode(data.body);
+    //   }).then((data) {
+    //     for (var json in data) {
+    //       _collegeDomain.add(CollegeDomain.fromJson(json));
+    //     }
+    //   }).catchError((e) {
+    //     print(e);
+    //   });
+    // }
+
     _getSignIn() {
       return Container(
         decoration: BoxDecoration(
@@ -182,9 +211,9 @@ class _SignUpPageState extends State<SignUpPage> {
           highlightColor: Color(0xFFFF9B6B),
           highlightElevation: 0,
           elevation: 0,
-          color: (emailTextEditingController.text.isNotEmpty &&
-                  passwordTextEditingController.text.isNotEmpty &&
-                  _selectedSchool.isNotEmpty)
+          color: (emailTextEditingController.text?.isNotEmpty &&
+                  passwordTextEditingController.text?.isNotEmpty &&
+                  _selectedSchool?.isNotEmpty)
               ? Colors.white
               : Color(0xFFFF9B6B).withOpacity(1),
           shape: RoundedRectangleBorder(
@@ -197,9 +226,9 @@ class _SignUpPageState extends State<SignUpPage> {
           child: AutoSizeText(
             'CONTINUE',
             style: simpleTextSansStyleBold(
-                (emailTextEditingController.text.isNotEmpty &&
-                        passwordTextEditingController.text.isNotEmpty &&
-                        _selectedSchool.isNotEmpty)
+                (emailTextEditingController.text?.isNotEmpty &&
+                        passwordTextEditingController.text?.isNotEmpty &&
+                        _selectedSchool?.isNotEmpty)
                     ? themeOrange
                     : Colors.white,
                 16),
@@ -227,41 +256,110 @@ class _SignUpPageState extends State<SignUpPage> {
                     SizedBox(
                       height: _height * 0.018,
                     ),
-                    DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      dropdownColor: Color(0xFFFF9B6B),
-                      icon: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.white,
+                    TypeAheadFormField(
+                      hideSuggestionsOnKeyboardHide: true,
+                      textFieldConfiguration: TextFieldConfiguration(
+                        style: simpleTextStyle(Colors.white, 16),
+                        controller: _typeAheadController,
+                        decoration: textFieldInputDecoration(
+                          _height * 0.036,
+                          'Find your school here',
+                          11,
+                        ),
                       ),
-                      iconEnabledColor: Colors.white,
-                      value: _selectedSchool,
-                      items: _schools.map<DropdownMenuItem<String>>((value) {
-                        return DropdownMenuItem(
-                          child: Text(
-                            value,
-                            style: simpleTextStyle(Colors.white, 16),
-                          ),
-                          value: value,
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSchool = value;
-                        });
+                      keepSuggestionsOnSuggestionSelected: true,
+                      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          _height * 0.015,
+                        ),
+                        color: Color(0xFFFF9B6B).withOpacity(1),
+                      ),
+                      suggestionsCallback: (pattern) async {
+                        var x = await CollgeDomainApi.getCollegeSuggestions(
+                            pattern);
+                        return x;
                       },
-                      decoration: textFieldInputDecoration(
-                        _height * 0.036,
-                        'Choose your School',
-                        11,
+                      itemBuilder: (context, suggestion) {
+                        print(suggestion.toString());
+                        return ListTile(
+                          title: Text(suggestion.name.toString()),
+                        );
+                      },
+                      noItemsFoundBuilder: (context) => Container(
+                        height: 60,
+                        child: Center(
+                          child: Text(
+                            'No College Found. \nPlease check your spelling',
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return "School is required";
+                      onSuggestionSelected: (suggestion) {
+                        print('here2');
+                        setState(() {
+                          schooldomain = suggestion.domains[0];
+                          _selectedSchool = suggestion.name.toString();
+                          selectedFromSuggestions = true;
+                          if (emailTextEditingController.text.isEmpty) {
+                            emailTextEditingController.text =
+                                '@' + suggestion.domains[0].toString();
+                          }
+                        });
+                        this._typeAheadController.text =
+                            suggestion.name.toString();
+                      },
+                      // ignore: missing_return
+                      validator: (value) {
+                        print('here1');
+                        // ignore: null_aware_in_logical_operator
+                        print(value);
+                        print(_selectedSchool);
+                        if (value?.isEmpty || _selectedSchool?.isEmpty) {
+                          return 'Please select a School';
+                        } else if (!isUppercase(value[0]) ||
+                            !selectedFromSuggestions ||
+                            schooldomain.length < 1) {
+                          print(schooldomain.length);
+                          return 'Please select from the suggestion box';
                         }
-                        return null;
                       },
                     ),
+                    // DropdownButtonFormField<String>(
+                    //   isExpanded: true,
+                    //   dropdownColor: Color(0xFFFF9B6B),
+                    //   icon: Icon(
+                    //     Icons.keyboard_arrow_down,
+                    //     color: Colors.white,
+                    //   ),
+                    //   iconEnabledColor: Colors.white,
+                    //   value: _selectedSchool,
+                    //   items: _schools.map<DropdownMenuItem<String>>((value) {
+                    //     return DropdownMenuItem(
+                    //       child: Text(
+                    //         value,
+                    //         style: simpleTextStyle(Colors.white, 16),
+                    //       ),
+                    //       value: value,
+                    //     );
+                    //   }).toList(),
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       _selectedSchool = value;
+                    //     });
+                    //   },
+                    //   decoration: textFieldInputDecoration(
+                    //     _height * 0.036,
+                    //     'Choose your School',
+                    //     11,
+                    //   ),
+                    //   validator: (String value) {
+                    //     if (value.isEmpty) {
+                    //       return "School is required";
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     SizedBox(
                       height: _height * 0.018,
                     ),

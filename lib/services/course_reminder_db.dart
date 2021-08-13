@@ -12,8 +12,8 @@ import 'package:http/http.dart' as http;
 //             "section" : "A1"
 //         }
 class CourseReminderDatabase {
-  final colectURL = 'http://nacc-api.cf/admin/api/collect';
-  final deleteURL = 'http://nacc-api.cf/admin/api/delete';
+  final colectURL = 'http://nacc-api.tk/admin/api/collect';
+  final deleteURL = 'http://nacc-api.tk/admin/api/delete';
   Future<void> saveUserReminder(
     String school,
     String semester,

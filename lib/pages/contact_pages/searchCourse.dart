@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../models/constant.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 
 class SearchCourse extends StatefulWidget {
   @override
@@ -18,22 +19,44 @@ class SearchCourse extends StatefulWidget {
 
 class _SearchCourseState extends State<SearchCourse> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _formKeyGroupID = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _formKeyGroupID = GlobalKey<FormState>();
 
-  TextEditingController courseIDTextEditingController =
-      new TextEditingController();
+  // TextEditingController courseIDTextEditingController =
+  //     new TextEditingController();
   TextEditingController courseNameTextEditingController =
       new TextEditingController();
   TextEditingController sectionTextEditingController =
       new TextEditingController();
+
   TextEditingController field = TextEditingController();
   String pasteValue = '';
   QuerySnapshot<Map<String, dynamic>> searchSnapshot;
   var _selectedSemester = 'Spring';
+  String clipboardText;
+
+  void _getClipboard(List<CourseInfo> course) async {
+    ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
+    // https://www.meechu.app/#/course/03ef5517-52ae-4d99-ab81-c49552d8f47c
+    setState(() {
+      sectionTextEditingController.text = 'a';
+      if (data.text.trim().startsWith('https://www.meechu.app/#/course/')) {
+        clipboardText =
+            data.text.trim().replaceAll('https://www.meechu.app/#/course/', '');
+      } else if (data.text.trim().startsWith('www.meechu.app/#/course/')) {
+        clipboardText =
+            data.text.trim().replaceAll('www.meechu.app/#/course/', '');
+      } else if (data.text.trim().startsWith('meechu.app/#/course/')) {
+        clipboardText = data.text.trim().replaceAll('meechu.app/#/course/', '');
+      } else
+        clipboardText = data.text.trim();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final course = Provider.of<List<CourseInfo>>(context);
 
+    _getClipboard(course);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -87,6 +110,13 @@ class _SearchCourseState extends State<SearchCourse> {
       );
     }
 
+    bool _validate() {
+      //not v4 uuid
+      return RegExp(
+              r'^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
+          .hasMatch(clipboardText?.toUpperCase());
+    }
+
     _addButton() {
       return Container(
         decoration: BoxDecoration(
@@ -104,13 +134,12 @@ class _SearchCourseState extends State<SearchCourse> {
             borderRadius: BorderRadius.circular(30),
           ),
           onPressed: () async {
-            if (!_formKey.currentState.validate() &&
-                !_formKeyGroupID.currentState.validate()) {
+            if (!_formKey.currentState.validate() && !_validate()) {
               print('both unvalid');
               return;
-            } else if (_formKeyGroupID.currentState.validate()) {
-              await initiateURLSearch(
-                  courseIDTextEditingController.text, context);
+            } else if (_validate() &&
+                courseNameTextEditingController.text.isEmpty) {
+              await initiateURLSearch(clipboardText, context);
               print(searchBegain);
             } else {
               print('valid');
@@ -123,42 +152,45 @@ class _SearchCourseState extends State<SearchCourse> {
                 : Center(child: CircularProgressIndicator());
           },
           child: Text(
-            'Add to List',
-            style: largeTitleTextStyleBold(Colors.white, 15),
+            (_validate() && courseNameTextEditingController.text.isEmpty)
+                ? 'Found SHARED course ID\n Click to join'
+                : 'Search',
+            textAlign: TextAlign.center,
+            style: largeTitleTextStyleBold(Colors.white, 16),
           ),
         ),
       );
     }
 
-    _urlForm() {
-      return Form(
-        key: _formKeyGroupID,
-        child: Container(
-          height: 100,
-          child: TextFormField(
-            controller: courseIDTextEditingController,
-            decoration: buildInputDecorationPinky(
-              false,
-              Icon(
-                Icons.access_time,
-                color: Colors.black,
-              ),
-              'Course Group ID',
-              11,
-            ),
-            validator: (String value) {
-              if (!RegExp(
-                      r'^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
-                  .hasMatch(value.toUpperCase())) {
-                return "Group ID is not Valid";
-              }
-              return null;
-            },
-          ),
-        ),
-      );
-    }
-
+    // _urlForm() {
+    //   return Form(
+    //     key: _formKeyGroupID,
+    //     child: Container(
+    //       height: 100,
+    //       child: TextFormField(
+    //         controller: courseIDTextEditingController,
+    //         decoration: buildInputDecorationPinky(
+    //           false,
+    //           Icon(
+    //             Icons.access_time,
+    //             color: Colors.black,
+    //           ),
+    //           'Course Group ID',
+    //           11,
+    //         ),
+    //         validator: (String value) {
+    //           if (!RegExp(
+    //                   r'^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
+    //               .hasMatch(clipboardText.toUpperCase())) {
+    //             return "Group ID is not Valid";
+    //           }
+    //           return null;
+    //         },
+    //       ),
+    //     ),
+    //   );
+    // }
+    final userdata = Provider.of<UserData>(context, listen: false);
     return Container(
       padding: EdgeInsets.only(
         left: _width * 0.12,
@@ -170,22 +202,22 @@ class _SearchCourseState extends State<SearchCourse> {
         child: Column(
           children: [
             _getHeader(),
-            _urlForm(),
+            // _urlForm(),
             SizedBox(
-              height: 17,
+              height: 45,
             ),
-            Text(
-              'OR',
-              style: largeTitleTextStyleBold(themeOrange, 20),
-              textAlign: TextAlign.center,
-            ),
+            // Text(
+            //   'OR',
+            //   style: largeTitleTextStyleBold(themeOrange, 20),
+            //   textAlign: TextAlign.center,
+            // ),
             Form(
               key: _formKey,
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 17,
+                      height: 55,
                     ),
                     Container(
                       height: 85,
@@ -217,7 +249,7 @@ class _SearchCourseState extends State<SearchCourse> {
                           11,
                         ),
                         validator: (String value) {
-                          if (value == "" || value == null) {
+                          if ((value == "" || value == null) && !_validate()) {
                             return "Term is required";
                           }
                           return null;
@@ -241,7 +273,7 @@ class _SearchCourseState extends State<SearchCourse> {
                           11,
                         ),
                         validator: (String value) {
-                          if (value.isEmpty) {
+                          if ((value.isEmpty) && !_validate()) {
                             return "Course name is required";
                           }
                           return null;
@@ -249,31 +281,31 @@ class _SearchCourseState extends State<SearchCourse> {
                       ),
                     ),
                     SizedBox(
-                      height: 31,
+                      height: 45,
                     ),
-                    Container(
-                      height: 85,
-                      child: TextFormField(
-                        controller: sectionTextEditingController,
-                        decoration: buildInputDecorationPinky(
-                          false,
-                          Icon(
-                            Icons.access_time,
-                            color: Colors.black,
-                          ),
-                          'Section, e.g. A1',
-                          11,
-                        ),
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return "Section is required";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
+                    // Container(
+                    //   height: 85,
+                    //   child: TextFormField(
+                    //     controller: sectionTextEditingController,
+                    //     decoration: buildInputDecorationPinky(
+                    //       false,
+                    //       Icon(
+                    //         Icons.access_time,
+                    //         color: Colors.black,
+                    //       ),
+                    //       'Section, e.g. A1',
+                    //       11,
+                    //     ),
+                    //     // validator: (String value) {
+                    //     //   if (!_validate()) {
+                    //     //     return "Section is required";
+                    //     //   }
+                    //     //   return null;
+                    //     // },
+                    //   ),
+                    // ),
                     SizedBox(
-                      height: 15,
+                      height: 25,
                     ),
                     // RichText(
                     //   text: TextSpan(
@@ -349,11 +381,50 @@ class _SearchCourseState extends State<SearchCourse> {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 40,
             ),
             _addButton(),
             SizedBox(
-              height: 80,
+              height: 10,
+            ),
+            RichText(
+              text: TextSpan(
+                style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'Unable to find your course? ',
+                    style: GoogleFonts.openSans(
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                  TextSpan(
+                      text: 'Create New',
+                      style: GoogleFonts.openSans(
+                        textStyle: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: themeOrange,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return Provider<UserData>.value(
+                                  value: userdata,
+                                  child: AddCourse(),
+                                );
+                              },
+                            ),
+                          );
+                        }),
+                ],
+              ),
             ),
           ],
         ),
@@ -405,8 +476,7 @@ class _SearchCourseState extends State<SearchCourse> {
       searchSnapshot = temp;
       print(searchSnapshot.docs);
       if (searchSnapshot.docs != null) {
-        if ((searchSnapshot.docs.length >= 1) &&
-            (courseIDTextEditingController.text.isNotEmpty)) {
+        if ((searchSnapshot.docs.length >= 1) && (clipboardText.isNotEmpty)) {
           print('reached search');
           searchBegain = true;
         }

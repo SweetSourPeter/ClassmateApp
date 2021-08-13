@@ -435,11 +435,17 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                     ),
                                   ],
                                 ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(right: _width * 0.05),
-                                  child: Image.asset(fileLocation[index % 6]),
-                                ),
+                                ((course[index].myCourseName.length +
+                                            course[index].section.length) >
+                                        10)
+                                    ? Container()
+                                    : Padding(
+                                        padding: EdgeInsets.only(
+                                            right: _width * 0.05),
+                                        child: Container(
+                                            child: Image.asset(
+                                                fileLocation[index % 6])),
+                                      ),
                               ],
                             )),
                       ),
