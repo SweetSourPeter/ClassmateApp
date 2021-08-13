@@ -188,52 +188,88 @@ class _CourseDetailState extends State<CourseDetail> {
                         Padding(
                           padding: EdgeInsets.only(right: 20),
                           //TODO replace Icon
-                          child: GestureDetector(
-                            onTap: () {
-                              Share.share(
-                                  'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
-                                  subject:
-                                      'Join ${courseName + courseSection} chat at Meechu');
+                          child: PopupMenuButton(
+                              itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      child: GestureDetector(
+                                          child: Text("Share"),
+                                          onTap: () {
+                                            Share.share(
+                                                'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                                                subject:
+                                                    'Join ${courseName + courseSection} chat at Meechu');
+                                          }),
+                                      value: 1,
+                                    ),
+                                    PopupMenuItem(
+                                      child: GestureDetector(
+                                          child: Text("Share Course ID"),
+                                          onTap: () {
+                                            Share.share('${widget.courseId}',
+                                                subject:
+                                                    'Join ${courseName + courseSection} chat at Meechu');
+                                          }),
+                                      value: 2,
+                                    ),
+                                    PopupMenuItem(
+                                      child: GestureDetector(
+                                          child: Text("Share Course Link"),
+                                          onTap: () {
+                                            Share.share(
+                                                'https://www.meechu.app/#/course/${widget.courseId}',
+                                                subject:
+                                                    'Join ${courseName + courseSection} chat at Meechu');
+                                          }),
+                                      value: 3,
+                                    ),
+                                  ]),
 
-                              // Clipboard.setData(new ClipboardData(
-                              //         text:
-                              //             'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name'))
-                              //     .then((result) {
-                              //   showDialog<void>(
-                              //     context: context,
-                              //     barrierDismissible:
-                              //         false, // user must tap button!
-                              //     builder: (BuildContext context) {
-                              //       return AlertDialog(
-                              //         content: SingleChildScrollView(
-                              //           child: ListBody(
-                              //             children: <Widget>[
-                              //               Text('The invite Link is copied.'),
-                              //             ],
-                              //           ),
-                              //         ),
-                              //         actions: <Widget>[
-                              //           TextButton(
-                              //             child: Text('OK'),
-                              //             onPressed: () {
-                              //               Navigator.of(context).pop();
-                              //             },
-                              //           ),
-                              //         ],
-                              //       );
-                              //     },
-                              //   );
-                              // });
-                            },
-                            child: Text(
-                              'share',
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.openSans(
-                                color: themeOrange,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     Share.share(
+                          //         'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                          //         subject:
+                          //             'Join ${courseName + courseSection} chat at Meechu');
+
+                          //     // Clipboard.setData(new ClipboardData(
+                          //     //         text:
+                          //     //             'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name'))
+                          //     //     .then((result) {
+                          //     //   showDialog<void>(
+                          //     //     context: context,
+                          //     //     barrierDismissible:
+                          //     //         false, // user must tap button!
+                          //     //     builder: (BuildContext context) {
+                          //     //       return AlertDialog(
+                          //     //         content: SingleChildScrollView(
+                          //     //           child: ListBody(
+                          //     //             children: <Widget>[
+                          //     //               Text('The invite Link is copied.'),
+                          //     //             ],
+                          //     //           ),
+                          //     //         ),
+                          //     //         actions: <Widget>[
+                          //     //           TextButton(
+                          //     //             child: Text('OK'),
+                          //     //             onPressed: () {
+                          //     //               Navigator.of(context).pop();
+                          //     //             },
+                          //     //           ),
+                          //     //         ],
+                          //     //       );
+                          //     //     },
+                          //     //   );
+                          //     // });
+                          //   },
+                          //   child: Text(
+                          //     'share',
+                          //     textAlign: TextAlign.left,
+                          //     style: GoogleFonts.openSans(
+                          //       color: themeOrange,
+                          //       fontSize: 16,
+                          //     ),
+                          //   ),
+                          // ),
                         ),
                       ],
                     ),

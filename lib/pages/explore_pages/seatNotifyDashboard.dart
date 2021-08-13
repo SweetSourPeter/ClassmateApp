@@ -268,7 +268,7 @@ class _SeatNotifyDashboardState extends State<SeatNotifyDashboard> {
                                                           'Response body: ${response.body}');
                                                       if (response.statusCode ==
                                                           202) {
-                                                        _toastInfo('Deleated');
+                                                        _toastInfo('Deleted');
                                                         setState(() {
                                                           loading = false;
                                                           close = true;

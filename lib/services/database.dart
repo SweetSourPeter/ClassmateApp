@@ -137,21 +137,29 @@ class DatabaseMethods {
   getCourse(
       String term, String courseName, String section, String school) async {
     print('term is ' + term);
+    // print(
+    //   String.fromCharCode(
+    //       section.toUpperCase().codeUnitAt((section.toUpperCase().length)) +
+    //           1),
+    // );
     print('courseName is ' + courseName);
     print('section is ' + section);
+    // print(section.toUpperCase().substring(0, section.toUpperCase().length - 1));
     print('school is ' + school);
     return await FirebaseFirestore.instance
         .collection("courses")
         .where("school", isEqualTo: school.toUpperCase())
         .where("term", isEqualTo: term.toUpperCase())
-        .where("section", isEqualTo: section.toUpperCase())
-        .where(
-          'myCourseName',
-          isGreaterThanOrEqualTo: courseName,
-          isLessThan: courseName.substring(0, courseName.length - 1) +
-              String.fromCharCode(
-                  courseName.codeUnitAt((courseName.length - 1)) + 1),
-        )
+        .where("myCourseName", isEqualTo: courseName.toUpperCase())
+        // .where("section", isGreaterThanOrEqualTo: section)
+        // .where("section", isEqualTo: section.toUpperCase())
+        // .where(
+        //   'myCourseName',
+        //   isGreaterThanOrEqualTo: courseName,
+        //   isLessThan: courseName.substring(0, courseName.length - 1) +
+        //       String.fromCharCode(
+        //           courseName.codeUnitAt((courseName.length - 1)) + 1),
+        // )
         .get()
         .catchError((e) {
       print(e.toString());

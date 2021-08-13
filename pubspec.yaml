@@ -70,6 +70,7 @@ dependencies:
   upgrader: ^3.3.0
   flutter_local_notifications: ^5.0.0+4
   expandable: ^5.0.1
+  validators: ^3.0.0
 
 dev_dependencies:
   flutter_test:
