@@ -24,15 +24,15 @@ class _GroupNoticeState extends State<GroupNotice> {
   String lastGroupNoticeTime;
   String groupNoticeText;
   double leaderProfileColor = 1.0;
-  String leaderName = '';
-  String leaderId = '';
+  String leaderName = 'yayaya';
   bool isEdit;
   TextEditingController _groupNoticeController = new TextEditingController();
   FocusNode myFocusNode = FocusNode();
 
   setGroupNotice() {
     final noticeTime = DateTime.now().millisecondsSinceEpoch;
-    databaseMethods.setGroupNotice(widget.courseId, _groupNoticeController.text, noticeTime);
+    databaseMethods.setGroupNotice(
+        widget.courseId, _groupNoticeController.text, noticeTime);
     setState(() {
       isEdit = false;
       lastGroupNoticeTime =
@@ -41,42 +41,9 @@ class _GroupNoticeState extends State<GroupNotice> {
     });
   }
 
-  sendGroupNotice(UserData currentUser) {
-    if (_groupNoticeController.text.isNotEmpty) {
-      final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
-      Map<String, dynamic> messageMap = {
-        'message': _groupNoticeController.text,
-        'messageType': 'groupNotice',
-        'sendBy': currentUser.email,
-        'senderName': currentUser.userName,
-        'time': lastMessageTime,
-        'senderID': currentUser.userID,
-        'profileColor': currentUser.profileColor
-      };
-
-      databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
-          widget.courseId, currentUser.userID);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    databaseMethods.getCourseInfo(widget.courseId).then((value) {
-      setState(() {
-        leaderId = value.docs[0].data()['adminId'];
-      });
-      databaseMethods
-          .getUserDetailsByID(value.docs[0].data()['adminId'])
-          .then((info) {
-        setState(() {
-          leaderName = info.userName;
-          leaderProfileColor = info.profileColor;
-        });
-      });
-    });
-
     databaseMethods.getGroupNotice(widget.courseId).then((ret) {
       setState(() {
         groupNoticeText = ret['groupNoticeText'];
@@ -91,7 +58,6 @@ class _GroupNoticeState extends State<GroupNotice> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
-    final currentUser = Provider.of<UserData>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = _width * 0.05;
@@ -148,146 +114,84 @@ class _GroupNoticeState extends State<GroupNotice> {
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         )),
-                        leaderId == user.userID
-                            ? isEdit
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                        right: sidebarSize * 0.65),
-                                    child: Container(
-                                        child: GestureDetector(
-                                      onTap: () {
-                                        if (_groupNoticeController
-                                            .text.isNotEmpty) {
-                                          showCupertinoDialog(
-                                              context: context,
-                                              builder: (_) =>
-                                                  CupertinoAlertDialog(
-                                                    content: Text(
-                                                      'All members will be notified of this notice. Post it now?',
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              fontSize: 16),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context,
-                                                                'Cancel'),
-                                                        child: Text(
-                                                          'Cancel',
-                                                          style: GoogleFonts
-                                                              .montserrat(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: 16),
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          setGroupNotice();
-                                                          sendGroupNotice(currentUser);
-                                                          Navigator.pop(
-                                                              context, 'Post');
-                                                        },
-                                                        child: Text(
-                                                          'Post',
-                                                          style: GoogleFonts
-                                                              .montserrat(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: 16),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                              barrierDismissible: true);
-                                        } else {
-                                          showCupertinoDialog(
-                                              context: context,
-                                              builder: (_) =>
-                                                  CupertinoAlertDialog(
-                                                    content: Text(
-                                                      'Clear group notice?',
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              fontSize: 16),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context,
-                                                                'Cancel'),
-                                                        child: Text(
-                                                          'Cancel',
-                                                          style: GoogleFonts
-                                                              .montserrat(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: 16),
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          setGroupNotice();
-                                                          Navigator.pop(
-                                                              context, 'Clear');
-                                                        },
-                                                        child: Text(
-                                                          'Clear',
-                                                          style: GoogleFonts
-                                                              .montserrat(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: 16),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                              barrierDismissible: true);
-                                        }
-                                      },
-                                      child: Text(
-                                        'Done',
-                                        style: GoogleFonts.montserrat(
-                                            color: themeOrange,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.normal),
-                                      ),
-                                    )),
-                                  )
-                                : Padding(
-                                    padding:
-                                        EdgeInsets.only(right: sidebarSize),
-                                    child: Container(
-                                        child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          isEdit = true;
-                                        });
-                                        myFocusNode.requestFocus();
-                                      },
-                                      child: Text(
-                                        'Edit',
-                                        style: GoogleFonts.montserrat(
-                                            color: themeOrange,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal),
-                                      ),
-                                    )),
-                                  )
-                            : SizedBox(width: sidebarSize*2.6,)
+                        isEdit
+                            ? Padding(
+                                padding: EdgeInsets.only(right: sidebarSize*0.65),
+                                child: Container(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    if (_groupNoticeController.text.isNotEmpty) {
+                                      showCupertinoDialog(
+                                          context: context,
+                                          builder: (_) => CupertinoAlertDialog(
+                                            content: Text('All members will be notified of this notice. Post it now?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  setGroupNotice();
+                                                  Navigator.pop(context, 'Post');
+                                                },
+                                                child: const Text('Post'),
+                                              ),
+                                            ],
+                                          ),
+                                          barrierDismissible: true
+                                      );
+                                    } else {
+                                      showCupertinoDialog(
+                                          context: context,
+                                          builder: (_) => CupertinoAlertDialog(
+                                            content: Text('Clear group notice?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  setGroupNotice();
+                                                  Navigator.pop(context, 'Clear');
+                                                },
+                                                child: const Text('Clear'),
+                                              ),
+                                            ],
+                                          ),
+                                          barrierDismissible: true
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    'Done',
+                                    style: GoogleFonts.montserrat(
+                                        color: themeOrange,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                )),
+                              )
+                            : Padding(
+                                padding: EdgeInsets.only(right: sidebarSize),
+                                child: Container(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      isEdit = true;
+                                    });
+                                    myFocusNode.requestFocus();
+                                  },
+                                  child: Text(
+                                    'Edit',
+                                    style: GoogleFonts.montserrat(
+                                        color: themeOrange,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                )),
+                              )
                       ],
                     ),
                   ),
@@ -301,31 +205,27 @@ class _GroupNoticeState extends State<GroupNotice> {
                               height: _width * 0.13,
                               width: _width * 0.13,
                               child: CircleAvatar(
-                                backgroundColor: listProfileColor[
-                                    leaderProfileColor.toInt()],
+                                backgroundColor:
+                                    listProfileColor[leaderProfileColor.toInt()],
                                 radius: sidebarSize / 15,
                                 child: Container(
                                   child: Text(
                                     // 单个字22，双字18
-                                    leaderName.isEmpty
-                                        ? ''
-                                        : ((leaderName.split(' ').length >= 2 &&
-                                                leaderName
-                                                    .split(' ')[leaderName
-                                                            .split(' ')
-                                                            .length -
+                                    (leaderName.split(' ').length >= 2 &&
+                                            leaderName
+                                                .split(' ')[
+                                                    leaderName.split(' ').length -
                                                         1]
-                                                    .isNotEmpty)
-                                            ? leaderName
-                                                    .split(' ')[0][0]
-                                                    .toUpperCase() +
-                                                leaderName
-                                                    .split(' ')[leaderName
-                                                            .split(' ')
-                                                            .length -
+                                                .isNotEmpty)
+                                        ? leaderName
+                                                .split(' ')[0][0]
+                                                .toUpperCase() +
+                                            leaderName
+                                                .split(' ')[
+                                                    leaderName.split(' ').length -
                                                         1][0]
-                                                    .toUpperCase()
-                                            : leaderName[0].toUpperCase()),
+                                                .toUpperCase()
+                                        : leaderName[0].toUpperCase(),
                                     style: GoogleFonts.montserrat(
                                         fontSize:
                                             leaderName.split(' ').length >= 2
@@ -343,8 +243,7 @@ class _GroupNoticeState extends State<GroupNotice> {
                                   bottom: sidebarSize * 0.5,
                                   left: sidebarSize * 0.9),
                               child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AutoSizeText(
@@ -357,8 +256,7 @@ class _GroupNoticeState extends State<GroupNotice> {
                                   Container(
                                     child: Text(
                                       lastGroupNoticeTime != null
-                                          ? (lastGroupNoticeTime.substring(
-                                                  0, 4) +
+                                          ? (lastGroupNoticeTime.substring(0, 4) +
                                               '.' +
                                               lastGroupNoticeTime.substring(
                                                   5, 7) +
