@@ -63,6 +63,7 @@ class _GroupChatState extends State<GroupChat> {
   Stream chatMessageStream;
   List<dynamic> memberInfo;
   List<String> membersToAt;
+  List<String> memberIdsToAt;
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
@@ -177,6 +178,13 @@ class _GroupChatState extends State<GroupChat> {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
 
+      List<String> tmpIdsToAt = [];
+
+      for (var i = 0; i < membersToAt.length; i++) {
+        if (messageController.text.contains(membersToAt[i])) {
+          tmpIdsToAt.add(memberIdsToAt[i]);
+        }
+      }
 
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
@@ -185,7 +193,8 @@ class _GroupChatState extends State<GroupChat> {
         'senderName': currentUser.userName,
         'time': lastMessageTime,
         'senderID': currentUser.userID,
-        'profileColor': currentUser.profileColor
+        'profileColor': currentUser.profileColor,
+        'membersToAt': tmpIdsToAt
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
@@ -199,6 +208,12 @@ class _GroupChatState extends State<GroupChat> {
 
       _controller.jumpTo(_controller.position.minScrollExtent);
       messageController.text = '';
+      previousText = '';
+
+      setState(() {
+        membersToAt = [];
+        memberIdsToAt = [];
+      });
     }
   }
 
@@ -349,6 +364,8 @@ class _GroupChatState extends State<GroupChat> {
         ScrollController(initialScrollOffset: widget.initialChat * 40);
     displayName = true;
     previousText = '';
+    membersToAt = [];
+    memberIdsToAt = [];
   }
 
   getChatRoomId(String a, String b) {
@@ -574,11 +591,17 @@ class _GroupChatState extends State<GroupChat> {
                             maxLines: 4,
                             // when user presses enter it will adapt to it
                             onChanged: (text) async {
+                              print('-------------------');
+                              print('new: ' + text);
+                              print('prev: ' + previousText);
+
                               if(diff(previousText, text).length == 2) {
-                                // print(diff(previousText, text)[1].text);
+
+                                print('diff: ' + diff(previousText, text)[1].text);
+
                                 if(diff(previousText, text)[1].operation != -1 && diff(previousText, text)[1].text == '@') {
                                   // print(memberInfo);
-                                  String thePerson = await showModalBottomSheet(
+                                  List<String> thePerson = await showModalBottomSheet(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
                                             width: 10,
@@ -601,14 +624,17 @@ class _GroupChatState extends State<GroupChat> {
                                             ));
                                       });
 
-                                  if (thePerson != null)
+                                  if (thePerson != null) {
                                     setState(() {
-                                      membersToAt.add('@' + thePerson);
+                                      membersToAt.add('@' + thePerson[0]);
+                                      memberIdsToAt.add(thePerson[1]);
                                     });
-                                    messageController.text += thePerson + ' ';
+                                    messageController.text += thePerson[0] + ' ';
+                                  }
                                 }
                               } else if (text == '@') {
-                                String thePerson = await showModalBottomSheet(
+
+                                List<String> thePerson = await showModalBottomSheet(
                                     shape: RoundedRectangleBorder(
                                         side: BorderSide(
                                           width: 10,
@@ -631,13 +657,16 @@ class _GroupChatState extends State<GroupChat> {
                                           ));
                                     });
 
-                                if (thePerson != null)
+                                if (thePerson != null) {
                                   setState(() {
-                                    membersToAt.add('@' + thePerson);
+                                    membersToAt.add('@' + thePerson[0]);
+                                    memberIdsToAt.add(thePerson[1]);
                                   });
-                                  messageController.text += thePerson + ' ';
+                                  messageController.text += thePerson[0] + ' ';
+                                }
                               }
                               previousText = text;
+                              print('-------------------');
                             },
                             onTap: () {
                               setState(() {

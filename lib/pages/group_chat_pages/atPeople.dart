@@ -171,7 +171,7 @@ class _AtPeopleState extends State<AtPeople> {
         padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
         child: GestureDetector(
           onTap: () {
-            Navigator.pop(context, 'Everyone');
+            Navigator.pop(context, ['Everyone', 'Everyone']);
           },
           behavior: HitTestBehavior.opaque,
           child: Row(
@@ -225,6 +225,7 @@ class _AtPeopleState extends State<AtPeople> {
         children.add(
             MemberTile(
                 memberInfo[i][0],
+                memberInfo[i][1],
                 memberInfo[i][2]
             )
         );
@@ -245,10 +246,12 @@ class _AtPeopleState extends State<AtPeople> {
 
 class MemberTile extends StatelessWidget {
   final String memberName;
+  final String memberId;
   final double memberProfileColor;
 
   MemberTile(
       this.memberName,
+      this.memberId,
       this.memberProfileColor);
 
   @override
@@ -261,7 +264,7 @@ class MemberTile extends StatelessWidget {
       padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
       child: GestureDetector(
         onTap: () {
-          Navigator.pop(context, memberName);
+          Navigator.pop(context, [memberName, memberId]);
         },
         behavior: HitTestBehavior.opaque,
         child: Row(
