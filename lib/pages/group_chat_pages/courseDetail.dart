@@ -559,11 +559,11 @@ class _CourseDetailState extends State<CourseDetail> {
                                               ],
                                             ),
                                           ),
-                                          onTap: () {
+                                          onTap: () async {
                                             if (memberInfo == null){
                                               return null;
                                             }
-                                            Navigator.push(context,
+                                            String tmpAdminId = await Navigator.push(context,
                                                 MaterialPageRoute(builder: (context) {
                                                   return MultiProvider(
                                                     providers: [
@@ -580,6 +580,10 @@ class _CourseDetailState extends State<CourseDetail> {
                                                     ),
                                                 );
                                               }));
+
+                                            setState(() {
+                                              adminId = tmpAdminId;
+                                            });
                                             },
                                           ),
                                         ],
