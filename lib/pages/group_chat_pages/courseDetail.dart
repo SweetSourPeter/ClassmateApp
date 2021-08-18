@@ -581,10 +581,13 @@ class _CourseDetailState extends State<CourseDetail> {
                                                 );
                                               }));
 
-                                            setState(() {
-                                              adminId = tmpAdminId;
-                                            });
-                                            },
+                                            print(tmpAdminId);
+                                            if (tmpAdminId != null) {
+                                              setState(() {
+                                                adminId = tmpAdminId;
+                                              });
+                                            }
+                                          },
                                           ),
                                         ],
                                       ),

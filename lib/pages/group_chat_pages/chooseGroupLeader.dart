@@ -563,7 +563,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                             }
                             databaseMethods.updateAdminId(widget.courseId, newAdminId);
                             sendAdminId(newAdminId);
-                            Navigator.of(context).pop();
+                            Navigator.pop(context, newAdminId);
                           },
                         ),
                       ),
