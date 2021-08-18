@@ -43,6 +43,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   String newAdminId;
   List<dynamic> foundUser;
   Function(String) sendAdminId;
+  bool noUserFound;
 
 
   @override
@@ -63,11 +64,19 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
     // if (temp == null) return;
     setState(() {
       foundUser = temp;
-      if (foundUser != null) {
+      print(foundUser);
+      if (foundUser.isNotEmpty) {
         if ((foundUser.length >= 1) &&
             (searchTextEditingController.text.isNotEmpty)) {
           isSearching = true;
         }
+        noUserFound = false;
+      }
+      else{
+        if (searchTextEditingController.text.isNotEmpty) {
+          isSearching = true;
+        }
+        noUserFound = true;
       }
     });
   }
@@ -75,6 +84,8 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
 
   @override
   Widget build(BuildContext context) {
+    print('noUserFound $noUserFound');
+    print('isSearing $isSearching');
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = _width * 0.05;
@@ -521,7 +532,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                           ),
                         ),
                       ),
-                    if (isSearching == true)
+                    if (isSearching == true && noUserFound == false)
                       Visibility(
                         visible: true,
                         // child: Container(
@@ -538,8 +549,15 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                             ),
                           ),
                         ),
-
                       ),
+                    if (isSearching == true && noUserFound == true)
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          child: Text('No User Found')
+                        ),
+                      ),
+                    if (noUserFound != true)
                     Container(
                       padding: EdgeInsets.only(top: 20),
                       child: ButtonTheme(
@@ -563,7 +581,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                             }
                             databaseMethods.updateAdminId(widget.courseId, newAdminId);
                             sendAdminId(newAdminId);
-                            Navigator.of(context).pop();
+                            Navigator.pop(context, newAdminId);
                           },
                         ),
                       ),
