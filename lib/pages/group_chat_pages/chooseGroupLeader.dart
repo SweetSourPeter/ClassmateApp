@@ -9,21 +9,22 @@ import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import "package:collection/collection.dart";
+import 'package:app_test/pages/contact_pages/searchUser.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChooseGroupLeader extends StatefulWidget {
   final String courseId;
   final String myEmail;
   final String myName;
   final List<dynamic> groupMembers;
-  final String adminName;
-  final String adminId;
+  final Function(String) adminCallback;
   ChooseGroupLeader(
       {this.courseId,
-      this.myEmail,
-      this.myName,
-      this.groupMembers,
-      this.adminName,
-      this.adminId});
+        this.myEmail,
+        this.myName,
+        this.groupMembers,
+        this.adminCallback
+      });
   @override
   _ChooseGroupLeaderState createState() => _ChooseGroupLeaderState();
 }
@@ -37,25 +38,40 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   String courseSection;
   String courseTerm;
   List<dynamic> members;
-  String adminName;
-  String adminId;
   bool isSearching;
   bool onSelected;
-  bool pressAttention = false;
   String newAdminId;
+  List<dynamic> foundUser;
+  Function(String) sendAdminId;
+
 
   @override
   void initState() {
     super.initState();
-    adminId = widget.adminId;
-    adminName = widget.adminName;
     members = widget.groupMembers;
     numberOfMembers = widget.groupMembers.length;
     showTextKeyboard = false;
     isSearching = false;
     onSelected = false;
     newAdminId = '';
+    sendAdminId = widget.adminCallback;
   }
+
+  initiateSearch() async {
+    var temp =
+    await databaseMethods.getUsersByUsernameInCourse(searchTextEditingController.text,widget.courseId);
+    // if (temp == null) return;
+    setState(() {
+      foundUser = temp;
+      if (foundUser != null) {
+        if ((foundUser.length >= 1) &&
+            (searchTextEditingController.text.isNotEmpty)) {
+          isSearching = true;
+        }
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,34 +149,34 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                               padding: EdgeInsets.only(
                                   left: sidebarSize * 1.0,
                                   top: ((index != 0) &&
-                                          (members[index - 1][0][0] !=
-                                              members[index][0][0]))
+                                      (members[index - 1][0][0] !=
+                                          members[index][0][0]))
                                       ? sidebarSize * 0.4
                                       : 0),
                               child: CircleAvatar(
                                 backgroundColor: listProfileColor[
-                                    members != null
-                                        ? members[index][2].toInt()
-                                        : 1],
+                                members != null
+                                    ? members[index][2].toInt()
+                                    : 1],
                                 radius: sidebarSize * 1.2,
                                 child: Container(
                                   child: Text(
                                     memberName.split(' ').length >= 2
                                         ? memberName
-                                                .split(' ')[0][0]
-                                                .toUpperCase() +
-                                            memberName
-                                                .split(' ')[memberName
-                                                        .split(' ')
-                                                        .length -
-                                                    1][0]
-                                                .toUpperCase()
+                                        .split(' ')[0][0]
+                                        .toUpperCase() +
+                                        memberName
+                                            .split(' ')[memberName
+                                            .split(' ')
+                                            .length -
+                                            1][0]
+                                            .toUpperCase()
                                         : memberName[0].toUpperCase(),
                                     style: GoogleFonts.montserrat(
                                         fontSize:
-                                            memberName.split(' ').length >= 2
-                                                ? 14
-                                                : 15,
+                                        memberName.split(' ').length >= 2
+                                            ? 14
+                                            : 15,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -184,16 +200,15 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                       // Check mark
                       members[index][1] == newAdminId
                           ? Container(
-                              padding:
-                                  EdgeInsets.only(right: sidebarSize * 1.8),
-                              child: Text(
-                                '√',
-                                style: GoogleFonts.montserrat(
-                                    color: Color(0xffbacFF7E40),
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            )
+                        padding: EdgeInsets.only(right: sidebarSize * 1.8),
+                        child: Text(
+                          '√',
+                          style: GoogleFonts.montserrat(
+                              color: Color(0xffbacFF7E40),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      )
                           : Container()
                     ],
                   ),
@@ -219,6 +234,159 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
       });
     }
 
+    List<Widget> _listSearchMember(radius) {
+      return List.generate(foundUser.length, (index) {
+        final memberName = foundUser[index][0];
+        final memberId = foundUser[index][1];
+        final profileColor = foundUser[index][2];
+
+        return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if (index == 0)
+                Visibility(
+                  visible: true,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.only(left: sidebarSize * 1.5),
+                          child: Text(
+                            memberName[0].toUpperCase(),
+                            style: GoogleFonts.montserrat(
+                                color: Color(0xffFF7E40),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16),
+                          ),
+                        )),
+                  ),
+                )
+              else if (foundUser[index-1][0][0] != foundUser[index][0][0])
+                Visibility(
+                  visible: true,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.only(left: sidebarSize * 1.5),
+                          child: Text(
+                            foundUser[index][0][0].toUpperCase(),
+                            style: GoogleFonts.montserrat(
+                                color: Color(0xffFF7E40),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16),
+                          ),
+                        )),
+                  ),
+                ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  setState(() {
+                    onSelected = true;
+                    newAdminId = memberId;
+                  });
+                },
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Row(
+                          children: [
+                            // User profile photo
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: sidebarSize * 1.0,
+                                  top: ((index != 0) &&
+                                      (foundUser[index-1][0][0] != foundUser[index][0][0]))
+                                      ? sidebarSize * 0.4
+                                      : 0),
+
+                              child: CircleAvatar(
+                                backgroundColor: listProfileColor[profileColor],
+                                radius: sidebarSize * 1.2,
+                                child: Container(
+                                  child: Text(
+                                    memberName.split(' ').length >= 2
+                                        ? memberName
+                                        .split(' ')[0][0]
+                                        .toUpperCase() +
+                                        memberName
+                                            .split(' ')[memberName
+                                            .split(' ')
+                                            .length -
+                                            1][0]
+                                            .toUpperCase()
+                                        : memberName[0].toUpperCase(),
+                                    style: GoogleFonts.montserrat(
+                                        fontSize:
+                                        memberName.split(' ').length >= 2
+                                            ? 14
+                                            : 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // User name
+                            Container(
+                              padding: EdgeInsets.only(left: sidebarSize * 0.8),
+                              child: Text(
+                                memberName,
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.black, fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Check mark
+                      memberId == newAdminId
+                          ? Container(
+                        padding: EdgeInsets.only(right: sidebarSize * 1.8),
+                        child: Text(
+                          '√',
+                          style: GoogleFonts.montserrat(
+                              color: Color(0xffbacFF7E40),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      )
+                          : Container()
+                    ],
+                  ),
+                ),
+              ),
+              if (foundUser.length != 1
+                  && index != foundUser.length - 1)
+                Container(
+                  margin: EdgeInsets.only(
+                      right: sidebarSize * 0.6,
+                      left: sidebarSize * 3.3,
+                      top: sidebarSize * 0.8),
+                  child: Divider(
+                    thickness: 1,
+                  ),
+                ),
+              SizedBox(
+                height: sidebarSize * 0.8,
+              )
+            ],
+          ),
+        );
+      });
+    }
+
+
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -238,35 +406,33 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                   children: [
                     Container(
                       color: Colors.white,
-                      height: _height*0.10,
+                      height: 73.68,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
+                          Padding(
                             padding: EdgeInsets.only(left: sidebarSize * 0.55),
-                            alignment: Alignment.centerLeft,
-                            width: _width*1/6,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/arrow-back.png',
-                                height: 17.96,
-                                width: 10.26,
+                            child: Container(
+                              child: IconButton(
+                                icon: Image.asset(
+                                  'assets/images/arrow-back.png',
+                                  height: 17.96,
+                                  width: 10.26,
+                                ),
+                                // iconSize: 30.0,
+                                color: const Color(0xFFFF7E40),
+                                onPressed: () {
+                                  // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                                  // databaseMethods.setUnreadGroupChatNumberToZero(
+                                  //     widget.courseId, currentUser.userID);
+                                  Navigator.of(context).pop();
+                                },
                               ),
                               // iconSize: 30.0,
-                              color: const Color(0xFFFF7E40),
-                              onPressed: () {
-                                // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                                // databaseMethods.setUnreadGroupChatNumberToZero(
-                                //     widget.courseId, currentUser.userID);
-                                Navigator.of(context).pop();
-                              },
                             ),
-                            // iconSize: 30.0,
                           ),
                           Container(
-                            alignment: Alignment.center,
-                            width: _width*2/3,
                             child: Text(
                               'Choose New Leader',
                               style: GoogleFonts.montserrat(
@@ -275,9 +441,9 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          Container(
-                            width: _width*1/6,
-                          )
+                          Padding(
+                            padding: EdgeInsets.only(right: 40),
+                          ),
                         ],
                       ),
                     ),
@@ -295,9 +461,9 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         ),
                         textInputAction: TextInputAction.search,
                         onSubmitted: (value) {
-                          setState(() {
-                            isSearching = true;
-                          });
+                          if (searchTextEditingController.text.isNotEmpty) {
+                            initiateSearch();
+                          }
                         },
                         controller: searchTextEditingController,
                         textAlign: TextAlign.left,
@@ -311,15 +477,18 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                           suffixIcon: searchTextEditingController.text.isEmpty
                               ? null
                               : IconButton(
-                                  icon: Icon(
-                                    Icons.cancel,
-                                    color: Color(0xff646464),
-                                    // size: 30,
-                                  ),
-                                  onPressed: () {
-                                    // initiateSearch();
-                                    searchTextEditingController.clear();
-                                  }),
+                                icon: Icon(
+                                  Icons.cancel,
+                                  color: Color(0xff646464),
+                                  // size: 30,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isSearching = false;
+                                  });
+                                  searchTextEditingController.clear();
+                                }
+                              ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(35),
@@ -336,18 +505,41 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: _height * 0.6,
-                      padding: EdgeInsets.only(top: 10),
-                      child: Scrollbar(
-                        thickness: 4,
-                        child: ListView(
-                          primary: false,
-                          shrinkWrap: true,
-                          children: [..._renderMemberInfo(gridWidth - 5)],
+                    if (isSearching == false)
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          height: _height * 0.6,
+                          padding: EdgeInsets.only(top: 10),
+                          child: Scrollbar(
+                            thickness: 4,
+                            child: ListView(
+                              primary: false,
+                              shrinkWrap: true,
+                              children: [..._renderMemberInfo(gridWidth - 5)],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    if (isSearching == true)
+                      Visibility(
+                        visible: true,
+                        // child: Container(
+                        //   child: Text(searchSnapshot.docs[0].data()['userName'])
+                        child: Container(
+                          height: _height * 0.6,
+                          padding: EdgeInsets.only(top: 10),
+                          child: Scrollbar(
+                            thickness: 4,
+                            child: ListView(
+                              primary: false,
+                              shrinkWrap: true,
+                              children: [..._listSearchMember(gridWidth - 5)],
+                            ),
+                          ),
+                        ),
+
+                      ),
                     Container(
                       padding: EdgeInsets.only(top: 20),
                       child: ButtonTheme(
@@ -366,12 +558,13 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                           ),
                           color: onSelected ? Color(0xFFFF7E40) : Colors.white,
                           onPressed: () {
-                            databaseMethods.updateAdminId(
-                                widget.courseId, newAdminId);
+                            if (onSelected == false){
+                              return null;
+                            }
+                            databaseMethods.updateAdminId(widget.courseId, newAdminId);
+                            sendAdminId(newAdminId);
                             Navigator.of(context).pop();
                           },
-                          // color: pressAttention ? Colors.grey : Color(0xFFFF7E40),
-                          // onPressed: () => setState(() => pressAttention = !pressAttention),
                         ),
                       ),
                     ),

@@ -13,7 +13,6 @@ import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
 import 'package:flutter/services.dart';
-// import './Choose_GroupLeader.dart';
 
 import 'chooseGroupLeader.dart';
 import 'groupNotice.dart';
@@ -46,7 +45,7 @@ class _CourseDetailState extends State<CourseDetail> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   String adminId;
   String adminName;
-
+  String reloadAdminId;
 
   @override
   void initState() {
@@ -60,9 +59,8 @@ class _CourseDetailState extends State<CourseDetail> {
         adminId = value.docs[0].data()['adminId'];
       });
 
-      databaseMethods
-          .getUserDetailsByID(value.docs[0].data()['adminId'])
-          .then((info) {
+      // Unused in this class
+      databaseMethods.getUserDetailsByID(value.docs[0].data()['adminId']).then((info) {
         setState(() {
           adminName = info.userName;
         });
@@ -78,6 +76,7 @@ class _CourseDetailState extends State<CourseDetail> {
     memberInfo = widget.members;
   }
 
+
   @override
   Widget build(BuildContext context) {
     var _width = MediaQuery.of(context).size.width;
@@ -92,7 +91,7 @@ class _CourseDetailState extends State<CourseDetail> {
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         if (memberInfo == null) {
-          return SimpleLoadingScreen(Colors.white);
+          return PictureLoadingScreen(Colors.white);
         } else {
           final memberName = memberInfo[index][0];
 
@@ -285,26 +284,20 @@ class _CourseDetailState extends State<CourseDetail> {
                                           children: <Widget>[
                                             Text(
                                                 numberOfMembers > 1
-                                                    ? numberOfMembers
-                                                            .toString() +
-                                                        ' ' +
-                                                        'people'
-                                                    : numberOfMembers
-                                                            .toString() +
-                                                        ' ' +
-                                                        'person',
+                                                    ? numberOfMembers.toString() + ' ' + 'people'
+                                                    : numberOfMembers.toString() + ' ' + 'person',
                                                 style: GoogleFonts.openSans(
                                                   color: Colors.black38,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.normal,
                                                 )),
-                                            // Container(
-                                            //   margin: EdgeInsets.only(top: 3),
-                                            //   child: Icon(
-                                            //     Icons.navigate_next,
-                                            //     color: Colors.black38,
-                                            //   ),
-                                            // )
+                                          // Container(
+                                          //   margin: EdgeInsets.only(top: 3),
+                                          //   child: Icon(
+                                          //     Icons.navigate_next,
+                                          //     color: Colors.black38,
+                                          //   ),
+                                          // )
                                           ],
                                         ),
                                       ),
@@ -361,12 +354,10 @@ class _CourseDetailState extends State<CourseDetail> {
                                     width: _width,
                                     color: Colors.white,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 21.0),
+                                          padding: const EdgeInsets.only(left: 21.0),
                                           child: Text(
                                             "Chat Search",
                                             style: GoogleFonts.montserrat(
@@ -375,8 +366,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 21.0),
+                                          padding: const EdgeInsets.only(right: 21.0),
                                           child: Image.asset(
                                               'assets/images/arrow-forward.png',
                                               height: 9.02,
@@ -389,22 +379,22 @@ class _CourseDetailState extends State<CourseDetail> {
                                   onTap: () {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
-                                      return MultiProvider(
-                                        providers: [
-                                          Provider<UserData>.value(
-                                            value: currentUser,
-                                          ),
-                                          Provider<List<CourseInfo>>.value(
-                                              value: course)
-                                        ],
-                                        child: SearchGroupChat(
-                                          courseId: widget.courseId,
-                                          myEmail: widget.myEmail,
-                                          myName: widget.myName,
-                                        ),
-                                      );
-                                    }));
-                                  },
+                                          return MultiProvider(
+                                            providers: [
+                                              Provider<UserData>.value(
+                                                value: currentUser,
+                                              ),
+                                              Provider<List<CourseInfo>>.value(
+                                                  value: course)
+                                            ],
+                                            child: SearchGroupChat(
+                                              courseId: widget.courseId,
+                                              myEmail: widget.myEmail,
+                                              myName: widget.myName,
+                                            ),
+                                          );
+                                        }));
+                                    },
                                 ),
                                 // ButtonLink(
                                 //     text: "Mute",
@@ -525,79 +515,69 @@ class _CourseDetailState extends State<CourseDetail> {
                                 ),
                                 if (currentUser.userID == adminId)
                                   Visibility(
-                                    visible: true,
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: Column(
-                                        children: [
-                                          GestureDetector(
-                                            child: Container(
-                                              alignment: Alignment.centerLeft,
-                                              height: 50,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              color: Colors.white,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 21.0),
-                                                    child: Text(
-                                                      "Administrator Transfer",
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        fontSize: 14,
-                                                      ),
+                                  visible: true,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            height: 50,
+                                            width: MediaQuery.of(context).size.width,
+                                            color: Colors.white,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(left: 21.0),
+                                                  child: Text(
+                                                    "Administrator Transfer",
+                                                    style: GoogleFonts.montserrat(
+                                                      fontSize: 14,
                                                     ),
                                                   ),
-                                                  Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 30.0),
-                                                      child: Text(
-                                                          adminName == null
-                                                              ? 'Loading...'
-                                                              : adminName)),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 21.0),
-                                                    child: Image.asset(
-                                                        'assets/images/arrow-forward.png',
-                                                        height: 9.02,
-                                                        width: 4.86,
-                                                        color: const Color(
-                                                            0xFF949494)),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+
+                                                // Padding(
+                                                //     padding:
+                                                //     const EdgeInsets.only(right: 30.0),
+                                                //     child: Text(adminName == null ? 'Loading...' : adminName)
+                                                // ),
+
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(right: 21.0),
+                                                  child: Image.asset(
+                                                      'assets/images/arrow-forward.png',
+                                                      height: 9.02,
+                                                      width: 4.86,
+                                                      color: const Color(0xFF949494)),
+                                                ),
+                                              ],
                                             ),
-                                            onTap: () {
-                                              if (memberInfo == null) {
-                                                return null;
-                                              }
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return MultiProvider(
-                                                  providers: [
-                                                    Provider<UserData>.value(
-                                                      value: currentUser,
+                                          ),
+                                          onTap: () {
+                                            if (memberInfo == null){
+                                              return null;
+                                            }
+                                            Navigator.push(context,
+                                                MaterialPageRoute(builder: (context) {
+                                                  return MultiProvider(
+                                                    providers: [
+                                                      Provider<UserData>.value(
+                                                        value: currentUser,
+                                                      ),
+                                                    ],
+                                                    child: ChooseGroupLeader(
+                                                      groupMembers: memberInfo,
+                                                      courseId: widget.courseId,
+                                                      myEmail: widget.myEmail,
+                                                      myName: widget.myName,
+                                                      adminCallback: (String val) => setState(()=>reloadAdminId=val),
                                                     ),
-                                                  ],
-                                                  child: ChooseGroupLeader(
-                                                    // adminId: adminId,
-                                                    // adminName: adminName,
-                                                    groupMembers: memberInfo,
-                                                    courseId: widget.courseId,
-                                                    myEmail: widget.myEmail,
-                                                    myName: widget.myName,
-                                                  ),
                                                 );
                                               }));
                                             },
@@ -655,52 +635,84 @@ class _CourseDetailState extends State<CourseDetail> {
                                     ),
                                   ),
                                   onTap: () {
-                                    showDialog<void>(
-                                      context: context,
-                                      barrierDismissible:
-                                          false, // user must tap button!
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: SingleChildScrollView(
-                                            child: ListBody(
-                                              children: <Widget>[
-                                                Text(
-                                                  'Are you sure you want to delete this course?',
+                                    if (currentUser.userID != reloadAdminId)
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible: false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Are you sure you want to delete this course?',
+                                                    style: simpleTextStyle(
+                                                        Colors.black, 16),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  'Yes',
                                                   style: simpleTextStyle(
-                                                      Colors.black, 16),
+                                                      Colors.black87, 16),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: Text(
-                                                'Yes',
-                                                style: simpleTextStyle(
-                                                    Colors.black87, 16),
+                                                onPressed: () {
+                                                  courseProvider.removeCourse(
+                                                      context, widget.courseId);
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                courseProvider.removeCourse(
-                                                    context, widget.courseId);
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: Text(
-                                                'Cancel',
-                                                style: simpleTextStyle(
-                                                    themeOrange, 16),
+                                              TextButton(
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: simpleTextStyle(
+                                                      themeOrange, 16),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    else
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible: false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'You are now the group leader, please choose a new leader before exiting',
+                                                    style: simpleTextStyle(
+                                                        Colors.black, 16),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: simpleTextStyle(
+                                                      themeOrange, 16),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                   },
                                 ),
                                 // Divider(
