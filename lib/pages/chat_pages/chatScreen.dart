@@ -440,31 +440,33 @@ class _ChatScreenState extends State<ChatScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
+                        Container(
+                          width: _width*1/6,
+                          alignment: Alignment.centerLeft,
                           padding: EdgeInsets.only(left: sidebarSize*0.55),
-                          child: Container(
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/arrow-back.png',
-                                height: 17.96,
-                                width: 10.26,
-                              ),
-                              // iconSize: 30.0,
-                              color: const Color(0xFFFF7E40),
-                              onPressed: () {
-                                databaseMethods.setUnreadNumber(
-                                    widget.chatRoomId, widget.myEmail, 0);
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(currentUser.userID)
-                                    .update({'chattingWith': 'null'});
-                                Navigator.of(context).pop();
-                              },
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/arrow-back.png',
+                              height: 17.96,
+                              width: 10.26,
                             ),
                             // iconSize: 30.0,
+                            color: const Color(0xFFFF7E40),
+                            onPressed: () {
+                              databaseMethods.setUnreadNumber(
+                                  widget.chatRoomId, widget.myEmail, 0);
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(currentUser.userID)
+                                  .update({'chattingWith': 'null'});
+                              Navigator.of(context).pop();
+                            },
                           ),
+                          // iconSize: 30.0,
                         ),
                         Container(
+                          width: _width*2/3,
+                          alignment: Alignment.center,
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(context,
@@ -583,43 +585,44 @@ class _ChatScreenState extends State<ChatScreen> {
                         //     },
                         //   ),
                         // ),
-                        Padding(
-                            padding: EdgeInsets.only(right: sidebarSize*0.55),
-                            child: Container(
-                              child: IconButton(
-                                icon: Image.asset(
-                                  'assets/images/search.png',
-                                  height: 23,
-                                  width: 23,
-                                  color: Color(0xffFF7E40),
-                                ),
-                                // iconSize: 10.0,
-                                onPressed: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return MultiProvider(
-                                      providers: [
-                                        Provider<UserData>.value(
-                                          value: currentUser,
-                                        ),
-                                        Provider<List<CourseInfo>>.value(
-                                            value: currentCourse)
-                                      ],
-                                      child: SearchChat(
-                                          chatRoomId: widget.chatRoomId,
-                                          friendName: widget.friendName,
-                                          friendEmail: widget.friendEmail,
-                                          friendProfileColor:
-                                              widget.friendProfileColor,
-                                          myEmail: widget.myEmail,
-                                          myName: currentUser.userName,
-                                          myProfileColor:
-                                              currentUser.profileColor),
-                                    );
-                                  }));
-                                },
-                              ),
-                            )),
+                        Container(
+                          width: _width*1/6,
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.only(right: sidebarSize*0.55),
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/search.png',
+                              height: 23,
+                              width: 23,
+                              color: Color(0xffFF7E40),
+                            ),
+                            // iconSize: 10.0,
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MultiProvider(
+                                  providers: [
+                                    Provider<UserData>.value(
+                                      value: currentUser,
+                                    ),
+                                    Provider<List<CourseInfo>>.value(
+                                        value: currentCourse)
+                                  ],
+                                  child: SearchChat(
+                                      chatRoomId: widget.chatRoomId,
+                                      friendName: widget.friendName,
+                                      friendEmail: widget.friendEmail,
+                                      friendProfileColor:
+                                          widget.friendProfileColor,
+                                      myEmail: widget.myEmail,
+                                      myName: currentUser.userName,
+                                      myProfileColor:
+                                          currentUser.profileColor),
+                                );
+                              }));
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),

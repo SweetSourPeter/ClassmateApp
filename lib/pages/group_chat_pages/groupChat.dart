@@ -23,6 +23,8 @@ import 'package:intl/intl.dart';
 import 'package:app_test/widgets/LinkWellModified.dart';
 import 'package:diff_match_patch/diff_match_patch.dart';
 
+import 'groupNotice.dart';
+
 class GroupChat extends StatefulWidget {
   final String courseId;
   final double initialChat;
@@ -59,7 +61,8 @@ class _GroupChatState extends State<GroupChat> {
   String previousText;
 
   Stream chatMessageStream;
-  Future friendCoursesFuture;
+  List<dynamic> memberInfo;
+  List<String> membersToAt;
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
@@ -110,37 +113,44 @@ class _GroupChatState extends State<GroupChat> {
                   }
 
                   return snapshot.data.docs[index].data()['messageType'] ==
-                          'text'
+                      'text'
                       ? MessageTile(
-                          snapshot.data.docs[index].data()['message'],
-                          sender == myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.docs[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.docs[index].data()['senderName'],
-                          snapshot.data.docs[index].data()['senderID'],
-                          displayName,
-                          snapshot.data.docs[index].data()['profileColor'] ??
-                              1.0,
-                        )
+                    snapshot.data.docs[index].data()['message'],
+                    sender == myEmail,
+                    DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.docs[index].data()['time'])
+                        .toString(),
+                    displayTime,
+                    displayWeek,
+                    lastMessage,
+                    snapshot.data.docs[index].data()['senderName'],
+                    snapshot.data.docs[index].data()['senderID'],
+                    displayName,
+                    snapshot.data.docs[index].data()['profileColor'] ??
+                        1.0,
+                  )
+                      : snapshot.data.docs[index].data()['messageType'] ==
+                      'groupNotice'
+                      ? GroupNoticeTile(
+                      snapshot.data.docs[index].data()['message'],
+                      lastMessage,
+                      widget.courseId
+                  )
                       : ImageTile(
-                          snapshot.data.docs[index].data()['message'],
-                          sender == myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.docs[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.docs[index].data()['senderName'],
-                          snapshot.data.docs[index].data()['senderID'],
-                          displayName,
-                          snapshot.data.docs[index].data()['profileColor'] ??
-                              1.0,
-                        );
+                    snapshot.data.docs[index].data()['message'],
+                    sender == myEmail,
+                    DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.docs[index].data()['time'])
+                        .toString(),
+                    displayTime,
+                    displayWeek,
+                    lastMessage,
+                    snapshot.data.docs[index].data()['senderName'],
+                    snapshot.data.docs[index].data()['senderID'],
+                    displayName,
+                    snapshot.data.docs[index].data()['profileColor'] ??
+                        1.0,
+                  );
                 })
             : Container();
       },
@@ -166,6 +176,8 @@ class _GroupChatState extends State<GroupChat> {
   sendMessage(UserData currentUser) {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+
+
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
         'messageType': 'text',
@@ -252,11 +264,13 @@ class _GroupChatState extends State<GroupChat> {
   Future _pickImage(ImageSource source, UserData currentUser, context) async {
     PickedFile selected = await _picker.getImage(source: source);
 
-    setState(() {
-      _imageFile = File(selected.path);
-    });
+    if(selected != null){
+      setState(() {
+        _imageFile = File(selected.path);
+      });
 
-    _showImageConfirmDialog(context, currentUser);
+      _showImageConfirmDialog(context, currentUser);
+    }
   }
 
   Future<void> _showImageConfirmDialog(context, currentUser) async {
@@ -319,6 +333,12 @@ class _GroupChatState extends State<GroupChat> {
     databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
       setState(() {
         numberOfMembers = value.docs.length;
+      });
+    });
+
+    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        memberInfo = value;
       });
     });
 
@@ -419,29 +439,29 @@ class _GroupChatState extends State<GroupChat> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: sidebarSize * 0.55),
-                          child: Container(
-                            // height: 17.96,
-                            // width: 10.26,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/arrow-back.png',
-                                height: 17.96,
-                                width: 10.26,
-                              ),
-                              // iconSize: 30.0,
-                              color: const Color(0xFFFF7E40),
-                              onPressed: () {
-                                // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                                // databaseMethods.setUnreadGroupChatNumberToZero(
-                                //     widget.courseId, currentUser.userID);
-                                Navigator.of(context).pop();
-                              },
+                        Container(
+                          padding: EdgeInsets.only(left: sidebarSize*0.55),
+                          alignment: Alignment.centerLeft,
+                          width: _width*1/6,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/arrow-back.png',
+                              height: 17.96,
+                              width: 10.26,
                             ),
+                            // iconSize: 30.0,
+                            color: const Color(0xFFFF7E40),
+                            onPressed: () {
+                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                              // databaseMethods.setUnreadGroupChatNumberToZero(
+                              //     widget.courseId, currentUser.userID);
+                              Navigator.of(context).pop();
+                            },
                           ),
                         ),
                         Container(
+                          width: _width*2/3,
+                          alignment: Alignment.center,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -481,37 +501,37 @@ class _GroupChatState extends State<GroupChat> {
                         //     },
                         //   ),
                         // ),
-                        Padding(
+                        Container(
+                          width: _width*1/6,
                           padding: EdgeInsets.only(right: sidebarSize * 0.55),
-                          child: Container(
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/group_more.png',
-                                height: 32.44,
-                                width: 41.46,
-                              ),
-                              // iconSize: 10.0,
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: currentUser,
-                                      ),
-                                      Provider<List<CourseInfo>>.value(
-                                        value: currentCourse,
-                                      ),
-                                    ],
-                                    child: CourseDetail(
-                                      courseId: widget.courseId,
-                                      myEmail: widget.myEmail,
-                                      myName: widget.myName,
-                                    ),
-                                  );
-                                }));
-                              },
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/group_more.png',
+                              height: 32.44,
+                              width: 41.46,
                             ),
+                            // iconSize: 10.0,
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MultiProvider(
+                                  providers: [
+                                    Provider<UserData>.value(
+                                      value: currentUser,
+                                    ),
+                                    Provider<List<CourseInfo>>.value(
+                                      value: currentCourse,
+                                    ),
+                                  ],
+                                  child: CourseDetail(
+                                    courseId: widget.courseId,
+                                    myEmail: widget.myEmail,
+                                    myName: widget.myName,
+                                    members: memberInfo
+                                  ),
+                                );
+                              }));
+                            },
                           ),
                         ),
                       ],
@@ -555,8 +575,9 @@ class _GroupChatState extends State<GroupChat> {
                             // when user presses enter it will adapt to it
                             onChanged: (text) async {
                               if(diff(previousText, text).length == 2) {
-                                print(diff(previousText, text)[1].text);
+                                // print(diff(previousText, text)[1].text);
                                 if(diff(previousText, text)[1].operation != -1 && diff(previousText, text)[1].text == '@') {
+                                  // print(memberInfo);
                                   String thePerson = await showModalBottomSheet(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
@@ -576,9 +597,15 @@ class _GroupChatState extends State<GroupChat> {
                                             bottom: false,
                                             child: AtPeople(
                                               courseId: widget.courseId,
+                                              members: memberInfo,
                                             ));
                                       });
-                                  messageController.text += thePerson;
+
+                                  if (thePerson != null)
+                                    setState(() {
+                                      membersToAt.add('@' + thePerson);
+                                    });
+                                    messageController.text += thePerson + ' ';
                                 }
                               } else if (text == '@') {
                                 String thePerson = await showModalBottomSheet(
@@ -600,9 +627,15 @@ class _GroupChatState extends State<GroupChat> {
                                           bottom: false,
                                           child: AtPeople(
                                             courseId: widget.courseId,
+                                            members: memberInfo,
                                           ));
                                     });
-                                messageController.text += thePerson;
+
+                                if (thePerson != null)
+                                  setState(() {
+                                    membersToAt.add('@' + thePerson);
+                                  });
+                                  messageController.text += thePerson + ' ';
                               }
                               previousText = text;
                             },
@@ -1305,6 +1338,99 @@ class ImageTile extends StatelessWidget {
           height: lastMessage ? 20 : 0,
         )
       ],
+    );
+  }
+}
+
+class GroupNoticeTile extends StatelessWidget {
+  final String message;
+  final bool lastMessage;
+  final String courseId;
+
+  GroupNoticeTile(this.message, this.lastMessage, this.courseId);
+
+  @override
+  Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
+    double sidebarSize = _width * 0.05;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) {
+              return MultiProvider(
+                providers: [
+                  Provider<UserData>.value(
+                    value: userdata,
+                  ),
+                  Provider<List<CourseInfo>>.value(
+                    value: currentCourse,
+                  ),
+                ],
+                child: GroupNotice(
+                    courseId: courseId
+                ),
+              );
+            }));
+      },
+      child: Padding(
+        padding: EdgeInsets.only(left: sidebarSize*1.2, right: sidebarSize*1.2, top: sidebarSize),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: Colors.white,
+                width: _width - sidebarSize*1.6,
+                padding: EdgeInsets.only(left: sidebarSize*0.8, right: sidebarSize*0.2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Group Notice',
+                      style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16
+                      ),
+                    ),
+                    IconButton(
+                      icon: Image.asset(
+                        'assets/images/arrow-forward.png',
+                        height: 17.96,
+                        width: 10.26,
+                      ),
+                      // iconSize: 30.0,
+                      color: const Color(0xFFFF7E40),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                width: _width - sidebarSize*1.6,
+                padding: EdgeInsets.only(left: sidebarSize*0.8, right: sidebarSize*0.8, bottom: sidebarSize),
+                child: Text(
+                  message,
+                  maxLines: 7,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(
+                      color: Color(0xff949494),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: lastMessage ? 20 : 0,
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

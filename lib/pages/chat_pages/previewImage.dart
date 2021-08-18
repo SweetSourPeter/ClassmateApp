@@ -1,5 +1,3 @@
-// import 'package:path_provider/path_provider.dart';
-// import 'package:dio/dio.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -94,21 +92,19 @@ class _PreviewImageState extends State<PreviewImage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
+                    Container(
                       padding: EdgeInsets.only(left: sidebarSize*0.55),
-                      child: Container(
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/arrow-back.png',
-                            height: 17.96,
-                            width: 10.26,
-                          ),
-                          // iconSize: 30.0,
-                          color: const Color(0xFFFF7E40),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/images/arrow-back.png',
+                          height: 17.96,
+                          width: 10.26,
                         ),
+                        // iconSize: 30.0,
+                        color: const Color(0xFFFF7E40),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ),
                   ],
@@ -124,7 +120,7 @@ class _PreviewImageState extends State<PreviewImage> {
                   height: MediaQuery.of(context).size.height - 300,
                   width: MediaQuery.of(context).size.width,
                   placeholder: (context, url) =>
-                      new CircularProgressIndicator(),
+                  new CircularProgressIndicator(),
                   errorWidget: (context, url, error) => new Icon(Icons.error),
                 ),
               ),

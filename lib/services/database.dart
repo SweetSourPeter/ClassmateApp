@@ -600,6 +600,8 @@ class DatabaseMethods {
       });
     });
 
+    members.sort((a, b) => a[0].toString().toUpperCase().compareTo(b[0].toString().toUpperCase()));
+
     return members;
   }
 
