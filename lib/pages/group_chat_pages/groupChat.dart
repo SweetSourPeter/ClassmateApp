@@ -594,12 +594,12 @@ class _GroupChatState extends State<GroupChat> {
                               print('-------------------');
                               print('new: ' + text);
                               print('prev: ' + previousText);
-
+                              print(diff(previousText, text));
                               if(diff(previousText, text).length == 2) {
 
                                 print('diff: ' + diff(previousText, text)[1].text);
 
-                                if(diff(previousText, text)[1].operation != -1 && diff(previousText, text)[1].text == '@') {
+                                if(diff(previousText, text)[1].operation != -1 && diff(previousText, text)[1].text.contains('@')) {
                                   // print(memberInfo);
                                   List<String> thePerson = await showModalBottomSheet(
                                       shape: RoundedRectangleBorder(
@@ -665,7 +665,7 @@ class _GroupChatState extends State<GroupChat> {
                                   messageController.text += thePerson[0] + ' ';
                                 }
                               }
-                              previousText = text;
+                              previousText = messageController.text;
                               print('-------------------');
                             },
                             onTap: () {
