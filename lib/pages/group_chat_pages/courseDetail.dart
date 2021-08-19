@@ -580,7 +580,6 @@ class _CourseDetailState extends State<CourseDetail> {
                                                     ),
                                                 );
                                               }));
-
                                             print(tmpAdminId);
                                             if (tmpAdminId != null) {
                                               setState(() {
