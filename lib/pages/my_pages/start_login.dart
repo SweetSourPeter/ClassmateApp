@@ -116,11 +116,12 @@ class _StartLoginPageState extends State<StartLoginPage> {
                     : Curves.easeInOut,
                 tween: postionLogo,
                 builder: (BuildContext context, animation, Widget child) {
+                  print(_currentIndex);
                   return AnimatedPositioned(
-                    duration: Duration(milliseconds: 300),
+                    duration: Duration(milliseconds: 370),
                     top: _currentIndex == null || _currentIndex == 1
                         ? _height * 0.11
-                        : _height * 0.000,
+                        : _height * -0.2,
                     left: _width / 2 - (156 / 2), //logo widget width/2
                     child: TweenAnimationBuilder(
                       child: LogoWidget(),

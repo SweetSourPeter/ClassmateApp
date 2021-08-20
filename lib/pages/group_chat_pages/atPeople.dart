@@ -30,7 +30,7 @@ class _AtPeopleState extends State<AtPeople> {
   List<dynamic> membersFound;
 
   initiateSearch() {
-    membersFound = memberInfo.where((element) => element[0].contains(searchTextEditingController.text)).toList();
+    membersFound = memberInfo.where((element) => element[0].toString().toUpperCase().contains(searchTextEditingController.text.toUpperCase())).toList();
     print('result is:');
     print(membersFound);
 

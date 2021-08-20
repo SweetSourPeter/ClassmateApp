@@ -217,10 +217,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
     _getSignIn() {
       return Container(
+        padding: EdgeInsets.only(bottom: _height*0.03),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
         ),
-        height: _height * 0.06,
+        height: _height * 0.1,
         width: _width * 0.75,
         child: RaisedButton(
           hoverElevation: 0,
@@ -240,7 +241,7 @@ class _SignUpPageState extends State<SignUpPage> {
             emailExist = false;
             signMeUp();
           },
-          child: AutoSizeText(
+          child: Text(
             'CONTINUE',
             style: simpleTextSansStyleBold(
                 (emailTextEditingController.text.isNotEmpty &&
@@ -294,7 +295,7 @@ class _SignUpPageState extends State<SignUpPage> {
           left: _width * 0.12,
           right: _width * 0.12,
           top: _height * 0.09,
-          bottom: _height * 0.146,
+          bottom: _height * 0.08,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           Form(

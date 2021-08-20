@@ -60,7 +60,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   }
 
   initiateSearch() {
-    foundUser = members.where((element) => element[0].contains(searchTextEditingController.text)).toList();
+    foundUser = members.where((element) => element[0].toString().toUpperCase().contains(searchTextEditingController.text.toUpperCase())).toList();
     print('result is:');
     print(foundUser);
 

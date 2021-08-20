@@ -100,9 +100,9 @@ class _SignInState extends State<SignIn> {
 
     _getBackBtn() {
       return Align(
-        alignment: Alignment.topLeft,
+        alignment: Alignment.topRight,
         child: Padding(
-          padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
+          padding: EdgeInsets.only(top: _height * 0.06, right: _width * 0.098),
           child: GestureDetector(
             onTap: () {
               widget.pageController.animateToPage(1,
@@ -110,7 +110,7 @@ class _SignInState extends State<SignIn> {
                   curve: Curves.easeInCubic);
             },
             child: Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_forward_ios,
               color: Colors.white,
             ),
           ),
