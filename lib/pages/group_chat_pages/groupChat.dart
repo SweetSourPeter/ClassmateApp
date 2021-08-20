@@ -1,20 +1,17 @@
 import 'package:app_test/models/courseInfo.dart';
-import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
+import 'package:app_test/pages/group_chat_pages/atPeople.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_test/models/constant.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
-import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -24,6 +21,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:app_test/widgets/LinkWellModified.dart';
+import 'package:diff_match_patch/diff_match_patch.dart';
+import 'groupNotice.dart';
 
 class GroupChat extends StatefulWidget {
   final String courseId;
@@ -57,10 +56,59 @@ class _GroupChatState extends State<GroupChat> {
   String courseTerm;
   int numberOfMembers = 0;
   FocusNode myFocusNode = FocusNode();
-  bool displayName = true;
+  bool displayName;
+  String previousText;
+  TextSelection currentTextCursor;
+  bool isChoosingToAt;
 
   Stream chatMessageStream;
-  Future friendCoursesFuture;
+  List<dynamic> memberInfo;
+  List<String> membersToAt;
+  List<String> memberIdsToAt;
+
+  @override
+  void initState() {
+    super.initState();
+    databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
+      setState(() {
+        chatMessageStream = value;
+      });
+    });
+
+    // databaseMethods.setUnreadGroupChatNumberToZero(
+    //     widget.courseId, widget.myId);
+
+    databaseMethods.getCourseInfo(widget.courseId).then((value) {
+      setState(() {
+        courseName = value.docs[0].data()['myCourseName'];
+        courseSection = value.docs[0].data()['section'];
+        courseTerm = value.docs[0].data()['term'];
+      });
+    });
+
+    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        numberOfMembers = value.docs.length;
+      });
+    });
+
+    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        memberInfo = value;
+      });
+    });
+
+    showStickerKeyboard = false;
+    showTextKeyboard = false;
+    showFunctions = false;
+    _controller =
+        ScrollController(initialScrollOffset: widget.initialChat * 40);
+    displayName = true;
+    previousText = '';
+    membersToAt = [];
+    memberIdsToAt = [];
+    isChoosingToAt = false;
+  }
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
@@ -75,8 +123,7 @@ class _GroupChatState extends State<GroupChat> {
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
                       snapshot.data.docs[index].data()['time']);
-                  String sender =
-                      snapshot.data.docs[index].data()['sendBy'];
+                  String sender = snapshot.data.docs[index].data()['sendBy'];
                   if (index == snapshot.data.docs.length - 1) {
                     displayTime = true;
                     displayName = true;
@@ -112,39 +159,44 @@ class _GroupChatState extends State<GroupChat> {
                   }
 
                   return snapshot.data.docs[index].data()['messageType'] ==
-                          'text'
+                      'text'
                       ? MessageTile(
-                          snapshot.data.docs[index].data()['message'],
-                          sender == myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.docs[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.docs[index].data()['senderName'],
-                          snapshot.data.docs[index].data()['senderID'],
-                          displayName,
-                          snapshot.data.docs[index]
-                                  .data()['profileColor'] ??
-                              1.0,
-                        )
+                    snapshot.data.docs[index].data()['message'],
+                    sender == myEmail,
+                    DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.docs[index].data()['time'])
+                        .toString(),
+                    displayTime,
+                    displayWeek,
+                    lastMessage,
+                    snapshot.data.docs[index].data()['senderName'],
+                    snapshot.data.docs[index].data()['senderID'],
+                    displayName,
+                    snapshot.data.docs[index].data()['profileColor'] ??
+                        1.0,
+                  )
+                      : snapshot.data.docs[index].data()['messageType'] ==
+                      'groupNotice'
+                      ? GroupNoticeTile(
+                      snapshot.data.docs[index].data()['message'],
+                      lastMessage,
+                      widget.courseId
+                  )
                       : ImageTile(
-                          snapshot.data.docs[index].data()['message'],
-                          sender == myEmail,
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.docs[index].data()['time'])
-                              .toString(),
-                          displayTime,
-                          displayWeek,
-                          lastMessage,
-                          snapshot.data.docs[index].data()['senderName'],
-                          snapshot.data.docs[index].data()['senderID'],
-                          displayName,
-                          snapshot.data.docs[index]
-                                  .data()['profileColor'] ??
-                              1.0,
-                        );
+                    snapshot.data.docs[index].data()['message'],
+                    sender == myEmail,
+                    DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.docs[index].data()['time'])
+                        .toString(),
+                    displayTime,
+                    displayWeek,
+                    lastMessage,
+                    snapshot.data.docs[index].data()['senderName'],
+                    snapshot.data.docs[index].data()['senderID'],
+                    displayName,
+                    snapshot.data.docs[index].data()['profileColor'] ??
+                        1.0,
+                  );
                 })
             : Container();
       },
@@ -170,6 +222,15 @@ class _GroupChatState extends State<GroupChat> {
   sendMessage(UserData currentUser) {
     if (messageController.text.isNotEmpty) {
       final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+
+      List<String> tmpIdsToAt = [];
+
+      for (var i = 0; i < membersToAt.length; i++) {
+        if (messageController.text.contains(membersToAt[i])) {
+          tmpIdsToAt.add(memberIdsToAt[i]);
+        }
+      }
+
       Map<String, dynamic> messageMap = {
         'message': messageController.text,
         'messageType': 'text',
@@ -177,20 +238,27 @@ class _GroupChatState extends State<GroupChat> {
         'senderName': currentUser.userName,
         'time': lastMessageTime,
         'senderID': currentUser.userID,
-        'profileColor': currentUser.profileColor
+        'profileColor': currentUser.profileColor,
+        'membersToAt': tmpIdsToAt
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
-      // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
+      // databaseMethods.setLatestMessage(widget.courseId, messageController.text, lastMessageTime);
       // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
       //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
       //   databaseMethods.setUnreadNumber(widget.courseId, widget.friendEmail, unreadNumber);
       // });
 
       _controller.jumpTo(_controller.position.minScrollExtent);
-      messageController.text = '';
+
+      setState(() {
+        messageController.clear();
+        previousText = '';
+        membersToAt = [];
+        memberIdsToAt = [];
+      });
     }
   }
 
@@ -208,7 +276,8 @@ class _GroupChatState extends State<GroupChat> {
     };
 
     databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+    databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+        widget.courseId, currentUser.userID);
     // _controller.jumpTo(_controller.position.minScrollExtent);
     // messageController.text = '';
   }
@@ -227,8 +296,8 @@ class _GroupChatState extends State<GroupChat> {
       };
 
       databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-      databaseMethods
-          .addOneToUnreadGroupChatNumberForOtherMembers(widget.courseId, currentUser.userID);
+      databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+          widget.courseId, currentUser.userID);
 
       _controller.jumpTo(_controller.position.minScrollExtent);
       _uploadedFileURL = '';
@@ -255,11 +324,13 @@ class _GroupChatState extends State<GroupChat> {
   Future _pickImage(ImageSource source, UserData currentUser, context) async {
     PickedFile selected = await _picker.getImage(source: source);
 
-    setState(() {
-      _imageFile = File(selected.path);
-    });
+    if(selected != null){
+      setState(() {
+        _imageFile = File(selected.path);
+      });
 
-    _showImageConfirmDialog(context, currentUser);
+      _showImageConfirmDialog(context, currentUser);
+    }
   }
 
   Future<void> _showImageConfirmDialog(context, currentUser) async {
@@ -299,37 +370,25 @@ class _GroupChatState extends State<GroupChat> {
     );
   }
 
-  @override
-  void initState() {
-    databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
-      setState(() {
-        chatMessageStream = value;
-      });
-    });
+  void _findCursor() {
+    currentTextCursor = messageController.selection;
+    print('current: ');
+    print(currentTextCursor.start);
+    print(messageController.text);
+  }
 
-    // databaseMethods.setUnreadGroupChatNumberToZero(
-    //     widget.courseId, widget.myId);
-
-    databaseMethods.getCourseInfo(widget.courseId).then((value) {
-      setState(() {
-        courseName = value.docs[0].data()['myCourseName'];
-        courseSection = value.docs[0].data()['section'];
-        courseTerm = value.docs[0].data()['term'];
-      });
-    });
-
-    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
-      setState(() {
-        numberOfMembers = value.docs.length;
-      });
-    });
-
-    showStickerKeyboard = false;
-    showTextKeyboard = false;
-    showFunctions = false;
-    _controller =
-        ScrollController(initialScrollOffset: widget.initialChat * 40);
-    super.initState();
+  void _insertText(String tmpInserted) {
+    final tmpText = messageController.text;
+    // print('tmpText: ' + tmpText);
+    // print('start: ');
+    // print(currentTextCursor.start);
+    // print('end: ' );
+    // print(currentTextCursor.end);
+    final newText = tmpText.replaceRange(currentTextCursor.start, currentTextCursor.end, tmpInserted);
+    messageController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: currentTextCursor.baseOffset + tmpInserted.length),
+    );
   }
 
   getChatRoomId(String a, String b) {
@@ -344,6 +403,9 @@ class _GroupChatState extends State<GroupChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
+    final sidebarSize = _width * 0.05;
     _joinMeeting() async {
       String chatRoomId = widget.courseId;
       print(chatRoomId);
@@ -381,11 +443,8 @@ class _GroupChatState extends State<GroupChat> {
 
         await JitsiMeet.joinMeeting(options).then((value) {
           if (value.isSuccess) {
-            print('sendithere');
             sendInviteMeetMessage(chatRoomId, currentUser);
           }
-          print('respsdgfadsgasdgasdgasdg');
-          print(value.isSuccess);
         });
       } catch (error) {
         debugPrint("error: $error");
@@ -415,34 +474,34 @@ class _GroupChatState extends State<GroupChat> {
                 children: [
                   Container(
                     color: Colors.white,
-                    height: 73.68,
+                    height: _height * 0.10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 20),
-                          child: Container(
-                            // height: 17.96,
-                            // width: 10.26,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/arrow-back.png',
-                                height: 17.96,
-                                width: 10.26,
-                              ),
-                              // iconSize: 30.0,
-                              color: const Color(0xFFFF7E40),
-                              onPressed: () {
-                                // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                                // databaseMethods.setUnreadGroupChatNumberToZero(
-                                //     widget.courseId, currentUser.userID);
-                                Navigator.of(context).pop();
-                              },
+                        Container(
+                          padding: EdgeInsets.only(left: sidebarSize*0.55),
+                          alignment: Alignment.centerLeft,
+                          width: _width*1/6,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/arrow_back.png',
+                              height: 17.96,
+                              width: 10.26,
                             ),
+                            // iconSize: 30.0,
+                            color: const Color(0xFFFF7E40),
+                            onPressed: () {
+                              // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                              // databaseMethods.setUnreadGroupChatNumberToZero(
+                              //     widget.courseId, currentUser.userID);
+                              Navigator.of(context).pop();
+                            },
                           ),
                         ),
                         Container(
+                          width: _width*2/3,
+                          alignment: Alignment.center,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -468,52 +527,51 @@ class _GroupChatState extends State<GroupChat> {
                             ],
                           ),
                         ),
-                        Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 0.0),
+                        //   child: IconButton(
+                        //     icon: Icon(
+                        //       Icons.phone,
+                        //       size: 26,
+                        //       color: Color(0xffFF7E40),
+                        //     ),
+                        //     // iconSize: 10.0,
+                        //     onPressed: () {
+                        //       _joinMeeting();
+                        //     },
+                        //   ),
+                        // ),
+                        Container(
+                          width: _width*1/6,
+                          padding: EdgeInsets.only(right: sidebarSize * 0.55),
                           child: IconButton(
-                            icon: Icon(
-                              Icons.phone,
-                              size: 26,
-                              color: Color(0xffFF7E40),
+                            icon: Image.asset(
+                              'assets/images/group_more.png',
+                              height: 32.44,
+                              width: 41.46,
                             ),
                             // iconSize: 10.0,
                             onPressed: () {
-                              _joinMeeting();
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: Container(
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/group_more.png',
-                                height: 32.44,
-                                width: 41.46,
-                              ),
-                              // iconSize: 10.0,
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return MultiProvider(
-                                    providers: [
-                                      Provider<UserData>.value(
-                                        value: currentUser,
-                                      ),
-                                      Provider<List<CourseInfo>>.value(
-                                        value: currentCourse,
-                                      ),
-                                    ],
-                                    child: CourseDetail(
-                                      courseId: widget.courseId,
-                                      myEmail: widget.myEmail,
-                                      myName: widget.myName,
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MultiProvider(
+                                  providers: [
+                                    Provider<UserData>.value(
+                                      value: currentUser,
                                     ),
-                                  );
-                                }));
-                              },
-                            ),
+                                    Provider<List<CourseInfo>>.value(
+                                      value: currentCourse,
+                                    ),
+                                  ],
+                                  child: CourseDetail(
+                                    courseId: widget.courseId,
+                                    myEmail: widget.myEmail,
+                                    myName: widget.myName,
+                                    members: memberInfo
+                                  ),
+                                );
+                              }));
+                            },
                           ),
                         ),
                       ],
@@ -551,10 +609,70 @@ class _GroupChatState extends State<GroupChat> {
                           ),
                           child: TextField(
                             keyboardType: TextInputType.multiline,
-                            minLines:
-                                1, //Normal textInputField will be displayed
-                            maxLines:
-                                4, // when user presses enter it will adapt to it
+                            minLines: 1,
+                            //Normal textInputField will be displayed
+                            maxLines: 4,
+                            // when user presses enter it will adapt to it
+
+                            onChanged: (text) async {
+                              print('-------------------');
+                              print('new: ' + text);
+                              print('prev: ' + previousText);
+
+                              final difference = diff(previousText, text);
+                              final indexOfNewText = diff(previousText, text).indexWhere((element) => element.operation == 1);
+
+                              _findCursor();
+                              print('difference: ');
+                              print(difference);
+                              print(isChoosingToAt);
+                              if (indexOfNewText != -1) {
+                                if (difference[indexOfNewText].text == '@' && !isChoosingToAt) {
+                                  setState(() {
+                                    isChoosingToAt = true;
+                                  });
+
+                                  List<String> thePerson = await showModalBottomSheet(
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 10,
+                                            color: Colors.transparent,
+                                          ),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(30.0),
+                                            topRight: Radius.circular(30.0),
+                                            // bottomLeft: Radius.circular(30.0),
+                                            // bottomRight: Radius.circular(30.0),
+                                          )),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) {
+                                        return SafeArea(
+                                            bottom: false,
+                                            child: AtPeople(
+                                              courseId: widget.courseId,
+                                              members: memberInfo,
+                                            ));
+                                      });
+
+                                  if (thePerson != null) {
+                                    setState(() {
+                                      membersToAt.add('@' + thePerson[0]);
+                                      memberIdsToAt.add(thePerson[1]);
+                                    });
+
+                                    _insertText(thePerson[0] + ' ');
+                                  }
+
+                                  setState(() {
+                                    isChoosingToAt = false;
+                                  });
+                                }
+                              }
+
+                              previousText = messageController.text;
+                            },
+
                             onTap: () {
                               setState(() {
                                 showStickerKeyboard = false;
@@ -589,6 +707,7 @@ class _GroupChatState extends State<GroupChat> {
                             onSubmitted: (value) {
                               sendMessage(currentUser);
                               myFocusNode.requestFocus();
+                              _findCursor();
                             },
                           ),
                         )),
@@ -603,14 +722,11 @@ class _GroupChatState extends State<GroupChat> {
                                   : Image.asset('assets/images/emoji.png',
                                       width: 29, height: 27.83),
                               onTap: () {
+                                _findCursor();
+                                FocusScope.of(context).unfocus();
                                 if (showTextKeyboard) {
                                   setState(() {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                      showTextKeyboard = false;
-                                    }
+                                    showTextKeyboard = false;
                                   });
                                 } else {
                                   if (showFunctions) {
@@ -619,6 +735,8 @@ class _GroupChatState extends State<GroupChat> {
                                     });
                                   } else {}
                                 }
+
+                                sleep(Duration(milliseconds:500));
                                 setState(() {
                                   showStickerKeyboard = !showStickerKeyboard;
                                 });
@@ -680,7 +798,7 @@ class _GroupChatState extends State<GroupChat> {
                   showStickerKeyboard
                       ? AnimatedContainer(
                           duration: Duration(milliseconds: 80),
-                          height: 200,
+                          height: _height * 0.35,
                           // showStickerKeyboard ? 400 : 0,
                           child: EmojiPicker(
                             config: const Config(
@@ -690,10 +808,7 @@ class _GroupChatState extends State<GroupChat> {
                               // numRecommended: 10,
                             ),
                             onEmojiSelected: (Category category, Emoji emoji) {
-                              setState(() {
-                                messageController.text =
-                                    messageController.text + emoji.emoji;
-                              });
+                              _insertText(emoji.emoji);
                             },
                           ),
                         )
@@ -711,8 +826,8 @@ class _GroupChatState extends State<GroupChat> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: 64,
-                                  width: 65,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
                                   child: IconButton(
                                       icon: Image.asset(
                                           'assets/images/camera.png'),
@@ -722,8 +837,8 @@ class _GroupChatState extends State<GroupChat> {
                                           context)),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 65,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
                                   child: IconButton(
                                       icon: Image.asset(
                                           'assets/images/photo_library.png'),
@@ -733,13 +848,42 @@ class _GroupChatState extends State<GroupChat> {
                                           context)),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 55,
-                                  color: Colors.white,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
+                                  child: IconButton(
+                                    icon: Icon(Icons.phone,
+                                        // size: 26,
+                                        color: Color(0xffFF7E40)),
+                                    // iconSize: 10.0,
+                                    onPressed: () {
+                                      showCupertinoDialog(
+                                          context: context,
+                                          builder: (_) => CupertinoAlertDialog(
+                                                content: Text('Join the call?'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      _joinMeeting();
+                                                      Navigator.pop(
+                                                          context, 'Yes');
+                                                    },
+                                                    child: const Text('Yes'),
+                                                  ),
+                                                ],
+                                              ),
+                                          barrierDismissible: true);
+                                    },
+                                  ),
                                 ),
                                 Container(
-                                  height: 64,
-                                  width: 55,
+                                  height: _height * 0.095,
+                                  width: _width * 0.16,
                                   color: Colors.white,
                                 )
                               ],
@@ -1225,6 +1369,99 @@ class ImageTile extends StatelessWidget {
           height: lastMessage ? 20 : 0,
         )
       ],
+    );
+  }
+}
+
+class GroupNoticeTile extends StatelessWidget {
+  final String message;
+  final bool lastMessage;
+  final String courseId;
+
+  GroupNoticeTile(this.message, this.lastMessage, this.courseId);
+
+  @override
+  Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context, listen: false);
+    final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
+    double sidebarSize = _width * 0.05;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) {
+              return MultiProvider(
+                providers: [
+                  Provider<UserData>.value(
+                    value: userdata,
+                  ),
+                  Provider<List<CourseInfo>>.value(
+                    value: currentCourse,
+                  ),
+                ],
+                child: GroupNotice(
+                    courseId: courseId
+                ),
+              );
+            }));
+      },
+      child: Padding(
+        padding: EdgeInsets.only(left: sidebarSize*1.2, right: sidebarSize*1.2, top: sidebarSize),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: Colors.white,
+                width: _width - sidebarSize*1.6,
+                padding: EdgeInsets.only(left: sidebarSize*0.8, right: sidebarSize*0.2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Group Notice',
+                      style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16
+                      ),
+                    ),
+                    IconButton(
+                      icon: Image.asset(
+                        'assets/images/arrow_forward.png',
+                        height: 17.96,
+                        width: 10.26,
+                      ),
+                      // iconSize: 30.0,
+                      color: const Color(0xFFFF7E40),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                width: _width - sidebarSize*1.6,
+                padding: EdgeInsets.only(left: sidebarSize*0.8, right: sidebarSize*0.8, bottom: sidebarSize),
+                child: Text(
+                  message,
+                  maxLines: 7,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(
+                      color: Color(0xff949494),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: lastMessage ? 20 : 0,
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -298,10 +298,9 @@ class ChatRoomsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
-    Size mediaQuery = MediaQuery.of(context).size;
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = _width * 1.0;
 
     // print('heree');
     return GestureDetector(
@@ -435,7 +434,7 @@ class ChatRoomsTile extends StatelessWidget {
                           height: _height * 0.009,
                         ),
                         Container(
-                          width: mediaQuery.width - 200,
+                          width: _width - 200,
                           child: AutoSizeText(latestMessage,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.openSans(

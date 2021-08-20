@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  #shimmer animation
+  shimmer: ^1.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -71,6 +73,7 @@ dependencies:
   flutter_local_notifications: ^5.0.0+4
   expandable: ^5.0.1
   validators: ^3.0.0
+  diff_match_patch: ^0.4.1
 
 dev_dependencies:
   flutter_test:

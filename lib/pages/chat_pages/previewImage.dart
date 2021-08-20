@@ -1,5 +1,3 @@
-// import 'package:path_provider/path_provider.dart';
-// import 'package:dio/dio.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -74,6 +72,10 @@ class _PreviewImageState extends State<PreviewImage> {
 
   @override
   Widget build(BuildContext context) {
+    final _height = MediaQuery.of(context).size.height;
+    final _width = MediaQuery.of(context).size.width;
+    final sidebarSize = _width*0.05;
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pop();
@@ -85,26 +87,24 @@ class _PreviewImageState extends State<PreviewImage> {
           children: [
             SafeArea(
               child: Container(
-                height: 73,
+                height: _height*0.10,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/arrow-back.png',
-                          ),
-                          // iconSize: 30.0,
-                          color: const Color(0xFFFFB811),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                    Container(
+                      padding: EdgeInsets.only(left: sidebarSize*0.55),
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/images/arrow_back.png',
+                          height: 17.96,
+                          width: 10.26,
                         ),
+                        // iconSize: 30.0,
+                        color: const Color(0xFFFF7E40),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ),
                   ],
@@ -120,13 +120,13 @@ class _PreviewImageState extends State<PreviewImage> {
                   height: MediaQuery.of(context).size.height - 300,
                   width: MediaQuery.of(context).size.width,
                   placeholder: (context, url) =>
-                      new CircularProgressIndicator(),
+                  new CircularProgressIndicator(),
                   errorWidget: (context, url, error) => new Icon(Icons.error),
                 ),
               ),
             ),
             Container(
-              height: 73,
+              height: _height*0.10,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,

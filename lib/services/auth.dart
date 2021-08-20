@@ -2,9 +2,11 @@ import 'package:app_test/models/user.dart' as u;
 import "package:firebase_auth/firebase_auth.dart" as auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app_test/services/userDatabase.dart';
+import 'dart:async';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Timer timer;
 
   u.User _userFromFirebaseUser(
     auth.User user,
@@ -53,17 +55,28 @@ class AuthMethods {
 
   // }
 
-  //email verify
-  Future sendEmailVerify() async {
+
+  void sendVerifyEmail() {
     User user = FirebaseAuth.instance.currentUser;
-    if (!user.emailVerified) {
-      try {
-        await user.sendEmailVerification();
-      } catch (error) {
-        throw error;
-      }
+    user.sendEmailVerification();
+
+    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      checkEmailVerified();
+    });
+  }
+
+  void dispose() {
+    timer.cancel();
+  }
+
+  Future<void> checkEmailVerified() async {
+    User user = FirebaseAuth.instance.currentUser;
+    await user.reload();
+    if (user.emailVerified) {
+      timer.cancel();
     }
   }
+
 
   // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {

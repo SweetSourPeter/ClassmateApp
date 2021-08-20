@@ -15,6 +15,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' show json;
 import 'package:validators/validators.dart';
 
+
+import 'package:firebase_auth/firebase_auth.dart';
+
+
 class SignUpPage extends StatefulWidget {
   final PageController pageController;
   const SignUpPage({
@@ -37,9 +41,13 @@ class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool emailExist = false;
+
+ // bool pressAttention = false;
+
   String errorMessage;
   final TextEditingController _typeAheadController = TextEditingController();
   AuthMethods authMethods = new AuthMethods();
+
   DatabaseMethods databaseMethods = new DatabaseMethods();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool selectedFromSuggestions = false;
@@ -49,6 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
       new TextEditingController();
   TextEditingController passwordTextEditingController =
       new TextEditingController();
+
   List<CollegeDomain> _collegeDomain = [];
   // @override
   // Future<void> initState() async {
@@ -57,6 +66,9 @@ class _SignUpPageState extends State<SignUpPage> {
   //   print(_collegeDomain);
   //   // registerNotification(widget.myData);
   // }
+
+  TextEditingController passwordConfirmationTextEditingController =
+      new TextEditingController();
 
   _toastInfo(String info) {
     Fluttertoast.showToast(
@@ -78,13 +90,17 @@ class _SignUpPageState extends State<SignUpPage> {
       //   "email": emailTextEditingController.text,
       //   "school": _selectedSchool,
       // };
-      print('valid');
+      print('SignMeUp valid');
       authMethods
           .signUpWithEmailAndPassword(emailTextEditingController.text,
               passwordTextEditingController.text, _selectedSchool)
+          //.createUserWithEmailAndPassword(email: emailTextEditingController.text, password: passwordTextEditingController.text)
           .then((val) {
         // Navigator.pushReplacement(
         //     context, MaterialPageRoute(builder: (context) => StartPage()));
+        //authMethods.sendVerifyEmail();
+        //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyScreen()));
+
         print('auth method finish');
         isLoading = false;
         // Navigator.pop(context);
@@ -156,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
       );
     }
 
-    _getBottomRow(context) {
+    /*_getBottomRow(context) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -184,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ],
       );
-    }
+    }*/
 
     // Future<void> _getData(String collegePrefix) async {
     //   var url = 'http://universities.hipolabs.com/search?name=' + collegePrefix;
@@ -211,9 +227,10 @@ class _SignUpPageState extends State<SignUpPage> {
           highlightColor: Color(0xFFFF9B6B),
           highlightElevation: 0,
           elevation: 0,
-          color: (emailTextEditingController.text?.isNotEmpty &&
-                  passwordTextEditingController.text?.isNotEmpty &&
-                  _selectedSchool?.isNotEmpty)
+          color: (emailTextEditingController.text.isNotEmpty &&
+                  passwordTextEditingController.text.isNotEmpty &&
+                  passwordConfirmationTextEditingController.text.isNotEmpty &&
+                  _selectedSchool.isNotEmpty)
               ? Colors.white
               : Color(0xFFFF9B6B).withOpacity(1),
           shape: RoundedRectangleBorder(
@@ -226,9 +243,10 @@ class _SignUpPageState extends State<SignUpPage> {
           child: AutoSizeText(
             'CONTINUE',
             style: simpleTextSansStyleBold(
-                (emailTextEditingController.text?.isNotEmpty &&
-                        passwordTextEditingController.text?.isNotEmpty &&
-                        _selectedSchool?.isNotEmpty)
+                (emailTextEditingController.text.isNotEmpty &&
+                        passwordTextEditingController.text.isNotEmpty &&
+                        passwordConfirmationTextEditingController.text.isNotEmpty &&
+                        _selectedSchool.isNotEmpty)
                     ? themeOrange
                     : Colors.white,
                 16),
@@ -236,6 +254,39 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       );
     }
+
+    // _sendCodeButton() {
+    //   return Container(
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(40),
+    //
+    //     ),
+    //
+    //     width: _width * 0.75,
+    //     child: RaisedButton(
+    //       // hoverElevation: 0,
+    //       // highlightColor: Color(0xFFFF9B6B),
+    //       // highlightElevation: 0,
+    //       // elevation: 0,
+    //       //color: Colors.white,
+    //       shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(30),
+    //       ),
+    //
+    //       color: pressAttention ? Colors.grey : Colors.blue,
+    //       onPressed: () => setState(() => pressAttention = !pressAttention),
+    //
+    //       child: AutoSizeText(
+    //         'Send Code',
+    //         style: simpleTextSansStyleBold(
+    //         Colors.white,
+    //         16),
+    //       ),
+    //     ),
+    //
+    //   );
+    // }
+
 
     _getTextFields() {
       return Padding(
@@ -396,7 +447,19 @@ class _SignUpPageState extends State<SignUpPage> {
                           _height * 0.036, 'Password', 11),
                     ),
                     SizedBox(
-                      height: _height * 0.03,
+                      height: _height * 0.018,
+                    ),
+                    TextFormField(
+                      style: simpleTextStyle(Colors.white, 16),
+                      controller: passwordConfirmationTextEditingController,
+                      obscureText: true,
+                      validator: (val) {
+                        return passwordTextEditingController.text == passwordConfirmationTextEditingController.text
+                            ? null
+                            : "Password must be same as above";
+                      },
+                      decoration: textFieldInputDecoration(
+                          _height * 0.036, 'Password Confirmation', 11),
                     ),
                   ],
                 ),
@@ -453,7 +516,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           _getBackBtn(),
                           _getHeader(),
                           _getTextFields(),
+                         // _sendCodeButton(),
                           _getSignIn(),
+
                           // Container(
                           //   height: _height * (1 - 0.14),
                           //   width: _width,
