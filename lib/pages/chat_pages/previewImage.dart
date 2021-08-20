@@ -96,7 +96,7 @@ class _PreviewImageState extends State<PreviewImage> {
                       padding: EdgeInsets.only(left: sidebarSize*0.55),
                       child: IconButton(
                         icon: Image.asset(
-                          'assets/images/arrow-back.png',
+                          'assets/images/arrow_back.png',
                           height: 17.96,
                           width: 10.26,
                         ),

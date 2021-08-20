@@ -61,6 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
   List<String> friendCourse = [];
   ScrollController _controller;
   FocusNode myFocusNode = FocusNode();
+  TextSelection currentTextCursor;
 
   Stream chatMessageStream;
   Future friendCoursesFuture;
@@ -308,6 +309,26 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  void _findCursor() {
+    currentTextCursor = messageController.selection;
+    print('current: ');
+    print(currentTextCursor.start);
+  }
+
+  void _insertText(String tmpInserted) {
+    final tmpText = messageController.text;
+    // print('tmpText: ' + tmpText);
+    // print('start: ');
+    // print(currentTextCursor.start);
+    // print('end: ' );
+    // print(currentTextCursor.end);
+    final newText = tmpText.replaceRange(currentTextCursor.start, currentTextCursor.end, tmpInserted);
+    messageController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: currentTextCursor.baseOffset + tmpInserted.length),
+    );
+  }
+
   // Future _cropImage() async {
   //   File cropped = await ImageCropper.cropImage(
   //     sourcePath: _imageFile.path,
@@ -446,7 +467,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: EdgeInsets.only(left: sidebarSize*0.55),
                           child: IconButton(
                             icon: Image.asset(
-                              'assets/images/arrow-back.png',
+                              'assets/images/arrow_back.png',
                               height: 17.96,
                               width: 10.26,
                             ),
@@ -763,6 +784,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   : Image.asset('assets/images/emoji.png',
                                       width: 29, height: 27.83),
                               onTap: () {
+                                _findCursor();
                                 if (showTextKeyboard) {
                                   setState(() {
                                     FocusScopeNode currentFocus =
@@ -852,10 +874,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               // numRecommended: 10,
                             ),
                             onEmojiSelected: (Category category, Emoji emoji) {
-                              setState(() {
-                                messageController.text =
-                                    messageController.text + emoji.emoji;
-                              });
+                              _insertText(emoji.emoji);
                             },
                           ),
                         )

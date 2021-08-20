@@ -3,7 +3,6 @@ import 'package:app_test/models/courseInfo.dart';
 import 'package:app_test/models/user.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/courseProvider.dart';
-import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -91,7 +90,24 @@ class _CourseDetailState extends State<CourseDetail> {
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
         if (memberInfo == null) {
-          return PictureLoadingScreen(Colors.white);
+          return Container(
+            child: Column(
+              children: [
+                Container(
+                    child: Image.asset(
+                      'assets/images/group_chat_loading.png',
+                      width: (gridWidth - 5)*2,
+                      height: (gridWidth - 5)*2,
+                    )
+                ),
+                Container(
+                    child: Text(
+                        'Loading...'
+                    )
+                )
+              ],
+            ),
+          );
         } else {
           final memberName = memberInfo[index][0];
 
@@ -178,7 +194,7 @@ class _CourseDetailState extends State<CourseDetail> {
                             width: _width * 1 / 6,
                             child: IconButton(
                               icon: Image.asset(
-                                'assets/images/arrow-back.png',
+                                'assets/images/arrow_back.png',
                                 height: 17.96,
                                 width: 10.26,
                               ),
@@ -368,7 +384,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                         Padding(
                                           padding: const EdgeInsets.only(right: 21.0),
                                           child: Image.asset(
-                                              'assets/images/arrow-forward.png',
+                                              'assets/images/arrow_forward.png',
                                               height: 9.02,
                                               width: 4.86,
                                               color: const Color(0xFF949494)),
@@ -434,7 +450,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                               padding: const EdgeInsets.only(
                                                   right: 21.0),
                                               child: Image.asset(
-                                                  'assets/images/arrow-forward.png',
+                                                  'assets/images/arrow_forward.png',
                                                   height: 9.02,
                                                   width: 4.86,
                                                   color:
@@ -551,7 +567,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                                   padding:
                                                   const EdgeInsets.only(right: 21.0),
                                                   child: Image.asset(
-                                                      'assets/images/arrow-forward.png',
+                                                      'assets/images/arrow_forward.png',
                                                       height: 9.02,
                                                       width: 4.86,
                                                       color: const Color(0xFF949494)),

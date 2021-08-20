@@ -23,17 +23,34 @@ class AtPeople extends StatefulWidget {
 class _AtPeopleState extends State<AtPeople> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   bool isSearching;
+  bool isUserFound;
   TextEditingController searchTextEditingController = TextEditingController();
   // Stream memberStream;
   List<dynamic> memberInfo;
+  List<dynamic> membersFound;
+
+  initiateSearch() {
+    membersFound = memberInfo.where((element) => element[0].contains(searchTextEditingController.text)).toList();
+    print('result is:');
+    print(membersFound);
+
+    if (membersFound.isEmpty) {
+      setState(() {
+        isUserFound = false;
+      });
+    } else {
+      setState(() {
+        isUserFound = true;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     isSearching = false;
-    // print(widget.members);
+    isUserFound = true;
     memberInfo = widget.members;
-
   }
 
   @override
@@ -64,6 +81,7 @@ class _AtPeopleState extends State<AtPeople> {
           },
           child: Column(
             children: [
+              // header of the page
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -71,7 +89,7 @@ class _AtPeopleState extends State<AtPeople> {
                     padding: EdgeInsets.only(left:sidebarSize*0.55),
                     child: IconButton(
                       icon: Image.asset(
-                        'assets/images/arrow-down.png',
+                        'assets/images/arrow_down.png',
                         height: 19.97,
                         width: 20.84,
                       ),
@@ -96,6 +114,8 @@ class _AtPeopleState extends State<AtPeople> {
                   SizedBox(width: sidebarSize*2.8,)
                 ],
               ),
+
+              // search bar on the top
               Container(
                 padding: EdgeInsets.only(left: sidebarSize, right: sidebarSize),
                 height: 50,
@@ -109,6 +129,7 @@ class _AtPeopleState extends State<AtPeople> {
                     setState(() {
                       isSearching = true;
                     });
+                    initiateSearch();
                   },
                   controller: searchTextEditingController,
                   textAlign: TextAlign.left,
@@ -129,8 +150,10 @@ class _AtPeopleState extends State<AtPeople> {
                           // size: 30,
                         ),
                         onPressed: () {
-                          // initiateSearch();
                           searchTextEditingController.clear();
+                          setState(() {
+                            isSearching = false;
+                          });
                         }),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
@@ -150,9 +173,28 @@ class _AtPeopleState extends State<AtPeople> {
                   ),
                 ),
               ),
-              Expanded(
-                child: memberList(),
-              ),
+
+              // search result and display of member info
+              isSearching ?
+                isUserFound ?
+                  Expanded(
+                      child: membersFoundList()
+                  )
+                  : Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(top: _height*0.04),
+                        child: Text(
+                          'No Users Found',
+                          style: GoogleFonts.montserrat(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16),
+                        ),
+                      ),
+                    )
+                : Expanded(
+                    child: memberList(),
+                  ),
             ],
           ),
         ),
@@ -171,7 +213,7 @@ class _AtPeopleState extends State<AtPeople> {
         padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
         child: GestureDetector(
           onTap: () {
-            Navigator.pop(context, ['Everyone', 'Everyone']);
+            Navigator.pop(context, ['Everyone', 'EveryoneQWEASD123456zxc']);
           },
           behavior: HitTestBehavior.opaque,
           child: Row(
@@ -230,6 +272,60 @@ class _AtPeopleState extends State<AtPeople> {
             )
         );
         prev = memberInfo[i][0][0].toString().toUpperCase();
+      }
+
+      return ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: children.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return children[index];
+          });
+    }
+    return Container();
+  }
+
+  Widget membersFoundList() {
+    if (membersFound != null) {
+      double _height = MediaQuery.of(context).size.height;
+      double _width = MediaQuery.of(context).size.width;
+      double sidebarSize = _width * 0.05;
+      final children = <Widget>[];
+
+      String prev = '';
+      String current = '';
+
+      for (var i = 0; i < membersFound.length; i++) {
+        current = membersFound[i][0][0].toString().toUpperCase();
+        if (current != prev) {
+          children.add(
+              Padding(
+                padding: EdgeInsets.only(top: sidebarSize*0.6),
+                child: Container(
+                  color: Color(0xffF9F6F1),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: sidebarSize*1.7),
+                    child: Text(
+                      current,
+                      style: GoogleFonts.montserrat(
+                          color: Color(0xffFF7E40),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16
+                      ),
+                    ),
+                  ),
+                ),
+              )
+          );
+        }
+        children.add(
+            MemberTile(
+                membersFound[i][0],
+                membersFound[i][1],
+                membersFound[i][2]
+            )
+        );
+        prev = membersFound[i][0][0].toString().toUpperCase();
       }
 
       return ListView.builder(

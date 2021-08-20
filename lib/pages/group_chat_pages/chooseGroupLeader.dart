@@ -43,7 +43,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   String newAdminId;
   List<dynamic> foundUser;
   Function(String) sendAdminId;
-  bool noUserFound;
+  bool isUserFound;
 
 
   @override
@@ -54,38 +54,32 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
     showTextKeyboard = false;
     isSearching = false;
     onSelected = false;
+    isUserFound = true;
     newAdminId = '';
     sendAdminId = widget.adminCallback;
   }
 
-  initiateSearch() async {
-    var temp =
-    await databaseMethods.getUsersByUsernameInCourse(searchTextEditingController.text,widget.courseId);
-    // if (temp == null) return;
-    setState(() {
-      foundUser = temp;
-      print(foundUser);
-      if (foundUser.isNotEmpty) {
-        if ((foundUser.length >= 1) &&
-            (searchTextEditingController.text.isNotEmpty)) {
-          isSearching = true;
-        }
-        noUserFound = false;
-      }
-      else{
-        if (searchTextEditingController.text.isNotEmpty) {
-          isSearching = true;
-        }
-        noUserFound = true;
-      }
-    });
+  initiateSearch() {
+    foundUser = members.where((element) => element[0].contains(searchTextEditingController.text)).toList();
+    print('result is:');
+    print(foundUser);
+
+    if (foundUser.isEmpty) {
+      setState(() {
+        isUserFound = false;
+      });
+    } else {
+      setState(() {
+        isUserFound = true;
+      });
+    }
   }
 
 
   @override
   Widget build(BuildContext context) {
-    print('noUserFound $noUserFound');
-    print('isSearing $isSearching');
+    // print('noUserFound $noUserFound');
+    // print('isSearing $isSearching');
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     double sidebarSize = _width * 0.05;
@@ -320,7 +314,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                                       : 0),
 
                               child: CircleAvatar(
-                                backgroundColor: listProfileColor[profileColor],
+                                backgroundColor: listProfileColor[profileColor.toInt()],
                                 radius: sidebarSize * 1.2,
                                 child: Container(
                                   child: Text(
@@ -415,6 +409,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    // header of the page
                     Container(
                       color: Colors.white,
                       height: 73.68,
@@ -427,7 +422,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                             child: Container(
                               child: IconButton(
                                 icon: Image.asset(
-                                  'assets/images/arrow-back.png',
+                                  'assets/images/arrow_back.png',
                                   height: 17.96,
                                   width: 10.26,
                                 ),
@@ -458,6 +453,8 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         ],
                       ),
                     ),
+
+                    // search bar on the top
                     Container(
                       padding: EdgeInsets.only(
                           left: sidebarSize,
@@ -473,6 +470,9 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         textInputAction: TextInputAction.search,
                         onSubmitted: (value) {
                           if (searchTextEditingController.text.isNotEmpty) {
+                            setState(() {
+                              isSearching = true;
+                            });
                             initiateSearch();
                           }
                         },
@@ -496,6 +496,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                                 onPressed: () {
                                   setState(() {
                                     isSearching = false;
+                                    isUserFound = true;
                                   });
                                   searchTextEditingController.clear();
                                 }
@@ -516,76 +517,88 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         ),
                       ),
                     ),
-                    if (isSearching == false)
-                      Visibility(
-                        visible: true,
-                        child: Container(
-                          height: _height * 0.6,
-                          padding: EdgeInsets.only(top: 10),
-                          child: Scrollbar(
-                            thickness: 4,
-                            child: ListView(
-                              primary: false,
-                              shrinkWrap: true,
-                              children: [..._renderMemberInfo(gridWidth - 5)],
+
+                    // search result and display of members info
+                    isSearching ?
+                        isUserFound ? Visibility(
+                                        visible: true,
+                                        // child: Container(
+                                        //   child: Text(searchSnapshot.docs[0].data()['userName'])
+                                        child: Container(
+                                          height: _height * 0.6,
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: Scrollbar(
+                                            thickness: 4,
+                                            child: ListView(
+                                              primary: false,
+                                              shrinkWrap: true,
+                                              children: [..._listSearchMember(gridWidth - 5)],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Visibility(
+                                        visible: true,
+                                        child: Container(
+                                            height: _height * 0.6,
+                                            child: Text(
+                                              'No Users Found',
+                                              style: GoogleFonts.openSans(
+                                                textStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600),
+                                              ),
+                                            )
+                                        ),
+                                      )
+                        : Visibility(
+                            visible: true,
+                            child: Container(
+                              height: _height * 0.6,
+                              padding: EdgeInsets.only(top: 10),
+                              child: Scrollbar(
+                                thickness: 4,
+                                child: ListView(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  children: [..._renderMemberInfo(gridWidth - 5)],
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    if (isSearching == true && noUserFound == false)
-                      Visibility(
-                        visible: true,
-                        // child: Container(
-                        //   child: Text(searchSnapshot.docs[0].data()['userName'])
-                        child: Container(
-                          height: _height * 0.6,
-                          padding: EdgeInsets.only(top: 10),
-                          child: Scrollbar(
-                            thickness: 4,
-                            child: ListView(
-                              primary: false,
-                              shrinkWrap: true,
-                              children: [..._listSearchMember(gridWidth - 5)],
+
+                    // confirm button
+                    isUserFound ?
+                          Container(
+                            padding: EdgeInsets.only(top: 20),
+                            child: ButtonTheme(
+                              minWidth: _width * 0.85,
+                              height: _height * 0.075,
+                              child: RaisedButton(
+                                child: Text('Confirm',
+                                    style: GoogleFonts.montserrat(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: onSelected
+                                            ? Colors.white
+                                            : Color(0xffC7C7C7))),
+                                shape: new RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(30.0),
+                                ),
+                                color: onSelected ? Color(0xFFFF7E40) : Colors.white,
+                                onPressed: () {
+                                  if (onSelected == false){
+                                    return null;
+                                  }
+                                  databaseMethods.updateAdminId(widget.courseId, newAdminId);
+                                  sendAdminId(newAdminId);
+                                  Navigator.pop(context, newAdminId);
+                                },
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    if (isSearching == true && noUserFound == true)
-                      Visibility(
-                        visible: true,
-                        child: Container(
-                          child: Text('No User Found')
-                        ),
-                      ),
-                    if (noUserFound != true)
-                    Container(
-                      padding: EdgeInsets.only(top: 20),
-                      child: ButtonTheme(
-                        minWidth: _width * 0.85,
-                        height: _height * 0.075,
-                        child: RaisedButton(
-                          child: Text('Confirm',
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: onSelected
-                                      ? Colors.white
-                                      : Color(0xffC7C7C7))),
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0),
-                          ),
-                          color: onSelected ? Color(0xFFFF7E40) : Colors.white,
-                          onPressed: () {
-                            if (onSelected == false){
-                              return null;
-                            }
-                            databaseMethods.updateAdminId(widget.courseId, newAdminId);
-                            sendAdminId(newAdminId);
-                            Navigator.pop(context, newAdminId);
-                          },
-                        ),
-                      ),
-                    ),
+                          )
+                        : Container(),
                   ],
                 ),
               )),

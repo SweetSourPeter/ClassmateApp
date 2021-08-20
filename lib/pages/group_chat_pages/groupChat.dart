@@ -22,7 +22,6 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:app_test/widgets/LinkWellModified.dart';
 import 'package:diff_match_patch/diff_match_patch.dart';
-
 import 'groupNotice.dart';
 
 class GroupChat extends StatefulWidget {
@@ -59,11 +58,57 @@ class _GroupChatState extends State<GroupChat> {
   FocusNode myFocusNode = FocusNode();
   bool displayName;
   String previousText;
+  TextSelection currentTextCursor;
+  bool isChoosingToAt;
 
   Stream chatMessageStream;
   List<dynamic> memberInfo;
   List<String> membersToAt;
   List<String> memberIdsToAt;
+
+  @override
+  void initState() {
+    super.initState();
+    databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
+      setState(() {
+        chatMessageStream = value;
+      });
+    });
+
+    // databaseMethods.setUnreadGroupChatNumberToZero(
+    //     widget.courseId, widget.myId);
+
+    databaseMethods.getCourseInfo(widget.courseId).then((value) {
+      setState(() {
+        courseName = value.docs[0].data()['myCourseName'];
+        courseSection = value.docs[0].data()['section'];
+        courseTerm = value.docs[0].data()['term'];
+      });
+    });
+
+    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        numberOfMembers = value.docs.length;
+      });
+    });
+
+    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
+      setState(() {
+        memberInfo = value;
+      });
+    });
+
+    showStickerKeyboard = false;
+    showTextKeyboard = false;
+    showFunctions = false;
+    _controller =
+        ScrollController(initialScrollOffset: widget.initialChat * 40);
+    displayName = true;
+    previousText = '';
+    membersToAt = [];
+    memberIdsToAt = [];
+    isChoosingToAt = false;
+  }
 
   Widget chatMessageList(String myEmail) {
     return StreamBuilder(
@@ -207,10 +252,10 @@ class _GroupChatState extends State<GroupChat> {
       // });
 
       _controller.jumpTo(_controller.position.minScrollExtent);
-      messageController.text = '';
-      previousText = '';
 
       setState(() {
+        messageController.clear();
+        previousText = '';
         membersToAt = [];
         memberIdsToAt = [];
       });
@@ -325,47 +370,25 @@ class _GroupChatState extends State<GroupChat> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    databaseMethods.getGroupChatMessages(widget.courseId).then((value) {
-      setState(() {
-        chatMessageStream = value;
-      });
-    });
+  void _findCursor() {
+    currentTextCursor = messageController.selection;
+    print('current: ');
+    print(currentTextCursor.start);
+    print(messageController.text);
+  }
 
-    // databaseMethods.setUnreadGroupChatNumberToZero(
-    //     widget.courseId, widget.myId);
-
-    databaseMethods.getCourseInfo(widget.courseId).then((value) {
-      setState(() {
-        courseName = value.docs[0].data()['myCourseName'];
-        courseSection = value.docs[0].data()['section'];
-        courseTerm = value.docs[0].data()['term'];
-      });
-    });
-
-    databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
-      setState(() {
-        numberOfMembers = value.docs.length;
-      });
-    });
-
-    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-      setState(() {
-        memberInfo = value;
-      });
-    });
-
-    showStickerKeyboard = false;
-    showTextKeyboard = false;
-    showFunctions = false;
-    _controller =
-        ScrollController(initialScrollOffset: widget.initialChat * 40);
-    displayName = true;
-    previousText = '';
-    membersToAt = [];
-    memberIdsToAt = [];
+  void _insertText(String tmpInserted) {
+    final tmpText = messageController.text;
+    // print('tmpText: ' + tmpText);
+    // print('start: ');
+    // print(currentTextCursor.start);
+    // print('end: ' );
+    // print(currentTextCursor.end);
+    final newText = tmpText.replaceRange(currentTextCursor.start, currentTextCursor.end, tmpInserted);
+    messageController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: currentTextCursor.baseOffset + tmpInserted.length),
+    );
   }
 
   getChatRoomId(String a, String b) {
@@ -462,7 +485,7 @@ class _GroupChatState extends State<GroupChat> {
                           width: _width*1/6,
                           child: IconButton(
                             icon: Image.asset(
-                              'assets/images/arrow-back.png',
+                              'assets/images/arrow_back.png',
                               height: 17.96,
                               width: 10.26,
                             ),
@@ -590,17 +613,25 @@ class _GroupChatState extends State<GroupChat> {
                             //Normal textInputField will be displayed
                             maxLines: 4,
                             // when user presses enter it will adapt to it
+
                             onChanged: (text) async {
                               print('-------------------');
                               print('new: ' + text);
                               print('prev: ' + previousText);
-                              print(diff(previousText, text));
-                              if(diff(previousText, text).length == 2) {
 
-                                print('diff: ' + diff(previousText, text)[1].text);
+                              final difference = diff(previousText, text);
+                              final indexOfNewText = diff(previousText, text).indexWhere((element) => element.operation == 1);
 
-                                if(diff(previousText, text)[1].operation != -1 && diff(previousText, text)[1].text.contains('@')) {
-                                  // print(memberInfo);
+                              _findCursor();
+                              print('difference: ');
+                              print(difference);
+                              print(isChoosingToAt);
+                              if (indexOfNewText != -1) {
+                                if (difference[indexOfNewText].text == '@' && !isChoosingToAt) {
+                                  setState(() {
+                                    isChoosingToAt = true;
+                                  });
+
                                   List<String> thePerson = await showModalBottomSheet(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
@@ -629,45 +660,19 @@ class _GroupChatState extends State<GroupChat> {
                                       membersToAt.add('@' + thePerson[0]);
                                       memberIdsToAt.add(thePerson[1]);
                                     });
-                                    messageController.text += thePerson[0] + ' ';
+
+                                    _insertText(thePerson[0] + ' ');
                                   }
-                                }
-                              } else if (text == '@') {
 
-                                List<String> thePerson = await showModalBottomSheet(
-                                    shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 10,
-                                          color: Colors.transparent,
-                                        ),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(30.0),
-                                          topRight: Radius.circular(30.0),
-                                          // bottomLeft: Radius.circular(30.0),
-                                          // bottomRight: Radius.circular(30.0),
-                                        )),
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) {
-                                      return SafeArea(
-                                          bottom: false,
-                                          child: AtPeople(
-                                            courseId: widget.courseId,
-                                            members: memberInfo,
-                                          ));
-                                    });
-
-                                if (thePerson != null) {
                                   setState(() {
-                                    membersToAt.add('@' + thePerson[0]);
-                                    memberIdsToAt.add(thePerson[1]);
+                                    isChoosingToAt = false;
                                   });
-                                  messageController.text += thePerson[0] + ' ';
                                 }
                               }
+
                               previousText = messageController.text;
-                              print('-------------------');
                             },
+
                             onTap: () {
                               setState(() {
                                 showStickerKeyboard = false;
@@ -702,6 +707,7 @@ class _GroupChatState extends State<GroupChat> {
                             onSubmitted: (value) {
                               sendMessage(currentUser);
                               myFocusNode.requestFocus();
+                              _findCursor();
                             },
                           ),
                         )),
@@ -716,14 +722,11 @@ class _GroupChatState extends State<GroupChat> {
                                   : Image.asset('assets/images/emoji.png',
                                       width: 29, height: 27.83),
                               onTap: () {
+                                _findCursor();
+                                FocusScope.of(context).unfocus();
                                 if (showTextKeyboard) {
                                   setState(() {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                      showTextKeyboard = false;
-                                    }
+                                    showTextKeyboard = false;
                                   });
                                 } else {
                                   if (showFunctions) {
@@ -732,6 +735,8 @@ class _GroupChatState extends State<GroupChat> {
                                     });
                                   } else {}
                                 }
+
+                                sleep(Duration(milliseconds:500));
                                 setState(() {
                                   showStickerKeyboard = !showStickerKeyboard;
                                 });
@@ -803,10 +808,7 @@ class _GroupChatState extends State<GroupChat> {
                               // numRecommended: 10,
                             ),
                             onEmojiSelected: (Category category, Emoji emoji) {
-                              setState(() {
-                                messageController.text =
-                                    messageController.text + emoji.emoji;
-                              });
+                              _insertText(emoji.emoji);
                             },
                           ),
                         )
@@ -1427,7 +1429,7 @@ class GroupNoticeTile extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Image.asset(
-                        'assets/images/arrow-forward.png',
+                        'assets/images/arrow_forward.png',
                         height: 17.96,
                         width: 10.26,
                       ),
