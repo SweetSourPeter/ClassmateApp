@@ -107,6 +107,9 @@ class CourseReminderDatabase {
     String course,
     String section,
   ) {
+    print('semester:');
+
+    print(semester);
     return http.post(
       Uri.parse(colectURL),
       headers: <String, String>{

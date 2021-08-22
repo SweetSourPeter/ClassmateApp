@@ -22,12 +22,7 @@ class CourseDetail extends StatefulWidget {
   final String myName;
   final List<dynamic> members;
 
-  CourseDetail({
-    this.courseId,
-    this.myEmail,
-    this.myName,
-    this.members
-  });
+  CourseDetail({this.courseId, this.myEmail, this.myName, this.members});
 
   @override
   _CourseDetailState createState() => _CourseDetailState();
@@ -59,7 +54,9 @@ class _CourseDetailState extends State<CourseDetail> {
       });
 
       // Unused in this class
-      databaseMethods.getUserDetailsByID(value.docs[0].data()['adminId']).then((info) {
+      databaseMethods
+          .getUserDetailsByID(value.docs[0].data()['adminId'])
+          .then((info) {
         setState(() {
           adminName = info.userName;
         });
@@ -74,7 +71,6 @@ class _CourseDetailState extends State<CourseDetail> {
 
     memberInfo = widget.members;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -95,16 +91,11 @@ class _CourseDetailState extends State<CourseDetail> {
               children: [
                 Container(
                     child: Image.asset(
-                      'assets/images/group_chat_loading.png',
-                      width: (gridWidth - 5)*2,
-                      height: (gridWidth - 5)*2,
-                    )
-                ),
-                Container(
-                    child: Text(
-                        'Loading...'
-                    )
-                )
+                  'assets/images/group_chat_loading.png',
+                  width: (gridWidth - 5) * 2,
+                  height: (gridWidth - 5) * 2,
+                )),
+                Container(child: Text('Loading...'))
               ],
             ),
           );
@@ -134,7 +125,7 @@ class _CourseDetailState extends State<CourseDetail> {
                   },
                   child: CircleAvatar(
                     backgroundColor: listProfileColor[
-                    memberInfo != null ? memberInfo[index][2].toInt() : 1],
+                        memberInfo != null ? memberInfo[index][2].toInt() : 1],
                     radius: radius,
                     child: Container(
                       child: Text(
@@ -182,84 +173,85 @@ class _CourseDetailState extends State<CourseDetail> {
                 child: Column(
                   children: [
                     Container(
-                      color: Colors.white,
-                      height: _height * 0.10,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(left: sidebarSize * 0.55),
-                            alignment: Alignment.centerLeft,
-                            width: _width * 1 / 6,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/images/arrow_back.png',
-                                height: 17.96,
-                                width: 10.26,
+                        color: Colors.white,
+                        height: _height * 0.10,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding:
+                                  EdgeInsets.only(left: sidebarSize * 0.55),
+                              alignment: Alignment.centerLeft,
+                              width: _width * 1 / 6,
+                              child: IconButton(
+                                icon: Image.asset(
+                                  'assets/images/arrow_back.png',
+                                  height: 17.96,
+                                  width: 10.26,
+                                ),
+                                // iconSize: 30.0,
+                                color: const Color(0xFFFF7E40),
+                                onPressed: () {
+                                  // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                                  Navigator.of(context).pop();
+                                },
                               ),
-                              // iconSize: 30.0,
-                              color: const Color(0xFFFF7E40),
-                              onPressed: () {
-                                // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                                Navigator.of(context).pop();
-                              },
                             ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            width: _width * 2 / 3,
-                            child: Text(
-                              (courseName ?? '') + (courseSection ?? ''),
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
+                            Container(
+                              alignment: Alignment.center,
+                              width: _width * 2 / 3,
+                              child: Text(
+                                (courseName ?? '') + (courseSection ?? ''),
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                          Container(
-                            width: _width * 1 / 6,
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(right: sidebarSize),
-                            child: PopupMenuButton(
-                                itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                        child: GestureDetector(
-                                            child: Text("Share"),
-                                            onTap: () {
-                                              Share.share(
-                                                  'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
-                                                  subject:
-                                                      'Join ${courseName + courseSection} chat at Meechu');
-                                            }),
-                                        value: 1,
-                                      ),
-                                      PopupMenuItem(
-                                        child: GestureDetector(
-                                            child: Text("Share Course ID"),
-                                            onTap: () {
-                                              Share.share('${widget.courseId}',
-                                                  subject:
-                                                      'Join ${courseName + courseSection} chat at Meechu');
-                                            }),
-                                        value: 2,
-                                      ),
-                                      PopupMenuItem(
-                                        child: GestureDetector(
-                                            child: Text("Share Course Link"),
-                                            onTap: () {
-                                              Share.share(
-                                                  'https://www.meechu.app/#/course/${widget.courseId}',
-                                                  subject:
-                                                      'Join ${courseName + courseSection} chat at Meechu');
-                                            }),
-                                        value: 3,
-                                      ),
-                                    ]),
-                          ),
-                        ],
-                      )
-                    ),
+                            Container(
+                              width: _width * 1 / 6,
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.only(right: sidebarSize),
+                              child: PopupMenuButton(
+                                  itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          child: GestureDetector(
+                                              child: Text("Share"),
+                                              onTap: () {
+                                                Share.share(
+                                                    'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                                                    subject:
+                                                        'Join ${courseName + courseSection} chat at Meechu');
+                                              }),
+                                          value: 1,
+                                        ),
+                                        PopupMenuItem(
+                                          child: GestureDetector(
+                                              child: Text("Share Course ID"),
+                                              onTap: () {
+                                                Share.share(
+                                                    '${widget.courseId}',
+                                                    subject:
+                                                        'Join ${courseName + courseSection} chat at Meechu');
+                                              }),
+                                          value: 2,
+                                        ),
+                                        PopupMenuItem(
+                                          child: GestureDetector(
+                                              child: Text("Share Course Link"),
+                                              onTap: () {
+                                                Share.share(
+                                                    'https://www.meechu.app/#/course/${widget.courseId}',
+                                                    subject:
+                                                        'Join ${courseName + courseSection} chat at Meechu');
+                                              }),
+                                          value: 3,
+                                        ),
+                                      ]),
+                            ),
+                          ],
+                        )),
                     Container(
                       color: riceColor,
                       child: Column(
@@ -289,20 +281,26 @@ class _CourseDetailState extends State<CourseDetail> {
                                           children: <Widget>[
                                             Text(
                                                 numberOfMembers > 1
-                                                    ? numberOfMembers.toString() + ' ' + 'people'
-                                                    : numberOfMembers.toString() + ' ' + 'person',
+                                                    ? numberOfMembers
+                                                            .toString() +
+                                                        ' ' +
+                                                        'people'
+                                                    : numberOfMembers
+                                                            .toString() +
+                                                        ' ' +
+                                                        'person',
                                                 style: GoogleFonts.openSans(
                                                   color: Colors.black38,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.normal,
                                                 )),
-                                          // Container(
-                                          //   margin: EdgeInsets.only(top: 3),
-                                          //   child: Icon(
-                                          //     Icons.navigate_next,
-                                          //     color: Colors.black38,
-                                          //   ),
-                                          // )
+                                            // Container(
+                                            //   margin: EdgeInsets.only(top: 3),
+                                            //   child: Icon(
+                                            //     Icons.navigate_next,
+                                            //     color: Colors.black38,
+                                            //   ),
+                                            // )
                                           ],
                                         ),
                                       ),
@@ -359,10 +357,12 @@ class _CourseDetailState extends State<CourseDetail> {
                                     width: _width,
                                     color: Colors.white,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 21.0),
+                                          padding:
+                                              const EdgeInsets.only(left: 21.0),
                                           child: Text(
                                             "Chat Search",
                                             style: GoogleFonts.montserrat(
@@ -371,7 +371,8 @@ class _CourseDetailState extends State<CourseDetail> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 21.0),
+                                          padding: const EdgeInsets.only(
+                                              right: 21.0),
                                           child: Image.asset(
                                               'assets/images/arrow_forward.png',
                                               height: 9.02,
@@ -384,22 +385,22 @@ class _CourseDetailState extends State<CourseDetail> {
                                   onTap: () {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
-                                          return MultiProvider(
-                                            providers: [
-                                              Provider<UserData>.value(
-                                                value: currentUser,
-                                              ),
-                                              Provider<List<CourseInfo>>.value(
-                                                  value: course)
-                                            ],
-                                            child: SearchGroupChat(
-                                              courseId: widget.courseId,
-                                              myEmail: widget.myEmail,
-                                              myName: widget.myName,
-                                            ),
-                                          );
-                                        }));
-                                    },
+                                      return MultiProvider(
+                                        providers: [
+                                          Provider<UserData>.value(
+                                            value: currentUser,
+                                          ),
+                                          Provider<List<CourseInfo>>.value(
+                                              value: course)
+                                        ],
+                                        child: SearchGroupChat(
+                                          courseId: widget.courseId,
+                                          myEmail: widget.myEmail,
+                                          myName: widget.myName,
+                                        ),
+                                      );
+                                    }));
+                                  },
                                 ),
                                 // ButtonLink(
                                 //     text: "Mute",
@@ -520,78 +521,91 @@ class _CourseDetailState extends State<CourseDetail> {
                                 ),
                                 if (currentUser.userID == adminId)
                                   Visibility(
-                                  visible: true,
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            height: 50,
-                                            width: MediaQuery.of(context).size.width,
-                                            color: Colors.white,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(left: 21.0),
-                                                  child: Text(
-                                                    "Administrator Transfer",
-                                                    style: GoogleFonts.montserrat(
-                                                      fontSize: 14,
+                                    visible: true,
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              height: 50,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              color: Colors.white,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 21.0),
+                                                    child: Text(
+                                                      "Administrator Transfer",
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        fontSize: 14,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
 
-                                                // Padding(
-                                                //     padding:
-                                                //     const EdgeInsets.only(right: 30.0),
-                                                //     child: Text(adminName == null ? 'Loading...' : adminName)
-                                                // ),
+                                                  // Padding(
+                                                  //     padding:
+                                                  //     const EdgeInsets.only(right: 30.0),
+                                                  //     child: Text(adminName == null ? 'Loading...' : adminName)
+                                                  // ),
 
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(right: 21.0),
-                                                  child: Image.asset(
-                                                      'assets/images/arrow_forward.png',
-                                                      height: 9.02,
-                                                      width: 4.86,
-                                                      color: const Color(0xFF949494)),
-                                                ),
-                                              ],
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 21.0),
+                                                    child: Image.asset(
+                                                        'assets/images/arrow_forward.png',
+                                                        height: 9.02,
+                                                        width: 4.86,
+                                                        color: const Color(
+                                                            0xFF949494)),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          onTap: () async {
-                                            if (memberInfo == null){
-                                              return null;
-                                            }
-                                            String tmpAdminId = await Navigator.push(context,
-                                                MaterialPageRoute(builder: (context) {
-                                                  return MultiProvider(
-                                                    providers: [
-                                                      Provider<UserData>.value(
-                                                        value: currentUser,
-                                                      ),
-                                                    ],
-                                                    child: ChooseGroupLeader(
-                                                      groupMembers: memberInfo,
-                                                      courseId: widget.courseId,
-                                                      myEmail: widget.myEmail,
-                                                      myName: widget.myName,
-                                                      adminCallback: (String val) => setState(()=>reloadAdminId=val),
+                                            onTap: () async {
+                                              if (memberInfo == null) {
+                                                return null;
+                                              }
+                                              String tmpAdminId =
+                                                  await Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                return MultiProvider(
+                                                  providers: [
+                                                    Provider<UserData>.value(
+                                                      value: currentUser,
                                                     ),
+                                                  ],
+                                                  child: ChooseGroupLeader(
+                                                    groupMembers: memberInfo,
+                                                    courseId: widget.courseId,
+                                                    myEmail: widget.myEmail,
+                                                    myName: widget.myName,
+                                                    adminCallback:
+                                                        (String val) =>
+                                                            setState(() =>
+                                                                reloadAdminId =
+                                                                    val),
+                                                  ),
                                                 );
                                               }));
-                                            print(tmpAdminId);
-                                            if (tmpAdminId != null) {
-                                              setState(() {
-                                                adminId = tmpAdminId;
-                                              });
-                                            }
-                                          },
+                                              print(tmpAdminId);
+                                              if (tmpAdminId != null) {
+                                                setState(() {
+                                                  adminId = tmpAdminId;
+                                                });
+                                              }
+                                            },
                                           ),
                                         ],
                                       ),
@@ -649,7 +663,8 @@ class _CourseDetailState extends State<CourseDetail> {
                                     if (currentUser.userID != reloadAdminId)
                                       showDialog<void>(
                                         context: context,
-                                        barrierDismissible: false, // user must tap button!
+                                        barrierDismissible:
+                                            false, // user must tap button!
                                         builder: (BuildContext context) {
                                           return AlertDialog(
                                             content: SingleChildScrollView(
@@ -695,7 +710,8 @@ class _CourseDetailState extends State<CourseDetail> {
                                     else
                                       showDialog<void>(
                                         context: context,
-                                        barrierDismissible: false, // user must tap button!
+                                        barrierDismissible:
+                                            false, // user must tap button!
                                         builder: (BuildContext context) {
                                           return AlertDialog(
                                             content: SingleChildScrollView(

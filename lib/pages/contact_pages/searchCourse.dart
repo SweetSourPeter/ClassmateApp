@@ -153,7 +153,7 @@ class _SearchCourseState extends State<SearchCourse> {
           },
           child: Text(
             (_validate() && courseNameTextEditingController.text.isEmpty)
-                ? 'Found SHARED course ID\n Click to join'
+                ? 'Click to join'
                 : 'Search',
             textAlign: TextAlign.center,
             style: largeTitleTextStyleBold(Colors.white, 16),
@@ -381,7 +381,66 @@ class _SearchCourseState extends State<SearchCourse> {
               ),
             ),
             SizedBox(
-              height: 40,
+              height:
+                  (_validate() && courseNameTextEditingController.text.isEmpty)
+                      ? 40
+                      : 0,
+            ),
+            (_validate() && courseNameTextEditingController.text.isEmpty)
+                ? RichText(
+                    text: TextSpan(
+                      style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Found',
+                          style: GoogleFonts.openSans(
+                            textStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        // 03ef5517-52ae-4d99-ab81-c49552d8f47c
+                        TextSpan(
+                            text: ' Shared Course ID !',
+                            style: GoogleFonts.openSans(
+                              textStyle: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: themeOrange,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                if (!_formKey.currentState.validate() &&
+                                    !_validate()) {
+                                  print('both unvalid');
+                                  return;
+                                } else if (_validate() &&
+                                    courseNameTextEditingController
+                                        .text.isEmpty) {
+                                  await initiateURLSearch(
+                                      clipboardText, context);
+                                  print(searchBegain);
+                                } else {
+                                  print('valid');
+                                  await initiateSearch(
+                                      _selectedSemester, context);
+                                  print(searchBegain);
+                                }
+                                _formKey.currentState.save();
+                                searchBegain
+                                    ? showBottomPopSheet(
+                                        context, searchList(context, course))
+                                    : Center(
+                                        child: CircularProgressIndicator());
+                              }),
+                      ],
+                    ),
+                  )
+                : Container(),
+            SizedBox(
+              height: 10,
             ),
             _addButton(),
             SizedBox(
