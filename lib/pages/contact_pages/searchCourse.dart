@@ -470,7 +470,7 @@ class _SearchCourseState extends State<SearchCourse> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
