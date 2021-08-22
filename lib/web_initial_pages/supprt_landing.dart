@@ -1,9 +1,22 @@
 import 'package:app_test/models/constant.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupportLanding extends StatelessWidget {
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      print(url);
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   desktopPageChildren(double width) {
     return <Widget>[
       Container(
@@ -44,14 +57,56 @@ class SupportLanding extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: AutoSizeText(
-                      "Contact us through email: naclassmates@gmail.com",
-                      maxLines: 1,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Contact us through:  ',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          TextSpan(
+                              text: 'Email ',
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  String kEmail = 'yaopuw@bu.edu';
+                                  var mailUrl = 'mailto:$kEmail';
+                                  _launchURL(mailUrl);
+                                }),
+                          TextSpan(
+                            text: ' /  ',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          TextSpan(
+                              text: 'Instagram',
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _launchURL(
+                                      'https://www.instagram.com/meechu.classmates/');
+                                }),
+                        ],
                       ),
                     ),
                   ),
@@ -75,7 +130,7 @@ class SupportLanding extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
-                padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: AutoSizeText(
                   "\u00a9 Copyright 2021: NACC - your college class assistant",
                   style: GoogleFonts.montserrat(
@@ -93,6 +148,7 @@ class SupportLanding extends StatelessWidget {
 
 //----------------------mobile--------------------------
   mobilePageChildren(double width) {
+    var FontAwesomeIcons;
     return <Widget>[
       Container(
         width: width,
@@ -134,7 +190,7 @@ class SupportLanding extends StatelessWidget {
               children: [
                 Container(
                   child: AutoSizeText(
-                    "Contact us through email:",
+                    "Contact us through :",
                     style: GoogleFonts.montserrat(
                       textStyle: TextStyle(
                           color: Colors.white,
@@ -149,13 +205,47 @@ class SupportLanding extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  child: AutoSizeText(
-                    "naclassmates@gmail.com",
-                    style: GoogleFonts.montserrat(
-                      textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold),
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Email ',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                String kEmail = 'yaopuw@bu.edu';
+                                var mailUrl = 'mailto:$kEmail';
+                                _launchURL(mailUrl);
+                              }),
+                        TextSpan(
+                          text: ' /  ',
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        TextSpan(
+                            text: 'Instagram',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                _launchURL(
+                                    'https://www.instagram.com/meechu.classmates/');
+                              }),
+                      ],
                     ),
                   ),
                 ),
@@ -244,7 +334,7 @@ class SupportLanding extends StatelessWidget {
               children: [
                 Container(
                   child: AutoSizeText(
-                    "Contact us through email:",
+                    "Contact us through :",
                     style: GoogleFonts.montserrat(
                       textStyle: TextStyle(
                           color: Colors.white,
@@ -259,13 +349,47 @@ class SupportLanding extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  child: AutoSizeText(
-                    "naclassmates@gmail.com",
-                    style: GoogleFonts.montserrat(
-                      textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold),
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Email ',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                String kEmail = 'yaopuw@bu.edu';
+                                var mailUrl = 'mailto:$kEmail';
+                                _launchURL(mailUrl);
+                              }),
+                        TextSpan(
+                          text: ' /  ',
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        TextSpan(
+                            text: 'Instagram',
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                _launchURL(
+                                    'https://www.instagram.com/meechu.classmates/');
+                              }),
+                      ],
                     ),
                   ),
                 ),

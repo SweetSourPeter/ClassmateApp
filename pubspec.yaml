@@ -73,6 +73,7 @@ dependencies:
   file_picker_web: ^2.0.0
   url_launcher_web: ^0.1.0
   auto_route: ^0.6.9
+  font_awesome_flutter: ^9.1.0
   
 dev_dependencies:
   flutter_test:
