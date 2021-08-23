@@ -68,22 +68,26 @@ class DatabaseMethods {
     DocumentReference<Map<String, dynamic>> docRef =
         FirebaseFirestore.instance.collection('users').doc(userID);
     DocumentSnapshot<Map<String, dynamic>> doc = await docRef.get();
-    var userData = UserData(
-      email: doc.data()['email'],
-      school: doc.data()['school'],
-      userID: doc.data()[userID],
-      userName: doc.data()['userName'],
-      userImageUrl: doc.data()['userImageUrl'],
-      profileColor: doc.data()['profileColor'],
-      // myChargeNumber: doc.data()['myChargeNumber'] ?? '',
-      agreedToTerms: doc.data()['agreedToTerms'],
-      invitedUserID: doc.data()['invitedUserID'],
-      blockedUserID: doc.data()['blockedUser'],
-      userTags: doc.data()['tags'] == null
-          ? null
-          : UserTags.fromFirestoreTags(doc.data()['tags']),
-    );
-    return userData;
+
+    if (doc != null) {
+      final userData = UserData(
+        email: doc.data()['email'],
+        school: doc.data()['school'],
+        userID: doc.data()[userID],
+        userName: doc.data()['userName'],
+        userImageUrl: doc.data()['userImageUrl'],
+        profileColor: doc.data()['profileColor'],
+        // myChargeNumber: doc.data()['myChargeNumber'] ?? '',
+        agreedToTerms: doc.data()['agreedToTerms'],
+        invitedUserID: doc.data()['invitedUserID'],
+        blockedUserID: doc.data()['blockedUser'],
+        userTags: doc.data()['tags'] == null
+            ? null
+            : UserTags.fromFirestoreTags(doc.data()['tags']),
+      );
+      return userData;
+    }
+    return UserData();
   }
   // Stream<List<CourseInfo>> getMyCourses(String userID) {
   //   print('gettre cources called');

@@ -5,7 +5,7 @@ import 'package:app_test/services/database.dart';
 class CourseInfo {
   String term;
   String school;
-  String myCourseCollge;
+  String myCourseCollege;
   String department;
   String myCourseName;
   String section;
@@ -15,18 +15,20 @@ class CourseInfo {
   String imageUrl; //not used
   List subChats;
   String adminId;
+  String groupNoticeText;
 
   CourseInfo({
     this.term,
     this.school,
-    this.myCourseCollge,
+    this.myCourseCollege,
     this.department,
     this.myCourseName,
     this.section,
     this.courseID,
     this.userNumbers,
     this.imageUrl,
-    this.adminId
+    this.adminId,
+    this.groupNoticeText
   });
 
   Map<String, dynamic> toMapIntoUsers() {
@@ -42,13 +44,14 @@ class CourseInfo {
     return {
       'school': school,
       'term': term,
-      'college': myCourseCollge,
+      'college': myCourseCollege,
       'department': department,
       'myCourseName': myCourseName,
       'section': section,
       'courseID': courseID,
       'userNumbers': userNumbers,
       'adminId': adminId,
+      'groupNoticeText': groupNoticeText
       //       school: user.school,
       // term: term,
       // myCourseCollge: myCourseCollege,
@@ -64,12 +67,13 @@ class CourseInfo {
   CourseInfo.fromFirestore(Map<String, dynamic> firestore)
       : school = firestore['school'],
         term = firestore['term'],
-        myCourseCollge = firestore['college'],
+        myCourseCollege = firestore['college'],
         department = firestore['department'],
         myCourseName = firestore['myCourseName'],
         section = firestore['section'],
         courseID = firestore['courseID'],
         adminId = firestore['adminId'],
+        groupNoticeText = firestore['groupNoticeText'],
         userNumbers = firestore['userNumbers'] ?? null;
 
 }

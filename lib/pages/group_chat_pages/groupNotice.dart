@@ -80,8 +80,12 @@ class _GroupNoticeState extends State<GroupNotice> {
     databaseMethods.getGroupNotice(widget.courseId).then((ret) {
       setState(() {
         groupNoticeText = ret['groupNoticeText'];
-        lastGroupNoticeTime =
-            DateTime.fromMillisecondsSinceEpoch(ret['noticeTime']).toString();
+        if (groupNoticeText != '') {
+          lastGroupNoticeTime =
+              DateTime.fromMillisecondsSinceEpoch(ret['noticeTime']).toString();
+        } else {
+          lastGroupNoticeTime = '';
+        }
         _groupNoticeController.text = groupNoticeText;
       });
     });
@@ -356,17 +360,19 @@ class _GroupNoticeState extends State<GroupNotice> {
                                   Container(
                                     child: Text(
                                       lastGroupNoticeTime != null
-                                          ? (lastGroupNoticeTime.substring(
-                                          0, 4) +
-                                          '.' +
-                                          lastGroupNoticeTime.substring(
-                                              5, 7) +
-                                          '.' +
-                                          lastGroupNoticeTime.substring(
-                                              8, 10) +
-                                          '  ' +
-                                          lastGroupNoticeTime.substring(
-                                              10, 16))
+                                          ? groupNoticeText.isNotEmpty
+                                            ? (lastGroupNoticeTime.substring(
+                                            0, 4) +
+                                            '.' +
+                                            lastGroupNoticeTime.substring(
+                                                5, 7) +
+                                            '.' +
+                                            lastGroupNoticeTime.substring(
+                                                8, 10) +
+                                            '  ' +
+                                            lastGroupNoticeTime.substring(
+                                                10, 16))
+                                            : 'Time unavailable'
                                           : 'Loading...',
                                       style: GoogleFonts.montserrat(
                                           fontSize: 13,

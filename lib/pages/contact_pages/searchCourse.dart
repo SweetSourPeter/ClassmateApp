@@ -34,29 +34,38 @@ class _SearchCourseState extends State<SearchCourse> {
   var _selectedSemester = 'Spring';
   String clipboardText;
 
-  void _getClipboard(List<CourseInfo> course) async {
+  void _getClipboard() async {
     ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
     // https://www.meechu.app/#/course/03ef5517-52ae-4d99-ab81-c49552d8f47c
-    setState(() {
-      sectionTextEditingController.text = 'a';
-      if (data.text.trim().startsWith('https://www.meechu.app/#/course/')) {
-        clipboardText =
-            data.text.trim().replaceAll('https://www.meechu.app/#/course/', '');
-      } else if (data.text.trim().startsWith('www.meechu.app/#/course/')) {
-        clipboardText =
-            data.text.trim().replaceAll('www.meechu.app/#/course/', '');
-      } else if (data.text.trim().startsWith('meechu.app/#/course/')) {
-        clipboardText = data.text.trim().replaceAll('meechu.app/#/course/', '');
-      } else
-        clipboardText = data.text.trim();
-    });
+    if (data != null) {
+      setState(() {
+        sectionTextEditingController.text = 'a';
+        if (data.text.trim().startsWith('https://www.meechu.app/#/course/')) {
+          clipboardText =
+              data.text.trim().replaceAll('https://www.meechu.app/#/course/', '');
+        } else if (data.text.trim().startsWith('www.meechu.app/#/course/')) {
+          clipboardText =
+              data.text.trim().replaceAll('www.meechu.app/#/course/', '');
+        } else if (data.text.trim().startsWith('meechu.app/#/course/')) {
+          clipboardText = data.text.trim().replaceAll('meechu.app/#/course/', '');
+        } else
+          clipboardText = data.text.trim();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getClipboard();
   }
 
   @override
   Widget build(BuildContext context) {
     final course = Provider.of<List<CourseInfo>>(context);
 
-    _getClipboard(course);
+    // _getClipboard(course);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -114,7 +123,7 @@ class _SearchCourseState extends State<SearchCourse> {
       //not v4 uuid
       return RegExp(
               r'^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
-          .hasMatch(clipboardText?.toUpperCase());
+          .hasMatch(clipboardText == null ? '' : clipboardText.toUpperCase());
     }
 
     _addButton() {
@@ -414,7 +423,7 @@ class _SearchCourseState extends State<SearchCourse> {
                               ..onTap = () async {
                                 if (!_formKey.currentState.validate() &&
                                     !_validate()) {
-                                  print('both unvalid');
+                                  print('both invalid');
                                   return;
                                 } else if (_validate() &&
                                     courseNameTextEditingController

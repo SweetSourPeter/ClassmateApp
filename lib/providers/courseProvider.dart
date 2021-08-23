@@ -88,13 +88,14 @@ class CourseProvider with ChangeNotifier {
     var newCourseToCourse = CourseInfo(
       school: userdata.school.toUpperCase(),
       term: term.toUpperCase(),
-      myCourseCollge: myCourseCollege.toUpperCase(),
+      myCourseCollege: myCourseCollege.toUpperCase(),
       department: courseDepartment.toUpperCase(),
       myCourseName: myCourseName.toUpperCase(),
       section: courseSection.toUpperCase(),
       userNumbers: 1,
       courseID: courseId,
-      adminId: userId
+      adminId: userId,
+      groupNoticeText: ''
     );
 
     databaseMethods.saveCourseToCourse(newCourseToCourse);
