@@ -68,8 +68,8 @@ dependencies:
   fluttertoast: ^8.0.6
   jitsi_meet: ^3.0.0
   lottie: ^1.0.1
-#  share: ^2.0.4
-  share_plus: ^2.1.4
+  share: ^2.0.4
+  # share_plus: ^2.1.4
   upgrader: ^3.3.0
   flutter_local_notifications: ^5.0.0+4
   expandable: ^5.0.1

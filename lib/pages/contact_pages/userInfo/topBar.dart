@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:app_test/pages/explore_pages/reportUser.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:share/share.dart';
+import 'dart:io' show Platform;
 
 class TopBar extends StatefulWidget {
   final String userID;
@@ -37,6 +39,14 @@ class _TopBarState extends State<TopBar> {
     // if () {
     //   isBlocked = ();
     // }
+    _toastInfo(String info) {
+      Fluttertoast.showToast(
+        msg: info,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIosWeb: 3,
+        gravity: ToastGravity.CENTER,
+      );
+    }
 
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
@@ -220,9 +230,22 @@ class _TopBarState extends State<TopBar> {
                             GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: () {
-                                Share.share(
-                                    'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}',
-                                    subject: 'Join me on Meechu1!');
+                                if (Platform.isAndroid) {
+                                  Share.share(
+                                      'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}',
+                                      subject: 'Join me on Meechu1!');
+                                } else {
+                                  //TODO
+                                  Clipboard.setData(
+                                    new ClipboardData(
+                                      text:
+                                          'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}',
+                                    ),
+                                  ).then((result) {
+                                    _toastInfo('Copied invite info');
+                                  });
+                                }
+
                                 // Clipboard.setData(new ClipboardData(
                                 //         text:
                                 //             'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}'))

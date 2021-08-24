@@ -8,12 +8,15 @@ import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:share/share.dart';
+import 'dart:io' show Platform;
 
 class CourseMainMenu extends StatefulWidget {
   const CourseMainMenu({Key key, this.course, this.userData}) : super(key: key);
@@ -63,6 +66,15 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
       });
     });
     super.initState();
+  }
+
+  _toastInfo(String info) {
+    Fluttertoast.showToast(
+      msg: info,
+      toastLength: Toast.LENGTH_LONG,
+      timeInSecForIosWeb: 3,
+      gravity: ToastGravity.CENTER,
+    );
   }
 
   @override
@@ -205,35 +217,21 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                             title: Text('Share'),
                             trailingIcon: Icon(Icons.share),
                             onPressed: () {
-                              Clipboard.setData(new ClipboardData(
-                                      text:
-                                          'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${course[index].courseID}\nCourse Name: ${course[index].myCourseName + course[index].section}'))
-                                  .then((result) {
-                                showDialog<void>(
-                                  context: context,
-                                  barrierDismissible:
-                                      false, // user must tap button!
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[
-                                            Text('The invite Link is copied.'),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              });
+                              if (Platform.isAndroid) {
+                                Share.share(
+                                    'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${course[index].courseID}\nCourse Name: ${course[index].myCourseName + course[index].section}',
+                                    subject: 'Join info copied');
+                              } else {
+                                //TODO
+                                Clipboard.setData(
+                                  new ClipboardData(
+                                    text:
+                                        'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${course[index].courseID}\nCourse Name: ${course[index].myCourseName + course[index].section}',
+                                  ),
+                                ).then((result) {
+                                  _toastInfo('Join info copied');
+                                });
+                              }
                             }),
                         FocusedMenuItem(
                             title: Text(
