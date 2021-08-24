@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'dart:io';
 import 'package:app_test/services/database.dart';
 
 import 'package:app_test/models/user.dart';
@@ -13,11 +12,9 @@ import 'package:app_test/pages/explore_pages/help&feedback.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../models/constant.dart';
 
 class MyAccount extends StatefulWidget {
@@ -46,14 +43,6 @@ class _MyAccountState extends State<MyAccount> {
     Size mediaQuery = MediaQuery.of(context).size;
     double sidebarSize = mediaQuery.width * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
-    _toastInfo(String info) {
-      Fluttertoast.showToast(
-        msg: info,
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIosWeb: 3,
-        gravity: ToastGravity.CENTER,
-      );
-    }
 
     // TODO: implement build
     return Scaffold(
@@ -69,22 +58,9 @@ class _MyAccountState extends State<MyAccount> {
                   Spacer(),
                   GestureDetector(
                       onTap: () {
-                        if (Platform.isAndroid) {
-                          Share.share(
-                              'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}',
-                              subject: 'Copied invite info');
-                        } else {
-                          //TODO
-                          Clipboard.setData(
-                            new ClipboardData(
-                              text:
-                                  'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}',
-                            ),
-                          ).then((result) {
-                            _toastInfo('Copied invite info');
-                          });
-                        }
-
+                        Share.share(
+                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${userdata.email}',
+                            subject: 'Join me on Meechu!');
                         // Clipboard.setData(
                         //   new ClipboardData(
                         //       text:

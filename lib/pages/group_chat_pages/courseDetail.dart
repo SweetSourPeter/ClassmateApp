@@ -5,10 +5,9 @@ import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
@@ -85,14 +84,6 @@ class _CourseDetailState extends State<CourseDetail> {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final courseProvider = Provider.of<CourseProvider>(context);
     final course = Provider.of<List<CourseInfo>>(context);
-    _toastInfo(String info) {
-      Fluttertoast.showToast(
-        msg: info,
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIosWeb: 4,
-        gravity: ToastGravity.CENTER,
-      );
-    }
 
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
@@ -107,11 +98,11 @@ class _CourseDetailState extends State<CourseDetail> {
                   height: (gridWidth - 5) * 2,
                 )),
                 Container(
-                    child: Text(
-                  'Loading...',
-                  overflow: TextOverflow.ellipsis,
-                  style:
-                      GoogleFonts.montserrat(color: Colors.black, fontSize: 13),
+                  child: Text(
+                    'Loading...',
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black, fontSize: 13),
                 ))
               ],
             ),
@@ -230,81 +221,46 @@ class _CourseDetailState extends State<CourseDetail> {
                               width: _width * 1 / 6,
                               alignment: Alignment.centerRight,
                               padding: EdgeInsets.only(right: sidebarSize),
-                              child: PopupMenuButton(
-                                  itemBuilder: (context) => [
-                                        PopupMenuItem(
-                                          child: GestureDetector(
-                                              child: Text("Share"),
-                                              onTap: () {
-                                                if (Platform.isAndroid) {
+                              child: Platform.isAndroid
+                                ? PopupMenuButton(
+                                    itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            child: GestureDetector(
+                                                child: Text("Share"),
+                                                onTap: () {
                                                   Share.share(
-                                                    'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
-                                                    subject:
-                                                        'Join ${courseName + courseSection} chat at Meechu',
+                                                      'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                                                      subject:
+                                                          'Join ${courseName + courseSection} chat at Meechu',
                                                   );
-                                                } else {
-                                                  //TODO
-                                                  Clipboard.setData(
-                                                    new ClipboardData(
-                                                      text:
-                                                          'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
-                                                    ),
-                                                  ).then((result) {
-                                                    _toastInfo(
-                                                        'Copied invite info');
-                                                  });
-                                                }
-                                              }),
-                                          value: 1,
-                                        ),
-                                        PopupMenuItem(
-                                          child: GestureDetector(
-                                              child: Text("Share Course ID"),
-                                              onTap: () {
-                                                if (Platform.isAndroid) {
+                                                }),
+                                            value: 1,
+                                          ),
+                                          PopupMenuItem(
+                                            child: GestureDetector(
+                                                child: Text("Share Course ID"),
+                                                onTap: () {
                                                   Share.share(
                                                       '${widget.courseId}',
                                                       subject:
                                                           'Join ${courseName + courseSection} chat at Meechu');
-                                                } else {
-                                                  //TODO
-                                                  Clipboard.setData(
-                                                    new ClipboardData(
-                                                        text:
-                                                            '${widget.courseId}'),
-                                                  ).then((result) {
-                                                    _toastInfo(
-                                                        'Copied Course ID');
-                                                  });
-                                                }
-                                              }),
-                                          value: 2,
-                                        ),
-                                        PopupMenuItem(
-                                          child: GestureDetector(
-                                              child: Text("Share Course Link"),
-                                              onTap: () {
-                                                if (Platform.isAndroid) {
+                                                }),
+                                            value: 2,
+                                          ),
+                                          PopupMenuItem(
+                                            child: GestureDetector(
+                                                child: Text("Share Course Link"),
+                                                onTap: () {
                                                   Share.share(
                                                       'https://www.meechu.app/#/course/${widget.courseId}',
                                                       subject:
                                                           'Join ${courseName + courseSection} chat at Meechu');
-                                                } else {
-                                                  //TODO
-                                                  Clipboard.setData(
-                                                    new ClipboardData(
-                                                      text:
-                                                          'https://www.meechu.app/#/course/${widget.courseId}',
-                                                    ),
-                                                  ).then((result) {
-                                                    _toastInfo(
-                                                        'Copied Course Link');
-                                                  });
-                                                }
-                                              }),
-                                          value: 3,
-                                        ),
-                                      ]),
+                                                }),
+                                            value: 3,
+                                          ),
+                                        ])
+                                : Container() // TODO: ios specific share function
+                              ,
                             ),
                           ],
                         )),
