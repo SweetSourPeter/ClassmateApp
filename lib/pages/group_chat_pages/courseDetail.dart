@@ -220,47 +220,55 @@ class _CourseDetailState extends State<CourseDetail> {
                             Container(
                               width: _width * 1 / 6,
                               alignment: Alignment.centerRight,
-                              padding: EdgeInsets.only(right: sidebarSize),
-                              child: Platform.isAndroid
-                                ? PopupMenuButton(
-                                    itemBuilder: (context) => [
-                                          PopupMenuItem(
-                                            child: GestureDetector(
-                                                child: Text("Share"),
-                                                onTap: () {
-                                                  Share.share(
-                                                      'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
-                                                      subject:
-                                                          'Join ${courseName + courseSection} chat at Meechu',
-                                                  );
-                                                }),
-                                            value: 1,
-                                          ),
-                                          PopupMenuItem(
-                                            child: GestureDetector(
-                                                child: Text("Share Course ID"),
-                                                onTap: () {
-                                                  Share.share(
-                                                      '${widget.courseId}',
-                                                      subject:
-                                                          'Join ${courseName + courseSection} chat at Meechu');
-                                                }),
-                                            value: 2,
-                                          ),
-                                          PopupMenuItem(
-                                            child: GestureDetector(
-                                                child: Text("Share Course Link"),
-                                                onTap: () {
-                                                  Share.share(
-                                                      'https://www.meechu.app/#/course/${widget.courseId}',
-                                                      subject:
-                                                          'Join ${courseName + courseSection} chat at Meechu');
-                                                }),
-                                            value: 3,
-                                          ),
-                                        ])
-                                : Container() // TODO: ios specific share function
-                              ,
+                              padding: EdgeInsets.only(right: sidebarSize * 0.55),
+                              child: PopupMenuButton(
+                                onSelected: (choice) {
+                                  if (choice == 1) {
+                                    Share.share(
+                                      'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                                      subject:
+                                      'Join ${courseName + courseSection} chat at Meechu');
+                                  } else if (choice == 2) {
+                                    Share.share(
+                                      '${widget.courseId}',
+                                      subject:
+                                      'Join ${courseName + courseSection} chat at Meechu');
+                                  } else if (choice == 3) {
+                                    Share.share(
+                                      'https://www.meechu.app/#/course/${widget.courseId}',
+                                      subject:
+                                      'Join ${courseName + courseSection} chat at Meechu');
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: Text(
+                                      "Share",
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 16,
+                                        color: Colors.black,)
+                                    ),
+                                    value: 1,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text(
+                                      "Share Course ID",
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 16,
+                                        color: Colors.black,)
+                                    ),
+                                    value: 2,
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text(
+                                      "Share Course Link",
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 16,
+                                        color: Colors.black,)
+                                    ),
+                                    value: 3,
+                                  ),
+                                ]),
                             ),
                           ],
                         )),
@@ -420,9 +428,12 @@ class _CourseDetailState extends State<CourseDetail> {
                                 //     textSize: 18,
                                 //     height: 50,
                                 //     isSwitch: true),
-                                Divider(
-                                  height: 0,
-                                  thickness: 1,
+                                Container(
+                                  margin: EdgeInsets.only(left: sidebarSize),
+                                  child: Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                  ),
                                 ),
                                 GestureDetector(
                                   child: Container(
@@ -524,13 +535,14 @@ class _CourseDetailState extends State<CourseDetail> {
                                     });
                                   },
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(left: sidebarSize),
-                                  child: Divider(
-                                    height: 0,
-                                    thickness: 1,
+                                if (currentUser.userID == adminId)
+                                  Container(
+                                    margin: EdgeInsets.only(left: sidebarSize),
+                                    child: Divider(
+                                      height: 0,
+                                      thickness: 1,
+                                    ),
                                   ),
-                                ),
                                 if (currentUser.userID == adminId)
                                   Visibility(
                                     visible: true,

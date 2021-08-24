@@ -29,7 +29,7 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
-  @override
+
   DatabaseMethods databaseMethods = new DatabaseMethods();
   // bool isBlocked = false;
   Widget build(BuildContext context) {
