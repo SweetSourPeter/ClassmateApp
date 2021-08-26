@@ -51,7 +51,7 @@ class AboutTheAPP extends StatelessWidget {
                     height: mediaQuery.height * 0.0123,
                   ),
                   Text(
-                    'Version 1.1.7+12',
+                    'Version 1.1.7+13',
                     style: simpleTextStyle(Colors.white, 18),
                   ),
                   SizedBox(
