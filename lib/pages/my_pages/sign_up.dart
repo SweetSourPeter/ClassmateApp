@@ -15,9 +15,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' show json;
 import 'package:validators/validators.dart';
 
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 
 class SignUpPage extends StatefulWidget {
   final PageController pageController;
@@ -42,7 +40,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isLoading = false;
   bool emailExist = false;
 
- // bool pressAttention = false;
+  // bool pressAttention = false;
 
   String errorMessage;
   final TextEditingController _typeAheadController = TextEditingController();
@@ -217,7 +215,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     _getSignIn() {
       return Container(
-        padding: EdgeInsets.only(bottom: _height*0.03),
+        padding: EdgeInsets.only(bottom: _height * 0.03),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
         ),
@@ -246,7 +244,8 @@ class _SignUpPageState extends State<SignUpPage> {
             style: simpleTextSansStyleBold(
                 (emailTextEditingController.text.isNotEmpty &&
                         passwordTextEditingController.text.isNotEmpty &&
-                        passwordConfirmationTextEditingController.text.isNotEmpty &&
+                        passwordConfirmationTextEditingController
+                            .text.isNotEmpty &&
                         _selectedSchool.isNotEmpty)
                     ? themeOrange
                     : Colors.white,
@@ -287,7 +286,6 @@ class _SignUpPageState extends State<SignUpPage> {
     //
     //   );
     // }
-
 
     _getTextFields() {
       return Padding(
@@ -455,7 +453,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: passwordConfirmationTextEditingController,
                       obscureText: true,
                       validator: (val) {
-                        return passwordTextEditingController.text == passwordConfirmationTextEditingController.text
+                        return passwordTextEditingController.text ==
+                                passwordConfirmationTextEditingController.text
                             ? null
                             : "Password must be same as above";
                       },
@@ -501,42 +500,40 @@ class _SignUpPageState extends State<SignUpPage> {
             currentFocus.unfocus();
           }
         },
-        child: SafeArea(
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            key: _scaffoldKey,
-            body: isLoading
-                ? Container(child: LoadingScreen(themeOrange))
-                : Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    backgroundColor: themeOrange,
-                    body: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          _getBackBtn(),
-                          _getHeader(),
-                          _getTextFields(),
-                         // _sendCodeButton(),
-                          _getSignIn(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          key: _scaffoldKey,
+          body: isLoading
+              ? Container(child: LoadingScreen(themeOrange))
+              : Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  backgroundColor: themeOrange,
+                  body: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _getBackBtn(),
+                        _getHeader(),
+                        _getTextFields(),
+                        // _sendCodeButton(),
+                        _getSignIn(),
 
-                          // Container(
-                          //   height: _height * (1 - 0.14),
-                          //   width: _width,
-                          //   child: Column(
-                          //     mainAxisSize:
-                          //         MainAxisSize.min, // Use children total size
-                          //     children: <Widget>[
+                        // Container(
+                        //   height: _height * (1 - 0.14),
+                        //   width: _width,
+                        //   child: Column(
+                        //     mainAxisSize:
+                        //         MainAxisSize.min, // Use children total size
+                        //     children: <Widget>[
 
-                          //       // _getBottomRow(context),
-                          //     ],
-                          //   ),
-                          // ),
-                        ],
-                      ),
+                        //       // _getBottomRow(context),
+                        //     ],
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ),
-          ),
+                ),
         ),
       ),
     );
