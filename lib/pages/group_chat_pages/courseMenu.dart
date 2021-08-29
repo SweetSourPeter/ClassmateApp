@@ -422,7 +422,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                                       ? Container()
                                       : Padding(
                                           padding: EdgeInsets.only(
-                                              right: _width * 0.05),
+                                              right: _width * 0.01),
                                           child: Container(
                                               child: Image.asset(
                                                   fileLocation[index % 6])),
