@@ -26,8 +26,8 @@ class _SearchCourseState extends State<SearchCourse> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController courseNameTextEditingController =
       new TextEditingController();
-  TextEditingController sectionTextEditingController =
-      new TextEditingController();
+  // TextEditingController sectionTextEditingController =
+  // new TextEditingController();
   TextEditingController field = TextEditingController();
 
   String pasteValue;
@@ -39,17 +39,19 @@ class _SearchCourseState extends State<SearchCourse> {
   void _getClipboard() async {
     ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
     // https://www.meechu.app/#/course/03ef5517-52ae-4d99-ab81-c49552d8f47c
+    // sectionTextEditingController.text = 'a';
     if (data != null) {
       setState(() {
-        sectionTextEditingController.text = 'a';
         if (data.text.trim().startsWith('https://www.meechu.app/#/course/')) {
-          clipboardText =
-              data.text.trim().replaceAll('https://www.meechu.app/#/course/', '');
+          clipboardText = data.text
+              .trim()
+              .replaceAll('https://www.meechu.app/#/course/', '');
         } else if (data.text.trim().startsWith('www.meechu.app/#/course/')) {
           clipboardText =
               data.text.trim().replaceAll('www.meechu.app/#/course/', '');
         } else if (data.text.trim().startsWith('meechu.app/#/course/')) {
-          clipboardText = data.text.trim().replaceAll('meechu.app/#/course/', '');
+          clipboardText =
+              data.text.trim().replaceAll('meechu.app/#/course/', '');
         } else
           clipboardText = data.text.trim();
       });
@@ -511,7 +513,7 @@ class _SearchCourseState extends State<SearchCourse> {
     final temp = await databaseMethods.getCourse(
       _selectedSemester.toUpperCase(),
       courseNameTextEditingController.text.toUpperCase(),
-      sectionTextEditingController.text.toUpperCase(),
+      // sectionTextEditingController.text.toUpperCase(),
       userdata.school.toUpperCase(),
     );
     print('get temp');
@@ -526,8 +528,7 @@ class _SearchCourseState extends State<SearchCourse> {
       //     searchBegin = true;
       //   }
       // }
-      if ((courseNameTextEditingController.text.isNotEmpty) &&
-          (sectionTextEditingController.text.isNotEmpty)) {
+      if (courseNameTextEditingController.text.isNotEmpty) {
         print('reached search');
         searchBegin = true;
       }

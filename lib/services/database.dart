@@ -138,8 +138,7 @@ class DatabaseMethods {
   }
 
   //---------search Course----------
-  getCourse(
-      String term, String courseName, String section, String school) async {
+  getCourse(String term, String courseName, String school) async {
     print('term is ' + term);
     // print(
     //   String.fromCharCode(
@@ -147,7 +146,7 @@ class DatabaseMethods {
     //           1),
     // );
     print('courseName is ' + courseName);
-    print('section is ' + section);
+    // print('section is ' + section);
     // print(section.toUpperCase().substring(0, section.toUpperCase().length - 1));
     print('school is ' + school);
     return await FirebaseFirestore.instance
@@ -557,10 +556,7 @@ class DatabaseMethods {
     });
 
     List<dynamic> members = [];
-    await FirebaseFirestore.instance
-        .collection('users')
-        .get()
-        .then((value) {
+    await FirebaseFirestore.instance.collection('users').get().then((value) {
       value.docs.forEach((element) {
         if (listOfUserIdInCourse.contains(element.data()['UserID'])) {
           final userName = element.data()['userName'];
@@ -572,7 +568,8 @@ class DatabaseMethods {
       });
     });
 
-    members.sort((a, b) => a[0].toString().toUpperCase().compareTo(b[0].toString().toUpperCase()));
+    members.sort((a, b) =>
+        a[0].toString().toUpperCase().compareTo(b[0].toString().toUpperCase()));
 
     return members;
   }
@@ -636,20 +633,21 @@ class DatabaseMethods {
           "userName",
           isGreaterThanOrEqualTo: username,
           isLessThan: username.substring(0, username.length - 1) +
-              String.fromCharCode(username.codeUnitAt((username.length - 1)) + 1),
+              String.fromCharCode(
+                  username.codeUnitAt((username.length - 1)) + 1),
         )
         .get()
         .then((value) {
-          value.docs.forEach((element) {
-            if (listOfUserIdInCourse.contains(element.data()['UserID'])) {
-              final userName = element.data()['userName'];
-              final userId = element.data()['UserID'];
-              final profileColor = element.data()['profileColor'].toInt();
-              List<dynamic> userInfo = [userName, userId, profileColor];
-              foundUser.add(userInfo);
-            }
-          });
-        });
+      value.docs.forEach((element) {
+        if (listOfUserIdInCourse.contains(element.data()['UserID'])) {
+          final userName = element.data()['userName'];
+          final userId = element.data()['UserID'];
+          final profileColor = element.data()['profileColor'].toInt();
+          List<dynamic> userInfo = [userName, userId, profileColor];
+          foundUser.add(userInfo);
+        }
+      });
+    });
 
     return foundUser;
     // List<String> listOfUserId = [];
@@ -837,13 +835,14 @@ class DatabaseMethods {
         .doc(courseId)
         .get()
         .then((value) {
-            ret['groupNoticeText'] = value.data()['groupNoticeText'];
-            ret['noticeTime'] = value.data()['noticeTime'];
-        });
+      ret['groupNoticeText'] = value.data()['groupNoticeText'];
+      ret['noticeTime'] = value.data()['noticeTime'];
+    });
     return ret;
   }
 
-  setGroupNotice(String courseId, String groupNoticeText, int noticeTime) async {
+  setGroupNotice(
+      String courseId, String groupNoticeText, int noticeTime) async {
     FirebaseFirestore.instance.collection('courses').doc(courseId).update({
       'groupNoticeText': groupNoticeText,
       'noticeTime': noticeTime
@@ -855,7 +854,7 @@ class DatabaseMethods {
   //---------AdminTags---------
   updateAdminId(String courseId, String adminId) async {
     DocumentReference docRef =
-    FirebaseFirestore.instance.collection('courses').doc(courseId);
+        FirebaseFirestore.instance.collection('courses').doc(courseId);
     docRef.update({
       'adminId': adminId,
     }).catchError((e) {
