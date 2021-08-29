@@ -23,15 +23,17 @@ class _SearchCourseState extends State<SearchCourse> {
 
   // TextEditingController courseIDTextEditingController =
   //     new TextEditingController();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController courseNameTextEditingController =
       new TextEditingController();
   TextEditingController sectionTextEditingController =
       new TextEditingController();
-
   TextEditingController field = TextEditingController();
-  String pasteValue = '';
+
+  String pasteValue;
   QuerySnapshot<Map<String, dynamic>> searchSnapshot;
-  var _selectedSemester = 'Spring';
+  String _selectedSemester;
+  bool searchBegin;
   String clipboardText;
 
   void _getClipboard() async {
@@ -59,6 +61,9 @@ class _SearchCourseState extends State<SearchCourse> {
     // TODO: implement initState
     super.initState();
     _getClipboard();
+    pasteValue = '';
+    _selectedSemester = 'Spring';
+    searchBegin = false;
   }
 
   @override
@@ -144,19 +149,19 @@ class _SearchCourseState extends State<SearchCourse> {
           ),
           onPressed: () async {
             if (!_formKey.currentState.validate() && !_validate()) {
-              print('both unvalid');
+              print('both invalid');
               return;
             } else if (_validate() &&
                 courseNameTextEditingController.text.isEmpty) {
               await initiateURLSearch(clipboardText, context);
-              print(searchBegain);
+              print(searchBegin);
             } else {
               print('valid');
               await initiateSearch(_selectedSemester, context);
-              print(searchBegain);
+              print(searchBegin);
             }
             _formKey.currentState.save();
-            searchBegain
+            searchBegin
                 ? showBottomPopSheet(context, searchList(context, course))
                 : Center(child: CircularProgressIndicator());
           },
@@ -335,7 +340,7 @@ class _SearchCourseState extends State<SearchCourse> {
                     //                 bool urlValid = false;
                     //                 if (pasteValue
                     //                     .startsWith('https://na-cc.com/')) {
-                    //                   searchBegain = true;
+                    //                   searchBegin = true;
                     //                   print('start correct');
                     //                   var splitTemp = pasteValue.split('/');
                     //                   print(splitTemp[4]);
@@ -343,7 +348,7 @@ class _SearchCourseState extends State<SearchCourse> {
                     //                   await initiateURLSearch(splitTemp[4]);
                     //                 }
 
-                    //                 searchBegain
+                    //                 searchBegin
                     //                     ? showBottomPopSheet(context,
                     //                         searchList(context, course))
                     //                     : CircularProgressIndicator();
@@ -430,15 +435,15 @@ class _SearchCourseState extends State<SearchCourse> {
                                         .text.isEmpty) {
                                   await initiateURLSearch(
                                       clipboardText, context);
-                                  print(searchBegain);
+                                  print(searchBegin);
                                 } else {
                                   print('valid');
                                   await initiateSearch(
                                       _selectedSemester, context);
-                                  print(searchBegain);
+                                  print(searchBegin);
                                 }
                                 _formKey.currentState.save();
-                                searchBegain
+                                searchBegin
                                     ? showBottomPopSheet(
                                         context, searchList(context, course))
                                     : Center(
@@ -500,13 +505,10 @@ class _SearchCourseState extends State<SearchCourse> {
     );
   }
 
-  DatabaseMethods databaseMethods = new DatabaseMethods();
-  bool searchBegain = false;
-
   initiateSearch(var _selectedSemester, BuildContext context) async {
     final userdata = Provider.of<UserData>(context, listen: false);
-    var a = _selectedSemester;
-    var temp = await databaseMethods.getCourse(
+    // var a = _selectedSemester;
+    final temp = await databaseMethods.getCourse(
       _selectedSemester.toUpperCase(),
       courseNameTextEditingController.text.toUpperCase(),
       sectionTextEditingController.text.toUpperCase(),
@@ -521,13 +523,13 @@ class _SearchCourseState extends State<SearchCourse> {
       //       (courseNameTextEditingController.text.isNotEmpty) &&
       //       (sectionTextEditingController.text.isNotEmpty)) {
       //     print('reached search');
-      //     searchBegain = true;
+      //     searchBegin = true;
       //   }
       // }
       if ((courseNameTextEditingController.text.isNotEmpty) &&
           (sectionTextEditingController.text.isNotEmpty)) {
         print('reached search');
-        searchBegain = true;
+        searchBegin = true;
       }
     });
   }
@@ -546,7 +548,7 @@ class _SearchCourseState extends State<SearchCourse> {
       if (searchSnapshot.docs != null) {
         if ((searchSnapshot.docs.length >= 1) && (clipboardText.isNotEmpty)) {
           print('reached search');
-          searchBegain = true;
+          searchBegin = true;
         }
       }
     });
@@ -558,7 +560,10 @@ class _SearchCourseState extends State<SearchCourse> {
     final userdata = Provider.of<UserData>(context, listen: false);
 
     print('SearchList create');
-    return searchBegain && searchSnapshot.docs.isNotEmpty
+    print('searchBegin: ' + searchBegin.toString());
+    print('searchSnapshot: ');
+    // print(searchSnapshot.docs.first);
+    return searchBegin && searchSnapshot.docs.isNotEmpty
         ? Padding(
             padding: EdgeInsets.only(
               top: 18,
@@ -598,6 +603,8 @@ class _SearchCourseState extends State<SearchCourse> {
                           var id =
                               searchSnapshot.docs[index].data()['courseID'] ??
                                   '';
+
+                          print('inside');
                           return Provider<List<CourseInfo>>.value(
                             value: course,
                             child: CourseSearchTile(
