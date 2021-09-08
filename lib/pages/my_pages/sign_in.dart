@@ -2,6 +2,7 @@ import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/my_pages/forgetpassword.dart';
 import 'package:app_test/pages/my_pages/sign_up.dart';
 import 'package:app_test/services/wrapper.dart';
+import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import "package:flutter/material.dart";
@@ -23,7 +24,6 @@ bool isLoading = false;
 
 //Auth and Database instance created
 AuthMethods authMethods = new AuthMethods();
-// DatabaseMehods databaseMehods = new DatabaseMehods();
 
 TextEditingController emailTextEditingController = new TextEditingController();
 TextEditingController passwordTextEditingController =
@@ -87,7 +87,7 @@ class _SignInState extends State<SignIn> {
         //   content: Text(error.code),
         //   duration: Duration(seconds: 3),
         // ));
-        _toastInfo(error.code ?? 'Unknown Error');
+        _toastInfo(error.code.toString() ?? 'Unknown Error');
       });
     }
   }
@@ -96,13 +96,13 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
 
     _getBackBtn() {
       return Align(
-        alignment: Alignment.topLeft,
+        alignment: Alignment.topRight,
         child: Padding(
-          padding: EdgeInsets.only(top: _height * 0.06, left: _width * 0.098),
+          padding: EdgeInsets.only(top: _height * 0.06, right: _width * 0.098),
           child: GestureDetector(
             onTap: () {
               widget.pageController.animateToPage(1,
@@ -110,7 +110,7 @@ class _SignInState extends State<SignIn> {
                   curve: Curves.easeInCubic);
             },
             child: Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_forward_ios,
               color: Colors.white,
             ),
           ),
@@ -139,6 +139,8 @@ class _SignInState extends State<SignIn> {
           ),
           onPressed: () {
             signMeIn();
+            emailTextEditingController.clear();
+            passwordTextEditingController.clear();
           },
           child: AutoSizeText(
             'Continue',
@@ -192,9 +194,9 @@ class _SignInState extends State<SignIn> {
                     controller: passwordTextEditingController,
                     obscureText: true,
                     validator: (val) {
-                      return val.length > 6
+                      return val.length >= 6
                           ? null
-                          : "Please provoid valid password format";
+                          : "Please provide valid password format";
                     },
                     decoration: textFieldInputDecoration(
                       _height * 0.036,
@@ -269,7 +271,7 @@ class _SignInState extends State<SignIn> {
           resizeToAvoidBottomInset: false,
           key: _scaffoldKey,
           body: isLoading
-              ? Container(child: Center(child: CircularProgressIndicator()))
+              ? Container(child: LoadingScreen(themeOrange))
               : Scaffold(
                   resizeToAvoidBottomInset: false,
                   backgroundColor: themeOrange,

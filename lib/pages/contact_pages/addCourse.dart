@@ -34,7 +34,7 @@ class _AddCourseState extends State<AddCourse> {
     //provider of the course
     final courseProvider = Provider.of<CourseProvider>(context);
     final currentUser = Provider.of<UserData>(context, listen: false);
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 37),
@@ -81,191 +81,195 @@ class _AddCourseState extends State<AddCourse> {
       );
     }
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: Container(
-            padding: EdgeInsets.only(left: kDefaultPadding),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                Icons.close,
-                color: themeOrange,
-                size: 30,
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            leading: Container(
+              padding: EdgeInsets.only(left: kDefaultPadding),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.close,
+                  color: themeOrange,
+                  size: 30,
+                ),
               ),
             ),
+            // centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            // title: Text("Create Course"),
           ),
-          // centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          // title: Text("Create Course"),
-        ),
-        body: Form(
-          key: formKey,
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: _width * 0.12,
-              right: _width * 0.12,
-              top: 5,
-              bottom: 5,
-            ),
-            child: ListView(
-              children: <Widget>[
-                //Hint TextW
-                _getHeader(),
-                //College
-                SizedBox(
-                  height: 30,
-                ),
-                DropdownButtonFormField<String>(
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.black,
+          body: Form(
+            key: formKey,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: _width * 0.12,
+                right: _width * 0.12,
+                top: 5,
+                bottom: 5,
+              ),
+              child: ListView(
+                children: <Widget>[
+                  //Hint TextW
+                  _getHeader(),
+                  //College
+                  SizedBox(
+                    height: 30,
                   ),
-                  decoration: buildInputDecorationPinky(
-                    false,
-                    Icon(
-                      Icons.access_time,
+                  DropdownButtonFormField<String>(
+                    icon: Icon(
+                      Icons.keyboard_arrow_down,
                       color: Colors.black,
                     ),
-                    'Select Term',
-                    20,
-                  ),
-                  // hint: Text("Select Term"),
-                  value: currentSelectedValue,
-                  isDense: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      currentSelectedValue = newValue;
-                    });
-                    print(currentSelectedValue);
-                    courseProvider.changeTerm(currentSelectedValue);
-                  },
-                  validator: (String val) {
-                    return (val == null) ? "Please select the term" : null;
-                  },
-                  items: deviceTypes.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value.toUpperCase(),
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
-                  onChanged: (value) =>
-                      courseProvider.changeCourseCollege(value),
-                  controller: collegeTextEditingController,
-                  decoration: buildInputDecorationPinky(
-                    false,
-                    Icon(
-                      Icons.access_time,
-                      color: Colors.black,
+                    decoration: buildInputDecorationPinky(
+                      false,
+                      Icon(
+                        Icons.access_time,
+                        color: Colors.black,
+                      ),
+                      'Select Term',
+                      20,
                     ),
-                    'College, e.g. CAS',
-                    20,
+                    // hint: Text("Select Term"),
+                    value: currentSelectedValue,
+                    isDense: true,
+                    onChanged: (newValue) {
+                      setState(() {
+                        currentSelectedValue = newValue;
+                      });
+                      // print(currentSelectedValue);
+                      courseProvider.changeTerm(currentSelectedValue);
+                    },
+                    validator: (String val) {
+                      return (val == null) ? "Please select the term" : null;
+                    },
+                    items: deviceTypes.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value.toUpperCase(),
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
-                  // InputDecoration(hintText: 'College, ex:CAS'),
-                  validator: (val) {
-                    return val.length > 1
-                        ? null
-                        : "Please Enter a correct College";
-                  },
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                //Department
-                TextFormField(
-                  onChanged: (value) =>
-                      courseProvider.changeCourseDepartment(value),
-                  controller: departmentTextEditingController,
-                  decoration: buildInputDecorationPinky(
-                    false,
-                    Icon(
-                      Icons.access_time,
-                      color: Colors.black,
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    onChanged: (value) =>
+                        courseProvider.changeCourseCollege(value),
+                    controller: collegeTextEditingController,
+                    decoration: buildInputDecorationPinky(
+                      false,
+                      Icon(
+                        Icons.access_time,
+                        color: Colors.black,
+                      ),
+                      'College, e.g. CAS',
+                      20,
                     ),
-                    'Department, e.g. CS',
-                    20,
+                    // InputDecoration(hintText: 'College, ex:CAS'),
+                    validator: (val) {
+                      return val.length > 1
+                          ? null
+                          : "Please Enter a correct College";
+                    },
                   ),
-                  // InputDecoration(
-                  //   hintText: 'Department, ex:CS',
-                  // ),
-                  validator: (val) {
-                    return val.length > 1
-                        ? null
-                        : "Please Enter a correct Department";
-                  },
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                //Course Name
-                TextFormField(
-                  onChanged: (value) => courseProvider.changeCourseName(value),
-                  controller: courseNameTextEditingController,
-                  decoration: buildInputDecorationPinky(
-                    false,
-                    Icon(
-                      Icons.access_time,
-                      color: Colors.black,
+                  SizedBox(
+                    height: 15,
+                  ),
+                  //Department
+                  TextFormField(
+                    onChanged: (value) =>
+                        courseProvider.changeCourseDepartment(value),
+                    controller: departmentTextEditingController,
+                    decoration: buildInputDecorationPinky(
+                      false,
+                      Icon(
+                        Icons.access_time,
+                        color: Colors.black,
+                      ),
+                      'Department, e.g. CS',
+                      20,
                     ),
-                    'CourseName, e.g. CS111',
-                    20,
+                    // InputDecoration(
+                    //   hintText: 'Department, ex:CS',
+                    // ),
+                    validator: (val) {
+                      return val.length > 1
+                          ? null
+                          : "Please Enter a correct Department";
+                    },
                   ),
-                  // InputDecoration(hintText: 'CourseName, ex:CS111'),
-                  validator: (val) {
-                    return val.length > 3
-                        ? null
-                        : "Please Enter a correct Course Name";
-                  },
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                //Section
-                TextFormField(
-                  onChanged: (value) =>
-                      courseProvider.changeCourseSection(value),
-                  controller: sectionTextEditingController,
-                  decoration: buildInputDecorationPinky(
-                    false,
-                    Icon(
-                      Icons.access_time,
-                      color: Colors.black,
+                  SizedBox(
+                    height: 15,
+                  ),
+                  //Course Name
+                  TextFormField(
+                    onChanged: (value) =>
+                        courseProvider.changeCourseName(value),
+                    controller: courseNameTextEditingController,
+                    decoration: buildInputDecorationPinky(
+                      false,
+                      Icon(
+                        Icons.access_time,
+                        color: Colors.black,
+                      ),
+                      'CourseName, e.g. CS111',
+                      20,
                     ),
-                    'Section, e.g. A1',
-                    20,
+                    // InputDecoration(hintText: 'CourseName, ex:CS111'),
+                    validator: (val) {
+                      return val.length > 3
+                          ? null
+                          : "Please Enter a correct Course Name";
+                    },
                   ),
-                  // InputDecoration(hintText: 'Section, ex:A1'),
-                  validator: (val) {
-                    return val.length > 1
-                        ? null
-                        : "Please Enter a correct Section";
-                  },
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                _addButton(),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Create your class and invite your classmates.',
-                  textAlign: TextAlign.center,
-                  style: largeTitleTextStyle(Colors.black, 9),
-                ),
-                SizedBox(
-                  height: 65,
-                ),
-              ],
+                  SizedBox(
+                    height: 15,
+                  ),
+                  //Section
+                  TextFormField(
+                    onChanged: (value) =>
+                        courseProvider.changeCourseSection(value),
+                    controller: sectionTextEditingController,
+                    decoration: buildInputDecorationPinky(
+                      false,
+                      Icon(
+                        Icons.access_time,
+                        color: Colors.black,
+                      ),
+                      'Section, e.g. A1',
+                      20,
+                    ),
+                    // InputDecoration(hintText: 'Section, ex:A1'),
+                    validator: (val) {
+                      return val.length > 1
+                          ? null
+                          : "Please Enter a correct Section";
+                    },
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  _addButton(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Create your class and invite your classmates.',
+                    textAlign: TextAlign.center,
+                    style: largeTitleTextStyle(Colors.black, 9),
+                  ),
+                  SizedBox(
+                    height: 65,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -107,7 +107,7 @@ class UserCourseInfo extends StatelessWidget {
                         //show dialog
                         courseProvider.changeTerm(courseData[index].term);
                         courseProvider.changeCourseCollege(
-                            courseData[index].myCourseCollge);
+                            courseData[index].myCourseCollege);
                         courseProvider.changeCourseDepartment(
                             courseData[index].department);
                         courseProvider

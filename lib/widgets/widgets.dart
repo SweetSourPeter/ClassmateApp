@@ -43,6 +43,7 @@ InputDecoration buildInputDecorationPinky(
 InputDecoration textFieldInputDecoration(
     double height, String hintText, double boarderRadius) {
   return InputDecoration(
+    errorMaxLines: 2,
     fillColor: Color(0xFFFF9B6B).withOpacity(1),
     filled: true,
     // prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -203,7 +204,8 @@ Padding topLineBar() {
 // used to create user image
 String calculateUserName(String name) {
   var splitString = name.split(" ");
-  if (splitString.length >= 2) {
+  if (splitString.length >= 2 &&
+      name.split(' ')[name.split(' ').length - 1].isNotEmpty) {
     return (splitString[0][0] + splitString[1][0]);
   } else {
     return (splitString[0][0]);
@@ -334,7 +336,7 @@ class _ButtonLinkState extends State<ButtonLink> {
               ? EdgeInsets.fromLTRB(20, 10, 20, 10)
               : EdgeInsets.fromLTRB(20, 0, 20, 0),
           height: widget.height,
-          minWidth: getRealWidth(MediaQuery.of(context).size.width),
+          minWidth: MediaQuery.of(context).size.width,
           color: Colors.white,
           child: Column(
             children: [
@@ -359,7 +361,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.text,
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.openSans(
                             color: Color(0xFF000000),
                             fontSize: widget.textSize,
                             fontWeight: FontWeight.w500,
@@ -378,7 +380,7 @@ class _ButtonLinkState extends State<ButtonLink> {
                   widget.isEdit && widget.editText.length > 0
                       ? Text(
                           widget.editText,
-                          style: GoogleFonts.montserrat(
+                          style: GoogleFonts.openSans(
                               color: Colors.black45, fontSize: widget.textSize),
                         )
                       : Container(),
@@ -471,7 +473,7 @@ class _ButtonLinkState extends State<ButtonLink> {
 
 Padding userInfoDetailsBox(Size mediaQuery, String topText, String bottomText) {
   return Padding(
-    padding: EdgeInsets.fromLTRB(getRealWidth(mediaQuery.width) / 7, 0, 0, 0),
+    padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 0),
     child: Column(
       children: [
         Container(

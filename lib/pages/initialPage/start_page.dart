@@ -3,14 +3,22 @@ import 'package:app_test/pages/initialPage/tagSelectingStepper.dart';
 import 'package:app_test/pages/initialPage/privacy_page.dart';
 import 'package:app_test/pages/initialPage/second_page.dart';
 import 'package:app_test/pages/initialPage/third_page.dart';
+import 'package:app_test/pages/initialPage/enterInviteCode_page.dart';
 import 'package:app_test/models/constant.dart';
 import 'package:app_test/pages/utils/animation_item.dart';
 import 'package:app_test/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app_test/widgets/widgets.dart';
+import 'package:app_test/pages/my_pages/enterInviteCode.dart';
 
 class StartPage extends StatefulWidget {
+  final int initialPageNumber;
+  final String userNameIn;
+  const StartPage({
+    Key key,
+    this.initialPageNumber = 0,
+    this.userNameIn = '',
+  }) : super(key: key);
   @override
   _StartPageState createState() => _StartPageState();
 }
@@ -37,13 +45,16 @@ class _StartPageState extends State<StartPage> {
         animationlist.add(animation);
       });
     });
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(initialPage: widget.initialPageNumber);
+    _currentIndex = widget.initialPageNumber;
+    _currentUserName = widget.userNameIn;
     postionLogo = Tween(begin: 0.0, end: 0.0);
     _animacaoColor = Tween(begin: 2.3, end: 2.3);
   }
 
   @override
   Widget build(BuildContext context) {
+    final userdata = Provider.of<UserData>(context);
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -93,6 +104,9 @@ class _StartPageState extends State<StartPage> {
               },
               scrollDirection: Axis.horizontal,
               children: <Widget>[
+                EnterInviteCodeStartPage(
+                  pageController: _pageController,
+                ),
                 SecondPage(
                   pageController: _pageController,
                   valueChanged: (index) {
@@ -218,6 +232,17 @@ class _StartPageState extends State<StartPage> {
                   width: _width * 0.02,
                   decoration: BoxDecoration(
                       color: _currentIndex == 3 ? Colors.white : Colors.white54,
+                      shape: BoxShape.circle),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  height: 10,
+                  width: _width * 0.02,
+                  decoration: BoxDecoration(
+                      color: _currentIndex == 4 ? Colors.white : Colors.white54,
                       shape: BoxShape.circle),
                 ),
               ],

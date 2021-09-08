@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//  height: 140,
+// width: 156,
 class LogoWidget extends StatelessWidget {
   LogoWidget(this.height, this.width);
 

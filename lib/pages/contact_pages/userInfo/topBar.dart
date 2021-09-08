@@ -7,6 +7,7 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TopBar extends StatefulWidget {
   final String userID;
@@ -28,7 +29,6 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
-  @override
   DatabaseMethods databaseMethods = new DatabaseMethods();
   // bool isBlocked = false;
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _TopBarState extends State<TopBar> {
     // }
 
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -83,6 +83,7 @@ class _TopBarState extends State<TopBar> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 print(currentUser.blockedUserID != null &&
                                     currentUser.blockedUserID
@@ -105,7 +106,6 @@ class _TopBarState extends State<TopBar> {
                                   var blockedUserTemp =
                                       currentUser.blockedUserID;
                                   if (currentUser.blockedUserID == null) {
-                                    print('1');
                                     blockedUserTemp = [widget.userID];
                                   } else {
                                     blockedUserTemp = currentUser.blockedUserID;
@@ -127,7 +127,7 @@ class _TopBarState extends State<TopBar> {
                                     (currentUser.blockedUserID != null &&
                                             currentUser.blockedUserID
                                                 .contains(widget.userID))
-                                        ? 'unBlock'
+                                        ? 'Unblock'
                                         : "Block",
                                     style: GoogleFonts.openSans(
                                         fontSize: 18.0,
@@ -145,6 +145,7 @@ class _TopBarState extends State<TopBar> {
                               height: 0.0,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 print("reported");
                                 Navigator.of(context).pop();
@@ -169,6 +170,7 @@ class _TopBarState extends State<TopBar> {
                               height: 0.0,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
                                 Clipboard.setData(
                                   new ClipboardData(
@@ -215,37 +217,41 @@ class _TopBarState extends State<TopBar> {
                               height: 0.0,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.opaque,
                               onTap: () {
-                                Clipboard.setData(new ClipboardData(
-                                        text:
-                                            'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}'))
-                                    .then((result) {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible:
-                                        false, // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        content: SingleChildScrollView(
-                                          child: ListBody(
-                                            children: <Widget>[
-                                              Text(
-                                                  'You can PASTE to Share this profile with others.'),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                });
+                                Share.share(
+                                    'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}',
+                                    subject: 'Join me on Meechu1!');
+                                // Clipboard.setData(new ClipboardData(
+                                //         text:
+                                //             'Join me on Meechu!!!\nDownload "Meechu" on mobile and search your classmates with email.\n\nEmail: ${widget.profileUserEmail}'))
+                                //     .then((result) {
+                                //   showDialog<void>(
+                                //     context: context,
+                                //     barrierDismissible:
+                                //         false, // user must tap button!
+                                //     builder: (BuildContext context) {
+                                //       return AlertDialog(
+                                //         content: SingleChildScrollView(
+                                //           child: ListBody(
+                                //             children: <Widget>[
+                                //               Text(
+                                //                   'You can PASTE to Share this profile with others.'),
+                                //             ],
+                                //           ),
+                                //         ),
+                                //         actions: <Widget>[
+                                //           TextButton(
+                                //             child: Text('OK'),
+                                //             onPressed: () {
+                                //               Navigator.of(context).pop();
+                                //             },
+                                //           ),
+                                //         ],
+                                //       );
+                                //     },
+                                //   );
+                                // });
                               },
                               child: Center(
                                 child: Material(
@@ -272,6 +278,7 @@ class _TopBarState extends State<TopBar> {
                       Container(
                         height: 50,
                         child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: () {
                             Navigator.pop(context);
                           },

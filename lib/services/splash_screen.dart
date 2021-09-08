@@ -19,11 +19,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   openStartPage() async {
     await Future.delayed(
-      Duration(seconds: 1),
+      Duration(seconds: 2),
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Wrapper(false, false, "0"),
+          builder: (context) => Wrapper(false, false, '', false),
         ),
       ),
     );

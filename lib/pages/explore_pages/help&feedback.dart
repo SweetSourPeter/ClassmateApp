@@ -17,7 +17,7 @@ class HelpFeedback extends StatefulWidget {
 }
 
 class _HelpFeedbackState extends State<HelpFeedback> {
-  DatabaseMethods databaseMehods = new DatabaseMethods();
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   List<String> faqTitle = [
     'Course FAQ',
     'Friends FAQ',
@@ -69,7 +69,7 @@ class _HelpFeedbackState extends State<HelpFeedback> {
 
   void saveReportData(String reports, String userEmail, String userID) {
     //TODO change bad user ID
-    databaseMehods.saveReportsFAQ(reports, userEmail, userID);
+    databaseMethods.saveReportsFAQ(reports, userEmail, userID);
   }
 
   TextEditingController reportTextEditingController =

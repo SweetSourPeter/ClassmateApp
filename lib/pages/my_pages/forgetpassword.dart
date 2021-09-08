@@ -1,9 +1,11 @@
+import 'package:app_test/widgets/loadingAnimation.dart';
 import "package:flutter/material.dart";
 import 'package:app_test/services/auth.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:app_test/models/constant.dart';
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Forgetpassword extends StatefulWidget {
   @override
@@ -19,9 +21,17 @@ class _ForgetpasswordState extends State<Forgetpassword> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   AuthMethods authMethods = new AuthMethods();
+  _toastInfo(String info) {
+    Fluttertoast.showToast(
+      msg: info,
+      toastLength: Toast.LENGTH_LONG,
+      timeInSecForIosWeb: 3,
+      gravity: ToastGravity.CENTER,
+    );
+  }
 
   Timer _timer;
-  int _start = 60;
+  int _start = 10;
 
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
@@ -32,7 +42,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           setState(() {
             hasSend = false;
             timer.cancel();
-            _start = 60;
+            _start = 10;
           });
         } else {
           setState(() {
@@ -45,14 +55,14 @@ class _ForgetpasswordState extends State<Forgetpassword> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
 
     sendIt() {
       if (formKey.currentState.validate()) {
@@ -61,7 +71,7 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           hasSend = false;
         });
         authMethods.resetPassword(emailTextEditingController.text).then((val) {
-          print('object');
+          _toastInfo('Email has been sent');
           // print(val.error.toString());
           startTimer();
           setState(() {
@@ -70,13 +80,17 @@ class _ForgetpasswordState extends State<Forgetpassword> {
           });
         }).catchError((error) {
           //TODO
+          if (!mounted) {
+            return; // Just do nothing if the widget is disposed.
+          }
           setState(() {
+            hasSend = false;
+            _timer?.cancel();
+            _start = 10;
             isLoading = false;
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text(error.code),
-              duration: Duration(seconds: 3),
-            ));
           });
+          print(error.code);
+          _toastInfo(error.code.toString() ?? 'Unknown Error');
         });
       }
     }
@@ -203,34 +217,34 @@ class _ForgetpasswordState extends State<Forgetpassword> {
       );
     }
 
-    return SafeArea(
-      child: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
+    return Container(
+      color: themeOrange,
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
 
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Scaffold(
-          backgroundColor: themeOrange,
-          resizeToAvoidBottomInset: false,
-          body: isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                  backgroundColor: themeOrange,
-                ))
-              : SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _getBackBtn(),
-                      _getHeader(),
-                      _getTextFields(),
-                      _enterEmail(),
-                    ],
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: themeOrange,
+            resizeToAvoidBottomInset: false,
+            body: isLoading
+                ? LoadingScreen(themeOrange)
+                : SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _getBackBtn(),
+                        _getHeader(),
+                        _getTextFields(),
+                        _enterEmail(),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );

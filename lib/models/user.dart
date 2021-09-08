@@ -1,13 +1,25 @@
+import 'package:app_test/models/userTags.dart';
+
 class User {
   final String userID;
-  String userImageUrl;
+  String photoURL;
   String school;
   String email;
   String userName;
+  String password;
   bool admin;
+  bool isVerified;
   int unread;
 
-  User({this.userID, bool admin, this.unread});
+  User({
+    this.userID,
+    bool admin,
+    this.unread,
+    this.isVerified = false,
+    this.email,
+    this.photoURL,
+    this.password,
+  });
 
   Map<String, dynamic> toJson() =>
       {'userID': userID, 'admin': admin, 'unread': 0};
@@ -20,7 +32,11 @@ class UserData {
   final String school;
   final String userImageUrl;
   final double profileColor;
+  double myChargeNumber;
+  final List invitedUserID;
   final List blockedUserID;
+  final bool agreedToTerms;
+  final UserTags userTags;
   // final List<String> friendsList;
   // final List<String> courseList;
   UserData({
@@ -30,7 +46,11 @@ class UserData {
     this.school,
     this.userImageUrl,
     this.profileColor,
+    this.myChargeNumber,
+    this.invitedUserID,
     this.blockedUserID,
+    this.agreedToTerms,
+    this.userTags,
   });
   Map<String, dynamic> toCourseJson() => {
         'userID': userID,
@@ -45,7 +65,10 @@ class UserData {
       'school': school,
       'userImageUrl': userImageUrl,
       'profileColor': profileColor,
+      'myChargeNumber': myChargeNumber,
       'blockedUser': blockedUserID,
+      'agreedToTerms': agreedToTerms,
+      'userTags': userTags,
     };
   }
 
@@ -55,8 +78,14 @@ class UserData {
         school = firestore['school'] ?? '',
         email = firestore['email'] ?? '',
         profileColor = firestore['profileColor'] ?? '',
+        myChargeNumber = firestore['myChargeNumber'] ?? 0.0,
         userName = firestore['userName'] ?? '',
-        blockedUserID = firestore['blockedUser'] ?? null;
+        agreedToTerms = firestore['agreedToTerms'] ?? null,
+        invitedUserID = firestore['invitedUserID'] ?? null,
+        blockedUserID = firestore['blockedUser'] ?? null,
+        userTags = firestore['tags'] == null
+            ? null
+            : UserTags.fromFirestoreTags(firestore['tags']);
 
   //get data for contacts of current user
   UserData.fromFirestoreContacts(Map<String, dynamic> firestore)
@@ -65,6 +94,12 @@ class UserData {
         school = firestore['school'],
         email = firestore['email'],
         profileColor = firestore['profileColor'],
+        myChargeNumber = firestore['myChargeNumber'] ?? 0.0,
         userName = firestore['userName'],
-        blockedUserID = firestore['blockedUser'];
+        agreedToTerms = firestore['agreedToTerms'] ?? null,
+        invitedUserID = firestore['invitedUserID'] ?? null,
+        blockedUserID = firestore['blockedUser'],
+        userTags = firestore['tags'] == null
+            ? null
+            : UserTags.fromFirestoreTags(firestore['tags']);
 }

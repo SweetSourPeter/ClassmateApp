@@ -1,18 +1,25 @@
-import 'package:app_test/main.dart';
 import 'package:app_test/models/user.dart' as u;
 import "package:firebase_auth/firebase_auth.dart" as auth;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:app_test/services/userDatabase.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Timer timer;
 
-  u.User _userFromFirebaseUser(auth.User user) {
+  u.User _userFromFirebaseUser(
+    auth.User user,
+  ) {
     // return user != null ? auth.User(userID: user.uid) : null;
-    return user != null ? u.User(userID: user.uid) : null;
+    return (user != null)
+        ? u.User(
+            userID: user.uid,
+            isVerified: user.emailVerified,
+            email: user.email,
+            photoURL: user.photoURL,
+          )
+        : null;
   }
 
   Future<bool> isUserLogged() async {
@@ -35,6 +42,38 @@ class AuthMethods {
         .authStateChanges()
         //.map((FirebaseUser user) => _userFromFirebaseUser(user));
         .map(_userFromFirebaseUser);
+  }
+
+  // Future reloadTheUser() async {
+  //   FirebaseUser currUser = await _auth.currentUser.reload().then((_) => _auth.currentUser());
+
+  //     try {
+  //       return await _auth.currentUser().then((u) => u.reload().then((_) => _auth.currentUser()));
+  //     } catch (error) {
+  //       throw error;
+  //     }
+
+  // }
+
+  void sendVerifyEmail() {
+    User user = FirebaseAuth.instance.currentUser;
+    user.sendEmailVerification();
+
+    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      checkEmailVerified();
+    });
+  }
+
+  void dispose() {
+    timer.cancel();
+  }
+
+  Future<void> checkEmailVerified() async {
+    User user = FirebaseAuth.instance.currentUser;
+    await user.reload();
+    if (user.emailVerified) {
+      timer.cancel();
+    }
   }
 
   // sign in with email and password
@@ -118,6 +157,7 @@ class AuthMethods {
       return await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       print(e.toString());
+      throw e;
     }
   }
 

@@ -5,16 +5,21 @@ import 'package:app_test/services/database.dart';
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/widgets/widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart'; NOT FOR WEB
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'dart:io' show Platform;
 
 class ChatRoom extends StatefulWidget {
-  final String myName;
-  final String myEmail;
+  final UserData myData;
 
-  ChatRoom({this.myName, this.myEmail});
+  ChatRoom({this.myData});
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -39,29 +44,27 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.docs.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  final userList =
-                      snapshot.data.documents[index].data()['users'];
+                  final userList = snapshot.data.docs[index].data()['users'];
 
-                  if (userList[1] == widget.myEmail) {
+                  if (userList[1] == widget.myData.email) {
                     friendName = userList[4];
                     friendEmail = userList[5];
                     friendID = userList[6];
-                    friendProfileColor = userList[7];
+                    friendProfileColor = userList[7].toDouble();
                   } else {
                     friendName = userList[0];
                     friendEmail = userList[1];
                     friendID = userList[2];
-                    friendProfileColor = userList[3];
+                    friendProfileColor = userList[3].toDouble();
                   }
 
                   latestMessage =
-                      snapshot.data.documents[index].data()['latestMessage'];
-                  lastMessageTime = DateTime.fromMillisecondsSinceEpoch(snapshot
-                          .data.documents[index]
-                          .data()['lastMessageTime'])
+                      snapshot.data.docs[index].data()['latestMessage'];
+                  lastMessageTime = DateTime.fromMillisecondsSinceEpoch(
+                          snapshot.data.docs[index].data()['lastMessageTime'])
                       .toString();
 
                   return (currentUser.blockedUserID != null &&
@@ -71,20 +74,20 @@ class _ChatRoomState extends State<ChatRoom> {
                           children: [
                             ChatRoomsTile(
                                 friendID: friendID,
-                                userName: snapshot.data.documents[index]
+                                userName: snapshot.data.docs[index]
                                     .data()['chatRoomId']
                                     .toString()
                                     .replaceAll("_", "")
                                     .replaceAll(currentUser.email, ""),
-                                chatRoomId: snapshot.data.documents[index]
+                                chatRoomId: snapshot.data.docs[index]
                                     .data()["chatRoomId"],
                                 friendName: friendName,
                                 latestMessage: latestMessage,
                                 lastMessageTime: lastMessageTime,
                                 friendEmail: friendEmail,
-                                unreadNumber: snapshot.data.documents[index]
-                                    .data()[widget.myEmail.substring(
-                                        0, widget.myEmail.indexOf('@')) +
+                                unreadNumber: snapshot.data.docs[index]
+                                    .data()[widget.myData.email.substring(
+                                        0, widget.myData.email.indexOf('@')) +
                                     'unread'],
                                 friendProfileColor: friendProfileColor),
                             Divider(
@@ -101,7 +104,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
-    getUserInfoGetChats(widget.myEmail);
+    getUserInfoGetChats(widget.myData.email);
     super.initState();
   }
 
@@ -213,13 +216,19 @@ class ChatRoomsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
-    Size mediaQuery = MediaQuery.of(context).size;
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
-    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
-    //print('heree');
+    double _width = MediaQuery.of(context).size.width;
+    double sidebarSize = _width * 1.0;
+
+    // print('heree');
     return GestureDetector(
       onTap: () {
+        // put into database.dart later
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.userID)
+            .update({'chattingWith': friendID});
+
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return MultiProvider(
             providers: [
@@ -278,7 +287,11 @@ class ChatRoomsTile extends StatelessWidget {
                           child: Container(
                             child: Text(
                               // 单个字22，双子18
-                              friendName.split(' ').length >= 2
+                              (friendName.split(' ').length >= 2 &&
+                                      friendName
+                                          .split(' ')[
+                                              friendName.split(' ').length - 1]
+                                          .isNotEmpty)
                                   ? friendName.split(' ')[0][0].toUpperCase() +
                                       friendName
                                           .split(' ')[

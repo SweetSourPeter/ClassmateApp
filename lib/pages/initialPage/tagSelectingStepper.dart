@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:ui';
 
 class TagSelecting extends StatefulWidget {
   final PageController pageController;
@@ -32,10 +33,11 @@ class _TagSelectingState extends State<TagSelecting> {
   int choosenTagNumb = 0;
   List allTags = [];
   double _fontSize = 14;
+  bool blureShow;
   //for category selector
   int selectedIndex = 0;
   final List<String> categories = [
-    'Major', //college
+    'college', //college
     'Study habits',
     'Interest',
     'Languages',
@@ -43,30 +45,57 @@ class _TagSelectingState extends State<TagSelecting> {
   @override
   void initState() {
     super.initState();
+    print('tags page called');
     _items = college;
     if (widget.isEdit && widget.currentTags != null) {
       allTags = widget.currentTags;
+      setState(() {
+        blureShow = widget.isEdit;
+      });
     }
+    blureShow = widget.isEdit;
   }
 
-  void changepRroviderList(UserTagsProvider userTagProvider) {
+  Future<void> changepRroviderList(UserTagsProvider userTagProvider) async {
+    print('selected index is =----------- $selectedIndex');
     switch (selectedIndex) {
       case 0:
-        userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0]));
+        // userTagProvider.changeTagCollege(
+        //     (userTagProvider.college ?? [] + _getAllItem(tagStateKeyList[0]))
+        //         .toSet()
+        //         .toList());
+        print('provider change called');
+        await userTagProvider.changeTagCollege(_getAllItem(tagStateKeyList[0]));
         // return college;
+        print('done');
         break;
       case 1:
-        userTagProvider.changeTagsStudyHabits(_getAllItem(tagStateKeyList[1]));
+        // userTagProvider.changeTagsStudyHabits((userTagProvider.strudyHabits ??
+        //         [] + _getAllItem(tagStateKeyList[1]))
+        //     .toSet()
+        //     .toList());
+        await userTagProvider
+            .changeTagsStudyHabits(_getAllItem(tagStateKeyList[1]));
         // return strudyHabits;
 
         break;
       case 2:
-        userTagProvider.changeTagInterest(_getAllItem(tagStateKeyList[2]));
+        // userTagProvider.changeTagInterest(
+        //     (userTagProvider.interest ?? [] + _getAllItem(tagStateKeyList[2]))
+        //         .toSet()
+        //         .toList());
+        await userTagProvider
+            .changeTagInterest(_getAllItem(tagStateKeyList[2]));
         // return Interest;
 
         break;
       case 3:
-        userTagProvider.changeTagLanguage(_getAllItem(tagStateKeyList[3]));
+        // userTagProvider.changeTagLanguage(
+        //     (userTagProvider.language ?? [] + _getAllItem(tagStateKeyList[3]))
+        //         .toSet()
+        //         .toList());
+        await userTagProvider
+            .changeTagLanguage(_getAllItem(tagStateKeyList[3]));
         // return language;
         break;
       default:
@@ -79,7 +108,7 @@ class _TagSelectingState extends State<TagSelecting> {
   Widget build(BuildContext context) {
     // final userTags = Provider.of<UserTags>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
     final userTagProvider = Provider.of<UserTagsProvider>(context);
     Color submitButtonColor = widget.buttonColor;
     Color submitButtonTextColor = Colors.white;
@@ -104,240 +133,259 @@ class _TagSelectingState extends State<TagSelecting> {
     // ];
 
     return SafeArea(
-        child: Container(
-            height: widget.isEdit ? mediaQuery.height - 50 : mediaQuery.height,
-            color: themeOrange,
-            child: Center(
-              child: Container(
-                  width: maxWidth /1.5,
-                  decoration: widget.isEdit
-                      ? BoxDecoration(
-                          color: themeOrange,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30.0),
-                            topRight: Radius.circular(30.0),
-                            // bottomLeft: Radius.circular(30.0),
-                            // bottomRight: Radius.circular(30.0),
-                          ),
-                        )
-                      : null,
-                  color: widget.isEdit ? null : themeOrange,
-                  child: Column(
-                    children: [
-                      widget.isEdit
-                          ? Padding(
-                              padding: EdgeInsets.fromLTRB(10, 10, 8, 0),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(35.0),
-                                    topRight: Radius.circular(35.0),
-                                    bottomLeft: Radius.circular(35.0),
-                                    bottomRight: Radius.circular(35.0),
-                                  ),
-                                  child: SizedBox(
-                                    width: 65.0,
-                                    height: 6.0,
-                                    child: const DecoratedBox(
-                                      decoration: const BoxDecoration(
-                                          color: Colors.white),
-                                    ),
-                                  )
-                                  // child: Container(
-                                  //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
-                                  //   color: Colors.black,
-                                  // )
-                                  ),
+      child: Container(
+        decoration: widget.isEdit
+            ? BoxDecoration(
+                color: themeOrange,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                  // bottomLeft: Radius.circular(30.0),
+                  // bottomRight: Radius.circular(30.0),
+                ),
+              )
+            : null,
+        height: widget.isEdit ? (mediaQuery.height * 0.9) : mediaQuery.height,
+        color: widget.isEdit ? null : themeOrange,
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                widget.isEdit
+                    ? Padding(
+                        padding: EdgeInsets.fromLTRB(10, 25, 8, 0),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(35.0),
+                              topRight: Radius.circular(35.0),
+                              bottomLeft: Radius.circular(35.0),
+                              bottomRight: Radius.circular(35.0),
+                            ),
+                            child: SizedBox(
+                              width: 65.0,
+                              height: 6.0,
+                              child: const DecoratedBox(
+                                decoration:
+                                    const BoxDecoration(color: Colors.white),
+                              ),
                             )
-                          : Container(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        height: widget.isEdit
-                            ? (_height - 50) * 0.56
-                            : _height * 0.56,
-                        color: themeOrange,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: widget.isEdit
-                                    ? _height * 0.05
-                                    : _height * 0.13,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 35, top: 0, bottom: 0, right: 35),
-                                child: Container(
-                                  child: Text(
-                                    'Choose the tags that best describe you!',
-                                    textAlign: TextAlign.center,
-                                    style: largeTitleTextStyleBold(
-                                        Colors.white, 16),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: mediaQuery.height * 0.012,
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 35, top: 0, bottom: 0, right: 35),
-                                  child: Text(
-                                    'We match you with others who have similar tags',
-                                    textAlign: TextAlign.center,
-                                    style: simpleTextSansStyleBold(
-                                        Color(0xFFF7D5C5), 14),
-                                  )),
-                              SizedBox(
-                                height: mediaQuery.height * 0.044,
-                              ),
-                              categorySelector(widget.buttonColor, mediaQuery,
-                                  userTagProvider),
-                              Container(
-                                width: _width,
-                                color: Color(0xFFFF9B6B).withOpacity(1),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Divider(
-                                        thickness: 2,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: buildBottomTags(
-                                            widget.buttonColor,
-                                            _items,
-                                            tagStateKeyList[selectedIndex],
-                                            userTagProvider),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                            // child: Container(
+                            //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+                            //   color: Colors.black,
+                            // )
+                            ),
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  height:
+                      widget.isEdit ? (_height * 0.9) * 0.56 : _height * 0.56,
+                  color: themeOrange,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height:
+                              widget.isEdit ? _height * 0.05 : _height * 0.13,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 35, top: 0, bottom: 0, right: 35),
+                          child: Container(
+                            child: Text(
+                              'Choose the tags that best describe you!',
+                              textAlign: TextAlign.center,
+                              style: largeTitleTextStyleBold(Colors.white, 16),
+                            ),
                           ),
                         ),
-                      ),
-
-                      // RaisedGradientButton(
-                      //   width: 200,
-                      //   height: 40,
-                      //   gradient: LinearGradient(
-                      //     colors: <Color>[orengeColor, orengeColor],
-                      //   ),
-                      //   onPressed: () {
-                      //     //TODO send data to database
-                      //     userTagProvider.addTagsToContact(context);
-                      //   },
-                      //   //之后需要根据friendsProvider改这部分display
-                      //   //TODO
-                      //   child: Text(
-                      //     'Complete',
-                      //     style: TextStyle(
-                      //         fontSize: 20,
-                      //         color: Colors.white,
-                      //         fontWeight: FontWeight.w600),
-                      //   ),
-                      // ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.topLeft,
+                        SizedBox(
+                          height: mediaQuery.height * 0.012,
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left: 35, top: 0, bottom: 0, right: 35),
+                            child: Text(
+                              'We match you with others who have similar tags',
+                              textAlign: TextAlign.center,
+                              style: simpleTextSansStyleBold(
+                                  Color(0xFFF7D5C5), 14),
+                            )),
+                        SizedBox(
+                          height: mediaQuery.height * 0.044,
+                        ),
+                        categorySelector(
+                            widget.buttonColor, mediaQuery, userTagProvider),
+                        Container(
                           width: _width,
+                          color: Color(0xFFFF9B6B).withOpacity(1),
                           child: SingleChildScrollView(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Container(
-                                //   height: 10,
-                                //   color: Color(0xDA6D39).withOpacity(1),
-                                // ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 21, top: mediaQuery.height * 0.025),
-                                  child: Text(
-                                    'Chosen tags',
-                                    style: largeTitleTextStyleBold(
-                                        Colors.white, 16),
-                                  ),
+                                Divider(
+                                  thickness: 2,
+                                  color: Colors.white,
                                 ),
                                 SizedBox(
-                                  height: 26,
+                                  height: 10,
                                 ),
                                 Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 21, bottom: 30),
-                                    child: buildTopTags(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: buildBottomTags(
                                       widget.buttonColor,
-                                      allTags,
-                                      tagStateKeyList[4],
-                                    )),
+                                      _items,
+                                      tagStateKeyList[selectedIndex],
+                                      userTagProvider),
+                                ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: widget.isEdit
-                              ? (_height - 50) * 0.06
-                              : _height * 0.094,
-                          left: _width * 0.15,
-                          right: _width * 0.15,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          height: _height * 0.06,
-                          width: _width * 0.75,
-                          child: RaisedButton(
-                            hoverElevation: 0,
-                            highlightColor: Colors.white,
-                            highlightElevation: 0,
-                            elevation: 0,
-                            color: (allTags.length >= 5)
-                                ? Colors.white
-                                : Color(0xFFFF9B6B).withOpacity(1),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            onPressed: () {
-                              if (widget.isEdit) {
-                                userTagProvider.addTagsToContact(context);
-                                Navigator.pop(context);
-                              } else if (allTags.length >= 5) {
-                                userTagProvider.addTagsToContact(context);
-                                widget.pageController.animateToPage(3,
-                                    duration: Duration(milliseconds: 800),
-                                    curve: Curves.easeInCubic);
-                              } else {
-                                // selectedIndex++;
-                                // changeCategory(selectedIndex);
-                              }
-                            },
-                            child: AutoSizeText(
-                              allTags.length >= 5
-                                  ? (widget.isEdit ? 'Save' : 'Complete')
-                                  : '${allTags.length.toString()} / 5',
-                              style: simpleTextSansStyleBold(
-                                  (allTags.length >= 5)
-                                      ? themeOrange
-                                      : Colors.white,
-                                  16),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // RaisedGradientButton(
+                //   width: 200,
+                //   height: 40,
+                //   gradient: LinearGradient(
+                //     colors: <Color>[orengeColor, orengeColor],
+                //   ),
+                //   onPressed: () {
+                //     //TODO send data to database
+                //     userTagProvider.addTagsToContact(context);
+                //   },
+                //   //之后需要根据friendsProvider改这部分display
+                //   //TODO
+                //   child: Text(
+                //     'Complete',
+                //     style: TextStyle(
+                //         fontSize: 20,
+                //         color: Colors.white,
+                //         fontWeight: FontWeight.w600),
+                //   ),
+                // ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    width: _width,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Container(
+                          //   height: 10,
+                          //   color: Color(0xDA6D39).withOpacity(1),
+                          // ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 21, top: mediaQuery.height * 0.025),
+                            child: Text(
+                              'Chosen tags',
+                              style: largeTitleTextStyleBold(Colors.white, 16),
                             ),
                           ),
-                        ),
+                          SizedBox(
+                            height: 26,
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(left: 21, bottom: 30),
+                              child: buildTopTags(
+                                widget.buttonColor,
+                                allTags,
+                                tagStateKeyList[4],
+                              )),
+                        ],
                       ),
-                    ],
-                  )),
-            )));
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: widget.isEdit
+                        ? (_height * 0.9) * 0.06
+                        : _height * 0.094,
+                    left: _width * 0.15,
+                    right: _width * 0.15,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    height: _height * 0.06,
+                    width: _width * 0.75,
+                    child: RaisedButton(
+                      hoverElevation: 0,
+                      highlightColor: Colors.white,
+                      highlightElevation: 0,
+                      elevation: 0,
+                      color: (allTags.length >= 5)
+                          ? Colors.white
+                          : Color(0xFFFF9B6B).withOpacity(1),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      onPressed: () async {
+                        if (widget.isEdit) {
+                          await userTagProvider.addTagsToContact(context);
+                          Navigator.pop(context);
+                        } else if (allTags.length >= 5) {
+                          await userTagProvider.addTagsToContact(context);
+                          widget.pageController.animateToPage(4,
+                              duration: Duration(milliseconds: 800),
+                              curve: Curves.easeInCubic);
+                        } else {
+                          // selectedIndex++;
+                          // changeCategory(selectedIndex);
+                        }
+                      },
+                      child: AutoSizeText(
+                        allTags.length >= 5
+                            ? (widget.isEdit ? 'Save' : 'Complete')
+                            : '${allTags.length.toString()} / 5',
+                        style: simpleTextSansStyleBold(
+                            (allTags.length >= 5) ? themeOrange : Colors.white,
+                            16),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  blureShow = false;
+                  allTags = [];
+                });
+              },
+              child: Center(
+                child: new ClipRect(
+                  child: new BackdropFilter(
+                    filter: new ImageFilter.blur(sigmaX: 0.70, sigmaY: 0.70),
+                    child: new Container(
+                      width: blureShow ? _width : 0,
+                      height: blureShow ? _height * 0.9 : 0,
+                      decoration: new BoxDecoration(
+                          color: Colors.grey.withOpacity(0.001)),
+                      child: new Center(
+                          child: AutoSizeText(
+                        'Tap to edit',
+                        style: largeTitleTextStyle(Colors.grey[700], 38),
+                      )),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void changeCategory(int index) {
@@ -378,7 +426,7 @@ class _TagSelectingState extends State<TagSelecting> {
         ],*/
       ),
       height: widget.isEdit
-          ? (mediaQuery.height - 50) * 0.07
+          ? (mediaQuery.height * 0.9) * 0.07
           : mediaQuery.height * 0.07,
       // color: Colors.white,
       child: Padding(
@@ -393,9 +441,9 @@ class _TagSelectingState extends State<TagSelecting> {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: getRealWidth(mediaQuery.width) * 0.04,
+                  horizontal: mediaQuery.width * 0.04,
                   vertical: widget.isEdit
-                      ? (mediaQuery.height - 50) * 0.0246
+                      ? (mediaQuery.height * 0.9) * 0.0246
                       : mediaQuery.height * 0.0246,
                 ),
                 child: AutoSizeText(
@@ -527,16 +575,18 @@ class _TagSelectingState extends State<TagSelecting> {
           textColor: Colors.white,
 
           combine: ItemTagsCombine.withTextBefore,
-          onPressed: (item) {
-            print(item.title);
-            setState(() {
-              if (!allTags.contains(item.title)) {
-                changepRroviderList(userTagProvider);
+          onPressed: (item) async {
+            if (!allTags.contains(item.title)) {
+              await changepRroviderList(userTagProvider);
+
+              setState(() {
                 allTags.add(item.title);
-              } else {
+              });
+            } else {
+              setState(() {
                 allTags.remove(item.title);
-              }
-            });
+              });
+            }
           },
         );
       },
@@ -553,12 +603,10 @@ class _TagSelectingState extends State<TagSelecting> {
 
 // Allows you to get a list of all the ItemTags
   List _getAllItem(GlobalKey<TagsState> tagStateKey) {
-    print('get all item called');
     List<Item> lst = tagStateKey.currentState?.getAllItem;
     List<String> lst2 = [];
     if (lst != null)
       lst.where((a) => a.active == false).forEach((a) => lst2.add(a.title));
-    print(lst2);
     return lst2;
   }
 }

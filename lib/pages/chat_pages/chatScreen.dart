@@ -1,4 +1,3 @@
-// import 'package:app_test/pages/chat_pages/pictureDisplay.dart';
 import 'dart:typed_data';
 
 import 'package:app_test/models/constant.dart';
@@ -7,6 +6,7 @@ import 'package:app_test/pages/chat_pages/previewImage.dart';
 import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/widgets.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,7 +20,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:emoji_picker/emoji_picker.dart';
+// import 'package:emoji_picker/emoji_picker.dart';
 import 'package:app_test/pages/chat_pages/searchChat.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
@@ -30,7 +30,7 @@ import 'package:image_picker_web/image_picker_web.dart';
 
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
-import 'package:file_picker_web/file_picker_web.dart';
+// import 'package:file_picker_web/file_picker_web.dart';
 import 'dart:html' as html;
 
 class ChatScreen extends StatefulWidget {
@@ -44,12 +44,12 @@ class ChatScreen extends StatefulWidget {
 
   ChatScreen(
       {this.chatRoomId,
-        this.friendName,
-        this.friendEmail,
-        this.friendID,
-        this.initialChat,
-        this.myEmail,
-        this.friendProfileColor});
+      this.friendName,
+      this.friendEmail,
+      this.friendID,
+      this.initialChat,
+      this.myEmail,
+      this.friendProfileColor});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -88,100 +88,104 @@ class _ChatScreenState extends State<ChatScreen> {
         return snapshot.hasData
             ? ListView.builder(
                 reverse: true,
-              controller: _controller,
-              padding: EdgeInsets.all(0),
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
-              DateTime current = DateTime.fromMillisecondsSinceEpoch(
-              snapshot.data.documents[index].data()['time']);
-              if (index == snapshot.data.documents.length - 1) {
-              displayTime = true;
-              } else {
-              DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                    snapshot.data.documents[index + 1].data()['time']);
-                final difference = current.difference(prev).inDays;
-                if (difference >= 1) {
-                  displayTime = true;
-                } else {
-                  displayTime = false;
-                }
-              }
+                controller: _controller,
+                padding: EdgeInsets.all(0),
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  DateTime current = DateTime.fromMillisecondsSinceEpoch(
+                      snapshot.data.documents[index].data()['time']);
+                  if (index == snapshot.data.documents.length - 1) {
+                    displayTime = true;
+                  } else {
+                    DateTime prev = DateTime.fromMillisecondsSinceEpoch(
+                        snapshot.data.documents[index + 1].data()['time']);
+                    final difference = current.difference(prev).inDays;
+                    if (difference >= 1) {
+                      displayTime = true;
+                    } else {
+                      displayTime = false;
+                    }
+                  }
 
-              if (index == 0) {
-                lastMessage = true;
-              } else {
-                lastMessage = false;
-              }
+                  if (index == 0) {
+                    lastMessage = true;
+                  } else {
+                    lastMessage = false;
+                  }
 
-              if (DateTime.now().difference(current).inDays <= 7) {
-                displayWeek = true;
-              } else {
-                displayWeek = false;
-              }
+                  if (DateTime.now().difference(current).inDays <= 7) {
+                    displayWeek = true;
+                  } else {
+                    displayWeek = false;
+                  }
 
-              if (snapshot.data.documents[index].data()['messageType'] == 'text') {
-                return MessageTile(
-                    snapshot.data.documents[index].data()['message'],
-                    snapshot.data.documents[index].data()['sendBy'] ==
-                        myEmail,
-                    DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index].data()['time'])
-                        .toString(),
-                    displayTime,
-                    displayWeek,
-                    lastMessage);
-              } else if (snapshot.data.documents[index].data()['messageType'] == 'image') {
-                return ImageTile(
-                  snapshot.data.documents[index].data()['message'],
-                  snapshot.data.documents[index].data()['sendBy'] ==
-                      myEmail,
-                  DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data()['time'])
-                      .toString(),
-                  displayTime,
-                  displayWeek,
-                  lastMessage,
-                );
-              } else {
-                return FileTile(
-                  snapshot.data.documents[index].data()['message'],
-                  snapshot.data.documents[index].data()['sendBy'] ==
-                      myEmail,
-                  DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data()['time'])
-                      .toString(),
-                  displayTime,
-                  displayWeek,
-                  lastMessage,
-                  _link = snapshot.data.documents[index].data()['message'],
-                  fileName = snapshot.data.documents[index].data()['fileName'],
-                );
-              }
+                  if (snapshot.data.documents[index].data()['messageType'] ==
+                      'text') {
+                    return MessageTile(
+                        snapshot.data.documents[index].data()['message'],
+                        snapshot.data.documents[index].data()['sendBy'] ==
+                            myEmail,
+                        DateTime.fromMillisecondsSinceEpoch(
+                                snapshot.data.documents[index].data()['time'])
+                            .toString(),
+                        displayTime,
+                        displayWeek,
+                        lastMessage);
+                  } else if (snapshot.data.documents[index]
+                          .data()['messageType'] ==
+                      'image') {
+                    return ImageTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                    );
+                  } else {
+                    return FileTile(
+                      snapshot.data.documents[index].data()['message'],
+                      snapshot.data.documents[index].data()['sendBy'] ==
+                          myEmail,
+                      DateTime.fromMillisecondsSinceEpoch(
+                              snapshot.data.documents[index].data()['time'])
+                          .toString(),
+                      displayTime,
+                      displayWeek,
+                      lastMessage,
+                      _link = snapshot.data.documents[index].data()['message'],
+                      fileName =
+                          snapshot.data.documents[index].data()['fileName'],
+                    );
+                  }
 
-              // return snapshot.data.documents[index].data()['messageType'] ==
-              //     'text'
-              //     ? MessageTile(
-              //     snapshot.data.documents[index].data()['message'],
-              //     snapshot.data.documents[index].data()['sendBy'] ==
-              //         myEmail,
-              //     DateTime.fromMillisecondsSinceEpoch(
-              //         snapshot.data.documents[index].data()['time'])
-              //         .toString(),
-              //     displayTime,
-              //     displayWeek,
-              //     lastMessage)
-              //     : ImageTile(
-              //   snapshot.data.documents[index].data()['message'],
-              //   snapshot.data.documents[index].data()['sendBy'] ==
-              //       myEmail,
-              //   DateTime.fromMillisecondsSinceEpoch(
-              //       snapshot.data.documents[index].data()['time'])
-              //       .toString(),
-              //   displayTime,
-              //   displayWeek,
-              //   lastMessage,
-              // );
-            })
+                  // return snapshot.data.documents[index].data()['messageType'] ==
+                  //     'text'
+                  //     ? MessageTile(
+                  //     snapshot.data.documents[index].data()['message'],
+                  //     snapshot.data.documents[index].data()['sendBy'] ==
+                  //         myEmail,
+                  //     DateTime.fromMillisecondsSinceEpoch(
+                  //         snapshot.data.documents[index].data()['time'])
+                  //         .toString(),
+                  //     displayTime,
+                  //     displayWeek,
+                  //     lastMessage)
+                  //     : ImageTile(
+                  //   snapshot.data.documents[index].data()['message'],
+                  //   snapshot.data.documents[index].data()['sendBy'] ==
+                  //       myEmail,
+                  //   DateTime.fromMillisecondsSinceEpoch(
+                  //       snapshot.data.documents[index].data()['time'])
+                  //       .toString(),
+                  //   displayTime,
+                  //   displayWeek,
+                  //   lastMessage,
+                  // );
+                })
             : Container();
       },
     );
@@ -198,14 +202,14 @@ class _ChatScreenState extends State<ChatScreen> {
       };
       print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-      databaseMethods.setLastestMessage(
+      databaseMethods.setLatestMessage(
           widget.chatRoomId, messageController.text, lastMessageTime);
       databaseMethods
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
           .then((value) {
         final unreadNumber = value.data()[widget.friendEmail
-            .substring(0, widget.friendEmail.indexOf('@')) +
-            'unread'] +
+                    .substring(0, widget.friendEmail.indexOf('@')) +
+                'unread'] +
             1;
         databaseMethods.setUnreadNumber(
             widget.chatRoomId, widget.friendEmail, unreadNumber);
@@ -227,14 +231,14 @@ class _ChatScreenState extends State<ChatScreen> {
       };
 
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-      databaseMethods.setLastestMessage(
+      databaseMethods.setLatestMessage(
           widget.chatRoomId, '[image]', lastMessageTime);
       databaseMethods
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
           .then((value) {
         final unreadNumber = value.data()[widget.friendEmail
-            .substring(0, widget.friendEmail.indexOf('@')) +
-            'unread'] +
+                    .substring(0, widget.friendEmail.indexOf('@')) +
+                'unread'] +
             1;
         databaseMethods.setUnreadNumber(
             widget.chatRoomId, widget.friendEmail, unreadNumber);
@@ -258,14 +262,14 @@ class _ChatScreenState extends State<ChatScreen> {
       };
       print(widget.chatRoomId);
       databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
-      databaseMethods.setLastestMessage(
+      databaseMethods.setLatestMessage(
           widget.chatRoomId, _link, lastMessageTime);
       databaseMethods
           .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
           .then((value) {
         final unreadNumber = value.data()[widget.friendEmail
-            .substring(0, widget.friendEmail.indexOf('@')) +
-            'unread'] +
+                    .substring(0, widget.friendEmail.indexOf('@')) +
+                'unread'] +
             1;
         databaseMethods.setUnreadNumber(
             widget.chatRoomId, widget.friendEmail, unreadNumber);
@@ -280,7 +284,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future _pickImage(ImageSource source, myEmail) async {
     html.File selected =
-    await ImagePickerWeb.getImage(outputType: ImageType.file);
+        await ImagePickerWeb.getImage(outputType: ImageType.file);
 
     if (selected != null) {
       debugPrint(selected.toString());
@@ -300,7 +304,7 @@ class _ChatScreenState extends State<ChatScreen> {
     fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
 
     fb.UploadTaskSnapshot uploadTaskSnapshot =
-    await storageRef.put(image).future;
+        await storageRef.put(image).future;
 
     Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
     print(imageUri);
@@ -357,7 +361,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future _pickFile(myEmail) async {
     // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
-    html.File selected = await FilePicker.getFile() ?? [];
+    html.File selected = await FilePicker.platform.pickFiles() ?? [];
 
     if (selected != null) {
       debugPrint(selected.toString());
@@ -474,64 +478,64 @@ class _ChatScreenState extends State<ChatScreen> {
                                   children: [
                                     Padding(
                                       padding:
-                                      const EdgeInsets.only(right: 10.0),
+                                          const EdgeInsets.only(right: 10.0),
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
                                               MaterialPageRoute(
                                                   builder: (context) {
-                                                    return MultiProvider(
-                                                      providers: [
-                                                        Provider<UserData>.value(
-                                                          value: currentUser,
-                                                        ),
-                                                        Provider<
-                                                            List<CourseInfo>>.value(
-                                                          value: currentCourse,
-                                                        ),
-                                                        // 这个需要的话直接uncomment
-                                                        // Provider<List<CourseInfo>>.value(
-                                                        //   value: course,F
-                                                        // ),
-                                                        // final courseProvider = Provider.of<CourseProvider>(context);
-                                                        // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
-                                                        // 不需要pass到push里面，直接复制上面这行即可
-                                                      ],
-                                                      child: FriendProfile(
-                                                        userID: widget
-                                                            .friendID, // to be modified to friend's ID
-                                                      ),
-                                                    );
-                                                  }));
+                                            return MultiProvider(
+                                              providers: [
+                                                Provider<UserData>.value(
+                                                  value: currentUser,
+                                                ),
+                                                Provider<
+                                                    List<CourseInfo>>.value(
+                                                  value: currentCourse,
+                                                ),
+                                                // 这个需要的话直接uncomment
+                                                // Provider<List<CourseInfo>>.value(
+                                                //   value: course,F
+                                                // ),
+                                                // final courseProvider = Provider.of<CourseProvider>(context);
+                                                // 上面这个courseProvider用于删除添加课程，可以直接在每个class之前define，
+                                                // 不需要pass到push里面，直接复制上面这行即可
+                                              ],
+                                              child: FriendProfile(
+                                                userID: widget
+                                                    .friendID, // to be modified to friend's ID
+                                              ),
+                                            );
+                                          }));
                                         },
                                         child: CircleAvatar(
                                           backgroundColor: listProfileColor[
-                                          widget.friendProfileColor
-                                              .toInt()],
+                                              widget.friendProfileColor
+                                                  .toInt()],
                                           radius: sidebarSize / 20,
                                           child: Container(
                                             child: Text(
                                               widget.friendName
-                                                  .split(' ')
-                                                  .length >=
-                                                  2
+                                                          .split(' ')
+                                                          .length >=
+                                                      2
                                                   ? widget.friendName
-                                                  .split(' ')[0][0]
-                                                  .toUpperCase() +
-                                                  widget.friendName
-                                                      .split(' ')[widget
-                                                      .friendName
-                                                      .split(' ')
-                                                      .length -
-                                                      1][0]
-                                                      .toUpperCase()
+                                                          .split(' ')[0][0]
+                                                          .toUpperCase() +
+                                                      widget.friendName
+                                                          .split(' ')[widget
+                                                                  .friendName
+                                                                  .split(' ')
+                                                                  .length -
+                                                              1][0]
+                                                          .toUpperCase()
                                                   : widget.friendName[0]
-                                                  .toUpperCase(),
+                                                      .toUpperCase(),
                                               style: GoogleFonts.montserrat(
                                                   fontSize: widget.friendName
-                                                      .split(' ')
-                                                      .length >=
-                                                      2
+                                                              .split(' ')
+                                                              .length >=
+                                                          2
                                                       ? 14
                                                       : 15,
                                                   color: Colors.white,
@@ -544,9 +548,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ),
                                     Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(widget.friendName,
                                             style: GoogleFonts.montserrat(
@@ -559,13 +563,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                           child: Text(
                                             friendCourse.isNotEmpty
                                                 ? friendCourse
-                                                .toString()
-                                                .substring(
-                                                1,
-                                                friendCourse
                                                     .toString()
-                                                    .length -
-                                                    1)
+                                                    .substring(
+                                                        1,
+                                                        friendCourse
+                                                                .toString()
+                                                                .length -
+                                                            1)
                                                 : 'No courses yet',
                                             style: GoogleFonts.openSans(
                                               fontSize: 14,
@@ -592,24 +596,24 @@ class _ChatScreenState extends State<ChatScreen> {
                                   onPressed: () {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
-                                          return MultiProvider(
-                                            providers: [
-                                              Provider<UserData>.value(
-                                                value: currentUser,
-                                              )
-                                            ],
-                                            child: SearchChat(
-                                                chatRoomId: widget.chatRoomId,
-                                                friendName: widget.friendName,
-                                                friendEmail: widget.friendEmail,
-                                                friendProfileColor:
+                                      return MultiProvider(
+                                        providers: [
+                                          Provider<UserData>.value(
+                                            value: currentUser,
+                                          )
+                                        ],
+                                        child: SearchChat(
+                                            chatRoomId: widget.chatRoomId,
+                                            friendName: widget.friendName,
+                                            friendEmail: widget.friendEmail,
+                                            friendProfileColor:
                                                 widget.friendProfileColor,
-                                                myEmail: widget.myEmail,
-                                                myName: currentUser.userName,
-                                                myProfileColor:
+                                            myEmail: widget.myEmail,
+                                            myName: currentUser.userName,
+                                            myProfileColor:
                                                 currentUser.profileColor),
-                                          );
-                                        }));
+                                      );
+                                    }));
                                   },
                                 ),
                               ),
@@ -618,66 +622,65 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         Expanded(
                             child: (currentUser.blockedUserID != null &&
-                                currentUser.blockedUserID
-                                    .contains(widget.friendID))
+                                    currentUser.blockedUserID
+                                        .contains(widget.friendID))
                                 ? Container(
-                              decoration: new BoxDecoration(
-                                  color: riceColor,
-                                  borderRadius: new BorderRadius.only(
-                                    topLeft: const Radius.circular(30.0),
-                                    topRight: const Radius.circular(30.0),
-                                  )),
-                              height: MediaQuery.of(context).size.height *
-                                  0.5,
-
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: _height * 0.20,
-                                    ),
-                                    Stack(
-                                        alignment: Alignment.center,
-                                        children: <Widget>[
+                                    decoration: new BoxDecoration(
+                                        color: riceColor,
+                                        borderRadius: new BorderRadius.only(
+                                          topLeft: const Radius.circular(30.0),
+                                          topRight: const Radius.circular(30.0),
+                                        )),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: _height * 0.20,
+                                          ),
+                                          Stack(
+                                              alignment: Alignment.center,
+                                              children: <Widget>[
+                                                Container(
+                                                    height: 140,
+                                                    width: _width - 40,
+                                                    child: FittedBox(
+                                                      child: Image.asset(
+                                                          'assets/icon/sorryBox.png'),
+                                                      fit: BoxFit.fill,
+                                                    )),
+                                                Text(
+                                                  "Let\'s not talk to this guy",
+                                                  style: largeTitleTextStyle(
+                                                      Colors.black, 26),
+                                                ),
+                                              ]),
                                           Container(
                                               height: 140,
-                                              width: _width - 40,
+                                              width: 140,
                                               child: FittedBox(
                                                 child: Image.asset(
-                                                    'assets/icon/sorryBox.png'),
+                                                    'assets/icon/failToFind.png'),
                                                 fit: BoxFit.fill,
                                               )),
-                                          Text(
-                                            "Let\'s not talk to this guy",
-                                            style: largeTitleTextStyle(
-                                                Colors.black, 26),
-                                          ),
-                                        ]),
-                                    Container(
-                                        height: 140,
-                                        width: 140,
-                                        child: FittedBox(
-                                          child: Image.asset(
-                                              'assets/icon/failToFind.png'),
-                                          fit: BoxFit.fill,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                            )
+                                        ],
+                                      ),
+                                    ),
+                                  )
                                 : chatMessageList(currentUser.email)),
                         Container(
                             decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset:
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset:
                                   Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                            )),
+                            ),
+                          ],
+                        )),
                         Container(
                           alignment: Alignment.center,
                           height: 74.0,
@@ -690,82 +693,81 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Container(
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffF9F6F1),
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: TextField(
-                                        onTap: () {
-                                          setState(() {
-                                            showStickerKeyboard = false;
-                                            showTextKeyboard = true;
-                                            showFunctions = false;
-                                          });
-                                          Timer(
-                                              Duration(milliseconds: 160),
-                                                  () => _controller.jumpTo(_controller
-                                                  .position.minScrollExtent));
-                                        },
-                                        controller: messageController,
-                                        style: GoogleFonts.openSans(
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                        ),
-                                        decoration: InputDecoration(
-                                          contentPadding:
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffF9F6F1),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: TextField(
+                                    onTap: () {
+                                      setState(() {
+                                        showStickerKeyboard = false;
+                                        showTextKeyboard = true;
+                                        showFunctions = false;
+                                      });
+                                      Timer(
+                                          Duration(milliseconds: 160),
+                                          () => _controller.jumpTo(_controller
+                                              .position.minScrollExtent));
+                                    },
+                                    controller: messageController,
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                    decoration: InputDecoration(
+                                      contentPadding:
                                           EdgeInsets.only(left: 15.0),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(35),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.transparent),
-                                            borderRadius: BorderRadius.circular(35),
-                                          ),
-                                        ),
-                                        textInputAction: TextInputAction.send,
-                                        onSubmitted: (value) {
-                                          sendMessage(currentUser.email);
-                                        },
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(35),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.circular(35),
                                       ),
                                     ),
-                                  )),
+                                    textInputAction: TextInputAction.send,
+                                    onSubmitted: (value) {
+                                      sendMessage(currentUser.email);
+                                    },
+                                  ),
+                                ),
+                              )),
                               Padding(
                                 padding: const EdgeInsets.only(left: 14.0),
                                 child: GestureDetector(
                                     child: showStickerKeyboard
                                         ? Image.asset(
-                                        'assets/images/messageSend.png',
-                                        width: 28,
-                                        height: 28)
+                                            'assets/images/messageSend.png',
+                                            width: 28,
+                                            height: 28)
                                         : Image.asset(
-                                        'assets/images/plus_on_click.png',
-                                        width: 28,
-                                        height: 28),
+                                            'assets/images/plus_on_click.png',
+                                            width: 28,
+                                            height: 28),
                                     onTap: () {
                                       if (showTextKeyboard) {
                                         setState(() {
                                           FocusScopeNode currentFocus =
-                                          FocusScope.of(context);
+                                              FocusScope.of(context);
                                           if (!currentFocus.hasPrimaryFocus) {
                                             currentFocus.unfocus();
                                             showTextKeyboard = false;
                                           }
                                         });
-                                      } else {
-                                      }
+                                      } else {}
                                       setState(() {
                                         showStickerKeyboard =
-                                        !showStickerKeyboard;
+                                            !showStickerKeyboard;
                                       });
                                       Timer(
                                           Duration(milliseconds: 30),
-                                              () => _controller.jumpTo(_controller
+                                          () => _controller.jumpTo(_controller
                                               .position.minScrollExtent));
                                     }),
                               ),
@@ -778,50 +780,49 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         showStickerKeyboard
                             ? AnimatedContainer(
-                          duration: Duration(milliseconds: 80),
-                          height: 80,
-                          width: mediaQuery.width,
-                          color: Colors.white,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 50, right: 50),
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceAround,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 64,
-                                  width: 65,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/camera.png',
+                                duration: Duration(milliseconds: 80),
+                                height: 80,
+                                width: mediaQuery.width,
+                                color: Colors.white,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 50, right: 50),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/camera.png',
+                                            ),
+                                            onPressed: () => _pickImage(
+                                                ImageSource.camera,
+                                                currentUser.email)),
                                       ),
-                                      onPressed: () => _pickImage(
-                                          ImageSource.camera,
-                                          currentUser.email)),
-                                ),
-                                Container(
-                                  height: 64,
-                                  width: 65,
-                                  child: IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/photo_library.png',
+                                      Container(
+                                        height: 64,
+                                        width: 65,
+                                        child: IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/photo_library.png',
+                                            ),
+                                            onPressed: () => _pickFile(
+                                                // ImageSource.gallery
+                                                currentUser.email)),
                                       ),
-                                      onPressed: () => _pickFile(
-                                        // ImageSource.gallery
-                                          currentUser.email
-                                      )),
+                                      Container(
+                                        height: 64,
+                                        width: 55,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                Container(
-                                  height: 64,
-                                  width: 55,
-                                  color: Colors.white,
-                                )
-                              ],
-                            ),
-                          ),
-                        )
+                              )
                             : Container(),
                       ],
                     ),
@@ -847,138 +848,138 @@ class MessageTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              DateFormat('EEEE')
-                  .format(DateTime.parse(currentTime))
-                  .substring(0, 3) +
-                  ', ' +
-                  DateFormat('MMMM')
-                      .format(DateTime.parse(currentTime))
-                      .substring(0, 3) +
-                  ' ' +
-                  DateFormat('d').format(DateTime.parse(currentTime)),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container()
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
             : displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              currentTime.substring(0, currentTime.length - 13),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container(),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
         isSendByMe
             ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Message and Time
-              Container(
-                width:
-                getRealWidth(MediaQuery.of(context).size.width) - 60,
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(
-                        margin: EdgeInsets.only(left: 10),
-                        padding: EdgeInsets.only(
-                            top: 10, bottom: 10, left: 10, right: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(12),
-                                topLeft: Radius.circular(12),
-                                bottomLeft: Radius.circular(12)),
-                            color: const Color(0xffF7D5C5)),
-                        child: LinkWell(message,
-                            textAlign: TextAlign.start,
+                    // Message and Time
+                    Container(
+                      width:
+                          getRealWidth(MediaQuery.of(context).size.width) - 60,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
                             style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.black,
-                            )),
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(12),
+                                      topLeft: Radius.circular(12),
+                                      bottomLeft: Radius.circular(12)),
+                                  color: const Color(0xffF7D5C5)),
+                              child: LinkWell(message,
+                                  textAlign: TextAlign.start,
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
             : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, left: 25),
                 alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        padding: EdgeInsets.only(
-                            top: 10, bottom: 10, left: 10, right: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(12),
-                                topRight: Radius.circular(12),
-                                bottomRight: Radius.circular(12)),
-                            color: Colors.white),
-                        child: LinkWell(message,
-                            textAlign: TextAlign.start,
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 10),
+                              padding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(12),
+                                      topRight: Radius.circular(12),
+                                      bottomRight: Radius.circular(12)),
+                                  color: Colors.white),
+                              child: LinkWell(message,
+                                  textAlign: TextAlign.start,
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
                             style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.black,
-                            )),
-                      ),
-                    ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )
@@ -1004,168 +1005,168 @@ class ImageTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              DateFormat('EEEE')
-                  .format(DateTime.parse(currentTime))
-                  .substring(0, 3) +
-                  ', ' +
-                  DateFormat('MMMM')
-                      .format(DateTime.parse(currentTime))
-                      .substring(0, 3) +
-                  ' ' +
-                  DateFormat('d').format(DateTime.parse(currentTime)),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container()
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
             : displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              currentTime.substring(0, currentTime.length - 13),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container(),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
         isSendByMe
             ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PreviewImage(
-                                imageUrl: message,
-                              ),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
                             ),
-                          );
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: CachedNetworkImage(
-                                imageUrl: message,
-                                placeholder: (context, url) => Container(
-                                    height: 70,
-                                    width: 70,
-                                    child: Center(
-                                      child:
-                                      new CircularProgressIndicator(
-                                        backgroundColor: themeOrange,
-                                      ),
-                                    )),
-                                errorWidget: (context, url, error) =>
-                                new Icon(Icons.error),
-                                height: 180.0,
-                              ),
-                            )),
+                          ),
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: message,
+                                      placeholder: (context, url) => Container(
+                                          height: 70,
+                                          width: 70,
+                                          child: Center(
+                                            child:
+                                                new CircularProgressIndicator(
+                                              backgroundColor: themeOrange,
+                                            ),
+                                          )),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                      height: 180.0,
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
             : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, left: 25),
                 alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PreviewImage(
-                                imageUrl: message,
-                              ),
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PreviewImage(
+                                      imageUrl: message,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(right: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: message,
+                                      placeholder: (context, url) =>
+                                          new Container(
+                                              height: 70,
+                                              width: 70,
+                                              child: Center(
+                                                child:
+                                                    new CircularProgressIndicator(
+                                                  backgroundColor: themeOrange,
+                                                ),
+                                              )),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                      height: 180.0,
+                                    ),
+                                  )),
                             ),
-                          );
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: CachedNetworkImage(
-                                imageUrl: message,
-                                placeholder: (context, url) =>
-                                new Container(
-                                    height: 70,
-                                    width: 70,
-                                    child: Center(
-                                      child:
-                                      new CircularProgressIndicator(
-                                        backgroundColor: themeOrange,
-                                      ),
-                                    )),
-                                errorWidget: (context, url, error) =>
-                                new Icon(Icons.error),
-                                height: 180.0,
-                              ),
-                            )),
-                      ),
-                    ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )
@@ -1173,7 +1174,6 @@ class ImageTile extends StatelessWidget {
     );
   }
 }
-
 
 //the builder for file
 class FileTile extends StatelessWidget {
@@ -1195,237 +1195,239 @@ class FileTile extends StatelessWidget {
       children: [
         displayWeek
             ? displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              DateFormat('EEEE')
-                  .format(DateTime.parse(currentTime))
-                  .substring(0, 3) +
-                  ', ' +
-                  DateFormat('MMMM')
-                      .format(DateTime.parse(currentTime))
-                      .substring(0, 3) +
-                  ' ' +
-                  DateFormat('d').format(DateTime.parse(currentTime)),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container()
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat('EEEE')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ', ' +
+                            DateFormat('MMMM')
+                                .format(DateTime.parse(currentTime))
+                                .substring(0, 3) +
+                            ' ' +
+                            DateFormat('d').format(DateTime.parse(currentTime)),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
             : displayTime
-            ? Padding(
-          padding: const EdgeInsets.only(top: 35),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              currentTime.substring(0, currentTime.length - 13),
-              style: GoogleFonts.openSans(
-                fontSize: 14,
-                color: const Color(0xff949494),
-              ),
-            ),
-          ),
-        )
-            : Container(),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        currentTime.substring(0, currentTime.length - 13),
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          color: const Color(0xff949494),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
         // Message Box
         isSendByMe
             ? Container(
-          padding: EdgeInsets.only(top: 20, right: 25),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, right: 25),
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
-                      ),
-                    ),
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          html.window.open(messageUrl, 'PlaceholderName');
-                          //downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                              Stack(
-                              alignment: AlignmentDirectional.center,
-                                children: <Widget>[
-                                  Container(
-                                    width: 130,
-                                    height: 80,
-                                    color: const Color(0xff00838f),
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.insert_drive_file,
-                                        color: const Color(0xfff9fbe7),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        'file: ' + fileName,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: const Color(0xfff9fbe7),
-                                        )
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                html.window.open(messageUrl, 'PlaceholderName');
+                                //downloadFile(messageUrl);
+                              },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => PreviewImage(
+                              //         imageUrl: message,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xfff9fbe7),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file: ' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xfff9fbe7),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 130,
-                                      height: 40,
-                                      color: const Color(0xff26c6da),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
-                                        ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
-                                      )
-                                  )
-                                ],
-                              ),
-                            )
-                        ),
+                                        Container(
+                                            width: 130,
+                                            height: 40,
+                                            color: const Color(0xff26c6da),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.file_download,
+                                                color: const Color(0xfff9fbe7),
+                                              ),
+                                              //onPressed: () => downloadFile(message.fileUrl)
+                                            ))
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        )
+              )
             : Container(
-          padding: EdgeInsets.only(top: 20, left: 25),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Message and Time
-              Container(
-                width: 350,
+                padding: EdgeInsets.only(top: 20, left: 25),
                 alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: GestureDetector(
-                        onTap: () {
-                          html.window.open(message, 'PlaceholderName');
-                          // downloadFile(messageUrl);
-                        },
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => PreviewImage(
-                        //         imageUrl: message,
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
+                    // Message and Time
+                    Container(
+                      width: 350,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () {
+                                html.window.open(message, 'PlaceholderName');
+                                // downloadFile(messageUrl);
+                              },
+                              // onTap: () {
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => PreviewImage(
+                              //         imageUrl: message,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
 
-                        child: Container(
-                            margin: EdgeInsets.only(right: 10),  //do i need this margin with border radius on next line? maybe should delete this
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                              Stack(
-                              alignment: AlignmentDirectional.center,
-                                children: <Widget>[
-                                  Container(
-                                    width: 130,
-                                    height: 80,
-                                    color: const Color(0xff00838f),
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.insert_drive_file,
-                                        color: const Color(0xff949494),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        'file' + fileName,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: const Color(0xff949494),
-                                        )
+                              child: Container(
+                                  margin: EdgeInsets.only(
+                                      right:
+                                          10), //do i need this margin with border radius on next line? maybe should delete this
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Stack(
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 130,
+                                              height: 80,
+                                              color: const Color(0xff00838f),
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color:
+                                                      const Color(0xff949494),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text('file' + fileName,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: const Color(
+                                                          0xff949494),
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                      height: 40,
-                                      color: const Color(0xff00838f),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.file_download,
-                                          color: const Color(0xfff9fbe7),
-                                        ),
-                                        //onPressed: () => downloadFile(message.fileUrl)
-                                      )
-                                  )
-                                ],
-                              ),
-                            )
-                        ),
-                      ),
-                    ),
-                    Text(
-                      currentTime.substring(11, currentTime.length - 7),
-                      style: GoogleFonts.openSans(
-                        fontSize: 12,
-                        color: const Color(0xff949494),
+                                        Container(
+                                            height: 40,
+                                            color: const Color(0xff00838f),
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.file_download,
+                                                color: const Color(0xfff9fbe7),
+                                              ),
+                                              //onPressed: () => downloadFile(message.fileUrl)
+                                            ))
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Text(
+                            currentTime.substring(11, currentTime.length - 7),
+                            style: GoogleFonts.openSans(
+                              fontSize: 12,
+                              color: const Color(0xff949494),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         SizedBox(
           height: lastMessage ? 20 : 0,
         )
@@ -1433,7 +1435,3 @@ class FileTile extends StatelessWidget {
     );
   }
 }
-
-// void downloadFile(String url){
-//   html.window.open(url, 'PlaceholderName');
-// }

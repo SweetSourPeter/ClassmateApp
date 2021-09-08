@@ -25,7 +25,7 @@ class _PrivacyPageState extends State<PrivacyPage>
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     _launchURL(String url) async {
       if (await canLaunch(url)) {
@@ -65,6 +65,7 @@ class _PrivacyPageState extends State<PrivacyPage>
       );
     }
 
+    DatabaseMethods databaseMethods = new DatabaseMethods();
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(top: _height * 0.13),
@@ -184,12 +185,18 @@ class _PrivacyPageState extends State<PrivacyPage>
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () {
                         if (checkedToSvalue && checkedPPvalue) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Wrapper(false, false, "0"),
-                            ),
-                          );
+                          databaseMethods
+                              .updateUserAgreement(user.userID,
+                                  checkedToSvalue && checkedPPvalue)
+                              .then((value) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Wrapper(false, false, '', false),
+                              ),
+                            );
+                          });
                         }
                       },
                       child: Text(

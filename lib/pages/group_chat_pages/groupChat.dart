@@ -6,6 +6,7 @@ import 'package:app_test/pages/contact_pages/userInfo/friendProfile.dart';
 import 'package:app_test/pages/group_chat_pages/courseDetail.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/services/wrapper.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -29,7 +30,6 @@ import 'package:image_picker_web/image_picker_web.dart';
 
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
-import 'package:file_picker_web/file_picker_web.dart';
 import 'dart:html' as html;
 
 class GroupChat extends StatefulWidget {
@@ -243,7 +243,7 @@ class _GroupChatState extends State<GroupChat> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return Wrapper(false, false, "0");
+                        return Wrapper(false, false, "0", false);
                       },
                     ),
                   ),
@@ -471,8 +471,8 @@ class _GroupChatState extends State<GroupChat> {
         };
 
         databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-        databaseMethods
-            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+        databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+            widget.courseId, currentUser.userID);
         // databaseMethods.setLastestMessage(widget.courseId, messageController.text, lastMessageTime);
         // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
         //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -497,8 +497,8 @@ class _GroupChatState extends State<GroupChat> {
         };
 
         databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-        databaseMethods
-            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+        databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+            widget.courseId, currentUser.userID);
         // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
         // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
         //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -525,8 +525,8 @@ class _GroupChatState extends State<GroupChat> {
         };
 
         databaseMethods.addGroupChatMessages(widget.courseId, messageMap);
-        databaseMethods
-            .addOneToUnreadGroupChatNumberForAllMembers(widget.courseId);
+        databaseMethods.addOneToUnreadGroupChatNumberForOtherMembers(
+            widget.courseId, currentUser.userID);
         // databaseMethods.setLastestMessage(widget.courseId, '[image]', lastMessageTime);
         // databaseMethods.getUnreadNumber(widget.courseId, widget.friendEmail).then((value) {
         //   final unreadNumber = value.data[widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) + 'unread'] + 1;
@@ -594,7 +594,7 @@ class _GroupChatState extends State<GroupChat> {
 
     Future _pickFile(myEmail, myName) async {
       // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
-      html.File selected = await FilePicker.getFile() ?? [];
+      html.File selected = await FilePicker.platform.pickFiles() ?? [];
 
       if (selected != null) {
         debugPrint(selected.toString());
@@ -660,7 +660,7 @@ class _GroupChatState extends State<GroupChat> {
                               // Navigator.pushNamed(context,'/');
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return Wrapper(false, false, "0");
+                                return Wrapper(false, false, "0", false);
                               }));
                             }
                             // Navigator.of(context).pop();
@@ -1717,7 +1717,3 @@ class FileTile extends StatelessWidget {
     );
   }
 }
-
-// enroll (course_info) {
-//   for
-// }

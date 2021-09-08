@@ -46,9 +46,9 @@ class _BasicInfoState extends State<BasicInfo> {
     final currentUser = Provider.of<UserData>(context, listen: false);
 
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = getRealWidth(mediaQuery.width) * 0.65;
+    double sidebarSize = mediaQuery.width * 0.65;
     UserTags resultTag = UserTags();
     Random random = new Random();
     int matchingPercentage = 69 + random.nextInt(100 - 69);

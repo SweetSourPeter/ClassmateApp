@@ -40,6 +40,9 @@ class AboutTheAPP extends StatelessWidget {
                 children: [
                   SizedBox(height: mediaQuery.height * 0.1),
                   LogoWidget(140, 156),
+
+                  // LinkWellModify(
+                  //     'asdfasdfasdfasdfdasf,https://stackoverflow.com/questions/46260055/how-to-make-copyable-text-widget-in-flutter '),
                   Text(
                     'Meechu',
                     style: largeTitleTextStyleBold(Colors.white, 26),
@@ -48,7 +51,7 @@ class AboutTheAPP extends StatelessWidget {
                     height: mediaQuery.height * 0.0123,
                   ),
                   Text(
-                    'Version 1.1.01',
+                    'Version 1.1.7+14',
                     style: simpleTextStyle(Colors.white, 18),
                   ),
                   SizedBox(
@@ -79,7 +82,7 @@ class AboutTheAPP extends StatelessWidget {
   Container buildContainer(String text, Size mediaQuery) {
     return Container(
       height: mediaQuery.height * 0.043,
-      width: getRealWidth(mediaQuery.width) * 0.4,
+      width: mediaQuery.width * 0.4,
       decoration: BoxDecoration(
         color: Color(0xff9b6b).withOpacity(1),
         borderRadius: BorderRadius.circular(16.0),

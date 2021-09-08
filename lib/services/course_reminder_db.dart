@@ -1,4 +1,8 @@
 import 'dart:convert';
+<<<<<<< HEAD
+=======
+import 'dart:ffi';
+>>>>>>> master
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,8 +15,13 @@ import 'package:http/http.dart' as http;
 //             "section" : "A1"
 //         }
 class CourseReminderDatabase {
+<<<<<<< HEAD
   final colectURL = 'http://nacc-api.cf/admin/api/collect';
   final deleteURL = 'http://nacc-api.cf/admin/api/delete';
+=======
+  final colectURL = 'http://nacc-api.tk/admin/api/collect';
+  final deleteURL = 'http://nacc-api.tk/admin/api/delete';
+>>>>>>> master
   Future<void> saveUserReminder(
     String school,
     String semester,
@@ -48,6 +57,33 @@ class CourseReminderDatabase {
     //also update in the api
   }
 
+<<<<<<< HEAD
+=======
+  Future<double> getCourseReminderNumbers(String userID) async {
+    print('remove course reminder called....');
+    // double temp;
+    // FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(userID)
+    //     .collection('userCourseReminder')
+    //     .get()
+    //     .then((value) {
+    //   print('aaaaaaaaaaaaaa');
+    //   print(value.docs.length.toDouble());
+    //   temp = value.docs.length.toDouble();
+    // });
+    // print(temp);
+    // return temp;
+    int temp = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('userCourseReminder')
+        .snapshots()
+        .length;
+    return temp.toDouble();
+  }
+
+>>>>>>> master
   //delete course reminder for user
   Future<void> deleteCourseReminder(String reminderID, String userID) {
     print('remove course reminder called....');
@@ -82,8 +118,16 @@ class CourseReminderDatabase {
     String course,
     String section,
   ) {
+<<<<<<< HEAD
     return http.post(
       colectURL,
+=======
+    print('semester:');
+
+    print(semester);
+    return http.post(
+      Uri.parse(colectURL),
+>>>>>>> master
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -107,7 +151,11 @@ class CourseReminderDatabase {
     String section,
   ) {
     return http.post(
+<<<<<<< HEAD
       deleteURL,
+=======
+      Uri.parse(deleteURL),
+>>>>>>> master
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

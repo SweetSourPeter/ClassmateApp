@@ -86,15 +86,16 @@ class CourseProvider with ChangeNotifier {
     databaseMethods.saveCourseToUser(newCourseToUser, userId);
     //save to Courses Document
     var newCourseToCourse = CourseInfo(
-      school: userdata.school.toUpperCase(),
-      term: term.toUpperCase(),
-      myCourseCollge: myCourseCollege.toUpperCase(),
-      department: courseDepartment.toUpperCase(),
-      myCourseName: myCourseName.toUpperCase(),
-      section: courseSection.toUpperCase(),
-      userNumbers: 1,
-      courseID: courseId,
-    );
+        school: userdata.school.toUpperCase(),
+        term: term.toUpperCase(),
+        myCourseCollege: myCourseCollege.toUpperCase(),
+        department: courseDepartment.toUpperCase(),
+        myCourseName: myCourseName.toUpperCase(),
+        section: courseSection.toUpperCase(),
+        userNumbers: 1,
+        courseID: courseId,
+        adminId: userId,
+        groupNoticeText: '');
 
     databaseMethods.saveCourseToCourse(newCourseToCourse);
     // var newUser = User(userID: userId, admin: true);
@@ -103,8 +104,8 @@ class CourseProvider with ChangeNotifier {
 
   removeCourse(BuildContext context, String courseID) {
     final user = Provider.of<User>(context, listen: false);
-    print(user.userID);
-    print(courseID);
+    // print(user.userID);
+    // print(courseID);
     databaseMethods.removeCourseFromUser(courseID, user.userID);
     databaseMethods.removeUserFromCourse(courseID, user.userID);
   }

@@ -1,8 +1,11 @@
-# myapp
+# app_test
 
-A new Flutter project.
+A new Flutter project. Medio app
 
 ## Getting Started
+
+Our official website:
+- [Chinese website](https://na-cc.com)
 
 This project is a starting point for a Flutter application.
 

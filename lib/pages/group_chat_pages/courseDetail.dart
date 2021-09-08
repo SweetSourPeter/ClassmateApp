@@ -7,98 +7,108 @@ import 'package:app_test/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../models/constant.dart';
 import 'package:app_test/services/database.dart';
 import './searchGroupChat.dart';
 import 'package:flutter/services.dart';
+import 'chooseGroupLeader.dart';
+import 'groupNotice.dart';
+import 'dart:io' show Platform;
 
 class CourseDetail extends StatefulWidget {
   final String courseId;
   final String myEmail;
   final String myName;
+  final List<dynamic> members;
 
-  CourseDetail({
-    this.courseId,
-    this.myEmail,
-    this.myName,
-  });
+  CourseDetail({this.courseId, this.myEmail, this.myName, this.members});
 
   @override
   _CourseDetailState createState() => _CourseDetailState();
 }
 
 class _CourseDetailState extends State<CourseDetail> {
-  bool isSwitched = false;
+  //bool isSwitched = false;
   int numberOfMembers = 0;
   String courseName;
   String courseSection;
   String courseTerm;
-  List<List<dynamic>> members;
+  String groupNoticeText;
+  List<dynamic> memberInfo;
   DatabaseMethods databaseMethods = new DatabaseMethods();
+  String adminId;
+  String adminName;
+  String reloadAdminId;
 
   @override
   void initState() {
+    super.initState();
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data()['myCourseName'];
-        courseSection = value.documents[0].data()['section'];
-        courseTerm = value.documents[0].data()['term'];
+        courseName = value.docs[0].data()['myCourseName'];
+        courseSection = value.docs[0].data()['section'];
+        courseTerm = value.docs[0].data()['term'];
+        groupNoticeText = value.docs[0].data()['groupNoticeText'];
+        adminId = value.docs[0].data()['adminId'];
       });
+
+      // Unused in this class
+      if (value.docs[0].data()['adminId'] != null) {
+        databaseMethods
+            .getUserDetailsByID(value.docs[0].data()['adminId'])
+            .then((info) {
+          setState(() {
+            adminName = info.userName;
+          });
+        });
+      }
     });
-    print('here');
+
     databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
       setState(() {
-        numberOfMembers = value.documents.length;
+        numberOfMembers = value.docs.length;
       });
     });
 
-    databaseMethods.getInfoOfMembersInCourse(widget.courseId).then((value) {
-      // if (this.mounted) {
-      //   return;
-      // }
-      setState(() {
-        members = value;
-      });
-    });
-
-    super.initState();
+    memberInfo = widget.members;
   }
 
   @override
   Widget build(BuildContext context) {
-    Size mediaQuery = MediaQuery.of(context).size;
-    var size = getRealWidth(mediaQuery.width);
-    double gridWidth = (size - 40 - 4 * 15) / 10;
+    var _width = MediaQuery.of(context).size.width;
+    var _height = MediaQuery.of(context).size.height;
+    var sidebarSize = _width * 0.05;
+    double gridWidth = (_width - 40 - 4 * 15) / 10;
     double gridRatio = gridWidth / (gridWidth + 10);
     final currentUser = Provider.of<UserData>(context, listen: false);
     final courseProvider = Provider.of<CourseProvider>(context);
     final course = Provider.of<List<CourseInfo>>(context);
+
     List<Widget> _renderMemberInfo(radius) {
       return List.generate(numberOfMembers, (index) {
-        // if (index > 9) {
-        //   return GestureDetector(
-        //     child: Container(
-        //       child: Column(
-        //         children: <Widget>[
-        //           creatAddIconImage(radius),
-        //           Text(
-        //             'Invite',
-        //             style:
-        //                 GoogleFonts.montserrat(color: orengeColor, fontSize: 15),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   );
-        // }
-        if (members == null) {
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: themeOrange,
+        if (memberInfo == null) {
+          return Container(
+            child: Column(
+              children: [
+                Container(
+                    child: Image.asset(
+                  'assets/images/group_chat_loading.png',
+                  width: (gridWidth - 5) * 2,
+                  height: (gridWidth - 5) * 2,
+                )),
+                Container(
+                    child: Text(
+                  'Loading...',
+                  overflow: TextOverflow.ellipsis,
+                  style:
+                      GoogleFonts.montserrat(color: Colors.black, fontSize: 13),
+                ))
+              ],
             ),
           );
         } else {
-          final memberName = members[index][0];
+          final memberName = memberInfo[index][0];
 
           return Container(
             child: Column(
@@ -115,7 +125,7 @@ class _CourseDetailState extends State<CourseDetail> {
                           Provider<List<CourseInfo>>.value(value: course),
                         ],
                         child: FriendProfile(
-                          userID: members[index]
+                          userID: memberInfo[index]
                               [1], // to be modified to friend's ID
                         ),
                       );
@@ -123,7 +133,7 @@ class _CourseDetailState extends State<CourseDetail> {
                   },
                   child: CircleAvatar(
                     backgroundColor: listProfileColor[
-                        members != null ? members[index][2].toInt() : 1],
+                        memberInfo != null ? memberInfo[index][2].toInt() : 1],
                     radius: radius,
                     child: Container(
                       child: Text(
@@ -146,7 +156,7 @@ class _CourseDetailState extends State<CourseDetail> {
                 Container(
                   margin: EdgeInsets.only(top: 0),
                   child: Text(
-                    members != null ? members[index][0] : '',
+                    memberInfo != null ? memberInfo[index][0] : '',
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.montserrat(
                         color: Colors.black, fontSize: 15),
@@ -159,32 +169,34 @@ class _CourseDetailState extends State<CourseDetail> {
       });
     }
 
-    return SafeArea(
-      child: Scaffold(
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
           backgroundColor: const Color(0xfff9f6f1),
-          body: Center(
-              child: Container(
-            width: maxWidth,
-            child: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
+          body: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Container(
-                      color: Colors.white,
-                      height: 73.68,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Container(
-                              // height: 17.96,
-                              // width: 10.26,
+                        color: Colors.white,
+                        height: _height * 0.10,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding:
+                                  EdgeInsets.only(left: sidebarSize * 0.55),
+                              alignment: Alignment.centerLeft,
+                              width: _width * 1 / 6,
                               child: IconButton(
-                                icon: Icon(
-                                  Icons.chevron_left,
-                                  size: 35,
+                                icon: Image.asset(
+                                  'assets/images/arrow_back.png',
+                                  height: 17.96,
+                                  width: 10.26,
                                 ),
                                 // iconSize: 30.0,
                                 color: const Color(0xFFFF7E40),
@@ -194,65 +206,69 @@ class _CourseDetailState extends State<CourseDetail> {
                                 },
                               ),
                             ),
-                          ),
-                          Container(
-                            child: Text(
-                              (courseName ?? '') + (courseSection ?? ''),
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 20),
-                            //TODO replace Icon
-                            child: GestureDetector(
-                              onTap: () {
-                                Clipboard.setData(new ClipboardData(
-                                        text:
-                                            'Download "Meechu" on mobile and search your course groups with group ID or course name\n\nID: ${widget.courseId}\nCourse Name: ${courseName + courseSection}'))
-                                    .then((result) {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible:
-                                        false, // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        content: SingleChildScrollView(
-                                          child: ListBody(
-                                            children: <Widget>[
-                                              Text(
-                                                  'The invite Link is copied.'),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                });
-                              },
+                            Container(
+                              alignment: Alignment.center,
+                              width: _width * 2 / 3,
                               child: Text(
-                                'share',
-                                textAlign: TextAlign.left,
-                                style: GoogleFonts.openSans(
-                                  color: themeOrange,
-                                  fontSize: 16,
-                                ),
+                                (courseName ?? '') + (courseSection ?? ''),
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                            Container(
+                              width: _width * 1 / 6,
+                              alignment: Alignment.centerRight,
+                              padding:
+                                  EdgeInsets.only(right: sidebarSize * 0.55),
+                              child: PopupMenuButton(
+                                  onSelected: (choice) {
+                                    if (choice == 1) {
+                                      Share.share(
+                                          'Course Name: ${courseName + courseSection}\nID: ${widget.courseId}\n\nDownload "Meechu" on mobile and search your course groups with group ID or course name',
+                                          subject:
+                                              'Join ${courseName + courseSection} chat at Meechu');
+                                    } else if (choice == 2) {
+                                      Share.share('${widget.courseId}',
+                                          subject:
+                                              'Join ${courseName + courseSection} chat at Meechu');
+                                    } else if (choice == 3) {
+                                      Share.share(
+                                          'https://www.meechu.app/#/course/${widget.courseId}',
+                                          subject:
+                                              'Join ${courseName + courseSection} chat at Meechu');
+                                    }
+                                  },
+                                  itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          child: Text("Share",
+                                              style: GoogleFonts.montserrat(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              )),
+                                          value: 1,
+                                        ),
+                                        PopupMenuItem(
+                                          child: Text("Share Course ID",
+                                              style: GoogleFonts.montserrat(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              )),
+                                          value: 2,
+                                        ),
+                                        PopupMenuItem(
+                                          child: Text("Share Course Link",
+                                              style: GoogleFonts.montserrat(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              )),
+                                          value: 3,
+                                        ),
+                                      ]),
+                            ),
+                          ],
+                        )),
                     Container(
                       color: riceColor,
                       child: Column(
@@ -321,14 +337,17 @@ class _CourseDetailState extends State<CourseDetail> {
                                             10 +
                                             40,
                                 padding: EdgeInsets.only(top: 30),
-                                child: GridView.count(
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  crossAxisSpacing: 15,
-                                  mainAxisSpacing: 10,
-                                  crossAxisCount: 5,
-                                  childAspectRatio: gridRatio,
-                                  children: _renderMemberInfo(gridWidth - 5),
+                                child: Scrollbar(
+                                  thickness: 4,
+                                  child: GridView.count(
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    crossAxisSpacing: 15,
+                                    mainAxisSpacing: 10,
+                                    crossAxisCount: 5,
+                                    childAspectRatio: gridRatio,
+                                    children: _renderMemberInfo(gridWidth - 5),
+                                  ),
                                 ),
                               )
                             ]),
@@ -351,9 +370,8 @@ class _CourseDetailState extends State<CourseDetail> {
                                 GestureDetector(
                                   child: Container(
                                     alignment: Alignment.centerLeft,
-                                    height: 50,
-                                    width: getRealWidth(
-                                        MediaQuery.of(context).size.width),
+                                    height: _height * 0.07,
+                                    width: _width,
                                     color: Colors.white,
                                     child: Row(
                                       mainAxisAlignment:
@@ -373,7 +391,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                           padding: const EdgeInsets.only(
                                               right: 21.0),
                                           child: Image.asset(
-                                              'assets/images/arrow-forward.png',
+                                              'assets/images/arrow_forward.png',
                                               height: 9.02,
                                               width: 4.86,
                                               color: const Color(0xFF949494)),
@@ -407,10 +425,213 @@ class _CourseDetailState extends State<CourseDetail> {
                                 //     textSize: 18,
                                 //     height: 50,
                                 //     isSwitch: true),
-                                // Divider(
-                                //                             //   height: 0,
-                                //                             //   thickness: 1,
-                                //                             // )
+                                Container(
+                                  margin: EdgeInsets.only(left: sidebarSize),
+                                  child: Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    height: _height * 0.1,
+                                    width: _width,
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 21.0),
+                                              child: Text(
+                                                "Group Notice",
+                                                style: GoogleFonts.montserrat(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 21.0),
+                                              child: Image.asset(
+                                                  'assets/images/arrow_forward.png',
+                                                  height: 9.02,
+                                                  width: 4.86,
+                                                  color:
+                                                      const Color(0xFF949494)),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 21.0),
+                                              child: Container(
+                                                width: _width * 0.85,
+                                                child: Text(
+                                                  (groupNoticeText == null)
+                                                      ? 'Loading...'
+                                                      : (groupNoticeText.isEmpty
+                                                          ? 'Not Set'
+                                                          : groupNoticeText),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.montserrat(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: const Color(
+                                                          0xFF949494)),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 21.0),
+                                              child: Container(),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return MultiProvider(
+                                        providers: [
+                                          Provider<UserData>.value(
+                                            value: currentUser,
+                                          ),
+                                          Provider<List<CourseInfo>>.value(
+                                              value: course),
+                                        ],
+                                        child: GroupNotice(
+                                          courseId: widget
+                                              .courseId, // to be modified to friend's ID
+                                        ),
+                                      );
+                                    })).then((_) {
+                                      databaseMethods
+                                          .getCourseInfo(widget.courseId)
+                                          .then((value) {
+                                        setState(() {
+                                          groupNoticeText = value.docs[0]
+                                              .data()['groupNoticeText'];
+                                        });
+                                      });
+                                    });
+                                  },
+                                ),
+                                if (currentUser.userID == adminId)
+                                  Container(
+                                    margin: EdgeInsets.only(left: sidebarSize),
+                                    child: Divider(
+                                      height: 0,
+                                      thickness: 1,
+                                    ),
+                                  ),
+                                if (currentUser.userID == adminId)
+                                  Visibility(
+                                    visible: true,
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              height: 50,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              color: Colors.white,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 21.0),
+                                                    child: Text(
+                                                      "Administrator Transfer",
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // Padding(
+                                                  //     padding:
+                                                  //     const EdgeInsets.only(right: 30.0),
+                                                  //     child: Text(adminName == null ? 'Loading...' : adminName)
+                                                  // ),
+
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 21.0),
+                                                    child: Image.asset(
+                                                        'assets/images/arrow_forward.png',
+                                                        height: 9.02,
+                                                        width: 4.86,
+                                                        color: const Color(
+                                                            0xFF949494)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () async {
+                                              if (memberInfo == null) {
+                                                return null;
+                                              }
+                                              String tmpAdminId =
+                                                  await Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                return MultiProvider(
+                                                  providers: [
+                                                    Provider<UserData>.value(
+                                                      value: currentUser,
+                                                    ),
+                                                  ],
+                                                  child: ChooseGroupLeader(
+                                                    groupMembers: memberInfo,
+                                                    courseId: widget.courseId,
+                                                    myEmail: widget.myEmail,
+                                                    myName: widget.myName,
+                                                    adminCallback:
+                                                        (String val) =>
+                                                            setState(() =>
+                                                                reloadAdminId =
+                                                                    val),
+                                                  ),
+                                                );
+                                              }));
+                                              print(tmpAdminId);
+                                              if (tmpAdminId != null) {
+                                                setState(() {
+                                                  adminId = tmpAdminId;
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -446,8 +667,7 @@ class _CourseDetailState extends State<CourseDetail> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     height: 50,
-                                    width: getRealWidth(
-                                        MediaQuery.of(context).size.width),
+                                    width: _width,
                                     color: Colors.white,
                                     child: Padding(
                                       padding:
@@ -461,52 +681,86 @@ class _CourseDetailState extends State<CourseDetail> {
                                     ),
                                   ),
                                   onTap: () {
-                                    showDialog<void>(
-                                      context: context,
-                                      barrierDismissible:
-                                          false, // user must tap button!
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: SingleChildScrollView(
-                                            child: ListBody(
-                                              children: <Widget>[
-                                                Text(
-                                                  'Are you sure you want to delete this course?',
+                                    if (currentUser.userID != reloadAdminId)
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Are you sure you want to delete this course?',
+                                                    style: simpleTextStyle(
+                                                        Colors.black, 16),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  'Yes',
                                                   style: simpleTextStyle(
-                                                      Colors.black, 16),
+                                                      Colors.black87, 16),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: Text(
-                                                'Yes',
-                                                style: simpleTextStyle(
-                                                    Colors.black87, 16),
+                                                onPressed: () {
+                                                  courseProvider.removeCourse(
+                                                      context, widget.courseId);
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                courseProvider.removeCourse(
-                                                    context, widget.courseId);
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: Text(
-                                                'Cancel',
-                                                style: simpleTextStyle(
-                                                    themeOrange, 16),
+                                              TextButton(
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: simpleTextStyle(
+                                                      themeOrange, 16),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    else
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'You are now the group leader, please choose a new leader before exiting',
+                                                    style: simpleTextStyle(
+                                                        Colors.black, 16),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: simpleTextStyle(
+                                                      themeOrange, 16),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                   },
                                 ),
                                 // Divider(
@@ -520,8 +774,10 @@ class _CourseDetailState extends State<CourseDetail> {
                       ),
                     ),
                   ],
-                )),
-          ))),
+                ),
+              )),
+        ),
+      ),
     );
   }
 }

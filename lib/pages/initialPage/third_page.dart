@@ -1,5 +1,6 @@
 import 'package:app_test/models/user.dart';
 import 'package:app_test/models/constant.dart';
+import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/services/database.dart';
 import 'package:app_test/widgets/change_color.dart';
 import 'package:app_test/widgets/widgets.dart';
@@ -48,8 +49,9 @@ class _ThirdPageState extends State<ThirdPage>
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
+    final userTagProvider = Provider.of<UserTagsProvider>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = MediaQuery.of(context).size.width;
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.23),
@@ -75,7 +77,7 @@ class _ThirdPageState extends State<ThirdPage>
     }
 
     return Container(
-      height: widget.isEdit ? _height - 50 : _height,
+      height: widget.isEdit ? _height * 0.9 : _height,
       decoration: widget.isEdit
           ? BoxDecoration(
               color: themeOrange,
@@ -93,7 +95,7 @@ class _ThirdPageState extends State<ThirdPage>
         children: <Widget>[
           widget.isEdit
               ? Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 8, 0),
+                  padding: EdgeInsets.fromLTRB(10, 25, 8, 0),
                   child: ClipRRect(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(35.0),
@@ -116,7 +118,7 @@ class _ThirdPageState extends State<ThirdPage>
                 )
               : Container(),
           SizedBox(
-            height: widget.isEdit ? (_height - 50) * 0.13 : _height * 0.13,
+            height: widget.isEdit ? (_height * 0.9) * 0.13 : _height * 0.13,
           ),
           _getHeader(),
           Expanded(
@@ -242,17 +244,36 @@ class _ThirdPageState extends State<ThirdPage>
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
-                onPressed: () {
+                onPressed: () async {
+                  if (widget.isEdit) {
+                    databaseMethods
+                        .updateUserProfileColor(user.userID, _currentindex)
+                        .then((value) {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    // initialize the tags
+                    await userTagProvider.addEmptyTagsToContact(context);
+                    databaseMethods
+                        .updateUserProfileColor(user.userID, _currentindex)
+                        .then((value) {
+                      widget.pageController.animateToPage(3,
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.easeInCubic);
+                    });
+                  }
                   databaseMethods
-                      .updateUserProfileColor(user.userID, _currentindex)
+                      .updateUserProfileColor(
+                          user.userID,
+                          num.parse(_currentindex.toStringAsFixed(0))
+                              .toDouble())
                       .then((value) {
                     widget.isEdit
                         ? Navigator.pop(context)
-                        : widget.pageController.animateToPage(2,
+                        : widget.pageController.animateToPage(3,
                             duration: Duration(milliseconds: 800),
                             curve: Curves.easeInCubic);
                   });
-                  print('color num saved');
                 },
                 child: Text(
                   'Continue',

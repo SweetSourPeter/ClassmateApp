@@ -6,7 +6,6 @@ import 'package:app_test/services/database.dart';
 import 'package:provider/provider.dart';
 import './groupChat.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_test/widgets/widgets.dart';
 
 class SearchGroupChat extends StatefulWidget {
   final String courseId;
@@ -40,6 +39,8 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
+    final _height = MediaQuery.of(context).size.height;
+    final _width = MediaQuery.of(context).size.width;
 
     return SafeArea(
       child: Scaffold(
@@ -56,7 +57,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
               children: [
                 Container(
                   color: const Color(0xffFF712D),
-                  height: 73,
+                  height: _height * 0.10,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -163,7 +164,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                 children.add(Container(
                     padding:
                         const EdgeInsets.only(left: 25, right: 25, bottom: 10),
-                    width: getRealWidth(MediaQuery.of(context).size.width) - 50,
+                    width: MediaQuery.of(context).size.width - 50,
                     child: Row(children: [
                       Text(
                         'Messages with word: ',
@@ -183,27 +184,25 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         ),
                       )
                     ])));
-                for (var i = 0; i < snapshot.data.documents.length; i++) {
-                  if (snapshot.data.documents[i].data()['messageType'] ==
-                          'text' &&
-                      snapshot.data.documents[i]
+                for (var i = 0; i < snapshot.data.docs.length; i++) {
+                  if (snapshot.data.docs[i].data()['messageType'] == 'text' &&
+                      snapshot.data.docs[i]
                           .data()['message']
                           .contains(searchTextEditingController.text)) {
                     children.add(
                       searchTile(
-                        userName:
-                            snapshot.data.documents[i].data()['senderName'],
-                        message: snapshot.data.documents[i].data()['message'],
+                        userName: snapshot.data.docs[i].data()['senderName'],
+                        message: snapshot.data.docs[i].data()['message'],
                         imageURL:
                             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg',
                         userData: currentUser,
                         searchWord: searchTextEditingController.text,
                         messageIndex: i,
                         messageTime: DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[i].data()['time'])
+                                snapshot.data.docs[i].data()['time'])
                             .toString(),
                         profileColor:
-                            snapshot.data.documents[i].data()['profileColor'],
+                            snapshot.data.docs[i].data()['profileColor'],
                         context: context,
                       ),
                     );
@@ -246,10 +245,10 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
             ],
             child: GroupChat(
               courseId: widget.courseId,
-              initialChat: messageIndex.toDouble(),
               myEmail: widget.myEmail,
               myName: widget.myName,
-              isRedirect: false,
+              // myId: userData.userID,
+              initialChat: messageIndex.toDouble(),
             ),
           );
         }));
@@ -291,8 +290,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         ),
                       ),
                       Container(
-                        width: getRealWidth(MediaQuery.of(context).size.width) -
-                            94,
+                        width: MediaQuery.of(context).size.width - 94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -322,9 +320,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                               ],
                             ),
                             Container(
-                              width: getRealWidth(
-                                      MediaQuery.of(context).size.width) -
-                                  100,
+                              width: MediaQuery.of(context).size.width - 100,
                               padding: EdgeInsets.only(left: 8),
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,
