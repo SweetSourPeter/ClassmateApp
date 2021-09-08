@@ -104,7 +104,7 @@ class DesktopNavPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return Wrapper(true, false, "0");
+                            return Wrapper(true, false, "0", false);
                           },
                         ),
                       );

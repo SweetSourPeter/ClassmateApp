@@ -137,7 +137,7 @@ class MyApp extends StatelessWidget {
               //call multiprovider with correct arguments
               return MaterialPageRoute(builder: (context) {
                 setErrorBuilder();
-                return Wrapper(false, true, classid);
+                return Wrapper(false, true, classid, false);
               });
             }
           }
