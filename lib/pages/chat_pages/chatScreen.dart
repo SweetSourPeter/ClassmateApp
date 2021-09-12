@@ -26,7 +26,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+// import 'package:image_picker_web/image_picker_web.dart';
 
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
@@ -282,22 +282,23 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future _pickImage(ImageSource source, myEmail) async {
-    html.File selected =
-        await ImagePickerWeb.getImage(outputType: ImageType.file);
+  // Future _pickImage(ImageSource source, myEmail) async {
+  //   html.File selected =
+  //       // await ImagePickerWeb.getImage(outputType: ImageType.file);
+  //       await FilePicker.platform.pickFiles() ?? [];
 
-    if (selected != null) {
-      debugPrint(selected.toString());
-    }
+  //   if (selected != null) {
+  //     debugPrint(selected.toString());
+  //   }
 
-    setState(() {
-      _imageFile = selected;
-    });
+  //   setState(() {
+  //     _imageFile = selected;
+  //   });
 
-    if (selected != null) {
-      _uploadFile(myEmail, _imageFile);
-    }
-  }
+  //   if (selected != null) {
+  //     _uploadFile(myEmail, _imageFile);
+  //   }
+  // }
 
   Future<void> _uploadFile(myEmail, html.File image, {String imageName}) async {
     imageName = image.name;
@@ -796,12 +797,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                         height: 64,
                                         width: 65,
                                         child: IconButton(
-                                            icon: Image.asset(
-                                              'assets/images/camera.png',
-                                            ),
-                                            onPressed: () => _pickImage(
-                                                ImageSource.camera,
-                                                currentUser.email)),
+                                          icon: Image.asset(
+                                            'assets/images/camera.png',
+                                          ),
+                                          // onPressed: () => _pickImage(
+                                          //     ImageSource.camera,
+                                          //     currentUser.email),
+                                        ),
                                       ),
                                       Container(
                                         height: 64,

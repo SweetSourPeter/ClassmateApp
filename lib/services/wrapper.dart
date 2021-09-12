@@ -42,7 +42,7 @@ class Wrapper extends StatelessWidget {
             databaseMethods.getUserDetailsByID(user.userID);
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
           appBar: AppBar(
             toolbarHeight: 0,
             backgroundColor: Colors.white,
@@ -140,10 +140,10 @@ class Wrapper extends StatelessWidget {
             databaseMethods.getUserDetailsByID(user.userID);
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.black,
           appBar: AppBar(
             toolbarHeight: 0,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.black,
             elevation: 0,
           ),
           body: FutureBuilder(

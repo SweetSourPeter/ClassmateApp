@@ -612,19 +612,22 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 800) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: desktopPageChildren(constraints.biggest.width),
-          );
-        } else {
-          return Column(
-            children: mobilePageChildren(constraints.biggest.width),
-          );
-        }
-      },
+    return Container(
+      color: Colors.black,
     );
+    // return LayoutBuilder(
+    //   builder: (context, constraints) {
+    //     if (constraints.maxWidth > 800) {
+    //       return Column(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: desktopPageChildren(constraints.biggest.width),
+    //       );
+    //     } else {
+    //       return Column(
+    //         children: mobilePageChildren(constraints.biggest.width),
+    //       );
+    //     }
+    //   },
+    // );
   }
 }

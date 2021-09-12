@@ -26,7 +26,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:app_test/widgets/widgets.dart';
 
-import 'package:image_picker_web/image_picker_web.dart';
+// import 'package:image_picker_web/image_picker_web.dart';
 
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
@@ -575,22 +575,22 @@ class _GroupChatState extends State<GroupChat> {
       //return imageUri;
     }
 
-    Future _pickImage(ImageSource source, myEmail, myName) async {
-      html.File selected =
-          await ImagePickerWeb.getImage(outputType: ImageType.file);
+    // Future _pickImage(ImageSource source, myEmail, myName) async {
+    //   html.File selected = await FilePicker.platform.pickFiles() ?? [];
+    //   // await ImagePickerWeb.getImage(outputType: ImageType.file);
 
-      if (selected != null) {
-        debugPrint(selected.toString());
-      }
+    //   if (selected != null) {
+    //     debugPrint(selected.toString());
+    //   }
 
-      setState(() {
-        _imageFile = selected;
-      });
+    //   setState(() {
+    //     _imageFile = selected;
+    //   });
 
-      if (selected != null) {
-        _uploadFile(myEmail, myName, _imageFile);
-      }
-    }
+    //   if (selected != null) {
+    //     _uploadFile(myEmail, myName, _imageFile);
+    //   }
+    // }
 
     Future _pickFile(myEmail, myName) async {
       // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
@@ -921,11 +921,10 @@ class _GroupChatState extends State<GroupChat> {
                               height: 64,
                               width: 65,
                               child: IconButton(
-                                  icon: Image.asset('assets/images/camera.png'),
-                                  onPressed: () => _pickImage(
-                                      ImageSource.camera,
-                                      currentUser.email,
-                                      currentUser.userName)),
+                                icon: Image.asset('assets/images/camera.png'),
+                                // onPressed: () => _pickImage(ImageSource.camera,
+                                //     currentUser.email, currentUser.userName),
+                              ),
                             ),
                             Container(
                               height: 64,

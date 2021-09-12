@@ -78,8 +78,8 @@ dependencies:
   # FOR WEB ONLY
   file_picker: ^4.0.1
   path_provider: ^2.0.3
-  image_picker_web: ^1.0.9
-  flutter_web_image_picker: any
+  # image_picker_webd: ^1.0.9
+  # flutter_web_image_picker: any
   universal_html: ^1.2.4
   firebase: ^9.0.1
   # file_picker_we.b: ^2.0.0 // needs to be fixed

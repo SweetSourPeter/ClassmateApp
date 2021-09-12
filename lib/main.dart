@@ -80,7 +80,10 @@ class MyApp extends StatelessWidget {
     setErrorBuilder();
     return MultiProvider(
       providers: [
-        StreamProvider(create: (context) => AuthMethods().user), //Login user
+        StreamProvider(
+          create: (context) => AuthMethods().user,
+          initialData: null,
+        ), //Login user
         ChangeNotifierProvider(
             create: (context) => CourseProvider()), //course Provider
         ChangeNotifierProvider(
