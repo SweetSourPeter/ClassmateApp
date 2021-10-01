@@ -96,7 +96,7 @@ class DatabaseMethods {
   //       .document(userID)
   //       .collection('courses')
   //       .snapshots()
-  //       .map((snapshot) => snapshot.documents
+  //       .map((snapshot) => snapshot.docs
   //           .map((document) => CourseInfo.fromFirestore(document.data))
   //           .toList());
   // }
