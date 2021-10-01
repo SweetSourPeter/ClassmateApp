@@ -14,7 +14,6 @@ import 'package:app_test/unknown_pages/unknown_page.dart';
 import 'package:app_test/web_initial_pages/web_whole.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:app_test/services/wrapper.dart';
 import 'package:app_test/services/auth.dart';
@@ -24,11 +23,11 @@ import 'package:app_test/routes/router.dart';
 import 'package:app_test/routes/router.gr.dart';
 
 import 'models/courseInfo.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   runApp(MyApp());
 }
 
@@ -78,87 +77,93 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     setErrorBuilder();
-    return MultiProvider(
-      providers: [
-        StreamProvider(
-          create: (context) => AuthMethods().user,
-          initialData: null,
-        ), //Login user
-        ChangeNotifierProvider(
-            create: (context) => CourseProvider()), //course Provider
-        ChangeNotifierProvider(
-            create: (context) => ContactProvider()), //contacts Provider
-        ChangeNotifierProvider(
-            create: (context) => UserTagsProvider()), //tag Provider
-      ],
-      child: MaterialApp(
-        title: "Meechu",
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          highlightColor: themeOrange, // color for scroll bar
-        ),
-        onGenerateRoute: (settings) {
-          final settingsUri = Uri.parse(settings.name);
-          print("setting uri is");
-          print(settingsUri);
-          // final courseID = settingsUri.queryParameters['id'];
-          final user = AuthMethods().user;
-          print("user");
-          print(user.isEmpty);
+    return Container(
+      child: MultiProvider(
+        providers: [
+          StreamProvider(
+            create: (context) => AuthMethods().user,
+            initialData: null,
+          ), //Login user
+          ChangeNotifierProvider(
+              create: (context) => CourseProvider()), //course Provider
+          ChangeNotifierProvider(
+              create: (context) => ContactProvider()), //contacts Provider
+          ChangeNotifierProvider(
+              create: (context) => UserTagsProvider()), //tag Provider
+        ],
+        child: MaterialApp(
+          title: "Meechu",
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            highlightColor: themeOrange, // color for scroll bar
+          ),
+          onGenerateRoute: (settings) {
+            final settingsUri = Uri.parse(settings.name);
+            print("setting uri is");
+            print(settingsUri);
+            // final courseID = settingsUri.queryParameters['id'];
+            final user = AuthMethods().user;
+            print("user");
+            print(user.isEmpty);
 
-          //user didn't log in, go to home page
-          if (user.isEmpty == null) {
-            return MaterialPageRoute(builder: (context) {
-              return NavPage();
-            });
-          } else {
-            // the user are logged in
-            // Handle '/'
-            if (settingsUri.pathSegments.length == 0) {
+            //user didn't log in, go to home page
+            if (user.isEmpty == null) {
               return MaterialPageRoute(builder: (context) {
                 return NavPage();
-                // return Wrapper(false, false, "0");
               });
-            }
-
-            // Handle '/course/:id'
-            if (settingsUri.pathSegments.length == 2) {
-              if (settingsUri.pathSegments.first != 'course') {
+            } else {
+              // the user are logged in
+              // Handle '/'
+              if (settingsUri.pathSegments.length == 0) {
                 return MaterialPageRoute(builder: (context) {
-                  return UnknownPage();
+                  return NavPage();
+                  // return Wrapper(false, false, "0");
                 });
               }
 
-              final classid = settingsUri.pathSegments.elementAt(1);
-              //user didn't input courseid, thus go back to homepage
-              if (classid == null) {
+              // Handle '/course/:id'
+              if (settingsUri.pathSegments.length == 2) {
+                if (settingsUri.pathSegments.first != 'course') {
+                  return MaterialPageRoute(builder: (context) {
+                    return UnknownPage();
+                  });
+                }
+
+                final classid = settingsUri.pathSegments.elementAt(1);
+                //user didn't input courseid, thus go back to homepage
+                if (classid == null) {
+                  return MaterialPageRoute(builder: (context) {
+                    return UnknownPage();
+                  });
+                }
+
+                //call multiprovider with correct arguments
                 return MaterialPageRoute(builder: (context) {
-                  return UnknownPage();
+                  setErrorBuilder();
+                  return Wrapper(
+                    false,
+                    true,
+                    classid,
+                  );
                 });
               }
-
-              //call multiprovider with correct arguments
-              return MaterialPageRoute(builder: (context) {
-                setErrorBuilder();
-                return Wrapper(false, true, classid, false);
-              });
             }
-          }
-          //Handle other unknown Routes
-          return MaterialPageRoute(builder: (context) {
-            return UnknownPage();
-          });
-        },
+            //Handle other unknown Routes
+            return MaterialPageRoute(builder: (context) {
+              return UnknownPage();
+            });
+          },
 
-        // builder: ExtendedNavigator(
-        //   key: _exNavigatorKey,
-        //   router: ModularRouter(),
-        //   initialRoute: Routes.navPage,
-        //   // builder: (_, extendedNav) => Theme(
-        //   //   data: themeOrange(),
-        //   //   child: extendedNav,
-        //   // ),
-        // ),
+          // builder: ExtendedNavigator(
+          //   key: _exNavigatorKey,
+          //   router: ModularRouter(),
+          //   initialRoute: Routes.navPage,
+          //   // builder: (_, extendedNav) => Theme(
+          //   //   data: themeOrange(),
+          //   //   child: extendedNav,
+          //   // ),
+          // ),
+        ),
       ),
     );
   }

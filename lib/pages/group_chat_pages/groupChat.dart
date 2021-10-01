@@ -107,15 +107,15 @@ class _GroupChatState extends State<GroupChat> {
                     reverse: true,
                     controller: _controller,
                     padding: EdgeInsets.all(0),
-                    itemCount: snapshot.data.documents.length,
+                    itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
                       DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index].data()['time']);
-                      if (index == snapshot.data.documents.length - 1) {
+                          snapshot.data.docs[index].data()['time']);
+                      if (index == snapshot.data.docs.length - 1) {
                         displayTime = true;
                       } else {
                         DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                            snapshot.data.documents[index + 1].data()['time']);
+                            snapshot.data.docs[index + 1].data()['time']);
                         final difference = current.difference(prev).inDays;
                         if (difference >= 1) {
                           displayTime = true;
@@ -136,98 +136,90 @@ class _GroupChatState extends State<GroupChat> {
                         displayWeek = false;
                       }
 
-                      if (snapshot.data.documents[index]
-                              .data()['messageType'] ==
+                      if (snapshot.data.docs[index].data()['messageType'] ==
                           'text') {
                         return MessageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          snapshot.data.docs[index].data()['message'],
+                          snapshot.data.docs[index].data()['sendBy'] == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
+                                  snapshot.data.docs[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
+                          snapshot.data.docs[index].data()['senderName'],
+                          snapshot.data.docs[index].data()['senderID'],
+                          snapshot.data.docs[index].data()['profileColor'] ??
                               1.0,
                         );
-                      } else if (snapshot.data.documents[index]
+                      } else if (snapshot.data.docs[index]
                               .data()['messageType'] ==
                           'image') {
                         return ImageTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          snapshot.data.docs[index].data()['message'],
+                          snapshot.data.docs[index].data()['sendBy'] == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
+                                  snapshot.data.docs[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
+                          snapshot.data.docs[index].data()['senderName'],
+                          snapshot.data.docs[index].data()['senderID'],
+                          snapshot.data.docs[index].data()['profileColor'] ??
                               1.0,
                         );
                       } else {
                         return FileTile(
-                          snapshot.data.documents[index].data()['message'],
-                          snapshot.data.documents[index].data()['sendBy'] ==
-                              myEmail,
+                          snapshot.data.docs[index].data()['message'],
+                          snapshot.data.docs[index].data()['sendBy'] == myEmail,
                           DateTime.fromMillisecondsSinceEpoch(
-                                  snapshot.data.documents[index].data()['time'])
+                                  snapshot.data.docs[index].data()['time'])
                               .toString(),
                           displayTime,
                           displayWeek,
                           lastMessage,
-                          snapshot.data.documents[index].data()['senderName'],
-                          snapshot.data.documents[index].data()['senderID'],
-                          snapshot.data.documents[index]
-                                  .data()['profileColor'] ??
+                          snapshot.data.docs[index].data()['senderName'],
+                          snapshot.data.docs[index].data()['senderID'],
+                          snapshot.data.docs[index].data()['profileColor'] ??
                               1.0,
-                          _link =
-                              snapshot.data.documents[index].data()['message'],
+                          _link = snapshot.data.docs[index].data()['message'],
                           fileName =
-                              snapshot.data.documents[index].data()['fileName'],
+                              snapshot.data.docs[index].data()['fileName'],
                         );
                       }
 
-                      // return snapshot.data.documents[index].data()['messageType'] ==
+                      // return snapshot.data.docs[index].data()['messageType'] ==
                       //         'text'
                       //     ? MessageTile(
-                      //         snapshot.data.documents[index].data()['message'],
-                      //         snapshot.data.documents[index].data()['sendBy'] ==
+                      //         snapshot.data.docs[index].data()['message'],
+                      //         snapshot.data.docs[index].data()['sendBy'] ==
                       //             myEmail,
                       //         DateTime.fromMillisecondsSinceEpoch(
-                      //                 snapshot.data.documents[index].data()['time'])
+                      //                 snapshot.data.docs[index].data()['time'])
                       //             .toString(),
                       //         displayTime,
                       //         displayWeek,
                       //         lastMessage,
-                      //         snapshot.data.documents[index].data()['senderName'],
-                      //         snapshot.data.documents[index].data()['senderID'],
-                      //         snapshot.data.documents[index]
+                      //         snapshot.data.docs[index].data()['senderName'],
+                      //         snapshot.data.docs[index].data()['senderID'],
+                      //         snapshot.data.docs[index]
                       //                 .data()['profileColor'] ??
                       //             1.0,
                       //       )
                       //     : ImageTile(
-                      //         snapshot.data.documents[index].data()['message'],
-                      //         snapshot.data.documents[index].data()['sendBy'] ==
+                      //         snapshot.data.docs[index].data()['message'],
+                      //         snapshot.data.docs[index].data()['sendBy'] ==
                       //             myEmail,
                       //         DateTime.fromMillisecondsSinceEpoch(
-                      //                 snapshot.data.documents[index].data()['time'])
+                      //                 snapshot.data.docs[index].data()['time'])
                       //             .toString(),
                       //         displayTime,
                       //         displayWeek,
                       //         lastMessage,
-                      //         snapshot.data.documents[index].data()['senderName'],
-                      //         snapshot.data.documents[index].data()['senderID'],
-                      //         snapshot.data.documents[index]
+                      //         snapshot.data.docs[index].data()['senderName'],
+                      //         snapshot.data.docs[index].data()['senderID'],
+                      //         snapshot.data.docs[index]
                       //                 .data()['profileColor'] ??
                       //             1.0,
                       //       );
@@ -243,7 +235,11 @@ class _GroupChatState extends State<GroupChat> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return Wrapper(false, false, "0", false);
+                        return Wrapper(
+                          false,
+                          false,
+                          "0",
+                        );
                       },
                     ),
                   ),
@@ -279,15 +275,15 @@ class _GroupChatState extends State<GroupChat> {
                   reverse: true,
                   controller: _controller,
                   padding: EdgeInsets.all(0),
-                  itemCount: snapshot.data.documents.length,
+                  itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
                     DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index].data()['time']);
-                    if (index == snapshot.data.documents.length - 1) {
+                        snapshot.data.docs[index].data()['time']);
+                    if (index == snapshot.data.docs.length - 1) {
                       displayTime = true;
                     } else {
                       DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                          snapshot.data.documents[index + 1].data()['time']);
+                          snapshot.data.docs[index + 1].data()['time']);
                       final difference = current.difference(prev).inDays;
                       if (difference >= 1) {
                         displayTime = true;
@@ -308,94 +304,86 @@ class _GroupChatState extends State<GroupChat> {
                       displayWeek = false;
                     }
 
-                    if (snapshot.data.documents[index].data()['messageType'] ==
+                    if (snapshot.data.docs[index].data()['messageType'] ==
                         'text') {
                       return MessageTile(
-                        snapshot.data.documents[index].data()['message'],
-                        snapshot.data.documents[index].data()['sendBy'] ==
-                            myEmail,
+                        snapshot.data.docs[index].data()['message'],
+                        snapshot.data.docs[index].data()['sendBy'] == myEmail,
                         DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[index].data()['time'])
+                                snapshot.data.docs[index].data()['time'])
                             .toString(),
                         displayTime,
                         displayWeek,
                         lastMessage,
-                        snapshot.data.documents[index].data()['senderName'],
-                        snapshot.data.documents[index].data()['senderID'],
-                        snapshot.data.documents[index].data()['profileColor'] ??
-                            1.0,
+                        snapshot.data.docs[index].data()['senderName'],
+                        snapshot.data.docs[index].data()['senderID'],
+                        snapshot.data.docs[index].data()['profileColor'] ?? 1.0,
                       );
-                    } else if (snapshot.data.documents[index]
+                    } else if (snapshot.data.docs[index]
                             .data()['messageType'] ==
                         'image') {
                       return ImageTile(
-                        snapshot.data.documents[index].data()['message'],
-                        snapshot.data.documents[index].data()['sendBy'] ==
-                            myEmail,
+                        snapshot.data.docs[index].data()['message'],
+                        snapshot.data.docs[index].data()['sendBy'] == myEmail,
                         DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[index].data()['time'])
+                                snapshot.data.docs[index].data()['time'])
                             .toString(),
                         displayTime,
                         displayWeek,
                         lastMessage,
-                        snapshot.data.documents[index].data()['senderName'],
-                        snapshot.data.documents[index].data()['senderID'],
-                        snapshot.data.documents[index].data()['profileColor'] ??
-                            1.0,
+                        snapshot.data.docs[index].data()['senderName'],
+                        snapshot.data.docs[index].data()['senderID'],
+                        snapshot.data.docs[index].data()['profileColor'] ?? 1.0,
                       );
                     } else {
                       return FileTile(
-                        snapshot.data.documents[index].data()['message'],
-                        snapshot.data.documents[index].data()['sendBy'] ==
-                            myEmail,
+                        snapshot.data.docs[index].data()['message'],
+                        snapshot.data.docs[index].data()['sendBy'] == myEmail,
                         DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[index].data()['time'])
+                                snapshot.data.docs[index].data()['time'])
                             .toString(),
                         displayTime,
                         displayWeek,
                         lastMessage,
-                        snapshot.data.documents[index].data()['senderName'],
-                        snapshot.data.documents[index].data()['senderID'],
-                        snapshot.data.documents[index].data()['profileColor'] ??
-                            1.0,
-                        _link =
-                            snapshot.data.documents[index].data()['message'],
-                        fileName =
-                            snapshot.data.documents[index].data()['fileName'],
+                        snapshot.data.docs[index].data()['senderName'],
+                        snapshot.data.docs[index].data()['senderID'],
+                        snapshot.data.docs[index].data()['profileColor'] ?? 1.0,
+                        _link = snapshot.data.docs[index].data()['message'],
+                        fileName = snapshot.data.docs[index].data()['fileName'],
                       );
                     }
 
-                    // return snapshot.data.documents[index].data()['messageType'] ==
+                    // return snapshot.data.docs[index].data()['messageType'] ==
                     //         'text'
                     //     ? MessageTile(
-                    //         snapshot.data.documents[index].data()['message'],
-                    //         snapshot.data.documents[index].data()['sendBy'] ==
+                    //         snapshot.data.docs[index].data()['message'],
+                    //         snapshot.data.docs[index].data()['sendBy'] ==
                     //             myEmail,
                     //         DateTime.fromMillisecondsSinceEpoch(
-                    //                 snapshot.data.documents[index].data()['time'])
+                    //                 snapshot.data.docs[index].data()['time'])
                     //             .toString(),
                     //         displayTime,
                     //         displayWeek,
                     //         lastMessage,
-                    //         snapshot.data.documents[index].data()['senderName'],
-                    //         snapshot.data.documents[index].data()['senderID'],
-                    //         snapshot.data.documents[index]
+                    //         snapshot.data.docs[index].data()['senderName'],
+                    //         snapshot.data.docs[index].data()['senderID'],
+                    //         snapshot.data.docs[index]
                     //                 .data()['profileColor'] ??
                     //             1.0,
                     //       )
                     //     : ImageTile(
-                    //         snapshot.data.documents[index].data()['message'],
-                    //         snapshot.data.documents[index].data()['sendBy'] ==
+                    //         snapshot.data.docs[index].data()['message'],
+                    //         snapshot.data.docs[index].data()['sendBy'] ==
                     //             myEmail,
                     //         DateTime.fromMillisecondsSinceEpoch(
-                    //                 snapshot.data.documents[index].data()['time'])
+                    //                 snapshot.data.docs[index].data()['time'])
                     //             .toString(),
                     //         displayTime,
                     //         displayWeek,
                     //         lastMessage,
-                    //         snapshot.data.documents[index].data()['senderName'],
-                    //         snapshot.data.documents[index].data()['senderID'],
-                    //         snapshot.data.documents[index]
+                    //         snapshot.data.docs[index].data()['senderName'],
+                    //         snapshot.data.docs[index].data()['senderID'],
+                    //         snapshot.data.docs[index]
                     //                 .data()['profileColor'] ??
                     //             1.0,
                     //       );
@@ -432,15 +420,15 @@ class _GroupChatState extends State<GroupChat> {
     // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
     databaseMethods.getCourseInfo(widget.courseId).then((value) {
       setState(() {
-        courseName = value.documents[0].data()['myCourseName'];
-        courseSection = value.documents[0].data()['section'];
-        courseTerm = value.documents[0].data()['term'];
+        courseName = value.docs[0].data()['myCourseName'];
+        courseSection = value.docs[0].data()['section'];
+        courseTerm = value.docs[0].data()['term'];
       });
     });
 
     databaseMethods.getNumberOfMembersInCourse(widget.courseId).then((value) {
       setState(() {
-        numberOfMembers = value.documents.length;
+        numberOfMembers = value.docs.length;
       });
     });
 
@@ -660,7 +648,11 @@ class _GroupChatState extends State<GroupChat> {
                               // Navigator.pushNamed(context,'/');
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return Wrapper(false, false, "0", false);
+                                return Wrapper(
+                                  false,
+                                  false,
+                                  "0",
+                                );
                               }));
                             }
                             // Navigator.of(context).pop();

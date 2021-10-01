@@ -90,15 +90,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 reverse: true,
                 controller: _controller,
                 padding: EdgeInsets.all(0),
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   DateTime current = DateTime.fromMillisecondsSinceEpoch(
-                      snapshot.data.documents[index].data()['time']);
-                  if (index == snapshot.data.documents.length - 1) {
+                      snapshot.data.docs[index].data()['time']);
+                  if (index == snapshot.data.docs.length - 1) {
                     displayTime = true;
                   } else {
                     DateTime prev = DateTime.fromMillisecondsSinceEpoch(
-                        snapshot.data.documents[index + 1].data()['time']);
+                        snapshot.data.docs[index + 1].data()['time']);
                     final difference = current.difference(prev).inDays;
                     if (difference >= 1) {
                       displayTime = true;
@@ -119,27 +119,24 @@ class _ChatScreenState extends State<ChatScreen> {
                     displayWeek = false;
                   }
 
-                  if (snapshot.data.documents[index].data()['messageType'] ==
+                  if (snapshot.data.docs[index].data()['messageType'] ==
                       'text') {
                     return MessageTile(
-                        snapshot.data.documents[index].data()['message'],
-                        snapshot.data.documents[index].data()['sendBy'] ==
-                            myEmail,
+                        snapshot.data.docs[index].data()['message'],
+                        snapshot.data.docs[index].data()['sendBy'] == myEmail,
                         DateTime.fromMillisecondsSinceEpoch(
-                                snapshot.data.documents[index].data()['time'])
+                                snapshot.data.docs[index].data()['time'])
                             .toString(),
                         displayTime,
                         displayWeek,
                         lastMessage);
-                  } else if (snapshot.data.documents[index]
-                          .data()['messageType'] ==
+                  } else if (snapshot.data.docs[index].data()['messageType'] ==
                       'image') {
                     return ImageTile(
-                      snapshot.data.documents[index].data()['message'],
-                      snapshot.data.documents[index].data()['sendBy'] ==
-                          myEmail,
+                      snapshot.data.docs[index].data()['message'],
+                      snapshot.data.docs[index].data()['sendBy'] == myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[index].data()['time'])
+                              snapshot.data.docs[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
@@ -147,39 +144,37 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   } else {
                     return FileTile(
-                      snapshot.data.documents[index].data()['message'],
-                      snapshot.data.documents[index].data()['sendBy'] ==
-                          myEmail,
+                      snapshot.data.docs[index].data()['message'],
+                      snapshot.data.docs[index].data()['sendBy'] == myEmail,
                       DateTime.fromMillisecondsSinceEpoch(
-                              snapshot.data.documents[index].data()['time'])
+                              snapshot.data.docs[index].data()['time'])
                           .toString(),
                       displayTime,
                       displayWeek,
                       lastMessage,
-                      _link = snapshot.data.documents[index].data()['message'],
-                      fileName =
-                          snapshot.data.documents[index].data()['fileName'],
+                      _link = snapshot.data.docs[index].data()['message'],
+                      fileName = snapshot.data.docs[index].data()['fileName'],
                     );
                   }
 
-                  // return snapshot.data.documents[index].data()['messageType'] ==
+                  // return snapshot.data.docs[index].data()['messageType'] ==
                   //     'text'
                   //     ? MessageTile(
-                  //     snapshot.data.documents[index].data()['message'],
-                  //     snapshot.data.documents[index].data()['sendBy'] ==
+                  //     snapshot.data.docs[index].data()['message'],
+                  //     snapshot.data.docs[index].data()['sendBy'] ==
                   //         myEmail,
                   //     DateTime.fromMillisecondsSinceEpoch(
-                  //         snapshot.data.documents[index].data()['time'])
+                  //         snapshot.data.docs[index].data()['time'])
                   //         .toString(),
                   //     displayTime,
                   //     displayWeek,
                   //     lastMessage)
                   //     : ImageTile(
-                  //   snapshot.data.documents[index].data()['message'],
-                  //   snapshot.data.documents[index].data()['sendBy'] ==
+                  //   snapshot.data.docs[index].data()['message'],
+                  //   snapshot.data.docs[index].data()['sendBy'] ==
                   //       myEmail,
                   //   DateTime.fromMillisecondsSinceEpoch(
-                  //       snapshot.data.documents[index].data()['time'])
+                  //       snapshot.data.docs[index].data()['time'])
                   //       .toString(),
                   //   displayTime,
                   //   displayWeek,
@@ -282,23 +277,23 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  // Future _pickImage(ImageSource source, myEmail) async {
-  //   html.File selected =
-  //       // await ImagePickerWeb.getImage(outputType: ImageType.file);
-  //       await FilePicker.platform.pickFiles() ?? [];
+  Future _pickImage(ImageSource source, myEmail) async {
+    html.File selected =
+        // await ImagePickerWeb.getImage(outputType: ImageType.file);
+        await FilePicker.platform.pickFiles() ?? [];
 
-  //   if (selected != null) {
-  //     debugPrint(selected.toString());
-  //   }
+    if (selected != null) {
+      debugPrint(selected.toString());
+    }
 
-  //   setState(() {
-  //     _imageFile = selected;
-  //   });
+    setState(() {
+      _imageFile = selected;
+    });
 
-  //   if (selected != null) {
-  //     _uploadFile(myEmail, _imageFile);
-  //   }
-  // }
+    if (selected != null) {
+      _uploadFile(myEmail, _imageFile);
+    }
+  }
 
   Future<void> _uploadFile(myEmail, html.File image, {String imageName}) async {
     imageName = image.name;
@@ -402,7 +397,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     friendCoursesFuture = databaseMethods.getFriendCourses(widget.friendEmail);
     friendCoursesFuture.then((value) {
-      value.documents.forEach((element) {
+      value.docs.forEach((element) {
         setState(() {
           friendCourse.add(element.data()['myCourseName']);
         });
@@ -800,9 +795,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                           icon: Image.asset(
                                             'assets/images/camera.png',
                                           ),
-                                          // onPressed: () => _pickImage(
-                                          //     ImageSource.camera,
-                                          //     currentUser.email),
+                                          onPressed: () => _pickImage(
+                                              ImageSource.camera,
+                                              currentUser.email),
                                         ),
                                       ),
                                       Container(

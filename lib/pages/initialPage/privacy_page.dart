@@ -192,8 +192,11 @@ class _PrivacyPageState extends State<PrivacyPage>
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    Wrapper(false, false, '', false),
+                                builder: (context) => Wrapper(
+                                  false,
+                                  false,
+                                  '',
+                                ),
                               ),
                             );
                           });
