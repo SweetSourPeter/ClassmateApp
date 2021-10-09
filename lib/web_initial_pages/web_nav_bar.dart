@@ -100,7 +100,11 @@ class DesktopNavbar extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return Wrapper(false, false, "0", false);
+                      return Wrapper(
+                        false,
+                        false,
+                        "0",
+                      );
                     },
                   ),
                 );

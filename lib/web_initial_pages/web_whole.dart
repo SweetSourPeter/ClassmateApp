@@ -15,6 +15,7 @@ import 'supprt_landing.dart';
 class NavPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('nav page');
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 1200) {
@@ -104,7 +105,12 @@ class DesktopNavPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return Wrapper(true, false, "0", false);
+                            print('wrapper called');
+                            return Wrapper(
+                              true,
+                              false,
+                              "0",
+                            );
                           },
                         ),
                       );
