@@ -26,7 +26,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+//import 'package:image_picker_web/image_picker_web.dart';
 
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:firebase/firebase.dart' as fb;
