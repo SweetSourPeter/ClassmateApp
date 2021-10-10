@@ -28,7 +28,7 @@ class _EnterInviteCodeState extends State<EnterInviteCode> {
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     DatabaseMethods databaseMethods = DatabaseMethods();
     _toastInfo(String info) {
       Fluttertoast.showToast(
@@ -206,108 +206,114 @@ class _EnterInviteCodeState extends State<EnterInviteCode> {
         color: Colors.white,
         child: SafeArea(
           bottom: false,
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            resizeToAvoidBottomInset: false,
-            body: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 14, top: 15),
-                      child: Container(
-                        // color: orengeColor,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: kDefaultPadding),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.black,
-                                  size: 27,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: 5,
-                                right: 39,
-                                bottom: _height * 0.1,
-                              ),
-                              //TODO replace Icon
-                              child: GestureDetector(
-                                onTap: () {
-                                  Clipboard.setData(
-                                    new ClipboardData(
-                                        text: '${userdata.userID}'),
-                                  ).then((result) {
-                                    _toastInfo('Copied');
-                                  });
-                                },
-                                child: Text(
-                                  'My Code',
-                                  textAlign: TextAlign.left,
-                                  style: GoogleFonts.openSans(
-                                    color: themeOrange,
-                                    fontSize: 16,
+          child: Center(
+            child: SizedBox(
+              width: maxWidth,
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                resizeToAvoidBottomInset: false,
+                body: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 14, top: 15),
+                          child: Container(
+                            // color: orengeColor,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding:
+                                      EdgeInsets.only(left: kDefaultPadding),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.black,
+                                      size: 27,
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Expanded(
+                                  child: Container(),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 5,
+                                    right: 39,
+                                    bottom: _height * 0.1,
+                                  ),
+                                  //TODO replace Icon
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Clipboard.setData(
+                                        new ClipboardData(
+                                            text: '${userdata.userID}'),
+                                      ).then((result) {
+                                        _toastInfo('Copied');
+                                      });
+                                    },
+                                    child: Text(
+                                      'My Code',
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.openSans(
+                                        color: themeOrange,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  _getHeader(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: _width * 0.08,
-                      right: _width * 0.08,
-                      top: _height * 0.2,
-                      bottom: _height * 0.03,
-                    ),
-                    child: _urlForm(),
-                  ),
-                  ExpandablePanel(
-                    header: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: AutoSizeText(
-                        'What is invite code for?',
-                        textAlign: TextAlign.center,
-                        style: simpleTextStyle(Colors.black, 14),
+                      _getHeader(),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: _width * 0.08,
+                          right: _width * 0.08,
+                          top: _height * 0.2,
+                          bottom: _height * 0.03,
+                        ),
+                        child: _urlForm(),
                       ),
-                    ),
-                    // collapsed: Text(
-                    //   'article.body',
-                    //   softWrap: true,
-                    //   maxLines: 2,
-                    //   overflow: TextOverflow.ellipsis,
-                    // ),
-                    expanded: _getRules(),
-                    theme: ExpandableThemeData(
-                      tapBodyToCollapse: true,
-                      // ignore: deprecated_member_use
-                      tapHeaderToExpand: true,
-                      // ignore: deprecated_member_use
-                      hasIcon: false,
-                    ),
+                      ExpandablePanel(
+                        header: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: AutoSizeText(
+                            'What is invite code for?',
+                            textAlign: TextAlign.center,
+                            style: simpleTextStyle(Colors.black, 14),
+                          ),
+                        ),
+                        // collapsed: Text(
+                        //   'article.body',
+                        //   softWrap: true,
+                        //   maxLines: 2,
+                        //   overflow: TextOverflow.ellipsis,
+                        // ),
+                        expanded: _getRules(),
+                        theme: ExpandableThemeData(
+                          tapBodyToCollapse: true,
+                          // ignore: deprecated_member_use
+                          tapHeaderToExpand: true,
+                          // ignore: deprecated_member_use
+                          hasIcon: false,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: _getInviteCode(),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: _getInviteCode(),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

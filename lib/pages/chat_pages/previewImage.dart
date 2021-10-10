@@ -1,3 +1,4 @@
+import 'package:app_test/models/constant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -76,7 +77,7 @@ class _PreviewImageState extends State<PreviewImage> {
               child: CachedNetworkImage(
                 imageUrl: widget.imageUrl,
                 height: MediaQuery.of(context).size.height - 300,
-                width: getRealWidth(MediaQuery.of(context).size.width),
+                width: getRealWidth(maxWidth),
                 placeholder: (context, url) => new CircularProgressIndicator(),
                 errorWidget: (context, url, error) => new Icon(Icons.error),
               ),

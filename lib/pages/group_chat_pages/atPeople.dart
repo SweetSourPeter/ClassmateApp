@@ -11,10 +11,7 @@ class AtPeople extends StatefulWidget {
   final String courseId;
   final List<dynamic> members;
 
-  AtPeople({
-    this.courseId,
-    this.members
-  });
+  AtPeople({this.courseId, this.members});
 
   @override
   _AtPeopleState createState() => _AtPeopleState();
@@ -30,7 +27,12 @@ class _AtPeopleState extends State<AtPeople> {
   List<dynamic> membersFound;
 
   initiateSearch() {
-    membersFound = memberInfo.where((element) => element[0].toString().toUpperCase().contains(searchTextEditingController.text.toUpperCase())).toList();
+    membersFound = memberInfo
+        .where((element) => element[0]
+            .toString()
+            .toUpperCase()
+            .contains(searchTextEditingController.text.toUpperCase()))
+        .toList();
     print('result is:');
     print(membersFound);
 
@@ -57,12 +59,12 @@ class _AtPeopleState extends State<AtPeople> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double sidebarSize = _width * 0.05;
 
     return SafeArea(
       child: Container(
-        height: _height*0.5,
+        height: _height * 0.5,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -86,32 +88,34 @@ class _AtPeopleState extends State<AtPeople> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left:sidebarSize*0.55),
+                    padding: EdgeInsets.only(left: sidebarSize * 0.55),
                     child: IconButton(
-                      icon: Image.asset(
-                        'assets/images/arrow_down.png',
-                        height: 19.97,
-                        width: 20.84,
-                      ),
-                      // iconSize: 30.0,
-                      color: const Color(0xFFFF7E40),
-                      onPressed: () {
-                        // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
-                        // databaseMethods.setUnreadGroupChatNumberToZero(
-                        //     widget.courseId, currentUser.userID);
-                        Navigator.of(context).pop();
-                    }),
+                        icon: Image.asset(
+                          'assets/images/arrow_down.png',
+                          height: 19.97,
+                          width: 20.84,
+                        ),
+                        // iconSize: 30.0,
+                        color: const Color(0xFFFF7E40),
+                        onPressed: () {
+                          // databaseMethods.setUnreadNumber(widget.courseId, widget.myEmail, 0);
+                          // databaseMethods.setUnreadGroupChatNumberToZero(
+                          //     widget.courseId, currentUser.userID);
+                          Navigator.of(context).pop();
+                        }),
                   ),
                   Center(
                     child: Text(
                       'Choose Member to @',
                       style: GoogleFonts.montserrat(
-                        fontWeight:FontWeight.w700,
+                        fontWeight: FontWeight.w700,
                         fontSize: 16,
                       ),
                     ),
                   ),
-                  SizedBox(width: sidebarSize*2.8,)
+                  SizedBox(
+                    width: sidebarSize * 2.8,
+                  )
                 ],
               ),
 
@@ -140,29 +144,26 @@ class _AtPeopleState extends State<AtPeople> {
                       Icons.search,
                       color: Color(0xFF646464),
                     ),
-                    suffixIcon:
-                    searchTextEditingController.text.isEmpty
+                    suffixIcon: searchTextEditingController.text.isEmpty
                         ? null
                         : IconButton(
-                        icon: Icon(
-                          Icons.cancel,
-                          color: Color(0xff646464),
-                          // size: 30,
-                        ),
-                        onPressed: () {
-                          searchTextEditingController.clear();
-                          setState(() {
-                            isSearching = false;
-                          });
-                        }),
+                            icon: Icon(
+                              Icons.cancel,
+                              color: Color(0xff646464),
+                              // size: 30,
+                            ),
+                            onPressed: () {
+                              searchTextEditingController.clear();
+                              setState(() {
+                                isSearching = false;
+                              });
+                            }),
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.transparent),
+                      borderSide: BorderSide(color: Colors.transparent),
                       borderRadius: BorderRadius.circular(35),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.transparent),
+                      borderSide: BorderSide(color: Colors.transparent),
                       borderRadius: BorderRadius.circular(35),
                     ),
                     contentPadding: EdgeInsets.only(left: 0),
@@ -175,26 +176,24 @@ class _AtPeopleState extends State<AtPeople> {
               ),
 
               // search result and display of member info
-              isSearching ?
-                isUserFound ?
-                  Expanded(
-                      child: membersFoundList()
-                  )
+              isSearching
+                  ? isUserFound
+                      ? Expanded(child: membersFoundList())
+                      : Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(top: _height * 0.04),
+                            child: Text(
+                              'No Users Found',
+                              style: GoogleFonts.montserrat(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                          ),
+                        )
                   : Expanded(
-                      child: Container(
-                        padding: EdgeInsets.only(top: _height*0.04),
-                        child: Text(
-                          'No Users Found',
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16),
-                        ),
-                      ),
-                    )
-                : Expanded(
-                    child: memberList(),
-                  ),
+                      child: memberList(),
+                    ),
             ],
           ),
         ),
@@ -205,12 +204,13 @@ class _AtPeopleState extends State<AtPeople> {
   Widget memberList() {
     if (memberInfo != null) {
       double _height = MediaQuery.of(context).size.height;
-      double _width = MediaQuery.of(context).size.width;
+      double _width = maxWidth;
       double sidebarSize = _width * 0.05;
       final children = <Widget>[];
 
       children.add(Container(
-        padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
+        padding:
+            EdgeInsets.only(left: sidebarSize * 1.2, top: sidebarSize * 0.8),
         child: GestureDetector(
           onTap: () {
             Navigator.pop(context, ['Everyone', 'EveryoneQWEASD123456zxc']);
@@ -220,17 +220,15 @@ class _AtPeopleState extends State<AtPeople> {
             children: [
               Image.asset(
                 'assets/images/everyone.png',
-                width: 2*sidebarSize,
-                height: 2*sidebarSize,
+                width: 2 * sidebarSize,
+                height: 2 * sidebarSize,
               ),
               Container(
-                padding: EdgeInsets.only(left: sidebarSize*0.9),
+                padding: EdgeInsets.only(left: sidebarSize * 0.9),
                 child: Text(
                   'Everyone',
                   style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14
-                  ),
+                      fontWeight: FontWeight.w500, fontSize: 14),
                 ),
               ),
             ],
@@ -244,33 +242,25 @@ class _AtPeopleState extends State<AtPeople> {
       for (var i = 0; i < memberInfo.length; i++) {
         current = memberInfo[i][0][0].toString().toUpperCase();
         if (current != prev) {
-          children.add(
-              Padding(
-                padding: EdgeInsets.only(top: sidebarSize*0.6),
-                child: Container(
-                  color: Color(0xffF9F6F1),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: sidebarSize*1.7),
-                    child: Text(
-                      current,
-                      style: GoogleFonts.montserrat(
-                          color: Color(0xffFF7E40),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16
-                      ),
-                    ),
-                  ),
+          children.add(Padding(
+            padding: EdgeInsets.only(top: sidebarSize * 0.6),
+            child: Container(
+              color: Color(0xffF9F6F1),
+              child: Padding(
+                padding: EdgeInsets.only(left: sidebarSize * 1.7),
+                child: Text(
+                  current,
+                  style: GoogleFonts.montserrat(
+                      color: Color(0xffFF7E40),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
                 ),
-              )
-          );
+              ),
+            ),
+          ));
         }
         children.add(
-            MemberTile(
-                memberInfo[i][0],
-                memberInfo[i][1],
-                memberInfo[i][2]
-            )
-        );
+            MemberTile(memberInfo[i][0], memberInfo[i][1], memberInfo[i][2]));
         prev = memberInfo[i][0][0].toString().toUpperCase();
       }
 
@@ -288,7 +278,7 @@ class _AtPeopleState extends State<AtPeople> {
   Widget membersFoundList() {
     if (membersFound != null) {
       double _height = MediaQuery.of(context).size.height;
-      double _width = MediaQuery.of(context).size.width;
+      double _width = maxWidth;
       double sidebarSize = _width * 0.05;
       final children = <Widget>[];
 
@@ -298,33 +288,25 @@ class _AtPeopleState extends State<AtPeople> {
       for (var i = 0; i < membersFound.length; i++) {
         current = membersFound[i][0][0].toString().toUpperCase();
         if (current != prev) {
-          children.add(
-              Padding(
-                padding: EdgeInsets.only(top: sidebarSize*0.6),
-                child: Container(
-                  color: Color(0xffF9F6F1),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: sidebarSize*1.7),
-                    child: Text(
-                      current,
-                      style: GoogleFonts.montserrat(
-                          color: Color(0xffFF7E40),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16
-                      ),
-                    ),
-                  ),
+          children.add(Padding(
+            padding: EdgeInsets.only(top: sidebarSize * 0.6),
+            child: Container(
+              color: Color(0xffF9F6F1),
+              child: Padding(
+                padding: EdgeInsets.only(left: sidebarSize * 1.7),
+                child: Text(
+                  current,
+                  style: GoogleFonts.montserrat(
+                      color: Color(0xffFF7E40),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
                 ),
-              )
-          );
+              ),
+            ),
+          ));
         }
-        children.add(
-            MemberTile(
-                membersFound[i][0],
-                membersFound[i][1],
-                membersFound[i][2]
-            )
-        );
+        children.add(MemberTile(
+            membersFound[i][0], membersFound[i][1], membersFound[i][2]));
         prev = membersFound[i][0][0].toString().toUpperCase();
       }
 
@@ -345,19 +327,16 @@ class MemberTile extends StatelessWidget {
   final String memberId;
   final double memberProfileColor;
 
-  MemberTile(
-      this.memberName,
-      this.memberId,
-      this.memberProfileColor);
+  MemberTile(this.memberName, this.memberId, this.memberProfileColor);
 
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double sidebarSize = _width * 0.05;
 
     return Container(
-      padding: EdgeInsets.only(left: sidebarSize*1.2, top: sidebarSize*0.8),
+      padding: EdgeInsets.only(left: sidebarSize * 1.2, top: sidebarSize * 0.8),
       child: GestureDetector(
         onTap: () {
           Navigator.pop(context, [memberName, memberId]);
@@ -372,27 +351,23 @@ class MemberTile extends StatelessWidget {
                 child: Text(
                   memberName.split(' ').length >= 2
                       ? memberName.split(' ')[0][0].toUpperCase() +
-                      memberName
-                          .split(' ')[
-                      memberName.split(' ').length - 1][0]
-                          .toUpperCase()
+                          memberName
+                              .split(' ')[memberName.split(' ').length - 1][0]
+                              .toUpperCase()
                       : memberName[0].toUpperCase(),
                   style: GoogleFonts.montserrat(
-                      fontSize:
-                      memberName.split(' ').length >= 2 ? 14 : 15,
+                      fontSize: memberName.split(' ').length >= 2 ? 14 : 15,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: sidebarSize*0.9),
+              padding: EdgeInsets.only(left: sidebarSize * 0.9),
               child: Text(
                 memberName,
                 style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14
-                ),
+                    fontWeight: FontWeight.w500, fontSize: 14),
               ),
             ),
           ],

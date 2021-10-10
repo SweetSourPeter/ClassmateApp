@@ -336,7 +336,7 @@ class _ButtonLinkState extends State<ButtonLink> {
               ? EdgeInsets.fromLTRB(20, 10, 20, 10)
               : EdgeInsets.fromLTRB(20, 0, 20, 0),
           height: widget.height,
-          minWidth: MediaQuery.of(context).size.width,
+          minWidth: maxWidth,
           color: Colors.white,
           child: Column(
             children: [
@@ -473,7 +473,7 @@ class _ButtonLinkState extends State<ButtonLink> {
 
 Padding userInfoDetailsBox(Size mediaQuery, String topText, String bottomText) {
   return Padding(
-    padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 0),
+    padding: EdgeInsets.fromLTRB(maxWidth / 7, 0, 0, 0),
     child: Column(
       children: [
         Container(

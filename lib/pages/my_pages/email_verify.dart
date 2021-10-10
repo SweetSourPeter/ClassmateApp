@@ -53,7 +53,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     double _height = MediaQuery.of(context).size.height;
-//     double _width = MediaQuery.of(context).size.width;
+//     double _width = maxWidth;
 //     AuthMethods authMethods = new AuthMethods();
 //     _toastInfo(String info) {
 //       Fluttertoast.showToast(

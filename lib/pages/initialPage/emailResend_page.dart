@@ -22,22 +22,20 @@ class EmailResendPage extends StatefulWidget {
   _EmailResendPageState createState() => _EmailResendPageState();
 }
 
-class _EmailResendPageState extends State<EmailResendPage>
-   {
+class _EmailResendPageState extends State<EmailResendPage> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   AuthMethods authMethods = new AuthMethods();
   final formKey = GlobalKey<FormState>();
   TextEditingController nameTextEditingController = new TextEditingController();
 
   int secondsRemaining = 60;
-  bool buttonActivated= false;
+  bool buttonActivated = false;
   Timer timer;
-
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double _height = MediaQuery.of(context).size.height;
     _getHeader() {
       return Padding(
@@ -71,14 +69,14 @@ class _EmailResendPageState extends State<EmailResendPage>
     return Container(
       decoration: widget.isEdit
           ? BoxDecoration(
-        color: themeOrange,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0),
-          topRight: Radius.circular(30.0),
-          // bottomLeft: Radius.circular(30.0),
-          // bottomRight: Radius.circular(30.0),
-        ),
-      )
+              color: themeOrange,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+                // bottomLeft: Radius.circular(30.0),
+                // bottomRight: Radius.circular(30.0),
+              ),
+            )
           : null,
       height: widget.isEdit ? (_height * 0.9) : _height,
       color: widget.isEdit ? null : themeOrange,
@@ -95,28 +93,28 @@ class _EmailResendPageState extends State<EmailResendPage>
                 children: <Widget>[
                   widget.isEdit
                       ? Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 8, 0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(35.0),
-                          topRight: Radius.circular(35.0),
-                          bottomLeft: Radius.circular(35.0),
-                          bottomRight: Radius.circular(35.0),
-                        ),
-                        child: SizedBox(
-                          width: 65.0,
-                          height: 6.0,
-                          child: const DecoratedBox(
-                            decoration:
-                            const BoxDecoration(color: Colors.white),
-                          ),
+                          padding: EdgeInsets.fromLTRB(10, 0, 8, 0),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(35.0),
+                                topRight: Radius.circular(35.0),
+                                bottomLeft: Radius.circular(35.0),
+                                bottomRight: Radius.circular(35.0),
+                              ),
+                              child: SizedBox(
+                                width: 65.0,
+                                height: 6.0,
+                                child: const DecoratedBox(
+                                  decoration:
+                                      const BoxDecoration(color: Colors.white),
+                                ),
+                              )
+                              // child: Container(
+                              //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
+                              //   color: Colors.black,
+                              // )
+                              ),
                         )
-                      // child: Container(
-                      //   padding: EdgeInsets.fromLTRB(20, 20, 30, 10),
-                      //   color: Colors.black,
-                      // )
-                    ),
-                  )
                       : Container(),
                   Padding(
                       padding: EdgeInsets.only(
@@ -131,7 +129,6 @@ class _EmailResendPageState extends State<EmailResendPage>
                             : _height * 0.22,
                         left: 45,
                         right: 45),
-
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -143,18 +140,20 @@ class _EmailResendPageState extends State<EmailResendPage>
                         borderRadius: BorderRadius.circular(40),
                       ),
                       height:
-                      widget.isEdit ? _height * 1.9 * 0.06 : _height * 0.06,
+                          widget.isEdit ? _height * 1.9 * 0.06 : _height * 0.06,
                       width: _width * 0.75,
                       child: RaisedButton(
                         hoverElevation: 0,
                         highlightColor: Color(0xDA6D39),
                         highlightElevation: 0,
                         elevation: 0,
-                        color: buttonActivated ? Color(0xFFFF9B6B).withOpacity(1) : Colors.blue,
+                        color: buttonActivated
+                            ? Color(0xFFFF9B6B).withOpacity(1)
+                            : Colors.blue,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)),
                         onPressed: () {
-                          if (buttonActivated){
+                          if (buttonActivated) {
                             return null;
                           }
                           buttonActivated = true;
@@ -162,7 +161,7 @@ class _EmailResendPageState extends State<EmailResendPage>
                           authMethods.sendVerifyEmail();
 
                           timer = Timer.periodic(Duration(seconds: 1), (timer) {
-                            if (!mounted){
+                            if (!mounted) {
                               return;
                             }
                             if (secondsRemaining != 0) {
@@ -170,7 +169,7 @@ class _EmailResendPageState extends State<EmailResendPage>
                                 secondsRemaining--;
                               });
                             } else {
-                              setState(()  {
+                              setState(() {
                                 buttonActivated = false;
                                 secondsRemaining = 60;
                               });
@@ -178,12 +177,15 @@ class _EmailResendPageState extends State<EmailResendPage>
                             }
                           });
                         },
-                        child: buttonActivated ?
-                        Text(
-                          'Resend after $secondsRemaining seconds',
-                           style: TextStyle(color: Colors.white, fontSize: 24),
-                        ) :
-                        Text('Resend', style: TextStyle(color: Colors.white, fontSize: 24)),
+                        child: buttonActivated
+                            ? Text(
+                                'Resend after $secondsRemaining seconds',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24),
+                              )
+                            : Text('Resend',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24)),
                       ),
                     ),
                   ),

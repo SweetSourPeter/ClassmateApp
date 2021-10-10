@@ -40,7 +40,7 @@ class DesktopNavPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     return Scaffold(
       body: Container(
           padding: EdgeInsets.only(
@@ -168,7 +168,7 @@ class MobileNavPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     return Scaffold(
       body: Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
@@ -267,7 +267,7 @@ class MobileSmallNavPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     return Scaffold(
       body: Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),

@@ -278,7 +278,7 @@
 //                   Container(
 //                     alignment: Alignment.center,
 //                     height: 74.0,
-//                     width: getRealWidth(MediaQuery.of(context).size.width),
+//                     width: getRealWidth(maxWidth),
 //                     color: const Color(0xffF9F6F1),
 //                     child: Row(
 //                       children: [

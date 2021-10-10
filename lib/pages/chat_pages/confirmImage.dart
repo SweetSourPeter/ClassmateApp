@@ -28,7 +28,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
   @override
   Widget build(BuildContext context) {
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
+    double sidebarSize = getRealWidth(maxWidth) * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context);
     final databaseMehods = DatabaseMethods();

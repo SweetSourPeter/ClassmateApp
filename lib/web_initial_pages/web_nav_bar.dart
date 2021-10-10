@@ -26,7 +26,7 @@ class Navbar extends StatelessWidget {
 class DesktopNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = getRealWidth(maxWidth);
     return Padding(
       padding: EdgeInsets.only(
           top: 20, bottom: 20, left: _width * 0.03, right: _width * 0.1),

@@ -10,8 +10,7 @@ class NotificationPage extends StatefulWidget {
   _NotificationPageState createState() => _NotificationPageState();
 }
 
-class _NotificationPageState extends State<NotificationPage>{
-
+class _NotificationPageState extends State<NotificationPage> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
 
   @override
@@ -23,10 +22,10 @@ class _NotificationPageState extends State<NotificationPage>{
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
 
     return Container(
-      height: _height*0.9,
+      height: _height * 0.9,
       decoration: BoxDecoration(
         color: themeOrange,
         borderRadius: BorderRadius.only(
@@ -78,13 +77,14 @@ class _NotificationPageState extends State<NotificationPage>{
                   'Yes',
                   style: largeTitleTextStyleBold(Colors.white, 16),
                   textAlign: TextAlign.center,
-                  ),
+                ),
               ),
               Container(
                 child: Text(
                   'No',
                   style: largeTitleTextStyleBold(Colors.white, 16),
-                  textAlign: TextAlign.center,),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           )

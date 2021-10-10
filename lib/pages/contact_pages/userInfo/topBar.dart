@@ -38,7 +38,7 @@ class _TopBarState extends State<TopBar> {
     // }
 
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -79,6 +79,7 @@ class _TopBarState extends State<TopBar> {
                       ),
                       Container(
                         height: _height * 0.25,
+                        width: maxWidth,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -277,6 +278,7 @@ class _TopBarState extends State<TopBar> {
                       ),
                       Container(
                         height: 50,
+                        width: maxWidth,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {

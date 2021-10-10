@@ -98,7 +98,7 @@ class _GroupNoticeState extends State<GroupNotice> {
     final user = Provider.of<User>(context, listen: false);
     final currentUser = Provider.of<UserData>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double sidebarSize = _width * 0.05;
 
     return Container(

@@ -29,7 +29,7 @@ class _SecondPageState extends State<SecondPage>
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double _height = MediaQuery.of(context).size.height;
     _getHeader() {
       return Padding(

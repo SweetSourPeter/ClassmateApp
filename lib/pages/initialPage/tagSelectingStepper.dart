@@ -108,7 +108,7 @@ class _TagSelectingState extends State<TagSelecting> {
   Widget build(BuildContext context) {
     // final userTags = Provider.of<UserTags>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     final userTagProvider = Provider.of<UserTagsProvider>(context);
     Color submitButtonColor = widget.buttonColor;
     Color submitButtonTextColor = Colors.white;
@@ -441,7 +441,7 @@ class _TagSelectingState extends State<TagSelecting> {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: mediaQuery.width * 0.04,
+                  horizontal: maxWidth * 0.04,
                   vertical: widget.isEdit
                       ? (mediaQuery.height * 0.9) * 0.0246
                       : mediaQuery.height * 0.0246,

@@ -6,6 +6,7 @@ import 'package:app_test/models/user.dart' as user_replaced;
 import 'package:app_test/pages/contact_pages/searchUser.dart';
 import 'package:app_test/pages/group_chat_pages/groupChat.dart';
 import 'package:app_test/providers/contactProvider.dart';
+
 import 'package:app_test/providers/courseProvider.dart';
 import 'package:app_test/providers/tagProvider.dart';
 import 'package:app_test/routes/AuthGuard.dart';

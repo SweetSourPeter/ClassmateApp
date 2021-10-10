@@ -609,7 +609,7 @@ class _GroupChatState extends State<GroupChat> {
       backgroundColor: const Color(0xffF9F6F1),
       body: Center(
           child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: maxWidth,
         child: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -712,11 +712,10 @@ class _GroupChatState extends State<GroupChat> {
                                   ),
                                 ],
                                 child: CourseDetail(
-                                  courseId: widget.courseId,
-                                  myEmail: widget.myEmail,
-                                  myName: widget.myName,
-                                  members: memberInfo
-                                ),
+                                    courseId: widget.courseId,
+                                    myEmail: widget.myEmail,
+                                    myName: widget.myName,
+                                    members: memberInfo),
                               );
                             }));
                           },
@@ -741,7 +740,7 @@ class _GroupChatState extends State<GroupChat> {
               Container(
                 alignment: Alignment.center,
                 height: 74.0,
-                width: MediaQuery.of(context).size.width,
+                width: maxWidth,
                 color: Colors.white,
                 child: Row(
                   children: [
@@ -909,7 +908,7 @@ class _GroupChatState extends State<GroupChat> {
                   ? AnimatedContainer(
                       duration: Duration(milliseconds: 80),
                       height: 80,
-                      width: MediaQuery.of(context).size.width,
+                      width: maxWidth,
                       color: Colors.white,
                       child: Container(
                         padding: EdgeInsets.only(left: 50, right: 50),
@@ -1038,8 +1037,7 @@ class MessageTile extends StatelessWidget {
                   children: [
                     // Message and Time
                     Container(
-                      width:
-                          getRealWidth(MediaQuery.of(context).size.width) - 60,
+                      width: getRealWidth(maxWidth) - 60,
                       alignment: Alignment.centerRight,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

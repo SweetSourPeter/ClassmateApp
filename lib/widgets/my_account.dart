@@ -36,11 +36,11 @@ class _MyAccountState extends State<MyAccount> {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = getRealWidth(MediaQuery.of(context).size.width);
+    double _width = getRealWidth(maxWidth);
     final userdata = Provider.of<UserData>(context);
     final userTags = Provider.of<UserTags>(context);
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = getRealWidth(mediaQuery.width) * 1.0;
+    double sidebarSize = getRealWidth(maxWidth) * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
 
     // TODO: implement build
@@ -49,7 +49,7 @@ class _MyAccountState extends State<MyAccount> {
       body: Container(
         alignment: Alignment.center,
         height: mediaQuery.height,
-        width: MediaQuery.of(context).size.width,
+        width: maxWidth,
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -131,17 +131,14 @@ class _MyAccountState extends State<MyAccount> {
                     children: [
                       Positioned(
                         bottom: 0,
-                        left: (MediaQuery.of(context).size.width / 2) -
-                            (_height * 0.1465 / 2),
+                        left: (maxWidth / 2) - (_height * 0.1465 / 2),
                         child: CircleAvatar(
                           backgroundColor: themeOrange,
                           radius: _height * 0.1465 / 2,
                         ),
                       ),
                       Positioned(
-                        left: (MediaQuery.of(context).size.width / 2) -
-                            (_height * 0.1465 / 2) +
-                            4,
+                        left: (maxWidth / 2) - (_height * 0.1465 / 2) + 4,
                         bottom: 4,
                         child: createUserImage(
                           (_height * 0.1465 - 8) / 2,
@@ -150,8 +147,7 @@ class _MyAccountState extends State<MyAccount> {
                         ),
                       ),
                       Positioned(
-                        left: (MediaQuery.of(context).size.width / 2) -
-                            (_height * 0.1465 / 2),
+                        left: (maxWidth / 2) - (_height * 0.1465 / 2),
                         bottom: 0,
                         child: Container(
                             height: _height * 0.1465 * 1.0924,

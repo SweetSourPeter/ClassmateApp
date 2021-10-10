@@ -40,61 +40,64 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final _height = MediaQuery.of(context).size.height;
-    final _width = MediaQuery.of(context).size.width;
+    final _width = maxWidth;
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: GestureDetector(
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
+      child: Center(
+        child: SizedBox(
+          width: maxWidth,
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: GestureDetector(
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
 
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-            },
-            child: Column(
-              children: [
-                Container(
-                  color: const Color(0xffFF712D),
-                  height: _height * 0.10,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.only(left: 25),
-                          height: 50,
-                          child: TextField(
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Color(0xffFF813C),
-                            ),
-                            textInputAction: TextInputAction.search,
-                            onSubmitted: (value) {
-                              setState(() {
-                                isSearching = true;
-                              });
-                            },
-                            controller: searchTextEditingController,
-                            textAlign: TextAlign.left,
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              filled: true,
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Color(0xFFFFCDB6),
-                              ),
-                              // IconButton(
-                              //   icon: Image.asset(
-                              //     'assets/images/search.png',
-                              //     color: Color(0xffFFCDB6),
-                              //     height: 20,
-                              //     width: 20,
-                              //   ),
-                              // ),
-                              suffixIcon:
-                                  searchTextEditingController.text.isEmpty
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      color: const Color(0xffFF712D),
+                      height: _height * 0.10,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 25),
+                              height: 50,
+                              child: TextField(
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Color(0xffFF813C),
+                                ),
+                                textInputAction: TextInputAction.search,
+                                onSubmitted: (value) {
+                                  setState(() {
+                                    isSearching = true;
+                                  });
+                                },
+                                controller: searchTextEditingController,
+                                textAlign: TextAlign.left,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Color(0xFFFFCDB6),
+                                  ),
+                                  // IconButton(
+                                  //   icon: Image.asset(
+                                  //     'assets/images/search.png',
+                                  //     color: Color(0xffFFCDB6),
+                                  //     height: 20,
+                                  //     width: 20,
+                                  //   ),
+                                  // ),
+                                  suffixIcon: searchTextEditingController
+                                          .text.isEmpty
                                       ? null
                                       : IconButton(
                                           icon: Icon(
@@ -106,50 +109,53 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                                             // initiateSearch();
                                             searchTextEditingController.clear();
                                           }),
-                              hintText: 'Search Chat',
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                              contentPadding: EdgeInsets.only(left: 0),
-                              hintStyle: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Color(0xffFF813C),
+                                  hintText: 'Search Chat',
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(35),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(35),
+                                  ),
+                                  contentPadding: EdgeInsets.only(left: 0),
+                                  hintStyle: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: Color(0xffFF813C),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 25, right: 25.0),
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).pop(),
+                              child: Text(
+                                'Cancel',
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 25.0),
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Text(
-                            'Cancel',
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                Expanded(
-                  child: searchList(currentUser, context),
-                ),
-              ],
-            )),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Expanded(
+                      child: searchList(currentUser, context),
+                    ),
+                  ],
+                )),
+          ),
+        ),
       ),
     );
   }
@@ -164,7 +170,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                 children.add(Container(
                     padding:
                         const EdgeInsets.only(left: 25, right: 25, bottom: 10),
-                    width: MediaQuery.of(context).size.width - 50,
+                    width: maxWidth - 50,
                     child: Row(children: [
                       Text(
                         'Messages with word: ',
@@ -290,7 +296,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width - 94,
+                        width: maxWidth - 94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -320,7 +326,7 @@ class _SearchGroupChatState extends State<SearchGroupChat> {
                               ],
                             ),
                             Container(
-                              width: MediaQuery.of(context).size.width - 100,
+                              width: maxWidth - 100,
                               padding: EdgeInsets.only(left: 8),
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,

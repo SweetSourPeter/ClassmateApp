@@ -13,7 +13,7 @@ class InviteNotifyRules extends StatelessWidget {
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
 
     _getHeader() {
       return Container(

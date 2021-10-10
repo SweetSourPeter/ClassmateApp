@@ -12,68 +12,71 @@ class AboutTheAPP extends StatelessWidget {
     return Scaffold(
       backgroundColor: themeOrange,
       body: SafeArea(
-        child: Container(
-          child: Scaffold(
-              backgroundColor: themeOrange,
-              appBar: AppBar(
-                leading: Container(
-                  padding: EdgeInsets.only(left: kDefaultPadding),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
+        child: Center(
+          child: SizedBox(
+            width: maxWidth,
+            child: Scaffold(
+                backgroundColor: themeOrange,
+                appBar: AppBar(
+                  leading: Container(
+                    padding: EdgeInsets.only(left: kDefaultPadding),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
+                  // centerTitle: true,
+                  elevation: 0.0,
+                  backgroundColor: themeOrange,
+                  // title: Text("Create Course"),
                 ),
-                // centerTitle: true,
-                elevation: 0.0,
-                backgroundColor: themeOrange,
-                // title: Text("Create Course"),
-              ),
-              body: Center(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: mediaQuery.height * 0.1),
-                  LogoWidget(140, 156),
+                body: Center(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: mediaQuery.height * 0.1),
+                    LogoWidget(140, 156),
 
-                  // LinkWellModify(
-                  //     'asdfasdfasdfasdfdasf,https://stackoverflow.com/questions/46260055/how-to-make-copyable-text-widget-in-flutter '),
-                  Text(
-                    'Meechu',
-                    style: largeTitleTextStyleBold(Colors.white, 26),
-                  ),
-                  SizedBox(
-                    height: mediaQuery.height * 0.0123,
-                  ),
-                  Text(
-                    'Version 1.1.7+14',
-                    style: simpleTextStyle(Colors.white, 18),
-                  ),
-                  SizedBox(
-                    height: mediaQuery.height * 0.062,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _launchURL('https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y');
-                    },
-                    child: buildContainer('Term of Use', mediaQuery),
-                  ),
-                  SizedBox(
-                    height: mediaQuery.height * 0.0123,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _launchURL('https://docs.qq.com/doc/DUEhxcUl3cmtKWk5Q');
-                    },
-                    child: buildContainer('Privacy Policy', mediaQuery),
-                  ),
-                ],
-              ))),
+                    // LinkWellModify(
+                    //     'asdfasdfasdfasdfdasf,https://stackoverflow.com/questions/46260055/how-to-make-copyable-text-widget-in-flutter '),
+                    Text(
+                      'Meechu',
+                      style: largeTitleTextStyleBold(Colors.white, 26),
+                    ),
+                    SizedBox(
+                      height: mediaQuery.height * 0.0123,
+                    ),
+                    Text(
+                      'Version 1.1.7+14',
+                      style: simpleTextStyle(Colors.white, 18),
+                    ),
+                    SizedBox(
+                      height: mediaQuery.height * 0.062,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _launchURL('https://docs.qq.com/doc/DUGl3Z2htWHRzYm1Y');
+                      },
+                      child: buildContainer('Term of Use', mediaQuery),
+                    ),
+                    SizedBox(
+                      height: mediaQuery.height * 0.0123,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _launchURL('https://docs.qq.com/doc/DUEhxcUl3cmtKWk5Q');
+                      },
+                      child: buildContainer('Privacy Policy', mediaQuery),
+                    ),
+                  ],
+                ))),
+          ),
         ),
       ),
     );
@@ -82,7 +85,7 @@ class AboutTheAPP extends StatelessWidget {
   Container buildContainer(String text, Size mediaQuery) {
     return Container(
       height: mediaQuery.height * 0.043,
-      width: mediaQuery.width * 0.4,
+      width: maxWidth * 0.4,
       decoration: BoxDecoration(
         color: Color(0xff9b6b).withOpacity(1),
         borderRadius: BorderRadius.circular(16.0),

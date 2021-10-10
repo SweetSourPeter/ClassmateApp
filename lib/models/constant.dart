@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'dart:ui';
 
 // Colos that use in our app
 const transparent = Color(0x00000000);
@@ -24,8 +27,9 @@ const unselectedColor = Color(0xFFDFAF);
 const dividerColor = Color(0xFFD1D1D1);
 const whiteAndGray = Color(0xFFEEEEEE); //loading color
 const kDefaultPadding = 20.0;
-
-const maxWidth = 800.0;
+// var screenWidth = ScreenUtil.screenWidth;
+var maxWidth = 800.00;
+// ScreenUtil.screenWidth > 800.00 ? 800.00 : ScreenUtil.screenWidth;
 const kDefaultShadow = BoxShadow(
   offset: Offset(0, 4),
   blurRadius: 4,

@@ -10,15 +10,18 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:jitsi_meet/room_name_constraint.dart';
+import 'package:jitsi_meet/room_name_constraint_type.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:provider/provider.dart';
 import 'package:app_test/models/user.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:emoji_picker/emoji_picker.dart';
 import 'package:app_test/pages/chat_pages/searchChat.dart';
@@ -214,6 +217,35 @@ class _ChatScreenState extends State<ChatScreen> {
       _controller.jumpTo(_controller.position.minScrollExtent);
       messageController.text = '';
     }
+  }
+
+  sendInviteMeetMessage(myEmail, meetID, currentUserName) {
+    final lastMessageTime = DateTime.now().millisecondsSinceEpoch;
+    Map<String, dynamic> messageMap = {
+      'message':
+          '$currentUserName is inviting you to a call\n\nClick on https://meet.jit.si/$meetID \nto open in Meechu\n\n\nOR paste in your PC browser',
+      'messageType': 'text',
+      'isMeetInvite': true,
+      'sendBy': myEmail,
+      'time': lastMessageTime,
+    };
+    // print(widget.chatRoomId);
+    databaseMethods.addChatMessages(widget.chatRoomId, messageMap);
+    databaseMethods.setLatestMessage(
+        widget.chatRoomId, 'Your are invited to a video call', lastMessageTime);
+    databaseMethods
+        .getUnreadNumber(widget.chatRoomId, widget.friendEmail)
+        .then((value) {
+      final unreadNumber = value.data()[
+              widget.friendEmail.substring(0, widget.friendEmail.indexOf('@')) +
+                  'unread'] +
+          1;
+      databaseMethods.setUnreadNumber(
+          widget.chatRoomId, widget.friendEmail, unreadNumber);
+    });
+
+    // _controller.jumpTo(_controller.position.minScrollExtent);
+    // messageController.text = '';
   }
 
   sendImage(myEmail) {
@@ -413,16 +445,72 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return '$b\_$a';
+    } else {
+      return '$a\_$b';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double _height = MediaQuery.of(context).size.height;
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = maxWidth * 1.0;
+    _joinMeeting() async {
+      String chatRoomId = getChatRoomId(currentUser.email, widget.friendEmail)
+          .replaceAll(RegExp("@[a-zA-Z0-9]+\.[a-zA-Z]+"), '');
+      print(chatRoomId);
+
+      try {
+        Map<FeatureFlagEnum, bool> featureFlags = {
+          FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+        };
+        // Here is an example, disabling features for each platform
+        if (defaultTargetPlatform == TargetPlatform.android) {
+          // Disable ConnectionService usage on Android to avoid issues (see README)
+          featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+        } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+          // Disable PIP on iOS as it looks weird
+          featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+        }
+
+        // old version jitsi meet
+        // FeatureFlag featureFlag = FeatureFlag();
+        // featureFlag.welcomePageEnabled = false;
+        // featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION;
+
+        var options = JitsiMeetingOptions(room: chatRoomId)
+// ..serverURL = "https://na-cc.com"
+          ..subject = chatRoomId
+          ..userDisplayName = currentUser.userName
+          ..userEmail = currentUser.email
+          // ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+          ..audioOnly = true
+          ..audioMuted = true
+          ..featureFlags = featureFlags
+          ..videoMuted = true;
+        print('here2');
+        await JitsiMeet.joinMeeting(options).then((value) {
+          print('here');
+          if (value.isSuccess) {
+            sendInviteMeetMessage(
+                currentUser.email, chatRoomId, currentUser.userName);
+          }
+        });
+      } catch (error) {
+        debugPrint("error: $error");
+      }
+    }
 
     return SafeArea(
+        child: Center(
+      child: SizedBox(
+        width: maxWidth,
         child: Scaffold(
             backgroundColor: Color(0xffF9F6F1),
             body: Center(
@@ -681,7 +769,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         Container(
                           alignment: Alignment.center,
                           height: 74.0,
-                          width: MediaQuery.of(context).size.width,
+                          width: maxWidth,
                           color: Colors.white,
                           child: Row(
                             children: [
@@ -768,6 +856,40 @@ class _ChatScreenState extends State<ChatScreen> {
                                               .position.minScrollExtent));
                                     }),
                               ),
+                              Container(
+                                height: _height * 0.095,
+                                width: _width * 0.16,
+                                child: IconButton(
+                                  icon: Icon(Icons.phone,
+                                      // size: 26,
+                                      color: Color(0xffFF7E40)),
+                                  // iconSize: 10.0,
+                                  onPressed: () {
+                                    showCupertinoDialog(
+                                        context: context,
+                                        builder: (_) => CupertinoAlertDialog(
+                                              content: Text('Join the call?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _joinMeeting();
+                                                    Navigator.pop(
+                                                        context, 'Yes');
+                                                  },
+                                                  child: const Text('Yes'),
+                                                ),
+                                              ],
+                                            ),
+                                        barrierDismissible: true);
+                                  },
+                                ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 10.0, right: 25.0),
@@ -779,7 +901,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ? AnimatedContainer(
                                 duration: Duration(milliseconds: 80),
                                 height: 80,
-                                width: mediaQuery.width,
+                                width: maxWidth,
                                 color: Colors.white,
                                 child: Container(
                                   padding: EdgeInsets.only(left: 50, right: 50),
@@ -825,7 +947,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       ],
                     ),
                   )),
-            )));
+            )),
+      ),
+    ));
   }
 }
 
@@ -893,8 +1017,7 @@ class MessageTile extends StatelessWidget {
                   children: [
                     // Message and Time
                     Container(
-                      width:
-                          getRealWidth(MediaQuery.of(context).size.width) - 60,
+                      width: getRealWidth(maxWidth) - 60,
                       alignment: Alignment.centerRight,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

@@ -51,7 +51,7 @@ class _ThirdPageState extends State<ThirdPage>
     final user = Provider.of<User>(context, listen: false);
     final userTagProvider = Provider.of<UserTagsProvider>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     _getHeader() {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.23),

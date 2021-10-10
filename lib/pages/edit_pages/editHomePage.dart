@@ -56,7 +56,7 @@ class _EditHomePageState extends State<EditHomePage> {
   @override
   Widget build(BuildContext context) {
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = maxWidth * 1.0;
     double menuContainerHeight = mediaQuery.height / 2;
     final userdata = Provider.of<UserData>(context, listen: true);
     final databaseMethods = DatabaseMethods();
@@ -120,226 +120,233 @@ class _EditHomePageState extends State<EditHomePage> {
     return Scaffold(
       backgroundColor: riceColor,
       body: SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              title: Text(
-                'Setting',
-                textAlign: TextAlign.start,
-                style: largeTitleTextStyle(Colors.black, 16),
-              ),
-              backgroundColor: riceColor,
-              leading: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Icon(
-                    Icons.navigate_before,
-                    color: themeOrange,
-                    size: 38,
-                  )),
-            ),
-            body: Container(
-              color: riceColor,
-              height: mediaQuery.height,
-              width: sidebarSize,
-              child: SingleChildScrollView(
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  // mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Container(
-                      //key: widget.key,
-                      margin: EdgeInsets.only(top: 30),
-                      width: double.infinity,
-                      height: mediaQuery.height / 1.25,
-                      child: Column(
-                        children: <Widget>[
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-                          ButtonLink(
-                            text: "Name",
-                            editText: nickName,
-                            iconData: Icons.edit,
-                            textSize: 14,
-                            height: (menuContainerHeight) / 8,
-                            isEdit: true,
-                            onTap: () {
-                              showBottomPopSheet(
-                                  context,
-                                  SecondPage(
-                                    pageController:
-                                        PageController(initialPage: 0),
-                                    isEdit: true,
-                                    valueChanged: (index) => {},
-                                  )
-                                  // EditNameModel(
-                                  //     userName: nickName,
-                                  //     userId: userdata.userID)
-                                  );
-                              setState(() {});
-                            },
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-                          ButtonLink(
-                            text: "Tags",
-                            editText: 'College, Interest...',
-                            iconData: Icons.edit,
-                            textSize: 14,
-                            height: (menuContainerHeight) / 8,
-                            isEdit: true,
-                            onTap: () {
-                              showBottomPopSheet(
-                                  context,
-                                  TagSelecting(
-                                      currentTags: (userdata.userTags.college ==
-                                                  null
-                                              ? []
-                                              : userdata.userTags.college
-                                                  .cast<dynamic>()) +
-                                          (userdata.userTags.interest == null
-                                              ? []
-                                              : userdata.userTags.interest
-                                                  .cast<dynamic>()) +
-                                          (userdata.userTags.language == null
-                                              ? []
-                                              : userdata.userTags.language
-                                                  .cast<String>()) +
-                                          (userdata.userTags.strudyHabits ==
-                                                  null
-                                              ? []
-                                              : userdata.userTags.strudyHabits
-                                                  .cast<String>()),
-                                      buttonColor: listProfileColor[
-                                          userProfileColor.toInt()],
-                                      pageController:
-                                          PageController(initialPage: 0),
-                                      isEdit: true));
-                              //   setState(() {
-                              //     print(userTagProvider.college);
-                              //     tags = (userTagProvider.college == null
-                              //             ? []
-                              //             : userTagProvider.college
-                              //                 .cast<String>()) +
-                              //         (userTagProvider.interest == null
-                              //             ? []
-                              //             : userTagProvider.interest
-                              //                 .cast<String>()) +
-                              //         (userTagProvider.language == null
-                              //             ? []
-                              //             : userTagProvider.language
-                              //                 .cast<String>()) +
-                              //         (userTagProvider.strudyHabits == null
-                              //             ? []
-                              //             : userTagProvider.strudyHabits
-                              //                 .cast<String>());
-                              //   });
-                            },
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-                          ButtonLink(
-                            text: "Avatar",
-                            editText: '',
-                            userName: nickName,
-                            iconData: Icons.edit,
-                            textSize: 14,
-                            userProfileColor: userProfileColor,
-                            height: (menuContainerHeight) / 8,
-                            isAvatar: true,
-                            user: userdata,
-                            isEdit: true,
-                            onTap: () {
-                              showBottomPopSheet(
-                                context,
-                                ThirdPage(
-                                    // buttonColor: Colors.amber,
-                                    userName: userdata.userName,
-                                    initialIndex: userProfileColor.toInt(),
-                                    pageController:
-                                        PageController(initialPage: 3),
-                                    isEdit: true,
-                                    valueChanged: (index) => {}),
-                              );
-                              setState(() {});
-                            },
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-                          // ButtonLink(
-                          //   text: "Notification",
-                          //   editText: '',
-                          //   textSize: 14,
-                          //   height: (menuContainerHeight) / 8,
-                          //   user: userdata,
-                          //   isEdit: true,
-                          //   onTap: () {
-                          //     // requestNotificationPermission();
-                          //     showBottomPopSheet(
-                          //       context,
-                          //       NotificationPage(),
-                          //     );
-                          //     setState(() {});
-                          //   },
-                          // ),
-                          // Divider(
-                          //   height: 0,
-                          //   thickness: 1,
-                          //   color: dividerColor,
-                          // ),
-                          Expanded(
-                            child: Container(),
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-                          ButtonLink(
-                            onTap: () {
-                              authMethods.signOut().then((value) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Wrapper(
-                                            false,
-                                            false,
-                                            '',
-                                          )),
-                                );
-                              });
-                            },
-                            text: "Log Out",
-                            iconData: Icons.login,
-                            textSize: 14,
-                            height: (menuContainerHeight) / 8,
-                            isSimple: true,
-                          ),
-                          Divider(
-                            height: 0,
-                            thickness: 1,
-                            color: dividerColor,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+        child: Center(
+          child: SizedBox(
+            width: maxWidth,
+            child: Scaffold(
+                appBar: AppBar(
+                  elevation: 0,
+                  title: Text(
+                    'Setting',
+                    textAlign: TextAlign.start,
+                    style: largeTitleTextStyle(Colors.black, 16),
+                  ),
+                  backgroundColor: riceColor,
+                  leading: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.navigate_before,
+                        color: themeOrange,
+                        size: 38,
+                      )),
                 ),
-              ),
-            )),
+                body: Container(
+                  color: riceColor,
+                  height: mediaQuery.height,
+                  width: sidebarSize,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      // mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          //key: widget.key,
+                          margin: EdgeInsets.only(top: 30),
+                          width: double.infinity,
+                          height: mediaQuery.height / 1.25,
+                          child: Column(
+                            children: <Widget>[
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: dividerColor,
+                              ),
+                              ButtonLink(
+                                text: "Name",
+                                editText: nickName,
+                                iconData: Icons.edit,
+                                textSize: 14,
+                                height: (menuContainerHeight) / 8,
+                                isEdit: true,
+                                onTap: () {
+                                  showBottomPopSheet(
+                                      context,
+                                      SecondPage(
+                                        pageController:
+                                            PageController(initialPage: 0),
+                                        isEdit: true,
+                                        valueChanged: (index) => {},
+                                      )
+                                      // EditNameModel(
+                                      //     userName: nickName,
+                                      //     userId: userdata.userID)
+                                      );
+                                  setState(() {});
+                                },
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: dividerColor,
+                              ),
+                              ButtonLink(
+                                text: "Tags",
+                                editText: 'College, Interest...',
+                                iconData: Icons.edit,
+                                textSize: 14,
+                                height: (menuContainerHeight) / 8,
+                                isEdit: true,
+                                onTap: () {
+                                  showBottomPopSheet(
+                                      context,
+                                      TagSelecting(
+                                          currentTags: (userdata
+                                                          .userTags.college ==
+                                                      null
+                                                  ? []
+                                                  : userdata.userTags.college
+                                                      .cast<dynamic>()) +
+                                              (userdata.userTags.interest == null
+                                                  ? []
+                                                  : userdata.userTags.interest
+                                                      .cast<dynamic>()) +
+                                              (userdata.userTags.language == null
+                                                  ? []
+                                                  : userdata.userTags.language
+                                                      .cast<String>()) +
+                                              (userdata.userTags.strudyHabits ==
+                                                      null
+                                                  ? []
+                                                  : userdata
+                                                      .userTags.strudyHabits
+                                                      .cast<String>()),
+                                          buttonColor: listProfileColor[
+                                              userProfileColor.toInt()],
+                                          pageController:
+                                              PageController(initialPage: 0),
+                                          isEdit: true));
+                                  //   setState(() {
+                                  //     print(userTagProvider.college);
+                                  //     tags = (userTagProvider.college == null
+                                  //             ? []
+                                  //             : userTagProvider.college
+                                  //                 .cast<String>()) +
+                                  //         (userTagProvider.interest == null
+                                  //             ? []
+                                  //             : userTagProvider.interest
+                                  //                 .cast<String>()) +
+                                  //         (userTagProvider.language == null
+                                  //             ? []
+                                  //             : userTagProvider.language
+                                  //                 .cast<String>()) +
+                                  //         (userTagProvider.strudyHabits == null
+                                  //             ? []
+                                  //             : userTagProvider.strudyHabits
+                                  //                 .cast<String>());
+                                  //   });
+                                },
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: dividerColor,
+                              ),
+                              ButtonLink(
+                                text: "Avatar",
+                                editText: '',
+                                userName: nickName,
+                                iconData: Icons.edit,
+                                textSize: 14,
+                                userProfileColor: userProfileColor,
+                                height: (menuContainerHeight) / 8,
+                                isAvatar: true,
+                                user: userdata,
+                                isEdit: true,
+                                onTap: () {
+                                  showBottomPopSheet(
+                                    context,
+                                    ThirdPage(
+                                        // buttonColor: Colors.amber,
+                                        userName: userdata.userName,
+                                        initialIndex: userProfileColor.toInt(),
+                                        pageController:
+                                            PageController(initialPage: 3),
+                                        isEdit: true,
+                                        valueChanged: (index) => {}),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: dividerColor,
+                              ),
+                              // ButtonLink(
+                              //   text: "Notification",
+                              //   editText: '',
+                              //   textSize: 14,
+                              //   height: (menuContainerHeight) / 8,
+                              //   user: userdata,
+                              //   isEdit: true,
+                              //   onTap: () {
+                              //     // requestNotificationPermission();
+                              //     showBottomPopSheet(
+                              //       context,
+                              //       NotificationPage(),
+                              //     );
+                              //     setState(() {});
+                              //   },
+                              // ),
+                              // Divider(
+                              //   height: 0,
+                              //   thickness: 1,
+                              //   color: dividerColor,
+                              // ),
+                              Expanded(
+                                child: Container(),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: dividerColor,
+                              ),
+                              ButtonLink(
+                                onTap: () {
+                                  authMethods.signOut().then((value) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Wrapper(
+                                                false,
+                                                false,
+                                                '',
+                                              )),
+                                    );
+                                  });
+                                },
+                                text: "Log Out",
+                                iconData: Icons.login,
+                                textSize: 14,
+                                height: (menuContainerHeight) / 8,
+                                isSimple: true,
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: dividerColor,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )),
+          ),
+        ),
       ),
     );
   }

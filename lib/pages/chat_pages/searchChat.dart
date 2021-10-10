@@ -53,127 +53,134 @@ class _SearchChatState extends State<SearchChat> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final _height = MediaQuery.of(context).size.height;
-    final _width = MediaQuery.of(context).size.width;
+    final _width = maxWidth;
 
     return Container(
       color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: GestureDetector(
-              onTap: () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
+      child: Center(
+        child: SafeArea(
+          child: SizedBox(
+            width: maxWidth,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              body: GestureDetector(
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
 
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-              },
-              child: Column(
-                children: [
-                  Container(
-                    color: const Color(0xffFF712D),
-                    height: _height * 0.10,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 8, right: 8),
-                        //   child: Container(
-                        //     height: 40,
-                        //     width: 40,
-                        //     child: IconButton(
-                        //       icon: Image.asset(
-                        //         'assets/images/arrow-back.png',
-                        //       ),
-                        //       // iconSize: 30.0,
-                        //       color:,
-                        //       onPressed: () => Navigator.of(context).pop(),
-                        //     ),
-                        //   ),
-                        // ),
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 25),
-                            height: 50,
-                            child: TextField(
-                              style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: const Color(0xFFFF813C),
-                              ),
-                              textInputAction: TextInputAction.search,
-                              onSubmitted: (value) {
-                                setState(() {
-                                  isSearching = true;
-                                });
-                              },
-                              controller: searchTextEditingController,
-                              textAlign: TextAlign.left,
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Color(0xFFFFCDB6),
-                                ),
-                                suffixIcon: searchTextEditingController
-                                        .text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        icon: Icon(
-                                          Icons.cancel,
-                                          color: Color(0xffFF7E40),
-                                          // size: 30,
-                                        ),
-                                        onPressed: () {
-                                          // initiateSearch();
-                                          searchTextEditingController.clear();
-                                        }),
-                                hintText: 'Search Chat',
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                contentPadding: EdgeInsets.only(left: 0),
-                                hintStyle: GoogleFonts.openSans(
-                                  fontSize: 16,
-                                  color: Color(0xffFF813C),
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        color: const Color(0xffFF712D),
+                        height: _height * 0.10,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 8, right: 8),
+                            //   child: Container(
+                            //     height: 40,
+                            //     width: 40,
+                            //     child: IconButton(
+                            //       icon: Image.asset(
+                            //         'assets/images/arrow-back.png',
+                            //       ),
+                            //       // iconSize: 30.0,
+                            //       color:,
+                            //       onPressed: () => Navigator.of(context).pop(),
+                            //     ),
+                            //   ),
+                            // ),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(left: 25),
+                                height: 50,
+                                child: TextField(
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: const Color(0xFFFF813C),
+                                  ),
+                                  textInputAction: TextInputAction.search,
+                                  onSubmitted: (value) {
+                                    setState(() {
+                                      isSearching = true;
+                                    });
+                                  },
+                                  controller: searchTextEditingController,
+                                  textAlign: TextAlign.left,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: Color(0xFFFFCDB6),
+                                    ),
+                                    suffixIcon:
+                                        searchTextEditingController.text.isEmpty
+                                            ? null
+                                            : IconButton(
+                                                icon: Icon(
+                                                  Icons.cancel,
+                                                  color: Color(0xffFF7E40),
+                                                  // size: 30,
+                                                ),
+                                                onPressed: () {
+                                                  // initiateSearch();
+                                                  searchTextEditingController
+                                                      .clear();
+                                                }),
+                                    hintText: 'Search Chat',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.transparent),
+                                      borderRadius: BorderRadius.circular(35),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.transparent),
+                                      borderRadius: BorderRadius.circular(35),
+                                    ),
+                                    contentPadding: EdgeInsets.only(left: 0),
+                                    hintStyle: GoogleFonts.openSans(
+                                      fontSize: 16,
+                                      color: Color(0xffFF813C),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 25, right: 25.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25, right: 25.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'Cancel',
-                              style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Expanded(
-                    child: searchList(currentUser, context),
-                  ),
-                ],
-              )),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Expanded(
+                        child: searchList(currentUser, context),
+                      ),
+                    ],
+                  )),
+            ),
+          ),
         ),
       ),
     );
@@ -320,7 +327,7 @@ class _SearchChatState extends State<SearchChat> {
                         ),
                       ),
                       Container(
-                        width: mediaQuery.width - 94,
+                        width: maxWidth - 94,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -350,7 +357,7 @@ class _SearchChatState extends State<SearchChat> {
                               ],
                             ),
                             Container(
-                              width: mediaQuery.width - 100,
+                              width: maxWidth - 100,
                               padding: EdgeInsets.only(left: 8),
                               child: RichText(
                                 overflow: TextOverflow.ellipsis,

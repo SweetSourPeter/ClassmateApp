@@ -76,25 +76,30 @@ class _SearchCourseState extends State<SearchCourse> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            leading: Container(
-              padding: EdgeInsets.only(left: kDefaultPadding),
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                color: themeOrange,
-                onPressed: () {
-                  //return to previous page;
-                  Navigator.pop(context);
-                },
+        child: Center(
+          child: SizedBox(
+            width: maxWidth,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              resizeToAvoidBottomInset: true,
+              appBar: AppBar(
+                elevation: 0.0,
+                backgroundColor: Colors.white,
+                leading: Container(
+                  padding: EdgeInsets.only(left: kDefaultPadding),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    color: themeOrange,
+                    onPressed: () {
+                      //return to previous page;
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
               ),
+              body: _stateBody(context, searchSnapshot, course),
             ),
           ),
-          body: _stateBody(context, searchSnapshot, course),
         ),
       ),
     );
@@ -109,7 +114,7 @@ class _SearchCourseState extends State<SearchCourse> {
       "Summer1",
       "Summer2"
     ];
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double _height = MediaQuery.of(context).size.height;
 
     _getHeader() {
@@ -556,7 +561,7 @@ class _SearchCourseState extends State<SearchCourse> {
   }
 
   searchList(context, List<CourseInfo> course) {
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double _height = MediaQuery.of(context).size.height;
     final userdata = Provider.of<UserData>(context, listen: false);
 
@@ -785,7 +790,7 @@ class _CourseSearchTileState extends State<CourseSearchTile> {
     final courseProvider = Provider.of<CourseProvider>(context);
     // final course = Provider.of<List<CourseInfo>>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     // print('course name is ' + courseName);
     // print('section is ' + section);
     // print('is ${widget.isAdd}' + widget.courseID);

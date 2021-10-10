@@ -32,7 +32,7 @@ class _EnterInviteCodeStartPageState extends State<EnterInviteCodeStartPage> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     _toastInfo(String info) {
       Fluttertoast.showToast(
         msg: info,

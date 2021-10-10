@@ -72,7 +72,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
     final course = Provider.of<List<CourseInfo>>(context);
     final courseProvider = Provider.of<CourseProvider>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     return (course == null)
         ? LoadingScreen(Colors.white)
         : Container(
@@ -187,7 +187,7 @@ class _CourseMainMenuState extends State<CourseMainMenu> {
                         blurSize: 0,
                         menuOffset: 0,
                         // blurBackgroundColor: Colors.white60,
-                        menuWidth: MediaQuery.of(context).size.width * 0.50,
+                        menuWidth: maxWidth * 0.50,
                         menuBoxDecoration: BoxDecoration(
                             color: Colors.grey,
                             borderRadius:

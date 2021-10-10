@@ -67,30 +67,35 @@ class _SearchUsersState extends State<SearchUsers> {
     print(user.userName);
     FocusScopeNode currentFocus = FocusScope.of(context);
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          toolbarHeight: 0,
-          backgroundColor: themeOrange,
-          elevation: 0,
-        ),
-        body: GestureDetector(
-          onTap: () {
-            setState(() {
-              // showCancel = true;
-            });
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          onPanUpdate: (details) {
-            if (details.delta.dx > 4) {
-              Navigator.pop(context);
-            }
-          },
-          child:
-              SafeArea(child: Scaffold(body: buildContainerBody(currentFocus))),
-        ));
+    return Center(
+      child: SizedBox(
+        width: maxWidth,
+        child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              toolbarHeight: 0,
+              backgroundColor: themeOrange,
+              elevation: 0,
+            ),
+            body: GestureDetector(
+              onTap: () {
+                setState(() {
+                  // showCancel = true;
+                });
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              onPanUpdate: (details) {
+                if (details.delta.dx > 4) {
+                  Navigator.pop(context);
+                }
+              },
+              child: SafeArea(
+                  child: Scaffold(body: buildContainerBody(currentFocus))),
+            )),
+      ),
+    );
   }
 
   Container buildContainerBody(FocusScopeNode currentFocus) {
@@ -432,7 +437,7 @@ class SearchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     final contactProvider = Provider.of<ContactProvider>(context);
     final userdata = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);

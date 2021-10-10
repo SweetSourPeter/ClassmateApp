@@ -1,11 +1,11 @@
 {
-    "name": "myapp",
-    "short_name": "myapp",
+    "name": "Meechu",
+    "short_name": "Meechu",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Place to chat with classmates. Meet your classmates online, study together with others who have the similar study habits, being notified about the seat vacancy.......Meechu makes learning easier for you!.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

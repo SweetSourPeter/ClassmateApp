@@ -20,11 +20,10 @@ class ChooseGroupLeader extends StatefulWidget {
   final Function(String) adminCallback;
   ChooseGroupLeader(
       {this.courseId,
-        this.myEmail,
-        this.myName,
-        this.groupMembers,
-        this.adminCallback
-      });
+      this.myEmail,
+      this.myName,
+      this.groupMembers,
+      this.adminCallback});
   @override
   _ChooseGroupLeaderState createState() => _ChooseGroupLeaderState();
 }
@@ -45,7 +44,6 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   Function(String) sendAdminId;
   bool isUserFound;
 
-
   @override
   void initState() {
     super.initState();
@@ -60,7 +58,12 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
   }
 
   initiateSearch() {
-    foundUser = members.where((element) => element[0].toString().toUpperCase().contains(searchTextEditingController.text.toUpperCase())).toList();
+    foundUser = members
+        .where((element) => element[0]
+            .toString()
+            .toUpperCase()
+            .contains(searchTextEditingController.text.toUpperCase()))
+        .toList();
     print('result is:');
     print(foundUser);
 
@@ -75,13 +78,12 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     // print('noUserFound $noUserFound');
     // print('isSearing $isSearching');
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double sidebarSize = _width * 0.05;
     double gridWidth = (_width - 40 - 4 * 15) / 10;
 
@@ -154,34 +156,34 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                               padding: EdgeInsets.only(
                                   left: sidebarSize * 1.0,
                                   top: ((index != 0) &&
-                                      (members[index - 1][0][0] !=
-                                          members[index][0][0]))
+                                          (members[index - 1][0][0] !=
+                                              members[index][0][0]))
                                       ? sidebarSize * 0.4
                                       : 0),
                               child: CircleAvatar(
                                 backgroundColor: listProfileColor[
-                                members != null
-                                    ? members[index][2].toInt()
-                                    : 1],
+                                    members != null
+                                        ? members[index][2].toInt()
+                                        : 1],
                                 radius: sidebarSize * 1.2,
                                 child: Container(
                                   child: Text(
                                     memberName.split(' ').length >= 2
                                         ? memberName
-                                        .split(' ')[0][0]
-                                        .toUpperCase() +
-                                        memberName
-                                            .split(' ')[memberName
-                                            .split(' ')
-                                            .length -
-                                            1][0]
-                                            .toUpperCase()
+                                                .split(' ')[0][0]
+                                                .toUpperCase() +
+                                            memberName
+                                                .split(' ')[memberName
+                                                        .split(' ')
+                                                        .length -
+                                                    1][0]
+                                                .toUpperCase()
                                         : memberName[0].toUpperCase(),
                                     style: GoogleFonts.montserrat(
                                         fontSize:
-                                        memberName.split(' ').length >= 2
-                                            ? 14
-                                            : 15,
+                                            memberName.split(' ').length >= 2
+                                                ? 14
+                                                : 15,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -205,15 +207,16 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                       // Check mark
                       members[index][1] == newAdminId
                           ? Container(
-                        padding: EdgeInsets.only(right: sidebarSize * 1.8),
-                        child: Text(
-                          '√',
-                          style: GoogleFonts.montserrat(
-                              color: Color(0xffbacFF7E40),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      )
+                              padding:
+                                  EdgeInsets.only(right: sidebarSize * 1.8),
+                              child: Text(
+                                '√',
+                                style: GoogleFonts.montserrat(
+                                    color: Color(0xffbacFF7E40),
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
                           : Container()
                     ],
                   ),
@@ -269,7 +272,7 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                         )),
                   ),
                 )
-              else if (foundUser[index-1][0][0] != foundUser[index][0][0])
+              else if (foundUser[index - 1][0][0] != foundUser[index][0][0])
                 Visibility(
                   visible: true,
                   child: Padding(
@@ -309,31 +312,32 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                               padding: EdgeInsets.only(
                                   left: sidebarSize * 1.0,
                                   top: ((index != 0) &&
-                                      (foundUser[index-1][0][0] != foundUser[index][0][0]))
+                                          (foundUser[index - 1][0][0] !=
+                                              foundUser[index][0][0]))
                                       ? sidebarSize * 0.4
                                       : 0),
-
                               child: CircleAvatar(
-                                backgroundColor: listProfileColor[profileColor.toInt()],
+                                backgroundColor:
+                                    listProfileColor[profileColor.toInt()],
                                 radius: sidebarSize * 1.2,
                                 child: Container(
                                   child: Text(
                                     memberName.split(' ').length >= 2
                                         ? memberName
-                                        .split(' ')[0][0]
-                                        .toUpperCase() +
-                                        memberName
-                                            .split(' ')[memberName
-                                            .split(' ')
-                                            .length -
-                                            1][0]
-                                            .toUpperCase()
+                                                .split(' ')[0][0]
+                                                .toUpperCase() +
+                                            memberName
+                                                .split(' ')[memberName
+                                                        .split(' ')
+                                                        .length -
+                                                    1][0]
+                                                .toUpperCase()
                                         : memberName[0].toUpperCase(),
                                     style: GoogleFonts.montserrat(
                                         fontSize:
-                                        memberName.split(' ').length >= 2
-                                            ? 14
-                                            : 15,
+                                            memberName.split(' ').length >= 2
+                                                ? 14
+                                                : 15,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -357,22 +361,22 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                       // Check mark
                       memberId == newAdminId
                           ? Container(
-                        padding: EdgeInsets.only(right: sidebarSize * 1.8),
-                        child: Text(
-                          '√',
-                          style: GoogleFonts.montserrat(
-                              color: Color(0xffbacFF7E40),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      )
+                              padding:
+                                  EdgeInsets.only(right: sidebarSize * 1.8),
+                              child: Text(
+                                '√',
+                                style: GoogleFonts.montserrat(
+                                    color: Color(0xffbacFF7E40),
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
                           : Container()
                     ],
                   ),
                 ),
               ),
-              if (foundUser.length != 1
-                  && index != foundUser.length - 1)
+              if (foundUser.length != 1 && index != foundUser.length - 1)
                 Container(
                   margin: EdgeInsets.only(
                       right: sidebarSize * 0.6,
@@ -390,7 +394,6 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
         );
       });
     }
-
 
     return Container(
       color: Colors.white,
@@ -488,19 +491,18 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                           suffixIcon: searchTextEditingController.text.isEmpty
                               ? null
                               : IconButton(
-                                icon: Icon(
-                                  Icons.cancel,
-                                  color: Color(0xff646464),
-                                  // size: 30,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    isSearching = false;
-                                    isUserFound = true;
-                                  });
-                                  searchTextEditingController.clear();
-                                }
-                              ),
+                                  icon: Icon(
+                                    Icons.cancel,
+                                    color: Color(0xff646464),
+                                    // size: 30,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isSearching = false;
+                                      isUserFound = true;
+                                    });
+                                    searchTextEditingController.clear();
+                                  }),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(35),
@@ -519,39 +521,41 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                     ),
 
                     // search result and display of members info
-                    isSearching ?
-                        isUserFound ? Visibility(
-                                        visible: true,
-                                        // child: Container(
-                                        //   child: Text(searchSnapshot.docs[0].data()['userName'])
-                                        child: Container(
-                                          height: _height * 0.6,
-                                          padding: EdgeInsets.only(top: 10),
-                                          child: Scrollbar(
-                                            thickness: 4,
-                                            child: ListView(
-                                              primary: false,
-                                              shrinkWrap: true,
-                                              children: [..._listSearchMember(gridWidth - 5)],
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : Visibility(
-                                        visible: true,
-                                        child: Container(
-                                            height: _height * 0.6,
-                                            child: Text(
-                                              'No Users Found',
-                                              style: GoogleFonts.openSans(
-                                                textStyle: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600),
-                                              ),
-                                            )
-                                        ),
-                                      )
+                    isSearching
+                        ? isUserFound
+                            ? Visibility(
+                                visible: true,
+                                // child: Container(
+                                //   child: Text(searchSnapshot.docs[0].data()['userName'])
+                                child: Container(
+                                  height: _height * 0.6,
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: Scrollbar(
+                                    thickness: 4,
+                                    child: ListView(
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      children: [
+                                        ..._listSearchMember(gridWidth - 5)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Visibility(
+                                visible: true,
+                                child: Container(
+                                    height: _height * 0.6,
+                                    child: Text(
+                                      'No Users Found',
+                                      style: GoogleFonts.openSans(
+                                        textStyle: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    )),
+                              )
                         : Visibility(
                             visible: true,
                             child: Container(
@@ -562,15 +566,17 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                                 child: ListView(
                                   primary: false,
                                   shrinkWrap: true,
-                                  children: [..._renderMemberInfo(gridWidth - 5)],
+                                  children: [
+                                    ..._renderMemberInfo(gridWidth - 5)
+                                  ],
                                 ),
                               ),
                             ),
                           ),
 
                     // confirm button
-                    isUserFound ?
-                          Container(
+                    isUserFound
+                        ? Container(
                             padding: EdgeInsets.only(top: 20),
                             child: ButtonTheme(
                               minWidth: _width * 0.85,
@@ -586,12 +592,15 @@ class _ChooseGroupLeaderState extends State<ChooseGroupLeader> {
                                 shape: new RoundedRectangleBorder(
                                   borderRadius: new BorderRadius.circular(30.0),
                                 ),
-                                color: onSelected ? Color(0xFFFF7E40) : Colors.white,
+                                color: onSelected
+                                    ? Color(0xFFFF7E40)
+                                    : Colors.white,
                                 onPressed: () {
-                                  if (onSelected == false){
+                                  if (onSelected == false) {
                                     return null;
                                   }
-                                  databaseMethods.updateAdminId(widget.courseId, newAdminId);
+                                  databaseMethods.updateAdminId(
+                                      widget.courseId, newAdminId);
                                   sendAdminId(newAdminId);
                                   Navigator.pop(context, newAdminId);
                                 },

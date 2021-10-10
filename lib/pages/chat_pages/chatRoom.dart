@@ -37,7 +37,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Widget chatRoomsList(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     final currentUser = Provider.of<UserData>(context, listen: false);
     return StreamBuilder(
       stream: chatRooms,
@@ -217,7 +217,7 @@ class ChatRoomsTile extends StatelessWidget {
     final currentUser = Provider.of<UserData>(context, listen: false);
     final currentCourse = Provider.of<List<CourseInfo>>(context, listen: false);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     double sidebarSize = _width * 1.0;
 
     // print('heree');

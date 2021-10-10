@@ -6,6 +6,7 @@ import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:provider/provider.dart';
+import 'models/constant.dart';
 import 'models/courseInfo.dart';
 import 'pages/my_pages/my_account.dart';
 
@@ -63,98 +64,103 @@ class _MainMenuState extends State<MainMenu> {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _width = maxWidth;
     Size mediaQuery = MediaQuery.of(context).size;
-    double sidebarSize = mediaQuery.width * 1.0;
+    double sidebarSize = maxWidth * 1.0;
     final userTags = Provider.of<UserTags>(context);
     return (userdata == null)
         ? LoadingScreen(Colors.white)
-        : Scaffold(
-            backgroundColor: Colors.white,
-            body: Stack(
-              children: <Widget>[
-                AnimatedContainer(
-                  transform: Matrix4.translationValues(xOffset, yOffset, 20)
-                    ..scale(scaleFactor),
-                  duration: Duration(microseconds: 250),
-                  child: Scaffold(
-                    backgroundColor: Colors.white,
-                    // appBar: buildAppBar(),
-                    body: _currentIndex == 0
-                        ? CourseMainMenu(
-                            course: course,
-                            userData: userdata,
-                          )
-                        : _currentIndex == 1
-                            ? ChatRoom(
-                                myData: userdata,
+        : Center(
+            child: SizedBox(
+              width: maxWidth,
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                body: Stack(
+                  children: <Widget>[
+                    AnimatedContainer(
+                      transform: Matrix4.translationValues(xOffset, yOffset, 20)
+                        ..scale(scaleFactor),
+                      duration: Duration(microseconds: 250),
+                      child: Scaffold(
+                        backgroundColor: Colors.white,
+                        // appBar: buildAppBar(),
+                        body: _currentIndex == 0
+                            ? CourseMainMenu(
+                                course: course,
+                                userData: userdata,
                               )
-                            : MyAccount(
-                                key: globalKey,
-                              ),
-                    bottomNavigationBar:
-                        buildBottomNavigationBar(_height, _width),
-                  ),
-                ),
-                AnimatedPositioned(
-                  duration: Duration(milliseconds: 1500),
-                  left: isMenuOpen ? 0 : -sidebarSize + 0,
-                  top: 0,
-                  curve: Curves.elasticOut,
-                  child: SizedBox(
-                    width: sidebarSize,
-                    child: GestureDetector(
-                      onPanUpdate: (details) {
-                        if (details.localPosition.dx <= sidebarSize) {
-                          setState(() {
-                            _offset = details.localPosition;
-                          });
-                        }
-
-                        if (details.localPosition.dx > sidebarSize - 25 &&
-                            details.delta.distanceSquared > 2) {
-                          setMenuOpenState(true);
-                        }
-
-                        if (details.localPosition.dx < sidebarSize + 25 &&
-                            details.delta.distanceSquared < 2) {
-                          setMenuOpenState(false);
-                        }
-                      },
-                      onPanEnd: (details) {
-                        setState(() {
-                          _offset = Offset(0, 0);
-                        });
-                      },
-                      child: Stack(
-                        children: <Widget>[
-                          CustomPaint(
-                            size: Size(sidebarSize, mediaQuery.height),
-                            painter: DrawerPainter(offset: _offset),
-                          ),
-                        ],
+                            : _currentIndex == 1
+                                ? ChatRoom(
+                                    myData: userdata,
+                                  )
+                                : MyAccount(
+                                    key: globalKey,
+                                  ),
+                        bottomNavigationBar:
+                            buildBottomNavigationBar(_height, _width),
                       ),
                     ),
-                  ),
-                ),
-                AnimatedPositioned(
-                  duration: Duration(milliseconds: 300),
-                  left: (isMenuOpen) ? 10 : sidebarSize - 20,
-                  // left: (isMenuOpen) ? 10 : 100,
-                  top: 5,
-                  child: IconButton(
-                    enableFeedback: true,
-                    icon: Icon(
-                      Icons.chevron_left,
-                      color: Colors.black,
-                      size: 40,
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 1500),
+                      left: isMenuOpen ? 0 : -sidebarSize + 0,
+                      top: 0,
+                      curve: Curves.elasticOut,
+                      child: SizedBox(
+                        width: sidebarSize,
+                        child: GestureDetector(
+                          onPanUpdate: (details) {
+                            if (details.localPosition.dx <= sidebarSize) {
+                              setState(() {
+                                _offset = details.localPosition;
+                              });
+                            }
+
+                            if (details.localPosition.dx > sidebarSize - 25 &&
+                                details.delta.distanceSquared > 2) {
+                              setMenuOpenState(true);
+                            }
+
+                            if (details.localPosition.dx < sidebarSize + 25 &&
+                                details.delta.distanceSquared < 2) {
+                              setMenuOpenState(false);
+                            }
+                          },
+                          onPanEnd: (details) {
+                            setState(() {
+                              _offset = Offset(0, 0);
+                            });
+                          },
+                          child: Stack(
+                            children: <Widget>[
+                              CustomPaint(
+                                size: Size(sidebarSize, mediaQuery.height),
+                                painter: DrawerPainter(offset: _offset),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      setMenuOpenState(false);
-                    },
-                  ),
-                )
-              ],
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: 300),
+                      left: (isMenuOpen) ? 10 : sidebarSize - 20,
+                      // left: (isMenuOpen) ? 10 : 100,
+                      top: 5,
+                      child: IconButton(
+                        enableFeedback: true,
+                        icon: Icon(
+                          Icons.chevron_left,
+                          color: Colors.black,
+                          size: 40,
+                        ),
+                        onPressed: () {
+                          setMenuOpenState(false);
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           );
   }
@@ -162,7 +168,7 @@ class _MainMenuState extends State<MainMenu> {
   // Padding userInfoDetailsBox(
   //     Size mediaQuery, String topText, String bottomText) {
   //   return Padding(
-  //     padding: EdgeInsets.fromLTRB(mediaQuery.width / 7, 0, 0, 60),
+  //     padding: EdgeInsets.fromLTRB(maxWidth / 7, 0, 0, 60),
   //     child: Column(
   //       children: [
   //         Container(

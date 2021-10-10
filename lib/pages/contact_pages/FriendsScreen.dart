@@ -116,7 +116,7 @@
 //                               ),
 //                               SizedBox(height: 8.0),
 //                               Container(
-//                                 width: MediaQuery.of(context).size.width * 0.45,
+//                                 width: maxWidth * 0.45,
 //                                 child: Text(
 //                                   chat.text,
 //                                   style: TextStyle(
