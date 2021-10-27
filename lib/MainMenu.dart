@@ -5,6 +5,7 @@ import 'package:app_test/pages/group_chat_pages/courseMenu.dart';
 import 'package:app_test/widgets/loadingAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'models/constant.dart';
 import 'models/courseInfo.dart';
@@ -30,11 +31,25 @@ class _MainMenuState extends State<MainMenu> {
   double yOffset = 0;
   double scaleFactor = 1;
   // final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  _toastInfo() {
+    Fluttertoast.showToast(
+      // backgroundColor: themeOrange,
+      msg: 'This is a Beta demo of Meechu. Avilable in any mobile app store',
+      toastLength: Toast.LENGTH_LONG,
+      fontSize: 8.0,
+      timeInSecForIosWeb: 20,
+      gravity: ToastGravity.TOP,
+      webBgColor: 'linear-gradient(to right, #ff7e40, #ff7e40)',
+      webPosition: "center",
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _currentIndex = 0;
     limits = [0, 0, 0, 0, 0, 0];
+    _toastInfo();
     WidgetsBinding.instance.addPostFrameCallback(getPosition);
   }
 

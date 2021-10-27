@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_test/models/constant.dart';
@@ -60,7 +61,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  html.File _imageFile;
+  FilePickerResult _imageFileResult;
   html.File _file;
   String _uploadedFileURL;
   String _link;
@@ -311,29 +312,36 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future _pickImage(ImageSource source, myEmail) async {
-    html.File selected =
+    FilePickerResult result =
         // await ImagePickerWeb.getImage(outputType: ImageType.file);
-        await FilePicker.platform.pickFiles() ?? [];
-
-    if (selected != null) {
-      debugPrint(selected.toString());
-    }
+        await FilePicker.platform
+                .pickFiles(type: FileType.image, allowMultiple: false) ??
+            [];
+    Uint8List fileBytes = result.files.first.bytes;
+    var fileName = result.files.first.name;
+    // if (result.files.first.bytes != null) {
+    // debugPrint(result.files.first.bytes.toString());
+    // } else {
+    // print('error selected is null');
+    // }
 
     setState(() {
-      _imageFile = selected;
+      _imageFileResult = result;
     });
 
-    if (selected != null) {
-      _uploadFile(myEmail, _imageFile);
+    if (result.files.first.bytes != null) {
+      print('here is time to upload');
+      _uploadFile(myEmail, _imageFileResult);
     }
   }
 
-  Future<void> _uploadFile(myEmail, html.File image, {String imageName}) async {
-    imageName = image.name;
+  Future<void> _uploadFile(myEmail, FilePickerResult result,
+      {String imageName}) async {
+    imageName = result.files.first.name;
     fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
 
     fb.UploadTaskSnapshot uploadTaskSnapshot =
-        await storageRef.put(image).future;
+        await storageRef.put(result.files.first.bytes).future;
 
     Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
     print(imageUri);
@@ -369,11 +377,13 @@ class _ChatScreenState extends State<ChatScreen> {
   //   });
   // }
 
-  Future<void> _uploadNonImage(myEmail, html.File f, {String fName}) async {
-    fName = f.name;
+  Future<void> _uploadNonImage(myEmail, FilePickerResult result,
+      {String fName}) async {
+    fName = result.files.first.name;
     fb.StorageReference storageRef = fb.storage().ref('images/$fName');
 
-    fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(f).future;
+    fb.UploadTaskSnapshot uploadTaskSnapshot =
+        await storageRef.put(result.files.first.bytes).future;
 
     Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
     print(imageUri);
@@ -381,7 +391,8 @@ class _ChatScreenState extends State<ChatScreen> {
     //_uploadedFileURL = imageUri.toString();
     _link = imageUri.toString();
     messageUrl = _link;
-    fileName = f.name;
+    fileName = result.files.first.name;
+
     //print('file name of this file is' + fileName);
 
     sendLink(myEmail);
@@ -389,19 +400,26 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future _pickFile(myEmail) async {
-    // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
-    html.File selected = await FilePicker.platform.pickFiles() ?? [];
-
-    if (selected != null) {
-      debugPrint(selected.toString());
-    }
+    FilePickerResult result =
+        // await ImagePickerWeb.getImage(outputType: ImageType.file);
+        await FilePicker.platform
+                .pickFiles(type: FileType.any, allowMultiple: false) ??
+            [];
+    Uint8List fileBytes = result.files.first.bytes;
+    var fileName = result.files.first.name;
+    // if (result.files.first.bytes != null) {
+    // debugPrint(result.files.first.bytes.toString());
+    // } else {
+    // print('error selected is null');
+    // }
 
     setState(() {
-      _file = selected;
+      _imageFileResult = result;
     });
 
-    if (selected != null) {
-      _uploadNonImage(myEmail, _file);
+    if (result.files.first.bytes != null) {
+      print('here is time to upload');
+      _uploadNonImage(myEmail, _imageFileResult);
     }
   }
 

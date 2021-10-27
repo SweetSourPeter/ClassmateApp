@@ -41,78 +41,84 @@ class _PreviewImageState extends State<PreviewImage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              height: 73,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      child: IconButton(
-                        icon: Image.asset(
-                          'assets/images/arrow-back.png',
+      child: Center(
+        child: SizedBox(
+          width: maxWidth,
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: 73,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/arrow-back.png',
+                            ),
+                            // iconSize: 30.0,
+                            color: const Color(0xFFFFB811),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
                         ),
-                        // iconSize: 30.0,
-                        color: const Color(0xFFFFB811),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Container(
-              color: Colors.black,
-              child: CachedNetworkImage(
-                imageUrl: widget.imageUrl,
-                height: MediaQuery.of(context).size.height - 300,
-                width: getRealWidth(maxWidth),
-                placeholder: (context, url) => new CircularProgressIndicator(),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
-              ),
-            ),
-            Container(
-              height: 73,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      child: IconButton(
-                        icon: Image.asset(
-                          'assets/images/download.png',
+                ),
+                Container(
+                  color: Colors.black,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
+                    height: MediaQuery.of(context).size.height - 300,
+                    width: getRealWidth(maxWidth),
+                    placeholder: (context, url) =>
+                        new CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => new Icon(Icons.error),
+                  ),
+                ),
+                Container(
+                  height: 73,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/images/download.png',
+                            ),
+                            // iconSize: 30.0,
+                            color: const Color(0xFFFFB811),
+                            onPressed: () {
+                              _requestPermission();
+                              //_saveImage(widget.imageUrl);
+                              print("reached launch method");
+                              launch(widget.imageUrl.toString());
+                              print("reached launch method end");
+                            },
+                          ),
                         ),
-                        // iconSize: 30.0,
-                        color: const Color(0xFFFFB811),
-                        onPressed: () {
-                          _requestPermission();
-                          //_saveImage(widget.imageUrl);
-                          print("reached launch method");
-                          launch(widget.imageUrl.toString());
-                          print("reached launch method end");
-                        },
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

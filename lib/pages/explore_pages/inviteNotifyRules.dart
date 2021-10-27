@@ -70,8 +70,11 @@ class InviteNotifyRules extends StatelessWidget {
       Fluttertoast.showToast(
         msg: info,
         toastLength: Toast.LENGTH_LONG,
-        timeInSecForIosWeb: 3,
-        gravity: ToastGravity.CENTER,
+        fontSize: 8.0,
+        timeInSecForIosWeb: 20,
+        gravity: ToastGravity.TOP,
+        webBgColor: 'linear-gradient(to right, #ff7e40, #ff7e40)',
+        webPosition: "center",
       );
     }
 

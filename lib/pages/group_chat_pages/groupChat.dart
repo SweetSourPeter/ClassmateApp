@@ -18,6 +18,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:emoji_picker/emoji_picker.dart';
@@ -52,7 +53,7 @@ class GroupChat extends StatefulWidget {
 }
 
 class _GroupChatState extends State<GroupChat> {
-  html.File _imageFile;
+  FilePickerResult _imageFileResult;
   html.File _file;
   String _uploadedFileURL;
   String _link;
@@ -247,23 +248,21 @@ class _GroupChatState extends State<GroupChat> {
                   child: const Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return MultiProvider(
-                            providers: [
-                              Provider<UserData>.value(
-                                value: userdata,
-                              ),
-                              Provider<List<CourseInfo>>.value(value: course)
-                            ],
-                            child: SearchCourse(),
-                          );
-                        },
-                      ),
-                    )
+                  onPressed: () {
+                    // print(widget.courseId)
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return MultiProvider(
+                          providers: [
+                            Provider<UserData>.value(
+                              value: userdata,
+                            ),
+                            Provider<List<CourseInfo>>.value(value: course)
+                          ],
+                          child: SearchCourse(),
+                        );
+                      },
+                    ));
                   },
                   child: const Text('Enroll'),
                 )
@@ -534,13 +533,13 @@ class _GroupChatState extends State<GroupChat> {
       }
     }
 
-    Future<void> _uploadFile(myEmail, myName, html.File image,
+    Future<void> _uploadFile(myEmail, myName, FilePickerResult result,
         {String imageName}) async {
-      imageName = image.name;
+      imageName = result.files.first.name;
       fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
 
       fb.UploadTaskSnapshot uploadTaskSnapshot =
-          await storageRef.put(image).future;
+          await storageRef.put(result.files.first.bytes).future;
 
       Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
       print(imageUri);
@@ -551,12 +550,13 @@ class _GroupChatState extends State<GroupChat> {
       //return imageUri;
     }
 
-    Future<void> _uploadNonImage(myEmail, myName, html.File f,
+    Future<void> _uploadNonImage(myEmail, myName, FilePickerResult result,
         {String fName}) async {
-      fName = f.name;
+      fName = result.files.first.name;
       fb.StorageReference storageRef = fb.storage().ref('images/$fName');
 
-      fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(f).future;
+      fb.UploadTaskSnapshot uploadTaskSnapshot =
+          await storageRef.put(result.files.first.bytes).future;
 
       Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
       print(imageUri);
@@ -564,43 +564,57 @@ class _GroupChatState extends State<GroupChat> {
       //_uploadedFileURL = imageUri.toString();
       _link = imageUri.toString();
       messageUrl = _link;
-      fileName = f.name;
+      fileName = result.files.first.name;
 
       sendFile(myEmail, myName);
       //return imageUri;
     }
 
-    // Future _pickImage(ImageSource source, myEmail, myName) async {
-    //   html.File selected = await FilePicker.platform.pickFiles() ?? [];
-    //   // await ImagePickerWeb.getImage(outputType: ImageType.file);
-
-    //   if (selected != null) {
-    //     debugPrint(selected.toString());
-    //   }
-
-    //   setState(() {
-    //     _imageFile = selected;
-    //   });
-
-    //   if (selected != null) {
-    //     _uploadFile(myEmail, myName, _imageFile);
-    //   }
-    // }
-
-    Future _pickFile(myEmail, myName) async {
-      // html.File selected = await ImagePickerWeb.getImage(outputType: ImageType.file);
-      html.File selected = await FilePicker.platform.pickFiles() ?? [];
-
-      if (selected != null) {
-        debugPrint(selected.toString());
-      }
+    Future _pickImage(ImageSource source, myEmail, myName) async {
+      FilePickerResult result =
+          // await ImagePickerWeb.getImage(outputType: ImageType.file);
+          await FilePicker.platform
+                  .pickFiles(type: FileType.image, allowMultiple: false) ??
+              [];
+      Uint8List fileBytes = result.files.first.bytes;
+      var fileName = result.files.first.name;
+      // if (result.files.first.bytes != null) {
+      // debugPrint(result.files.first.bytes.toString());
+      // } else {
+      // print('error selected is null');
+      // }
 
       setState(() {
-        _file = selected;
+        _imageFileResult = result;
       });
 
-      if (selected != null) {
-        _uploadNonImage(myEmail, myName, _file);
+      if (result.files.first.bytes != null) {
+        print('here is time to upload');
+        _uploadFile(myEmail, myName, _imageFileResult);
+      }
+    }
+
+    Future _pickFile(myEmail, myName) async {
+      FilePickerResult result =
+          // await ImagePickerWeb.getImage(outputType: ImageType.file);
+          await FilePicker.platform
+                  .pickFiles(type: FileType.any, allowMultiple: false) ??
+              [];
+      Uint8List fileBytes = result.files.first.bytes;
+      var fileName = result.files.first.name;
+      // if (result.files.first.bytes != null) {
+      // debugPrint(result.files.first.bytes.toString());
+      // } else {
+      // print('error selected is null');
+      // }
+
+      setState(() {
+        _imageFileResult = result;
+      });
+
+      if (result.files.first.bytes != null) {
+        print('here is time to upload');
+        _uploadNonImage(myEmail, myName, _imageFileResult);
       }
     }
 
@@ -921,8 +935,8 @@ class _GroupChatState extends State<GroupChat> {
                               width: 65,
                               child: IconButton(
                                 icon: Image.asset('assets/images/camera.png'),
-                                // onPressed: () => _pickImage(ImageSource.camera,
-                                //     currentUser.email, currentUser.userName),
+                                onPressed: () => _pickImage(ImageSource.camera,
+                                    currentUser.email, currentUser.userName),
                               ),
                             ),
                             Container(

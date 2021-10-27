@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 class RedirectPage extends StatefulWidget {
   final String courseId;
@@ -22,6 +23,7 @@ class _RedirectPageState extends State<RedirectPage> {
   Widget build(BuildContext context) {
     final userdata = Provider.of<UserData>(context);
     final course = Provider.of<List<CourseInfo>>(context);
+    Clipboard.setData(ClipboardData(text: widget.courseId));
     return (userdata == null && course == null)
         ? Container()
         : MultiProvider(
