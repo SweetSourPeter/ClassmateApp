@@ -76,7 +76,7 @@ class DatabaseMethods {
         userID: doc.data()[userID],
         userName: doc.data()['userName'],
         userImageUrl: doc.data()['userImageUrl'],
-        profileColor: doc.data()['profileColor'],
+        profileColor: doc.data()['profileColor'].toDouble(),
         // myChargeNumber: doc.data()['myChargeNumber'] ?? '',
         agreedToTerms: doc.data()['agreedToTerms'],
         invitedUserID: doc.data()['invitedUserID'],
