@@ -106,6 +106,7 @@ class _SearchChatState extends State<SearchChat> {
                                   textInputAction: TextInputAction.search,
                                   onSubmitted: (value) {
                                     setState(() {
+
                                       isSearching = true;
                                     });
                                   },
@@ -187,6 +188,7 @@ class _SearchChatState extends State<SearchChat> {
   }
 
   Widget searchList(currentUser, context) {
+    print(isSearching);
     return isSearching && searchTextEditingController.text.isNotEmpty
         ? StreamBuilder(
             stream: chatMessageStream,
@@ -267,8 +269,7 @@ class _SearchChatState extends State<SearchChat> {
       userName = widget.myName;
       profileColor = widget.myProfileColor;
     }
-    Size mediaQuery = MediaQuery.of(context).size;
-    final course = Provider.of<List<CourseInfo>>(context);
+
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -277,7 +278,6 @@ class _SearchChatState extends State<SearchChat> {
               Provider<UserData>.value(
                 value: userData,
               ),
-              Provider<List<CourseInfo>>.value(value: course)
             ],
             child: ChatScreen(
               chatRoomId: widget.chatRoomId,

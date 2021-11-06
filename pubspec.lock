@@ -680,21 +680,21 @@ packages:
       name: jitsi_meet
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.0"
   jitsi_meet_platform_interface:
     dependency: transitive
     description:
       name: jitsi_meet_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.0"
   jitsi_meet_web_plugin:
     dependency: transitive
     description:
       name: jitsi_meet_web_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.0"
   js:
     dependency: transitive
     description:
